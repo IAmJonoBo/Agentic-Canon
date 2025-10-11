@@ -1,0 +1,281 @@
+# Prometheus Alerting Rules for Agentic Canon
+# These rules cover DORA metrics, security, quality, and performance
+
+groups:
+  # DORA Metrics Alerts
+  - name: dora_metrics
+    interval: 1m
+    rules:
+      - alert: HighChangeFailureRate
+        expr: |
+          (sum(increase(deployment_failure_total{environment="production"}[24h])) /
+           sum(increase(deployment_count_total{environment="production"}[24h]))) * 100 > 30
+        for: 30m
+        labels:
+          severity: warning
+          category: dora
+        annotations:
+          summary: "High change failure rate detected"
+          description: "Change failure rate is {{ $value | humanizePercentage }}. Target: <15% (Elite), <30% (High)"
+          runbook: "https://docs.example.com/runbooks/high-change-failure-rate"
+
+      - alert: SlowLeadTime
+        expr: |
+          histogram_quantile(0.95, 
+            sum(rate(deployment_lead_time_seconds_bucket{environment="production"}[7d])) by (le)
+          ) > 86400
+        for: 1h
+        labels:
+          severity: warning
+          category: dora
+        annotations:
+          summary: "Lead time for changes is too high"
+          description: "95th percentile lead time is {{ $value | humanizeDuration }}. Target: <1 hour (Elite), <1 day (High)"
+          runbook: "https://docs.example.com/runbooks/slow-lead-time"
+
+      - alert: HighMTTR
+        expr: avg(mttr_seconds{environment="production"}) > 3600
+        for: 30m
+        labels:
+          severity: critical
+          category: dora
+        annotations:
+          summary: "Mean Time to Recovery is too high"
+          description: "MTTR is {{ $value | humanizeDuration }}. Target: <1 hour (Elite)"
+          runbook: "https://docs.example.com/runbooks/high-mttr"
+
+      - alert: LowDeploymentFrequency
+        expr: |
+          sum(increase(deployment_count_total{environment="production"}[7d])) < 7
+        for: 1h
+        labels:
+          severity: warning
+          category: dora
+        annotations:
+          summary: "Deployment frequency is low"
+          description: "Only {{ $value }} deployments in the last 7 days. Target: >1/day (Elite)"
+          runbook: "https://docs.example.com/runbooks/low-deployment-frequency"
+
+  # Security Alerts
+  - name: security
+    interval: 5m
+    rules:
+      - alert: CriticalVulnerability
+        expr: sum(security_vulnerabilities_total{severity="critical",status="open"}) > 0
+        for: 15m
+        labels:
+          severity: critical
+          category: security
+        annotations:
+          summary: "Critical security vulnerabilities detected"
+          description: "{{ $value }} critical vulnerabilities are open. Immediate action required."
+          runbook: "https://docs.example.com/runbooks/critical-vulnerability"
+
+      - alert: HighVulnerabilityCount
+        expr: sum(security_vulnerabilities_total{severity=~"critical|high",status="open"}) > 10
+        for: 30m
+        labels:
+          severity: warning
+          category: security
+        annotations:
+          summary: "High number of security vulnerabilities"
+          description: "{{ $value }} critical/high vulnerabilities are open"
+          runbook: "https://docs.example.com/runbooks/high-vulnerability-count"
+
+      - alert: SlowVulnerabilityRemediation
+        expr: |
+          avg(vulnerability_remediation_time_seconds{severity=~"critical|high"}) > 172800
+        for: 1h
+        labels:
+          severity: warning
+          category: security
+        annotations:
+          summary: "Slow vulnerability remediation"
+          description: "Average remediation time is {{ $value | humanizeDuration }}. Target: <2 days for critical"
+          runbook: "https://docs.example.com/runbooks/slow-remediation"
+
+      - alert: LowSBOMCoverage
+        expr: |
+          (sum(dependencies_with_sbom_total) / sum(dependencies_total)) < 0.95
+        for: 1h
+        labels:
+          severity: warning
+          category: security
+        annotations:
+          summary: "SBOM coverage is below target"
+          description: "SBOM coverage is {{ $value | humanizePercentage }}. Target: >95%"
+          runbook: "https://docs.example.com/runbooks/low-sbom-coverage"
+
+      - alert: SecretDetected
+        expr: increase(secret_scan_findings_total[5m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+          category: security
+        annotations:
+          summary: "Secret detected in code"
+          description: "{{ $value }} secrets detected in the last 5 minutes"
+          runbook: "https://docs.example.com/runbooks/secret-detected"
+
+  # Quality Metrics Alerts
+  - name: quality
+    interval: 5m
+    rules:
+      - alert: LowTestCoverage
+        expr: avg(test_coverage_percent) < 80
+        for: 1h
+        labels:
+          severity: warning
+          category: quality
+        annotations:
+          summary: "Test coverage below target"
+          description: "Test coverage is {{ $value | humanizePercentage }}. Target: >80%"
+          runbook: "https://docs.example.com/runbooks/low-test-coverage"
+
+      - alert: HighCodeDuplication
+        expr: avg(code_duplication_percent) > 5
+        for: 1h
+        labels:
+          severity: warning
+          category: quality
+        annotations:
+          summary: "High code duplication detected"
+          description: "Code duplication is {{ $value | humanizePercentage }}. Target: <5%"
+          runbook: "https://docs.example.com/runbooks/high-code-duplication"
+
+      - alert: HighTechnicalDebt
+        expr: sum(technical_debt_minutes) > 1000
+        for: 1h
+        labels:
+          severity: warning
+          category: quality
+        annotations:
+          summary: "Technical debt is accumulating"
+          description: "Technical debt is {{ $value }} minutes. Consider prioritizing debt reduction."
+          runbook: "https://docs.example.com/runbooks/high-technical-debt"
+
+      - alert: FailingTests
+        expr: sum(increase(test_runs_total{result="failed"}[1h])) > 5
+        for: 15m
+        labels:
+          severity: warning
+          category: quality
+        annotations:
+          summary: "Multiple test failures detected"
+          description: "{{ $value }} test failures in the last hour"
+          runbook: "https://docs.example.com/runbooks/failing-tests"
+
+      - alert: HighCyclomaticComplexity
+        expr: avg(cyclomatic_complexity) > 15
+        for: 1h
+        labels:
+          severity: warning
+          category: quality
+        annotations:
+          summary: "Code complexity is too high"
+          description: "Average cyclomatic complexity is {{ $value }}. Target: <10"
+          runbook: "https://docs.example.com/runbooks/high-complexity"
+
+  # Performance Alerts
+  - name: performance
+    interval: 1m
+    rules:
+      - alert: HighBuildTime
+        expr: avg(build_time_seconds) > 1800
+        for: 15m
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "Build time is too high"
+          description: "Average build time is {{ $value | humanizeDuration }}. Target: <30 minutes"
+          runbook: "https://docs.example.com/runbooks/high-build-time"
+
+      - alert: SlowCodeReview
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(pr_review_time_seconds_bucket[24h])) by (le)
+          ) > 14400
+        for: 1h
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "Code review time is too high"
+          description: "95th percentile review time is {{ $value | humanizeDuration }}. Target: <4 hours"
+          runbook: "https://docs.example.com/runbooks/slow-code-review"
+
+      - alert: LongFlowTime
+        expr: avg(flow_time_seconds) > 86400
+        for: 1h
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "Flow time is too high"
+          description: "Average flow time is {{ $value | humanizeDuration }}. Target: <1 day"
+          runbook: "https://docs.example.com/runbooks/long-flow-time"
+
+  # Developer Experience Alerts
+  - name: developer_experience
+    interval: 5m
+    rules:
+      - alert: LowDeveloperSatisfaction
+        expr: avg(developer_satisfaction_score) < 7
+        for: 1h
+        labels:
+          severity: warning
+          category: devex
+        annotations:
+          summary: "Developer satisfaction is below target"
+          description: "Average satisfaction score is {{ $value }}. Target: >7"
+          runbook: "https://docs.example.com/runbooks/low-satisfaction"
+
+      - alert: HighContextSwitches
+        expr: sum(increase(context_switches_total[1h])) > 10
+        for: 30m
+        labels:
+          severity: warning
+          category: devex
+        annotations:
+          summary: "High number of context switches"
+          description: "{{ $value }} context switches in the last hour"
+          runbook: "https://docs.example.com/runbooks/high-context-switches"
+
+      - alert: FrequentInterruptions
+        expr: avg(interruptions_count) > 5
+        for: 1h
+        labels:
+          severity: warning
+          category: devex
+        annotations:
+          summary: "Developers are being interrupted frequently"
+          description: "Average of {{ $value }} interruptions per hour"
+          runbook: "https://docs.example.com/runbooks/frequent-interruptions"
+
+  # Dependency Health Alerts
+  - name: dependencies
+    interval: 1h
+    rules:
+      - alert: VulnerableDependencies
+        expr: sum(dependencies_vulnerable_total) > 0
+        for: 1h
+        labels:
+          severity: warning
+          category: dependencies
+        annotations:
+          summary: "Vulnerable dependencies detected"
+          description: "{{ $value }} dependencies have known vulnerabilities"
+          runbook: "https://docs.example.com/runbooks/vulnerable-dependencies"
+
+      - alert: OutdatedDependencies
+        expr: |
+          (sum(dependencies_outdated_total) / sum(dependencies_total)) > 0.2
+        for: 6h
+        labels:
+          severity: info
+          category: dependencies
+        annotations:
+          summary: "Many outdated dependencies"
+          description: "{{ $value | humanizePercentage }} of dependencies are outdated"
+          runbook: "https://docs.example.com/runbooks/outdated-dependencies"

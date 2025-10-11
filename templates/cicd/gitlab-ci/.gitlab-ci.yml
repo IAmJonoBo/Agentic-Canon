@@ -24,7 +24,7 @@ stages:
 
 # Default configuration
 default:
-  image: node:20
+  image: node:22
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
@@ -158,7 +158,7 @@ quality-gate:
 # ================================
 generate-sbom:
   stage: package
-  image: node:20
+  image: node:22
   script:
     - npm install -g @cyclonedx/cyclonedx-npm
     - cyclonedx-npm --output-file sbom.json

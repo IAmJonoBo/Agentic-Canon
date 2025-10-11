@@ -1,0 +1,28 @@
+name: Repo Guardrails
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  required-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check required files exist
+        run: |
+          set -euo pipefail
+          missing=0
+          for f in CODE_OF_CONDUCT.md CODEOWNERS LICENSE CHANGELOG.md; do
+            if [ ! -f "$f" ]; then
+              echo "Missing required file: $f" >&2
+              missing=1
+            else
+              ls -l "$f"
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "One or more required files are missing" >&2
+            exit 2
+          fi

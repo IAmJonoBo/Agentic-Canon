@@ -15,16 +15,11 @@ Runbooks are step-by-step guides for common operational tasks, incident response
 
 ### Available
 
-- `agent-runbook.json` - Machine-readable runbook for AI agents and automation
-
-### Planned
-
-Per TASKS.md, the following runbooks are planned:
-
-- **Template Creation Runbook**: How to create new Cookiecutter templates
-- **Deployment Runbook**: Deploying generated projects
-- **Incident Response Runbook**: Handling production incidents
-- **Agent-Oriented Automation Runbook**: Guide for AI agent automation
+- **[agent-runbook.json](agent-runbook.json)** - Machine-readable runbook for AI agents and automation
+- **[template-creation-runbook.md](template-creation-runbook.md)** - Complete guide for creating new Cookiecutter templates
+- **[deployment-runbook.md](deployment-runbook.md)** - Comprehensive deployment guide for all platforms
+- **[incident-response-runbook.md](incident-response-runbook.md)** - Production incident response procedures
+- **[agent-automation-runbook.md](agent-automation-runbook.md)** - AI agent automation patterns and guidelines
 
 ## Structure
 

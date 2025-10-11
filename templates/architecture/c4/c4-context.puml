@@ -1,0 +1,47 @@
+# C4 Context Diagram Template
+# Level 1: System Context - Shows the system and its relationships with users and other systems
+# Format: PlantUML
+
+@startuml C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context Diagram for {{ SYSTEM_NAME }}
+
+' Define external users
+Person(user, "{{ USER_TYPE }}", "{{ USER_DESCRIPTION }}")
+Person_Ext(admin, "Administrator", "System administrator")
+
+' Define the system
+System(systemName, "{{ SYSTEM_NAME }}", "{{ SYSTEM_DESCRIPTION }}")
+
+' Define external systems
+System_Ext(authSystem, "Authentication Service", "Provides SSO and authentication")
+System_Ext(paymentSystem, "Payment Gateway", "Processes payments")
+System_Ext(emailSystem, "Email Service", "Sends transactional emails")
+System_Ext(analyticsSystem, "Analytics Platform", "Collects and analyzes usage data")
+
+' Define relationships
+Rel(user, systemName, "Uses", "HTTPS")
+Rel(admin, systemName, "Manages", "HTTPS")
+Rel(systemName, authSystem, "Authenticates users", "OAuth 2.0/OIDC")
+Rel(systemName, paymentSystem, "Processes payments", "REST/JSON")
+Rel(systemName, emailSystem, "Sends emails", "SMTP")
+Rel(systemName, analyticsSystem, "Sends events", "REST/JSON")
+
+' Add notes for security and compliance
+SHOW_LEGEND()
+
+@enduml
+
+' Usage:
+' 1. Install PlantUML: https://plantuml.com/
+' 2. Render diagram: plantuml -tpng c4-context.puml
+' 3. Or use VS Code PlantUML extension
+'
+' Standards:
+' - C4 Model: https://c4model.com/
+' - Shows trust boundaries
+' - Maps to threat model
+' - Documents data flows

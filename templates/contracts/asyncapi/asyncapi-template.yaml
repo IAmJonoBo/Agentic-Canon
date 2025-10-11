@@ -1,0 +1,327 @@
+# AsyncAPI Template
+# Stack-agnostic event-driven API specification
+# Implements: Contract-first development for async/event-driven systems
+
+asyncapi: 3.0.0
+
+info:
+  title: {{ API_NAME }}
+  version: {{ VERSION }}
+  description: |
+    {{ API_DESCRIPTION }}
+    
+    ## Event-Driven Architecture
+    This service uses an event-driven architecture for asynchronous communication.
+    
+    ## Standards Compliance
+    - CloudEvents specification
+    - OWASP API Security Top 10
+    - Dead Letter Queue pattern
+  
+  contact:
+    name: {{ TEAM_NAME }}
+    email: {{ TEAM_EMAIL }}
+    url: {{ TEAM_URL }}
+  
+  license:
+    name: {{ LICENSE }}
+    url: {{ LICENSE_URL }}
+
+servers:
+  production:
+    host: kafka.example.com:9092
+    protocol: kafka
+    description: Production Kafka cluster
+    security:
+      - saslScram: []
+  
+  staging:
+    host: kafka-staging.example.com:9092
+    protocol: kafka
+    description: Staging Kafka cluster
+  
+  development:
+    host: localhost:9092
+    protocol: kafka
+    description: Local development
+
+defaultContentType: application/json
+
+channels:
+  user.created:
+    address: user.created
+    description: User creation events
+    messages:
+      UserCreated:
+        $ref: '#/components/messages/UserCreated'
+  
+  user.updated:
+    address: user.updated
+    description: User update events
+    messages:
+      UserUpdated:
+        $ref: '#/components/messages/UserUpdated'
+  
+  user.deleted:
+    address: user.deleted
+    description: User deletion events
+    messages:
+      UserDeleted:
+        $ref: '#/components/messages/UserDeleted'
+  
+  order.placed:
+    address: order.placed
+    description: Order placement events
+    messages:
+      OrderPlaced:
+        $ref: '#/components/messages/OrderPlaced'
+
+operations:
+  publishUserCreated:
+    action: send
+    channel:
+      $ref: '#/channels/user.created'
+    summary: Publish user created event
+    description: Published when a new user is created
+    traits:
+      - $ref: '#/components/operationTraits/kafka'
+  
+  subscribeUserCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/user.created'
+    summary: Subscribe to user created events
+    description: Consume user creation events
+
+components:
+  messages:
+    UserCreated:
+      name: UserCreated
+      title: User Created Event
+      summary: Event emitted when a user is created
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: '#/components/schemas/UserCreatedPayload'
+      examples:
+        - name: Example User Created Event
+          payload:
+            eventId: "550e8400-e29b-41d4-a716-446655440000"
+            eventType: "user.created"
+            timestamp: "2024-01-01T12:00:00Z"
+            data:
+              userId: "usr_123456"
+              email: "user@example.com"
+              name: "John Doe"
+              createdAt: "2024-01-01T12:00:00Z"
+    
+    UserUpdated:
+      name: UserUpdated
+      title: User Updated Event
+      summary: Event emitted when a user is updated
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: '#/components/schemas/UserUpdatedPayload'
+    
+    UserDeleted:
+      name: UserDeleted
+      title: User Deleted Event
+      summary: Event emitted when a user is deleted
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: '#/components/schemas/UserDeletedPayload'
+    
+    OrderPlaced:
+      name: OrderPlaced
+      title: Order Placed Event
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: '#/components/schemas/OrderPlacedPayload'
+
+  schemas:
+    UserCreatedPayload:
+      type: object
+      required:
+        - eventId
+        - eventType
+        - timestamp
+        - data
+      properties:
+        eventId:
+          type: string
+          format: uuid
+          description: Unique event identifier
+        eventType:
+          type: string
+          const: user.created
+        timestamp:
+          type: string
+          format: date-time
+          description: Event timestamp (ISO 8601)
+        data:
+          type: object
+          required:
+            - userId
+            - email
+            - name
+          properties:
+            userId:
+              type: string
+              description: User ID
+            email:
+              type: string
+              format: email
+            name:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+    
+    UserUpdatedPayload:
+      type: object
+      required:
+        - eventId
+        - eventType
+        - timestamp
+        - data
+      properties:
+        eventId:
+          type: string
+          format: uuid
+        eventType:
+          type: string
+          const: user.updated
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          type: object
+          properties:
+            userId:
+              type: string
+            changes:
+              type: object
+              description: Changed fields
+    
+    UserDeletedPayload:
+      type: object
+      required:
+        - eventId
+        - eventType
+        - timestamp
+        - data
+      properties:
+        eventId:
+          type: string
+          format: uuid
+        eventType:
+          type: string
+          const: user.deleted
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          type: object
+          required:
+            - userId
+          properties:
+            userId:
+              type: string
+            deletedAt:
+              type: string
+              format: date-time
+    
+    OrderPlacedPayload:
+      type: object
+      required:
+        - eventId
+        - eventType
+        - timestamp
+        - data
+      properties:
+        eventId:
+          type: string
+          format: uuid
+        eventType:
+          type: string
+          const: order.placed
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          type: object
+          required:
+            - orderId
+            - userId
+            - items
+            - total
+          properties:
+            orderId:
+              type: string
+            userId:
+              type: string
+            items:
+              type: array
+              items:
+                type: object
+                properties:
+                  productId:
+                    type: string
+                  quantity:
+                    type: integer
+                  price:
+                    type: number
+            total:
+              type: number
+            currency:
+              type: string
+              default: USD
+
+  securitySchemes:
+    saslScram:
+      type: scramSha256
+      description: SASL/SCRAM authentication
+  
+  messageTraits:
+    commonHeaders:
+      headers:
+        type: object
+        properties:
+          correlationId:
+            type: string
+            format: uuid
+            description: Request correlation ID for tracing
+          source:
+            type: string
+            description: Source service
+          contentType:
+            type: string
+            default: application/json
+  
+  operationTraits:
+    kafka:
+      bindings:
+        kafka:
+          groupId: {{ SERVICE_NAME }}
+          clientId: {{ SERVICE_NAME }}-{{ INSTANCE_ID }}
+
+# Validation Commands
+#
+# Validate AsyncAPI spec:
+#   asyncapi validate asyncapi.yaml
+#
+# Generate documentation:
+#   asyncapi generate html asyncapi.yaml -o docs/
+#
+# Generate code:
+#   asyncapi generate fromTemplate asyncapi.yaml @asyncapi/nodejs-template -o output/
+#
+# Test with simulator:
+#   asyncapi start asyncapi.yaml

@@ -1,0 +1,13 @@
+{
+  "project_name": "Acme Go Service",
+  "project_slug": "acme-go-service",
+  "module_path": "github.com/example/acme-go-service",
+  "description": "A production-ready Go service",
+  "author_name": "Your Name",
+  "author_email": "you@example.com",
+  "license": ["Apache-2.0", "MIT", "Proprietary"],
+  "go_version": "1.22",
+  "enable_security_gates": ["yes", "no"],
+  "ci_provider": ["github", "gitlab"],
+  "_copy_without_render": []
+}

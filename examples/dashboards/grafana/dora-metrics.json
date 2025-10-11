@@ -1,0 +1,127 @@
+{
+  "dashboard": {
+    "title": "DORA Metrics Dashboard",
+    "tags": ["dora", "metrics", "devops"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "Deployment Frequency",
+        "description": "Number of deployments per day/week",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(rate(deployments_total[7d]))",
+            "legendFormat": "Deployments per day"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 1, "color": "yellow"},
+                {"value": 7, "color": "green"}
+              ]
+            },
+            "unit": "per day"
+          }
+        }
+      },
+      {
+        "title": "Lead Time for Changes",
+        "description": "Time from commit to production",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "avg(lead_time_seconds) / 3600",
+            "legendFormat": "Average lead time"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 24, "color": "yellow"},
+                {"value": 168, "color": "red"}
+              ]
+            },
+            "unit": "hours"
+          }
+        }
+      },
+      {
+        "title": "Change Failure Rate",
+        "description": "Percentage of changes that cause failures",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "sum(failed_deployments_total) / sum(deployments_total) * 100",
+            "legendFormat": "Failure rate"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 15, "color": "yellow"},
+                {"value": 30, "color": "red"}
+              ]
+            },
+            "unit": "percent",
+            "min": 0,
+            "max": 100
+          }
+        }
+      },
+      {
+        "title": "Mean Time to Recovery (MTTR)",
+        "description": "Average time to recover from failures",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "avg(mttr_seconds) / 3600",
+            "legendFormat": "MTTR"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 1, "color": "yellow"},
+                {"value": 24, "color": "red"}
+              ]
+            },
+            "unit": "hours"
+          }
+        }
+      },
+      {
+        "title": "Deployment Trend",
+        "description": "Deployment frequency over time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(deployments_total[1h]))",
+            "legendFormat": "Deployments"
+          }
+        ]
+      },
+      {
+        "title": "Lead Time Trend",
+        "description": "Lead time trends over time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "avg_over_time(lead_time_seconds[1d]) / 3600",
+            "legendFormat": "Lead time (hours)"
+          }
+        ]
+      }
+    ],
+    "refresh": "5m",
+    "schemaVersion": 38
+  }
+}

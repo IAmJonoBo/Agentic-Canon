@@ -27,8 +27,16 @@ security/
 │   └── trivy-workflow.yml             # Container vulnerability scanning
 ├── iac-scanning/
 │   └── iac-security-workflow.yml      # IaC security scanning
-└── license-compliance/
-    └── license-check-workflow.yml     # License compliance checking
+├── license-compliance/
+│   └── license-check-workflow.yml     # License compliance checking
+├── performance-budgets/
+│   ├── performance-budget-workflow.yml # Performance budget enforcement
+│   ├── lighthouse-budget.example.json # Lighthouse budget configuration
+│   └── size-limit.example.js          # Bundle size limits
+└── accessibility/
+    ├── accessibility-workflow.yml      # Accessibility testing
+    ├── lighthouserc.example.json      # Lighthouse config for a11y
+    └── pa11yci.example.json           # pa11y-ci configuration
 ```
 
 ## Security Workflows
@@ -148,6 +156,81 @@ cosign verify-blob \
   --bundle artifact.tar.gz.cosign.bundle \
   artifact.tar.gz
 ```
+
+### 8. Performance Budget Enforcement
+
+Automated performance monitoring and budget enforcement:
+
+- **Lighthouse CI**: Core Web Vitals and performance scores
+- **Bundle size**: JavaScript/CSS bundle size limits
+- **API performance**: Response time budgets
+- **Memory budgets**: Memory usage limits
+
+Features:
+- Core Web Vitals tracking (LCP, FID, CLS, FCP, TTFB)
+- Bundle size limits enforcement
+- API response time monitoring
+- Database query performance tracking
+- Memory usage monitoring
+
+**Usage:**
+```yaml
+# Add to .github/workflows/
+cp templates/security/performance-budgets/performance-budget-workflow.yml .github/workflows/
+
+# Configure budgets
+cp templates/security/performance-budgets/lighthouse-budget.example.json lighthouse-budget.json
+cp templates/security/performance-budgets/size-limit.example.js .size-limit.js
+```
+
+**Budget Example:**
+```json
+{
+  "timings": [
+    {
+      "metric": "first-contentful-paint",
+      "budget": 1500
+    },
+    {
+      "metric": "largest-contentful-paint",
+      "budget": 2500
+    }
+  ]
+}
+```
+
+### 9. Accessibility Testing
+
+Comprehensive accessibility testing to ensure WCAG 2.2 compliance:
+
+- **axe-core**: Automated accessibility testing
+- **pa11y**: Accessibility testing framework
+- **Lighthouse**: Accessibility audit
+- **WAVE**: WebAIM's accessibility checker
+
+Features:
+- WCAG 2.2 Level AA/AAA compliance
+- Color contrast validation
+- Keyboard navigation testing
+- Screen reader compatibility
+- HTML validation
+- ARIA attribute verification
+
+**Usage:**
+```yaml
+# Add to .github/workflows/
+cp templates/security/accessibility/accessibility-workflow.yml .github/workflows/
+
+# Configure tools
+cp templates/security/accessibility/lighthouserc.example.json .lighthouserc.json
+cp templates/security/accessibility/pa11yci.example.json .pa11yci.json
+```
+
+**Standards:**
+- WCAG 2.2 Level AA (minimum)
+- WCAG 2.2 Level AAA (recommended)
+- Section 508 compliance
+- ADA compliance
 
 ## Service Template Integration
 

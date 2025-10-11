@@ -384,8 +384,8 @@ Last Updated: 2025-10-11
 - [x] License compliance checking - workflow created
 - [x] Container image scanning - Trivy and Grype workflows created
 - [x] IaC security scanning (Checkov, tfsec) - comprehensive workflow created
-- [ ] Performance budgets enforcement
-- [ ] Accessibility checks (axe-core, pa11y)
+- [x] Performance budgets enforcement - Lighthouse CI and bundle size workflows created
+- [x] Accessibility checks (axe-core, pa11y) - comprehensive WCAG 2.2 workflow created
 
 ### Security Enhancements 🆕
 - [x] Implement artifact signing with Sigstore/Cosign
@@ -399,8 +399,8 @@ Last Updated: 2025-10-11
 - [x] License compliance
 - [x] Container scanning
 - [x] IaC security (Checkov, tfsec)
-- [ ] Performance budgets
-- [ ] Accessibility checks
+- [x] Performance budgets
+- [x] Accessibility checks
 
 ## Monitoring & Observability
 

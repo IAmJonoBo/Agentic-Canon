@@ -130,12 +130,12 @@ Last Updated: 2025-10-11
 - [ ] Create SLO/error-budget dashboards
 - [ ] Add performance budgets dashboard (Core Web Vitals for web apps)
 
-### Additional Examples 🚧
-- [ ] Create example projects using each Cookiecutter template:
+### Additional Examples ✅
+- [x] Create example projects using each Cookiecutter template:
   - [x] Python microservice example (FastAPI) - fastapi-microservice-README.md created
-  - [ ] Node.js API service example (Express/NestJS)
-  - [ ] React webapp example (e-commerce or dashboard)
-  - [ ] Go service example (gRPC service)
+  - [x] Node.js API service example (Express) - express-api-README.md created
+  - [x] React webapp example (dashboard) - react-dashboard-README.md created
+  - [x] Go service example (gRPC service) - grpc-service-README.md created
 - [ ] Add end-to-end example workflows:
   - [ ] Full CI/CD pipeline with all gates
   - [ ] Security scanning and remediation workflow

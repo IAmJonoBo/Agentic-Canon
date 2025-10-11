@@ -1,0 +1,10 @@
+jupyter
+jupytext
+nbstripout
+pytest
+nbmake
+papermill
+jupyter-book
+ghp-import
+cookiecutter
+pytest-cookies

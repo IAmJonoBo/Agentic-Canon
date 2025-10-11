@@ -1,0 +1,20 @@
+name: Notebooks • scheduled run
+on:
+  schedule:
+    - cron: "0 5 * * 1"   # Mondays 05:00 UTC
+  workflow_dispatch:
+jobs:
+  papermill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install -r requirements.txt
+      - name: Execute notebooks with parameters
+        run: |
+          mkdir -p artifacts
+          papermill notebooks/01_bootstrap.ipynb artifacts/01_bootstrap.out.ipynb -p run_mode ci
+          papermill notebooks/02_security_supply_chain.ipynb artifacts/02_security_supply_chain.out.ipynb -p run_mode ci
+      - uses: actions/upload-artifact@v4
+        with: { name: notebook-outputs, path: artifacts }

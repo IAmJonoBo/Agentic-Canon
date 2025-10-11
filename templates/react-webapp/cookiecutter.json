@@ -1,0 +1,13 @@
+{
+  "project_name": "Acme React App",
+  "project_slug": "acme-react-app",
+  "description": "A production-ready React application",
+  "author_name": "Your Name",
+  "author_email": "you@example.com",
+  "license": ["Apache-2.0", "MIT", "Proprietary"],
+  "include_storybook": ["yes", "no"],
+  "include_e2e_tests": ["yes", "no"],
+  "enable_accessibility_tests": ["yes", "no"],
+  "ci_provider": ["github", "gitlab"],
+  "_copy_without_render": ["storybook-static"]
+}

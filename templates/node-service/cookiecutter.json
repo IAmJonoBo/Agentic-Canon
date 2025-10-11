@@ -1,0 +1,13 @@
+{
+  "project_name": "Acme Node Service",
+  "project_slug": "acme-node-service",
+  "description": "A production-ready Node.js service",
+  "author_name": "Your Name",
+  "author_email": "you@example.com",
+  "license": ["Apache-2.0", "MIT", "Proprietary"],
+  "node_version": "20",
+  "enable_security_gates": ["yes", "no"],
+  "enable_sbom_signing": ["yes", "no"],
+  "ci_provider": ["github", "gitlab"],
+  "_copy_without_render": []
+}

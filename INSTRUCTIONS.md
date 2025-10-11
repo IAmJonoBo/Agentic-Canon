@@ -905,5 +905,60 @@ Why this wiring
 
 ⸻
 
+Absolutely—here’s a drop-in GitHub Pages deploy for the react-webapp Cookiecutter template, using GitHub’s official Pages actions.
 
+Files to add (react-webapp template)
 
+.github/workflows/storybook-pages.yml
+
+name: Storybook • Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Required for Pages deployments
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Avoid overlapping deploys
+concurrency:
+  group: pages-storybook
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'npm' }
+      - run: npm ci
+      - run: npm run build-storybook     # outputs ./storybook-static
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: storybook-static
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+Repo setting (one-time): in Settings → Pages → Build and deployment, set Source: GitHub Actions. Deploy URL will surface from the job output (page_url).  ￼
+
+Why this wiring
+	•	build → upload → deploy is the pattern GitHub recommends: build the static site, upload with actions/upload-pages-artifact, then deploy with actions/deploy-pages (with pages: write and id-token: write).  ￼
+	•	Storybook’s static export lands in storybook-static by default, which is exactly what we publish.  ￼
+	•	Optional concurrency prevents overlapping Page releases during busy commit streams.  ￼
+
+Copilot task (paste to Chat)
+
+Add .github/workflows/storybook-pages.yml to the react-webapp template exactly as provided. Ensure npm run build-storybook is used, upload with actions/upload-pages-artifact@v3 (path: storybook-static), then deploy with actions/deploy-pages@v4. Remind me to set Settings→Pages→Source: GitHub Actions and return the expected public URL from the job output.

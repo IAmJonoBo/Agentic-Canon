@@ -1,0 +1,8 @@
+format: jb-book
+root: intro
+chapters:
+  - file: notebooks/01_bootstrap
+  - file: notebooks/02_security_supply_chain
+  - file: notebooks/03_contracts_and_tests
+  - file: notebooks/04_observability_slos
+  - file: notebooks/05_docs_to_book

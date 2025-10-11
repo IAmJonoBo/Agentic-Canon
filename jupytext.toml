@@ -1,0 +1,4 @@
+# Pair notebooks to MyST Markdown in docs/notebooks for Jupyter Book
+[formats]
+"notebooks/" = "ipynb"
+"docs/notebooks/" = "md:myst"

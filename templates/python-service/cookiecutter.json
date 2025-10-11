@@ -1,0 +1,16 @@
+{
+  "project_name": "Acme Service",
+  "project_slug": "acme-service",
+  "pkg_name": "acme_service",
+  "project_description": "A Python service with best practices",
+  "author_name": "Your Name",
+  "author_email": "your.email@example.com",
+  "license": ["Apache-2.0", "MIT", "Proprietary"],
+  "python_version": "3.11",
+  "include_jupyter_book": ["yes", "no"],
+  "enable_security_gates": ["yes", "no"],
+  "enable_sbom_signing": ["yes", "no"],
+  "enable_contract_tests": ["yes", "no"],
+  "ci_provider": ["github", "gitlab"],
+  "_copy_without_render": ["docs/_build", "notebooks/*.ipynb"]
+}

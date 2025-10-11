@@ -1,0 +1,230 @@
+# Azure Pipeline for Python Service
+# This pipeline provides comprehensive CI/CD for Python services
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    exclude:
+      - docs/**
+      - README.md
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+
+variables:
+  python.version: '3.11'
+  python.version.secondary: '3.12'
+  project.name: 'python-service'
+  pip.cache.path: $(Pipeline.Workspace)/.pip
+
+stages:
+  - stage: Build
+    displayName: 'Build and Test'
+    jobs:
+      - job: Test
+        displayName: 'Run Tests'
+        strategy:
+          matrix:
+            Python311:
+              python.version: '3.11'
+            Python312:
+              python.version: '3.12'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '$(python.version)'
+            displayName: 'Use Python $(python.version)'
+
+          - task: Cache@2
+            inputs:
+              key: 'pip | "$(Agent.OS)" | requirements.txt'
+              path: $(pip.cache.path)
+            displayName: 'Cache pip packages'
+
+          - script: |
+              python -m pip install --upgrade pip wheel
+              pip install -e .[dev]
+            displayName: 'Install dependencies'
+
+          - script: |
+              black --check src tests
+              ruff check src tests
+              mypy src
+            displayName: 'Run linters'
+
+          - script: |
+              pytest --cov --cov-report=xml --cov-report=html --cov-report=term
+            displayName: 'Run tests with coverage'
+
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFiles: '**/test-*.xml'
+              testRunTitle: 'Python $(python.version)'
+            displayName: 'Publish test results'
+
+          - task: PublishCodeCoverageResults@2
+            inputs:
+              summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage.xml'
+              pathToSources: '$(System.DefaultWorkingDirectory)/src'
+            displayName: 'Publish coverage results'
+
+      - job: Notebooks
+        displayName: 'Test Notebooks'
+        condition: succeeded()
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '$(python.version)'
+
+          - script: |
+              pip install -e .[dev,docs]
+              pip install nbmake
+            displayName: 'Install dependencies'
+
+          - script: |
+              pytest --nbmake notebooks/**/*.ipynb -q
+            displayName: 'Execute notebooks'
+
+  - stage: Security
+    displayName: 'Security Scanning'
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: SecurityScan
+        displayName: 'Security Analysis'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '$(python.version)'
+
+          # Secret scanning
+          - script: |
+              pip install detect-secrets
+              detect-secrets scan --baseline .secrets.baseline
+            displayName: 'Scan for secrets'
+            continueOnError: true
+
+          # Dependency scanning
+          - script: |
+              pip install safety
+              safety check --json
+            displayName: 'Check dependencies for vulnerabilities'
+            continueOnError: true
+
+          # SBOM generation
+          - script: |
+              pip install cyclonedx-bom
+              cyclonedx-py -o sbom.json
+            displayName: 'Generate SBOM'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: 'sbom.json'
+              artifactName: 'sbom'
+            displayName: 'Publish SBOM artifact'
+
+  - stage: Package
+    displayName: 'Package Application'
+    dependsOn:
+      - Build
+      - Security
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - job: BuildPackage
+        displayName: 'Build Distribution'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '$(python.version)'
+
+          - script: |
+              pip install build
+              python -m build
+            displayName: 'Build wheel and sdist'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: 'dist'
+              artifactName: 'python-package'
+            displayName: 'Publish package artifacts'
+
+  - stage: Deploy
+    displayName: 'Deploy'
+    dependsOn: Package
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: DeployDev
+        displayName: 'Deploy to Dev'
+        environment: 'dev'
+        pool:
+          vmImage: 'ubuntu-latest'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: python-package
+
+                - script: |
+                    echo "Deploying to development environment"
+                    # Add your deployment commands here
+                    # e.g., Azure CLI, kubectl, terraform apply, etc.
+                  displayName: 'Deploy to Dev'
+
+      - deployment: DeployStaging
+        displayName: 'Deploy to Staging'
+        dependsOn: DeployDev
+        condition: succeeded()
+        environment: 'staging'
+        pool:
+          vmImage: 'ubuntu-latest'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: python-package
+
+                - script: |
+                    echo "Deploying to staging environment"
+                    # Add your deployment commands here
+                  displayName: 'Deploy to Staging'
+
+      - deployment: DeployProduction
+        displayName: 'Deploy to Production'
+        dependsOn: DeployStaging
+        condition: succeeded()
+        environment: 'production'
+        pool:
+          vmImage: 'ubuntu-latest'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: python-package
+
+                - script: |
+                    echo "Deploying to production environment"
+                    # Add your deployment commands here
+                  displayName: 'Deploy to Production'
+
+                - script: |
+                    echo "Running smoke tests"
+                    # Add smoke test commands here
+                  displayName: 'Smoke Tests'

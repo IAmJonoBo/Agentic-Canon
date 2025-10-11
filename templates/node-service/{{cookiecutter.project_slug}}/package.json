@@ -27,8 +27,8 @@
   "devDependencies": {
     "@tsconfig/node{{cookiecutter.node_version}}": "^20.1.2",
     "@types/node": "^{{cookiecutter.node_version}}",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "@vitest/coverage-v8": "^3.0.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",

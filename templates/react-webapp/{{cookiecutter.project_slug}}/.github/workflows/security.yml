@@ -66,6 +66,7 @@ jobs:
             p/secrets
             p/javascript
             p/typescript
+            p/react
 
   secret-scan:
     runs-on: ubuntu-latest
@@ -80,3 +81,8 @@ jobs:
           path: ./
           base: {% raw %}${{ github.event.repository.default_branch }}{% endraw %}
           head: HEAD
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}

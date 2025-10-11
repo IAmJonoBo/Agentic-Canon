@@ -1,0 +1,168 @@
+{
+  "dashboard": {
+    "title": "SPACE Metrics Dashboard (Developer Experience)",
+    "tags": ["space", "devex", "productivity"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "Satisfaction",
+        "description": "Developer satisfaction scores",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "avg(developer_satisfaction_score)",
+            "legendFormat": "Satisfaction"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 3, "color": "yellow"},
+                {"value": 4, "color": "green"}
+              ]
+            },
+            "unit": "short",
+            "min": 1,
+            "max": 5
+          }
+        }
+      },
+      {
+        "title": "Performance (Throughput)",
+        "description": "PRs merged per developer per week",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(rate(pull_requests_merged[7d])) / count(unique_developers)",
+            "legendFormat": "PRs per developer/week"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 2, "color": "yellow"},
+                {"value": 5, "color": "green"}
+              ]
+            },
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "title": "Activity",
+        "description": "Code commits and reviews",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(commits_total[1h]))",
+            "legendFormat": "Commits"
+          },
+          {
+            "expr": "sum(rate(code_reviews_total[1h]))",
+            "legendFormat": "Reviews"
+          }
+        ]
+      },
+      {
+        "title": "Communication & Collaboration",
+        "description": "PR review time",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "avg(pr_review_time_seconds) / 3600",
+            "legendFormat": "Avg review time"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 24, "color": "yellow"},
+                {"value": 72, "color": "red"}
+              ]
+            },
+            "unit": "hours"
+          }
+        }
+      },
+      {
+        "title": "Efficiency & Flow",
+        "description": "Time spent in flow state",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "avg(flow_state_percentage)",
+            "legendFormat": "Flow time %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 40, "color": "yellow"},
+                {"value": 60, "color": "green"}
+              ]
+            },
+            "unit": "percent",
+            "min": 0,
+            "max": 100
+          }
+        }
+      },
+      {
+        "title": "Build Times",
+        "description": "CI/CD pipeline duration",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "avg(ci_pipeline_duration_seconds) / 60",
+            "legendFormat": "Avg build time"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 10, "color": "yellow"},
+                {"value": 30, "color": "red"}
+              ]
+            },
+            "unit": "minutes"
+          }
+        }
+      },
+      {
+        "title": "Context Switches",
+        "description": "Developer context switches per day",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "avg(context_switches_per_day)",
+            "legendFormat": "Context switches"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 5, "color": "yellow"},
+                {"value": 10, "color": "red"}
+              ]
+            },
+            "unit": "short"
+          }
+        }
+      }
+    ],
+    "refresh": "5m",
+    "schemaVersion": 38
+  }
+}

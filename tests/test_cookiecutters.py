@@ -74,3 +74,145 @@ def test_python_cookiecutter_invalid_slug(cookies):
     
     # Should fail validation
     assert result.exit_code != 0
+
+
+def test_node_cookiecutter_bakes(cookies):
+    """Test that the Node.js service template renders successfully."""
+    result = cookies.bake(
+        extra_context={
+            "project_name": "Demo Node Service",
+            "project_slug": "demo-node-service",
+            "description": "A demo Node.js service",
+            "author_name": "Test Author",
+            "author_email": "test@example.com",
+            "license": "Apache-2.0",
+            "node_version": "20",
+            "enable_security_gates": "yes",
+            "enable_sbom_signing": "yes",
+            "ci_provider": "github",
+        },
+        template="templates/node-service"
+    )
+    
+    assert result.exception is None
+    assert result.exit_code == 0
+    assert result.project_path.is_dir()
+    
+    # Check essential files exist
+    assert (result.project_path / "package.json").exists()
+    assert (result.project_path / "tsconfig.json").exists()
+    assert (result.project_path / "src" / "index.ts").exists()
+    assert (result.project_path / "tests" / "smoke.test.ts").exists()
+    assert (result.project_path / ".github" / "workflows" / "ci.yml").exists()
+
+
+def test_react_cookiecutter_bakes(cookies):
+    """Test that the React webapp template renders successfully."""
+    result = cookies.bake(
+        extra_context={
+            "project_name": "Demo React App",
+            "project_slug": "demo-react-app",
+            "description": "A demo React application",
+            "author_name": "Test Author",
+            "author_email": "test@example.com",
+            "license": "MIT",
+            "include_storybook": "yes",
+            "include_e2e_tests": "yes",
+            "enable_accessibility_tests": "yes",
+            "ci_provider": "github",
+        },
+        template="templates/react-webapp"
+    )
+    
+    assert result.exception is None
+    assert result.exit_code == 0
+    assert result.project_path.is_dir()
+    
+    # Check essential files exist
+    assert (result.project_path / "package.json").exists()
+    assert (result.project_path / "vite.config.ts").exists()
+    assert (result.project_path / "src" / "App.tsx").exists()
+    assert (result.project_path / "src" / "components" / "Button.tsx").exists()
+    assert (result.project_path / ".storybook" / "main.ts").exists()
+    assert (result.project_path / "playwright.config.ts").exists()
+    assert (result.project_path / ".github" / "workflows" / "ci.yml").exists()
+
+
+def test_react_cookiecutter_minimal(cookies):
+    """Test React template with minimal options."""
+    result = cookies.bake(
+        extra_context={
+            "project_name": "Minimal React App",
+            "project_slug": "minimal-react-app",
+            "include_storybook": "no",
+            "include_e2e_tests": "no",
+            "enable_accessibility_tests": "no",
+        },
+        template="templates/react-webapp"
+    )
+    
+    assert result.exception is None
+    assert result.exit_code == 0
+    
+    # Storybook and E2E should not exist when disabled
+    assert not (result.project_path / ".storybook").exists()
+    assert not (result.project_path / "playwright.config.ts").exists()
+
+
+def test_go_cookiecutter_bakes(cookies):
+    """Test that the Go service template renders successfully."""
+    result = cookies.bake(
+        extra_context={
+            "project_name": "Demo Go Service",
+            "project_slug": "demo-go-service",
+            "module_path": "github.com/test/demo-go-service",
+            "description": "A demo Go service",
+            "author_name": "Test Author",
+            "author_email": "test@example.com",
+            "license": "Apache-2.0",
+            "go_version": "1.22",
+            "enable_security_gates": "yes",
+            "ci_provider": "github",
+        },
+        template="templates/go-service"
+    )
+    
+    assert result.exception is None
+    assert result.exit_code == 0
+    assert result.project_path.is_dir()
+    
+    # Check essential files exist
+    assert (result.project_path / "go.mod").exists()
+    assert (result.project_path / "Makefile").exists()
+    assert (result.project_path / "cmd" / "app" / "main.go").exists()
+    assert (result.project_path / "internal" / "app" / "app.go").exists()
+    assert (result.project_path / "internal" / "app" / "app_test.go").exists()
+    assert (result.project_path / ".golangci.yml").exists()
+    assert (result.project_path / ".github" / "workflows" / "ci.yml").exists()
+
+
+def test_docs_only_cookiecutter_bakes(cookies):
+    """Test that the docs-only template renders successfully."""
+    result = cookies.bake(
+        extra_context={
+            "project_name": "Demo Documentation",
+            "project_slug": "demo-docs",
+            "description": "Demo documentation project",
+            "author_name": "Test Author",
+            "author_email": "test@example.com",
+            "license": "CC-BY-4.0",
+            "ci_provider": "github",
+        },
+        template="templates/docs-only"
+    )
+    
+    assert result.exception is None
+    assert result.exit_code == 0
+    assert result.project_path.is_dir()
+    
+    # Check essential files exist
+    assert (result.project_path / "docs" / "_config.yml").exists()
+    assert (result.project_path / "docs" / "_toc.yml").exists()
+    assert (result.project_path / "docs" / "index.md").exists()
+    assert (result.project_path / "requirements.txt").exists()
+    assert (result.project_path / ".github" / "workflows" / "book-deploy.yml").exists()

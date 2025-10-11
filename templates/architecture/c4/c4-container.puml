@@ -1,0 +1,50 @@
+# C4 Container Diagram Template
+# Level 2: Containers - Shows the high-level shape of the software architecture
+
+@startuml C4_Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram for {{ SYSTEM_NAME }}
+
+Person(user, "{{ USER_TYPE }}", "End user")
+
+System_Boundary(c1, "{{ SYSTEM_NAME }}") {
+    Container(web, "Web Application", "React/TypeScript", "Delivers static content and SPA")
+    Container(api, "API Gateway", "Node.js/Express", "Provides REST API")
+    Container(auth, "Auth Service", "Node.js", "Handles authentication and authorization")
+    Container(worker, "Background Worker", "Node.js", "Processes async tasks")
+    ContainerDb(db, "Database", "PostgreSQL", "Stores application data")
+    ContainerDb(cache, "Cache", "Redis", "Caches frequently accessed data")
+    Container(queue, "Message Queue", "RabbitMQ", "Async message processing")
+}
+
+System_Ext(authProvider, "Auth Provider", "External OAuth/OIDC provider")
+System_Ext(emailService, "Email Service", "Transactional email provider")
+
+Rel(user, web, "Uses", "HTTPS")
+Rel(web, api, "Makes API calls", "HTTPS/JSON")
+Rel(api, auth, "Validates tokens", "gRPC")
+Rel(api, db, "Reads/Writes", "TCP/SQL")
+Rel(api, cache, "Reads/Writes", "Redis Protocol")
+Rel(api, queue, "Publishes messages", "AMQP")
+Rel(worker, queue, "Consumes messages", "AMQP")
+Rel(worker, db, "Reads/Writes", "TCP/SQL")
+Rel(auth, authProvider, "Authenticates", "OAuth 2.0")
+Rel(worker, emailService, "Sends emails", "HTTPS/REST")
+
+SHOW_LEGEND()
+
+@enduml
+
+' Security Notes:
+' - All external communication over HTTPS/TLS
+' - Internal services use mTLS
+' - Database encrypted at rest (AES-256)
+' - Secrets managed via HashiCorp Vault
+' - Network segmentation enforced
+'
+' Compliance:
+' - NIST SSDF: Architecture documented
+' - ISO/IEC 25010: Maintainability

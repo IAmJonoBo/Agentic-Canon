@@ -1,0 +1,59 @@
+# CODEOWNERS
+# 
+# This file defines individuals or teams responsible for code in this repository.
+# Code owners are automatically requested for review when someone opens a PR.
+#
+# Order is important; the last matching pattern takes precedence.
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @{{ ORG }}/{{ DEFAULT_TEAM }}
+
+# Security-sensitive files require security team review
+SECURITY.md @{{ ORG }}/security-team
+.github/workflows/security*.yml @{{ ORG }}/security-team
+**/security/ @{{ ORG }}/security-team
+
+# Infrastructure and CI/CD
+.github/ @{{ ORG }}/platform-team
+**/*.yml @{{ ORG }}/platform-team
+**/*.yaml @{{ ORG }}/platform-team
+**/Dockerfile @{{ ORG }}/platform-team
+**/docker-compose*.yml @{{ ORG }}/platform-team
+k8s/ @{{ ORG }}/platform-team
+terraform/ @{{ ORG }}/platform-team
+
+# Documentation
+*.md @{{ ORG }}/docs-team
+docs/ @{{ ORG }}/docs-team
+/docs/adr/ @{{ ORG }}/architecture-team
+
+# Architecture Decision Records
+/docs/adr/ @{{ ORG }}/architecture-team
+/docs/c4/ @{{ ORG }}/architecture-team
+
+# API contracts
+**/openapi.yaml @{{ ORG }}/api-team @{{ ORG }}/architecture-team
+**/asyncapi.yaml @{{ ORG }}/api-team @{{ ORG }}/architecture-team
+
+# Dependencies and security
+package.json @{{ ORG }}/security-team
+package-lock.json @{{ ORG }}/security-team
+requirements.txt @{{ ORG }}/security-team
+Gemfile.lock @{{ ORG }}/security-team
+go.mod @{{ ORG }}/security-team
+go.sum @{{ ORG }}/security-team
+
+# Configuration files
+.env.example @{{ ORG }}/platform-team
+config/ @{{ ORG }}/platform-team
+
+# Tests
+tests/ @{{ ORG }}/qa-team
+**/*.test.* @{{ ORG }}/qa-team
+**/*.spec.* @{{ ORG }}/qa-team
+
+# Customize below for your project structure
+# /src/auth/ @{{ ORG }}/auth-team
+# /src/api/ @{{ ORG }}/api-team
+# /src/ui/ @{{ ORG }}/frontend-team

@@ -1,0 +1,288 @@
+# Backstage Software Template
+# Creates new services with frontier software excellence baked in
+# Implements: Golden paths, self-service platform, compliance by default
+
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: frontier-excellence-service
+  title: Frontier Excellence Service
+  description: |
+    Create a new service with frontier software excellence practices baked in.
+    Includes: CI/CD, security scanning, SBOM generation, SLO definitions, and more.
+  tags:
+    - recommended
+    - security
+    - compliance
+    - slsa-l3
+
+spec:
+  owner: platform-team
+  type: service
+  
+  parameters:
+    - title: Service Information
+      required:
+        - name
+        - description
+        - owner
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique name for the service
+          pattern: '^[a-z0-9-]+$'
+          ui:autofocus: true
+        description:
+          title: Description
+          type: string
+          description: What does this service do?
+          ui:widget: textarea
+        owner:
+          title: Owner
+          type: string
+          description: Team responsible for this service
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind: Group
+    
+    - title: Technical Stack
+      required:
+        - language
+        - framework
+      properties:
+        language:
+          title: Programming Language
+          type: string
+          enum:
+            - javascript
+            - typescript
+            - python
+            - go
+            - java
+            - csharp
+          default: typescript
+        framework:
+          title: Framework
+          type: string
+          enum:
+            - express
+            - fastify
+            - nestjs
+            - django
+            - flask
+            - gin
+            - spring-boot
+            - dotnet
+          default: express
+        database:
+          title: Database
+          type: string
+          enum:
+            - postgresql
+            - mysql
+            - mongodb
+            - redis
+            - none
+          default: postgresql
+    
+    - title: Compliance & Standards
+      properties:
+        tier:
+          title: Service Tier
+          type: string
+          enum:
+            - tier-0
+            - tier-1
+            - tier-2
+          default: tier-2
+          description: |
+            tier-0: Critical (99.99% SLO)
+            tier-1: Important (99.9% SLO)
+            tier-2: Standard (99.5% SLO)
+        pii_data:
+          title: Handles PII/Sensitive Data
+          type: boolean
+          default: false
+          description: Does this service handle personally identifiable information?
+        regulatory_requirements:
+          title: Regulatory Requirements
+          type: array
+          items:
+            type: string
+            enum:
+              - GDPR
+              - HIPAA
+              - SOC2
+              - PCI-DSS
+              - none
+          default: [none]
+    
+    - title: Repository Configuration
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+              - gitlab.com
+
+  steps:
+    - id: fetch-base
+      name: Fetch Base Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          language: ${{ parameters.language }}
+          framework: ${{ parameters.framework }}
+          database: ${{ parameters.database }}
+          tier: ${{ parameters.tier }}
+          pii_data: ${{ parameters.pii_data }}
+
+    - id: create-repository
+      name: Create Repository
+      action: publish:github
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        description: ${{ parameters.description }}
+        defaultBranch: main
+        repoVisibility: private
+        deleteBranchOnMerge: true
+        allowMergeCommit: false
+        allowSquashMerge: true
+        allowRebaseMerge: false
+
+    - id: setup-branch-protection
+      name: Setup Branch Protection
+      action: github:branch-protection:create
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        branch: main
+        enforceAdmins: true
+        requiredStatusChecks:
+          strict: true
+          contexts:
+            - lint
+            - build
+            - test
+            - sast-codeql
+            - secret-scanning
+            - quality-gate
+        requiredPullRequestReviews:
+          dismissStaleReviews: true
+          requiredApprovingReviewCount: 2
+          requireCodeOwnerReviews: true
+        restrictions: null
+
+    - id: create-secrets
+      name: Create Repository Secrets
+      action: github:secrets:create
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        secrets:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
+
+    - id: register-component
+      name: Register Component in Catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['create-repository'].output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+    - id: create-alerts
+      name: Create Monitoring Alerts
+      action: prometheus:alerts:create
+      input:
+        service: ${{ parameters.name }}
+        tier: ${{ parameters.tier }}
+
+    - id: setup-dashboards
+      name: Setup Grafana Dashboards
+      action: grafana:dashboard:create
+      input:
+        service: ${{ parameters.name }}
+        tier: ${{ parameters.tier }}
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['create-repository'].output.remoteUrl }}
+      - title: Open in Catalog
+        icon: catalog
+        entityRef: ${{ steps['register-component'].output.entityRef }}
+      - title: CI/CD Pipeline
+        url: ${{ steps['create-repository'].output.remoteUrl }}/actions
+      - title: Security Dashboard
+        url: https://security.example.com/service/${{ parameters.name }}
+      - title: SLO Dashboard
+        url: https://grafana.example.com/d/slo/${{ parameters.name }}
+
+---
+# catalog-info.yaml (placed in generated repository)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  description: ${{ values.description }}
+  annotations:
+    github.com/project-slug: ${{ values.github_org }}/${{ values.name }}
+    backstage.io/techdocs-ref: dir:.
+    sonarqube.org/project-key: ${{ values.name }}
+    grafana/dashboard-selector: service=${{ values.name }}
+    prometheus.io/rule: service=${{ values.name }}
+  tags:
+    - ${{ values.language }}
+    - ${{ values.framework }}
+    - ${{ values.tier }}
+  links:
+    - url: https://wiki.example.com/services/${{ values.name }}
+      title: Documentation
+      icon: docs
+    - url: https://dashboard.example.com/${{ values.name }}
+      title: Dashboard
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: ${{ values.owner }}
+  system: ${{ values.system | default('default') }}
+  dependsOn:
+    - resource:default/database-${{ values.database }}
+  providesApis:
+    - ${{ values.name }}-api
+  consumesApis: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: ${{ values.name }}-api
+  description: API for ${{ values.name }}
+spec:
+  type: openapi
+  lifecycle: production
+  owner: ${{ values.owner }}
+  definition:
+    $text: ./openapi.yaml
+
+---
+# Validation Commands
+#
+# Validate template:
+#   yarn backstage-cli repo schema openapi verify --schema template.yaml
+#
+# Test template locally:
+#   yarn backstage-cli create --template ./template.yaml
+#
+# Publish template:
+#   backstage-cli repo publish-template

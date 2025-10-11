@@ -1,0 +1,217 @@
+# GitLab CI Complete Pipeline
+# Implements: NIST SSDF, OWASP SAMM, SLSA L3
+# Stack-agnostic CI/CD configuration
+
+variables:
+  # Project configuration
+  PROJECT_NAME: "{{ PROJECT_NAME }}"
+  COVERAGE_THRESHOLD: 80
+  MUTATION_THRESHOLD: 40
+  
+  # Docker configuration
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+
+# Pipeline stages
+stages:
+  - lint
+  - build
+  - test
+  - security
+  - quality
+  - package
+  - deploy
+
+# Default configuration
+default:
+  image: node:20
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .npm/
+
+# ================================
+# Stage 1: Lint & Format
+# ================================
+lint:
+  stage: lint
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npm run lint
+    - npm run format:check
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# ================================
+# Stage 2: Build
+# ================================
+build:
+  stage: build
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# ================================
+# Stage 3: Test
+# ================================
+unit-tests:
+  stage: test
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npm test -- --coverage
+    - |
+      COVERAGE=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+      echo "Coverage: $COVERAGE%"
+      if (( $(echo "$COVERAGE < $COVERAGE_THRESHOLD" | bc -l) )); then
+        echo "❌ Coverage below threshold"
+        exit 1
+      fi
+  coverage: '/Lines\s*:\s*(\d+\.\d+)%/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+    paths:
+      - coverage/
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+mutation-tests:
+  stage: test
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npm run test:mutation || true
+  allow_failure: true
+  artifacts:
+    paths:
+      - reports/mutation/
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# ================================
+# Stage 4: Security Scanning
+# ================================
+sast-semgrep:
+  stage: security
+  image: returntocorp/semgrep
+  script:
+    - semgrep --config auto --json --output semgrep.json .
+  artifacts:
+    reports:
+      sast: semgrep.json
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+secret-scanning:
+  stage: security
+  image: zricethezav/gitleaks:latest
+  script:
+    - gitleaks detect --source . --report-format json --report-path gitleaks.json
+  artifacts:
+    reports:
+      secret_detection: gitleaks.json
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+dependency-scanning:
+  stage: security
+  image: aquasec/trivy:latest
+  script:
+    - trivy fs --format json --output trivy-report.json .
+  artifacts:
+    reports:
+      dependency_scanning: trivy-report.json
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# ================================
+# Stage 5: Quality Gate
+# ================================
+quality-gate:
+  stage: quality
+  image: sonarsource/sonar-scanner-cli:latest
+  script:
+    - sonar-scanner
+      -Dsonar.projectKey=$PROJECT_NAME
+      -Dsonar.sources=src
+      -Dsonar.host.url=$SONAR_HOST_URL
+      -Dsonar.token=$SONAR_TOKEN
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# ================================
+# Stage 6: Package & SBOM
+# ================================
+generate-sbom:
+  stage: package
+  image: node:20
+  script:
+    - npm install -g @cyclonedx/cyclonedx-npm
+    - cyclonedx-npm --output-file sbom.json
+    - cyclonedx-npm --output-format spdx --output-file sbom-spdx.json
+  artifacts:
+    paths:
+      - sbom.json
+      - sbom-spdx.json
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+sign-artifacts:
+  stage: package
+  image: gcr.io/projectsigstore/cosign:latest
+  script:
+    - cosign sign-blob --yes --bundle sbom.bundle sbom.json
+  artifacts:
+    paths:
+      - sbom.bundle
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# ================================
+# Stage 7: Deploy
+# ================================
+deploy-staging:
+  stage: deploy
+  environment:
+    name: staging
+    url: https://staging.example.com
+  script:
+    - echo "Deploying to staging..."
+    # Add your deployment commands here
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+deploy-production:
+  stage: deploy
+  environment:
+    name: production
+    url: https://production.example.com
+  script:
+    - echo "Deploying to production..."
+    # Add your deployment commands here
+  rules:
+    - if: '$CI_COMMIT_TAG'
+  when: manual
+
+# ================================
+# Validation Commands
+# ================================
+# Validate this pipeline:
+#   gitlab-ci-lint .gitlab-ci.yml
+#
+# Test locally:
+#   gitlab-runner exec docker lint

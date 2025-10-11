@@ -1,0 +1,22 @@
+{
+  "urls": [
+    "http://localhost:3000",
+    "http://localhost:3000/about",
+    "http://localhost:3000/contact"
+  ],
+  "standard": "WCAG2AA",
+  "timeout": 30000,
+  "wait": 1000,
+  "chromeLaunchConfig": {
+    "args": ["--no-sandbox"]
+  },
+  "threshold": {
+    "errors": 0,
+    "warnings": 10,
+    "notices": 50
+  },
+  "runners": [
+    "axe",
+    "htmlcs"
+  ]
+}

@@ -332,6 +332,9 @@ Last Updated: 2025-10-11
   - [x] ADR-001: Cookiecutter for multi-template approach
   - [x] ADR-002: Jupytext for notebook version control
   - [x] ADR-003: GitHub Actions vs other CI/CD
+  - [x] ADR-006: Security scanning strategy
+  - [x] ADR-007: Secret management approach
+  - [x] ADR-008: Dependency management and updates
   - [ ] ADR-004: OpenTelemetry for observability
   - [ ] ADR-005: SLSA for supply chain security
 - [ ] C4 Architecture Diagrams:
@@ -367,37 +370,37 @@ Last Updated: 2025-10-11
 - [ ] Contract tests between services
 - [ ] Mutation testing configuration
 - [ ] Performance testing framework
-- [ ] Accessibility testing (axe-core, pa11y)
-- [ ] Security testing (SAST, DAST, secret scanning)
+- [x] Accessibility testing (axe-core, pa11y) - comprehensive workflow created
+- [x] Security testing (SAST, DAST, secret scanning) - comprehensive workflows created
 
 ### CI/CD Quality Gates
 - [x] Lint/format compliance (language-specific) - implemented in templates
 - [x] Unit test coverage ≥ 80% - configured in templates
 - [ ] Mutation test score targets
-- [ ] SAST scan (CodeQL, Semgrep) - CodeQL in templates, Semgrep planned
-- [ ] Secret scanning (Gitleaks, TruffleHog) - Gitleaks in templates, TruffleHog planned
+- [x] SAST scan (CodeQL, Semgrep) - implemented in all templates
+- [x] Secret scanning (Gitleaks, TruffleHog) - implemented in all templates
 - [x] Dependency scanning (Dependabot, Renovate) - Renovate configured
 - [x] SBOM generation (CycloneDX) - in security templates
-- [ ] License compliance checking
-- [ ] Container image scanning
-- [ ] IaC security scanning (Checkov, tfsec)
-- [ ] Performance budgets enforcement
-- [ ] Accessibility checks (axe-core, pa11y)
+- [x] License compliance checking - workflow created
+- [x] Container image scanning - Trivy and Grype workflows created
+- [x] IaC security scanning (Checkov, tfsec) - comprehensive workflow created
+- [x] Performance budgets enforcement - Lighthouse CI and bundle size workflows created
+- [x] Accessibility checks (axe-core, pa11y) - comprehensive WCAG 2.2 workflow created
 
 ### Security Enhancements 🆕
-- [ ] Implement artifact signing with Sigstore/Cosign
-- [ ] Add comprehensive SAST with CodeQL and Semgrep
-- [ ] Integrate TruffleHog for secret scanning
-- [ ] Add provenance attestation (SLSA)
-- [ ] Create security-focused ADRs:
-  - [ ] ADR: Security scanning strategy
-  - [ ] ADR: Secret management approach
-  - [ ] ADR: Dependency management and updates
-- [ ] License compliance
-- [ ] Container scanning
-- [ ] IaC security (Checkov, tfsec)
-- [ ] Performance budgets
-- [ ] Accessibility checks
+- [x] Implement artifact signing with Sigstore/Cosign
+- [x] Add comprehensive SAST with CodeQL and Semgrep
+- [x] Integrate TruffleHog for secret scanning
+- [x] Add provenance attestation (SLSA)
+- [x] Create security-focused ADRs:
+  - [x] ADR: Security scanning strategy
+  - [x] ADR: Secret management approach
+  - [x] ADR: Dependency management and updates
+- [x] License compliance
+- [x] Container scanning
+- [x] IaC security (Checkov, tfsec)
+- [x] Performance budgets
+- [x] Accessibility checks
 
 ## Monitoring & Observability
 

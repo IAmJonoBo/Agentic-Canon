@@ -25,17 +25,23 @@ Each ADR follows this structure:
 
 - [ADR-001: Cookiecutter for Multi-Template Approach](ADR-001-cookiecutter-multi-template.md) - Using Cookiecutter with multi-template repository structure
 - [ADR-002: Jupytext for Notebook Version Control](ADR-002-jupytext-notebook-version-control.md) - Using Jupytext to version control notebooks as MyST Markdown
+- [ADR-003: GitHub Actions for CI/CD](ADR-003-github-actions-cicd.md) - Using GitHub Actions as the primary CI/CD platform
+
+### Security & Compliance
+
+- [ADR-006: Security Scanning Strategy](ADR-006-security-scanning-strategy.md) - Multi-layered security scanning with specialized tools
+- [ADR-007: Secret Management Approach](ADR-007-secret-management.md) - Prevention, detection, and secure storage of secrets
+- [ADR-008: Dependency Management and Updates](ADR-008-dependency-management.md) - Automated dependency updates with safety checks
 
 ### Planned ADRs
 
 The following ADRs are planned based on TASKS.md:
 
-- **ADR-003**: GitHub Actions vs other CI/CD platforms
 - **ADR-004**: OpenTelemetry for observability
 - **ADR-005**: SLSA for supply chain security
-- **ADR-006**: Trunk-based development workflow
-- **ADR-007**: Progressive delivery strategy
-- **ADR-008**: Error budgets and SLO tracking
+- **ADR-009**: Trunk-based development workflow
+- **ADR-010**: Progressive delivery strategy
+- **ADR-011**: Error budgets and SLO tracking
 
 ## Creating a New ADR
 

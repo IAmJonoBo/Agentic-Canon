@@ -1,0 +1,134 @@
+name: License Compliance
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 1' # Weekly on Monday at 6am
+
+jobs:
+  # Python projects
+  python-license-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pip-licenses
+        run: pip install pip-licenses
+
+      - name: Check licenses
+        run: |
+          # Install project dependencies
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          elif [ -f pyproject.toml ]; then
+            pip install .
+          fi
+          
+          # Generate license report
+          pip-licenses --format=json --output-file=licenses.json
+          pip-licenses --format=markdown --output-file=licenses.md
+          
+          # Check for forbidden licenses
+          pip-licenses --fail-on="GPL;AGPL;LGPL" || echo "Warning: GPL-licensed dependencies found"
+
+      - name: Upload license report
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-license-report
+          path: |
+            licenses.json
+            licenses.md
+
+  # Node.js projects
+  node-license-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install license-checker
+        run: npm install -g license-checker
+
+      - name: Check licenses
+        run: |
+          license-checker --json --out licenses.json
+          license-checker --markdown --out licenses.md
+          
+          # Check for forbidden licenses
+          license-checker --failOn "GPL;AGPL;LGPL" || echo "Warning: GPL-licensed dependencies found"
+
+      - name: Upload license report
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-license-report
+          path: |
+            licenses.json
+            licenses.md
+
+  # Go projects
+  go-license-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Install go-licenses
+        run: go install github.com/google/go-licenses@latest
+
+      - name: Check licenses
+        run: |
+          go-licenses report ./... --template=licenses.csv.tpl > licenses.csv || true
+          go-licenses save ./... --save_path=third_party_licenses || true
+
+      - name: Upload license report
+        uses: actions/upload-artifact@v4
+        with:
+          name: go-license-report
+          path: |
+            licenses.csv
+            third_party_licenses/
+
+  # FOSSA - Universal license compliance
+  fossa-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Run FOSSA scan
+        uses: fossas/fossa-action@main
+        with:
+          api-key: {% raw %}${{ secrets.FOSSA_API_KEY }}{% endraw %}
+
+  # License header check
+  license-header-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Check license headers
+        uses: apache/skywalking-eyes/header@main
+        with:
+          config: .licenserc.yaml

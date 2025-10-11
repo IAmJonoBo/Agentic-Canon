@@ -1,0 +1,168 @@
+name: Performance Budget
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1' # Weekly on Monday at 6am
+
+jobs:
+  # Lighthouse CI for web applications
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app
+        run: npm run build
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            http://localhost:3000
+            http://localhost:3000/about
+          budgetPath: ./lighthouse-budget.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+  # Bundle size check for JavaScript apps
+  bundle-size:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check bundle size
+        uses: andresz1/size-limit-action@v1
+        with:
+          github_token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+
+  # Web Vitals monitoring
+  web-vitals:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app
+        run: npm run build
+
+      - name: Measure Web Vitals
+        run: |
+          npm install -g web-vitals-cli
+          # Measure Core Web Vitals
+          npx web-vitals http://localhost:3000
+
+  # API response time check
+  api-performance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup
+        run: |
+          # Install dependencies based on language
+          if [ -f "package.json" ]; then
+            npm ci
+          elif [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          elif [ -f "go.mod" ]; then
+            go mod download
+          fi
+
+      - name: Start service
+        run: |
+          # Start service in background
+          npm start &
+          # Wait for service to be ready
+          sleep 10
+
+      - name: Run performance tests
+        run: |
+          # Install Apache Bench
+          sudo apt-get update
+          sudo apt-get install -y apache2-utils
+          
+          # Test API endpoints
+          ab -n 1000 -c 10 http://localhost:3000/api/health
+          
+          # Ensure p95 latency < 200ms
+          # (Add custom script to parse ab output and enforce budget)
+
+      - name: Benchmark with autocannon (Node.js)
+        if: hashFiles('package.json') != ''
+        run: |
+          npm install -g autocannon
+          autocannon -c 10 -d 10 http://localhost:3000
+
+  # Database query performance
+  db-performance:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Run slow query analysis
+        run: |
+          # Enable slow query logging
+          psql -h localhost -U postgres -c "ALTER SYSTEM SET log_min_duration_statement = 100;"
+          
+          # Run tests that generate queries
+          # Parse logs for queries > 100ms
+          
+          # Fail if any query exceeds budget (e.g., 200ms for 95th percentile)
+
+  # Memory usage check
+  memory-budget:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Check memory usage
+        run: |
+          # Start application
+          # Measure peak memory usage
+          # Fail if exceeds budget (e.g., 512MB for microservices)
+          
+          echo "Memory budget check - implement with valgrind, heaptrack, or language-specific profilers"

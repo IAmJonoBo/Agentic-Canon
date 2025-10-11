@@ -1,0 +1,109 @@
+name: IaC Security Scanning
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+      - '**.yaml'
+      - '**.yml'
+      - 'Dockerfile*'
+      - 'docker-compose*.yml'
+  schedule:
+    - cron: '0 6 * * 1' # Weekly on Monday at 6am
+
+jobs:
+  checkov:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: .
+          framework: all
+          output_format: sarif
+          output_file_path: checkov-results.sarif
+          soft_fail: true
+
+      - name: Upload Checkov results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: checkov-results.sarif
+
+  tfsec:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          soft_fail: true
+          format: sarif
+          sarif_file: tfsec-results.sarif
+
+      - name: Upload tfsec results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: tfsec-results.sarif
+
+  terrascan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Run Terrascan
+        uses: tenable/terrascan-action@main
+        with:
+          iac_type: 'all'
+          iac_version: 'v1'
+          policy_type: 'all'
+          only_warn: true
+          sarif_upload: true
+
+      - name: Upload Terrascan results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: terrascan-results.sarif
+
+  kics:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Run KICS scan
+        uses: checkmarx/kics-github-action@master
+        with:
+          path: '.'
+          output_path: kics-results/
+          output_formats: 'json,sarif'
+          fail_on: high
+          enable_comments: true
+
+      - name: Upload KICS results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: kics-results/results.sarif

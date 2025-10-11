@@ -1,9 +1,12 @@
 # Frontier Software Excellence - Complete Index
-**AI-Friendly Bible + Templates**
+
+## AI-Friendly Bible + Templates
 
 ## Quick Links
+
 - 📖 [BIBLE.md](BIBLE.md) - Main AI-friendly reference
-- 📋 [Control Traceability Matrix](control-traceability-matrix.json) - Standards mapping
+- � [Agentic_Canon.md](Agentic_Canon.md) - Unified playbook + implementation guide
+- �📋 [Control Traceability Matrix](control-traceability-matrix.json) - Standards mapping
 - 🤖 [Agent Runbook](runbooks/agent-runbook.json) - Automation guide
 - 📁 [Templates](templates/) - Drag-and-drop scaffolds
 
@@ -12,15 +15,17 @@
 ## What's Included
 
 ### Core Documentation
-| File | Purpose | Standards |
-|------|---------|-----------|
-| [BIBLE.md](BIBLE.md) | Master reference for software excellence | All standards |
-| [control-traceability-matrix.json](control-traceability-matrix.json) | Standards → Implementation → Evidence mapping | NIST SSDF, OWASP SAMM, SLSA, ISO/IEC 25010, WCAG |
-| [Red Team + Software Excellence.md](Red%20Team%20+%20Software%20Excellence.md) | Original comprehensive playbook | All standards |
+
+| File                                                                           | Purpose                                       | Standards                                        |
+| ------------------------------------------------------------------------------ | --------------------------------------------- | ------------------------------------------------ |
+| [BIBLE.md](BIBLE.md)                                                           | Master reference for software excellence      | All standards                                    |
+| [Agentic_Canon.md](Agentic_Canon.md)                                           | Unified playbook + implementation blueprint   | All standards                                    |
+| [control-traceability-matrix.json](control-traceability-matrix.json)           | Standards → Implementation → Evidence mapping | NIST SSDF, OWASP SAMM, SLSA, ISO/IEC 25010, WCAG |
+| [Red Team + Software Excellence.md](Red%20Team%20+%20Software%20Excellence.md) | Original comprehensive playbook               | All standards                                    |
 
 ### Templates Directory Structure
 
-```
+```text
 templates/
 ├── cicd/
 │   ├── github-actions/
@@ -77,7 +82,7 @@ templates/
 
 ### Runbooks
 
-```
+```text
 runbooks/
 └── agent-runbook.json                      # Machine-readable execution guide
 ```
@@ -113,6 +118,7 @@ runbooks/
 ## Implementation Paths
 
 ### Path 1: New Project (Greenfield)
+
 ```bash
 # 1. Use Backstage template
 # Copy templates/platform/backstage/service-template.yaml
@@ -135,6 +141,7 @@ git push
 ```
 
 ### Path 2: Existing Project (Brownfield)
+
 ```bash
 # 1. Assess current state
 # Review control-traceability-matrix.json
@@ -157,6 +164,7 @@ git push
 ```
 
 ### Path 3: Platform Setup
+
 ```bash
 # 1. Deploy Backstage
 # Use templates/platform/backstage/service-template.yaml
@@ -176,27 +184,33 @@ git push
 ## Standards Coverage
 
 ### ✅ NIST SSDF v1.1
+
 - All practices (PO, PS, PW, RV)
 - Evidence in control-traceability-matrix.json
 
 ### ✅ OWASP SAMM 2.0
+
 - Governance, Design, Implementation, Verification, Operations
 - Level 2 maturity
 
 ### ✅ SLSA Level 3
+
 - Build provenance
 - Signed artifacts
 - SBOM generation
 
 ### ✅ OWASP ASVS 4.0
+
 - Level 2/3 controls
 - Security testing integrated
 
 ### ✅ ISO/IEC 25010
+
 - Quality characteristics
 - Fitness functions
 
 ### ✅ WCAG 2.2 AA
+
 - Accessibility testing
 - Automated checks
 
@@ -205,35 +219,41 @@ git push
 ## Key Features
 
 ### 🔒 Security by Construction
+
 - SAST/DAST integrated
 - Secret scanning
 - SBOM + provenance
 - Signed artifacts
 
 ### 📊 Quality Gates
+
 - 80%+ code coverage
 - Mutation testing
 - SonarQube integration
 - Performance budgets
 
 ### 🚀 CI/CD Pipelines
+
 - Complete GitHub Actions workflow
 - Lint → Build → Test → Scan → Deploy
 - Progressive delivery ready
 
 ### 📝 Documentation
+
 - ADR templates
 - API contracts (OpenAPI)
 - Runbook automation
 - TechDocs ready
 
 ### 🎯 Observability
+
 - SLO definitions
 - Error budgets
 - Dashboard configs
 - Alert rules
 
 ### 🤖 Developer Platform
+
 - Backstage templates
 - Self-service workflows
 - Golden paths
@@ -263,34 +283,39 @@ promtool check rules slo-rules.yml
 ## Customization Guide
 
 ### Placeholders
+
 All templates use `{{ VARIABLE }}` syntax:
 
-| Placeholder | Description | Example |
-|------------|-------------|---------|
-| `{{ PROJECT_NAME }}` | Project name | my-service |
-| `{{ TEAM_NAME }}` | Owning team | platform-team |
-| `{{ ORG }}` | GitHub org | my-org |
-| `{{ REPO }}` | Repository name | my-repo |
-| `{{ COVERAGE_THRESHOLD }}` | Coverage % | 80 |
-| `{{ SONAR_TOKEN }}` | SonarQube token | (secret) |
+| Placeholder                | Description     | Example       |
+| -------------------------- | --------------- | ------------- |
+| `{{ PROJECT_NAME }}`       | Project name    | my-service    |
+| `{{ TEAM_NAME }}`          | Owning team     | platform-team |
+| `{{ ORG }}`                | GitHub org      | my-org        |
+| `{{ REPO }}`               | Repository name | my-repo       |
+| `{{ COVERAGE_THRESHOLD }}` | Coverage %      | 80            |
+| `{{ SONAR_TOKEN }}`        | SonarQube token | (secret)      |
 
 ### Stack-Specific Adaptations
 
 **Node.js/TypeScript:**
+
 - Use complete-pipeline.yml as-is
 - Adjust package manager commands
 
 **Python:**
+
 - Replace `npm` with `pip`
 - Use `pytest` for tests
 - Adjust SBOM tool to Python-specific
 
 **Go:**
+
 - Replace build commands
 - Use Go modules
 - Adjust SBOM generation
 
 **Java:**
+
 - Use Maven/Gradle
 - Adjust test commands
 - Use Java-specific SBOM tools
@@ -300,6 +325,7 @@ All templates use `{{ VARIABLE }}` syntax:
 ## Performance Budgets
 
 Enforced in CI/CD:
+
 - Bundle size limits
 - Core Web Vitals thresholds
 - API latency targets
@@ -312,17 +338,20 @@ See [BIBLE.md](BIBLE.md) for details.
 ## Support & Maintenance
 
 ### Getting Help
+
 - Review [BIBLE.md](BIBLE.md) for concepts
 - Check template comments
 - Consult [Red Team + Software Excellence.md](Red%20Team%20+%20Software%20Excellence.md)
 
 ### Contributing
+
 - Add new templates following existing structure
 - Update control-traceability-matrix.json
 - Include validation commands
 - Reference relevant standards
 
 ### Updates
+
 - Templates version: 1.0.0
 - Standards: Current as of 2025-10-11
 - Next review: Quarterly
@@ -332,11 +361,13 @@ See [BIBLE.md](BIBLE.md) for details.
 ## Machine-Readable Formats
 
 All key documents available in:
+
 - ✅ YAML: Configurations, SLOs, workflows
 - ✅ JSON: Control matrix, runbooks
 - ✅ Markdown: Documentation, ADRs
 
 Optimized for:
+
 - Automated parsing
 - Agent execution
 - CI/CD integration
@@ -347,6 +378,7 @@ Optimized for:
 ## Compliance Automation
 
 The control-traceability-matrix.json enables:
+
 - Automated compliance checks
 - Evidence collection
 - Audit trail generation
@@ -358,6 +390,7 @@ The control-traceability-matrix.json enables:
 ## Reversibility
 
 All changes are reversible:
+
 - Feature flags in deployment
 - Rollback procedures documented
 - Git-based versioning
@@ -373,4 +406,4 @@ See agent-runbook.json for rollback paths.
 
 ---
 
-*This index provides complete navigation of the AI-friendly Bible and templates for frontier software excellence.*
+_This index provides complete navigation of the AI-friendly Bible and templates for frontier software excellence._

@@ -1,5 +1,7 @@
 # Frontier Software Excellence & Red-Team Copilot Playbook
 
+> This comprehensive playbook has been unified into `Agentic_Canon.md`. See the consolidated guide for the latest strategy and implementation. This file remains for historical context.
+
 ## 0. Mission & Operating Mode
 
 - You are my **Frontier Software Excellence & Red-Team Copilot**. Deliver a standards-mapped review and codified improvements that raise security, delivery, DX/UX, quality, and long-term evolvability to frontier practice.
@@ -201,44 +203,35 @@
 ### 5.2 Common Failure Modes & Required Controls
 
 1. **Insecure or low-quality code**
-
    - Enforce OWASP ASVS level mapping, CWE Top-25 SAST/Semgrep rules, and a mandatory secure-review checklist.
    - Run mutation testing to raise defect detection and block PRs missing tests, threat-model notes, or remediation on SAST/DAST findings via policy-as-code.
 
 1. **Data leakage & over-permissive retrieval**
-
    - Limit retrieval to verified identity scopes, auto-classify and label data assets, enable DLP across chat/mail/file shares, and schedule permission recertification.
    - Deploy OWASP LLM Top-10 prompt-injection defences with input/output filtering, model-spec policies, and tool allowlists.
 
 1. **Agent brittleness**
-
    - Issue least-privilege tool bundles, enforce per-run scopes, favour dry-run defaults, and capture auditable traces for every tool call.
    - Require sandboxed execution (ephemeral containers, restricted egress/filesystem) and gate destructive actions behind human approval.
    - Apply Plan-and-Execute/ReAct task decomposition and repository-aware retrieval to stabilise longer-horizon work.
 
 1. **Supply-chain exposure & dependency drift**
-
    - Target SLSA L2→L3 for builds with signed provenance and SBOM attestations (in-toto + Sigstore/Cosign).
    - Use private proxies, dependency allowlists, immutable lockfiles, and “no-scripts” install policies in CI.
 
 1. **Hallucinations, licence/IP uncertainty**
-
    - Enable duplication filters, run automated licence scanners, and restrict prompts that request high-risk boilerplate.
 
 1. **Test flakiness & regression churn**
-
    - Quarantine flaky tests, enforce deterministic seeds/time, adopt contract tests for brittle integrations, and maintain mutation testing plus historical flake dashboards.
 
 1. **Developer experience friction**
-
    - Practice trunk-based development with small PRs, time-boxed reviews, and DORA metric SLAs; monitor SPACE signals; surface repo-aware RAG content to cut context switching.
 
 1. **UX/UI quality lag**
-
    - Track HEART metrics via Goals-Signals-Metrics, embed Nielsen heuristics in definition-of-done, and uphold ISO/IEC 25010 non-functional requirements.
 
 1. **Governance gaps for AI in SDLC**
-
    - Anchor governance in NIST SSDF with SP 800-218A extensions and OWASP LLM Top-10; automate compliance checks and remediation workflows.
 
 ### 5.3 Frontier Control Set (Embed in Scaffolding)

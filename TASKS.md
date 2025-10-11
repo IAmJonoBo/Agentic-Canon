@@ -370,8 +370,8 @@ Last Updated: 2025-10-11
 - [ ] Contract tests between services
 - [ ] Mutation testing configuration
 - [ ] Performance testing framework
-- [ ] Accessibility testing (axe-core, pa11y)
-- [ ] Security testing (SAST, DAST, secret scanning)
+- [x] Accessibility testing (axe-core, pa11y) - comprehensive workflow created
+- [x] Security testing (SAST, DAST, secret scanning) - comprehensive workflows created
 
 ### CI/CD Quality Gates
 - [x] Lint/format compliance (language-specific) - implemented in templates

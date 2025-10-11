@@ -54,7 +54,7 @@ docs/_build/
 .mypy_cache/
 .ruff_cache/
 
-# Generated projects (for testing)
-/test-service/
-/demo-service/
-/my-api/
+# Generated test projects
+/test-*
+/demo-*
+/my-*

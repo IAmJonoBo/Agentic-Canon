@@ -414,6 +414,7 @@ This project is inspired by and builds upon:
 ## Links
 
 - 📖 [Documentation](https://IAmJonoBo.github.io/Agentic-Canon/) - Published Jupyter Book
+- 🗂️ [DIRECTORY_STRUCTURE.md](DIRECTORY_STRUCTURE.md) - Complete guide to repository organization
 - 🐛 [Issue Tracker](https://github.com/IAmJonoBo/Agentic-Canon/issues) - Report bugs or request features
 - 💬 [Discussions](https://github.com/IAmJonoBo/Agentic-Canon/discussions) - Ask questions and share ideas
 - 📋 [BIBLE.md](BIBLE.md) - AI-friendly implementation reference

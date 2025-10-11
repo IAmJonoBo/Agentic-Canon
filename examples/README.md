@@ -108,14 +108,20 @@ Multi-cloud deployment examples.
 Video tutorial scripts and resources.
 
 **Contents**:
-- `01-getting-started.md` - Getting started script
-- `02-creating-services.md` - Service creation script
-- `03-cicd-setup.md` - CI/CD setup script
+- `01-getting-started.md` - Getting started script (5-7 min)
+- `02-creating-services.md` - Service creation script (8-10 min)
+- `03-cicd-setup.md` - CI/CD setup script (10-12 min)
+- `04-security-gates.md` - Security gates script (12-15 min)
+- `05-observability-setup.md` - Observability setup script (10-12 min)
+- `06-jupyter-book.md` - Jupyter Book usage script (8-10 min)
+- `README.md` - Tutorial series overview and production checklist
+
+**Status**: ✅ All scripts complete (~65 minutes total)
 
 **Planned**:
 - Video recordings
-- Screen captures
-- Interactive tutorials
+- YouTube channel setup
+- Video links in documentation
 
 ## Using Examples
 
@@ -232,7 +238,16 @@ For questions about examples:
 
 ## Status
 
-Current examples: **15 files across 8 directories**  
+Current examples: **24 files across 8 directories**  
+**Recent Additions:**
+- ✅ 6 complete video tutorial scripts (~65 min total)
+- ✅ 4 Grafana dashboards (DORA, SPACE, Security, Quality)
+- ✅ OpenTelemetry collector configuration
+- ✅ Prometheus alerting rules
+- ✅ Comprehensive fitness functions framework
+- ✅ ML insights framework documentation
+- ✅ Community contribution guidelines
+
 Planned additions: See [TASKS.md](../TASKS.md) Version 1.1.0 and 2.0.0
 
 ---

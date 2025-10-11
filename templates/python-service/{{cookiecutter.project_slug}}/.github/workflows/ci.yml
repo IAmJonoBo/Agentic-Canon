@@ -35,7 +35,7 @@ jobs:
           pytest --cov --cov-report=xml --cov-report=term
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         if: {% raw %}matrix.python-version == '3.11'{% endraw %}
         with:
           files: ./coverage.xml

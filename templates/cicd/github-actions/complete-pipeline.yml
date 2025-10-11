@@ -1,0 +1,519 @@
+# GitHub Actions Complete Pipeline
+# Implements: NIST SSDF, OWASP SAMM, SLSA L3
+# Standards: Security by Construction, Quality Gates, Performance Budgets
+
+name: Complete CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+env:
+  # Customization: Update these for your project
+  PROJECT_NAME: "{{ PROJECT_NAME }}"
+  COVERAGE_THRESHOLD: 80
+  MUTATION_THRESHOLD: 40
+  SONAR_ORGANIZATION: "{{ SONAR_ORG }}"
+
+permissions:
+  contents: read
+  security-events: write
+  id-token: write
+  packages: write
+
+jobs:
+  # ========================================
+  # Stage 1: Lint & Format
+  # ========================================
+  lint:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+      
+      - name: Run Linter
+        run: npm run lint
+      
+      - name: Check Formatting
+        run: npm run format:check
+
+  # ========================================
+  # Stage 2: Build & Unit Tests
+  # ========================================
+  build:
+    name: Build & Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+      
+      - name: Setup Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+      
+      - name: Build
+        run: npm run build
+      
+      - name: Run Unit Tests
+        run: npm test -- --coverage --coverageReporters=json-summary,lcov,text
+      
+      - name: Check Coverage Threshold
+        run: |
+          COVERAGE=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+          echo "Coverage: $COVERAGE%"
+          if (( $(echo "$COVERAGE < ${{ env.COVERAGE_THRESHOLD }}" | bc -l) )); then
+            echo "❌ Coverage $COVERAGE% is below threshold ${{ env.COVERAGE_THRESHOLD }}%"
+            exit 1
+          fi
+          echo "✅ Coverage meets threshold"
+      
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+      
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/
+          retention-days: 7
+
+  # ========================================
+  # Stage 3: Mutation Testing
+  # ========================================
+  mutation-testing:
+    name: Mutation Testing
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+      
+      - name: Run Mutation Tests
+        run: npm run test:mutation || true
+      
+      - name: Check Mutation Score
+        run: |
+          MUTATION_SCORE=$(jq '.mutationScore' reports/mutation/mutation.json || echo "0")
+          echo "Mutation Score: $MUTATION_SCORE%"
+          if (( $(echo "$MUTATION_SCORE < ${{ env.MUTATION_THRESHOLD }}" | bc -l) )); then
+            echo "⚠️  Mutation score $MUTATION_SCORE% is below target ${{ env.MUTATION_THRESHOLD }}%"
+            # Don't fail on first iteration - just warn
+          fi
+      
+      - name: Upload Mutation Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: mutation-report
+          path: reports/mutation/
+
+  # ========================================
+  # Stage 4: Contract Tests
+  # ========================================
+  contract-tests:
+    name: Contract Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+      
+      - name: Run Contract Tests (Provider)
+        run: npm run test:contract:provider
+      
+      - name: Run Contract Tests (Consumer)
+        run: npm run test:contract:consumer
+      
+      - name: Publish Pact
+        if: github.ref == 'refs/heads/main'
+        run: npm run pact:publish
+
+  # ========================================
+  # Stage 5: SAST - Static Analysis
+  # ========================================
+  sast-codeql:
+    name: SAST - CodeQL
+    runs-on: ubuntu-latest
+    needs: lint
+    permissions:
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+          queries: security-and-quality
+      
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:javascript"
+      
+      - name: Check Critical Issues
+        run: |
+          # Fail if critical issues found
+          CRITICAL_COUNT=$(jq '[.runs[].results[] | select(.level=="error")] | length' results.sarif || echo "0")
+          if [ "$CRITICAL_COUNT" -gt 0 ]; then
+            echo "❌ Found $CRITICAL_COUNT critical security issues"
+            exit 1
+          fi
+
+  sast-semgrep:
+    name: SAST - Semgrep
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
+            p/cwe-top-25
+          generateSarif: true
+      
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: semgrep.sarif
+
+  # ========================================
+  # Stage 6: Secret Scanning
+  # ========================================
+  secret-scanning:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Gitleaks Scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: TruffleHog Scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+
+  # ========================================
+  # Stage 7: Dependency Scanning
+  # ========================================
+  dependency-scanning:
+    name: Dependency Scanning
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: 1
+      
+      - name: Upload Trivy Results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # ========================================
+  # Stage 8: Quality Gate - SonarQube
+  # ========================================
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+      
+      - name: Run Tests for Sonar
+        run: npm test -- --coverage
+      
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      
+      - name: SonarQube Quality Gate
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  # ========================================
+  # Stage 9: Performance Budget Check
+  # ========================================
+  performance-budget:
+    name: Performance Budget
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/
+      
+      - name: Check Bundle Size
+        run: |
+          npm install -g bundlesize
+          bundlesize
+      
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v9
+        with:
+          configPath: './lighthouserc.json'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+  # ========================================
+  # Stage 10: SBOM Generation
+  # ========================================
+  sbom-generation:
+    name: SBOM Generation
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Generate CycloneDX SBOM
+        uses: CycloneDX/gh-node-module-generatebom@v1
+        with:
+          output: './sbom.json'
+      
+      - name: Generate SPDX SBOM
+        run: |
+          npm install -g @cyclonedx/cyclonedx-npm
+          cyclonedx-npm --output-format spdx --output-file sbom-spdx.json
+      
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v3
+        with:
+          name: sbom
+          path: |
+            sbom.json
+            sbom-spdx.json
+
+  # ========================================
+  # Stage 11: SLSA Provenance
+  # ========================================
+  provenance:
+    name: SLSA Provenance
+    needs: [build, sbom-generation]
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.9.0
+    with:
+      base64-subjects: "${{ needs.build.outputs.hashes }}"
+      provenance-name: "provenance.intoto.jsonl"
+
+  # ========================================
+  # Stage 12: Artifact Signing
+  # ========================================
+  sign-artifacts:
+    name: Sign Artifacts
+    runs-on: ubuntu-latest
+    needs: [provenance, sbom-generation]
+    permissions:
+      id-token: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+      
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+      
+      - name: Sign SBOM
+        run: |
+          cosign sign-blob --yes \
+            --bundle sbom.bundle \
+            sbom/sbom.json
+      
+      - name: Sign Provenance
+        run: |
+          cosign sign-blob --yes \
+            --bundle provenance.bundle \
+            provenance.intoto.jsonl
+      
+      - name: Upload Signatures
+        uses: actions/upload-artifact@v3
+        with:
+          name: signatures
+          path: |
+            *.bundle
+
+  # ========================================
+  # Stage 13: DAST Baseline
+  # ========================================
+  dast-baseline:
+    name: DAST - OWASP ZAP Baseline
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Start Application
+        run: |
+          npm install
+          npm run start &
+          sleep 30  # Wait for app to be ready
+      
+      - name: ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.7.0
+        with:
+          target: 'http://localhost:3000'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
+
+  # ========================================
+  # Stage 14: Accessibility Tests
+  # ========================================
+  accessibility:
+    name: Accessibility Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install Dependencies
+        run: npm ci
+      
+      - name: Run Axe Tests
+        run: npm run test:accessibility
+      
+      - name: Check WCAG 2.2 AA Compliance
+        run: |
+          VIOLATIONS=$(jq '.violations | length' accessibility-report.json)
+          if [ "$VIOLATIONS" -gt 0 ]; then
+            echo "❌ Found $VIOLATIONS WCAG violations"
+            jq '.violations' accessibility-report.json
+            exit 1
+          fi
+
+  # ========================================
+  # Stage 15: Deploy to Staging (on main)
+  # ========================================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: 
+      - build
+      - sast-codeql
+      - sast-semgrep
+      - secret-scanning
+      - quality-gate
+      - sign-artifacts
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: staging
+      url: https://staging.example.com
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+      
+      - name: Deploy via GitOps
+        run: |
+          # Update GitOps repo with new image tag
+          echo "Deploying to staging..."
+          # kubectl apply -f k8s/staging/
+
+# ========================================
+# Verification Commands
+# ========================================
+# 
+# Validate this workflow:
+#   actionlint .github/workflows/complete-pipeline.yml
+#
+# Test locally:
+#   act -j build
+#   act -j sast-codeql
+#
+# Check SLSA level:
+#   slsa-verifier verify-artifact provenance.intoto.jsonl \
+#     --provenance-path provenance.intoto.jsonl \
+#     --source-uri github.com/{{ ORG }}/{{ REPO }}

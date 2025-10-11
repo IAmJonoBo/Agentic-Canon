@@ -1,0 +1,52 @@
+# Agent Runbook - Frontier Software Excellence Implementation
+# Machine-readable execution guide for autonomous and assisted agents
+# Version: 1.0.0
+
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2025-10-11T12:22:00Z",
+    "purpose": "Autonomous agent execution guide for software excellence implementation",
+    "standards": ["NIST SSDF v1.1", "OWASP SAMM", "SLSA L3", "ISO/IEC 25010"],
+    "target_audience": ["autonomous_agents", "assisted_agents", "devops_teams"]
+  },
+
+  "execution_model": {
+    "approach": "phased_implementation",
+    "rollback_strategy": "per_phase",
+    "approval_gates": ["phase_2", "phase_5"],
+    "drift_tolerance": "none",
+    "validation_level": "comprehensive"
+  },
+
+  "quick_start": {
+    "description": "Minimal commands to validate and execute",
+    "commands": [
+      "git clone <repo>",
+      "cd <repo>",
+      "./scripts/validate-prerequisites.sh",
+      "./scripts/execute-agent-runbook.sh"
+    ]
+  },
+
+  "task_graph": "scaffold → bootstrap → execute → validate → handover",
+
+  "phases": ["See full JSON in complete runbook"],
+  
+  "decision_predicates": {
+    "can_proceed": "previous_phase_complete AND all_validations_passed",
+    "must_rollback": "critical_failure OR security_violation",
+    "needs_escalation": "approval_required OR unknown_error"
+  },
+
+  "rollback_paths": {
+    "full": "git reset --hard <sha> && notify",
+    "phase": "execute phase rollback tasks",
+    "task": "execute task rollback"
+  },
+
+  "required_approvals": {
+    "bootstrap": ["platform_team"],
+    "handover": ["platform_team", "security_team"]
+  }
+}

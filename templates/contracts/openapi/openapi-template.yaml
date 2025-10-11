@@ -1,0 +1,314 @@
+# OpenAPI 3.1 Template
+# Stack-agnostic API specification template
+# Implements: Contract-first API development, OWASP API Security
+
+openapi: 3.1.0
+
+info:
+  title: {{ API_NAME }}
+  version: {{ VERSION }}
+  description: |
+    {{ API_DESCRIPTION }}
+    
+    ## Standards Compliance
+    - OWASP API Security Top 10
+    - REST API Design Best Practices
+    - OAuth 2.0 / OpenID Connect
+  
+  contact:
+    name: {{ TEAM_NAME }}
+    email: {{ TEAM_EMAIL }}
+    url: {{ TEAM_URL }}
+  
+  license:
+    name: {{ LICENSE }}
+    url: {{ LICENSE_URL }}
+  
+  termsOfService: {{ TERMS_URL }}
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production
+  - url: https://api-staging.example.com/v1
+    description: Staging
+  - url: http://localhost:3000/v1
+    description: Local Development
+
+# Security Schemes
+security:
+  - bearerAuth: []
+  - apiKey: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from /auth/token endpoint
+    
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for service-to-service authentication
+    
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.example.com/oauth/authorize
+          tokenUrl: https://auth.example.com/oauth/token
+          scopes:
+            read: Read access to resources
+            write: Write access to resources
+            admin: Administrative access
+
+  # Reusable Schemas
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - message
+        - timestamp
+        - requestId
+      properties:
+        code:
+          type: string
+          description: Error code
+          example: "VALIDATION_ERROR"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Invalid request parameters"
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of error
+        requestId:
+          type: string
+          format: uuid
+          description: Unique request identifier for tracing
+    
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          default: 1
+        pageSize:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+        total:
+          type: integer
+          description: Total number of items
+        totalPages:
+          type: integer
+          description: Total number of pages
+    
+    HealthStatus:
+      type: object
+      required:
+        - status
+        - timestamp
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+          description: Overall health status
+        timestamp:
+          type: string
+          format: date-time
+        version:
+          type: string
+          description: Application version
+        checks:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              status:
+                type: string
+                enum: [up, down, unknown]
+              message:
+                type: string
+              latency:
+                type: number
+                description: Check latency in milliseconds
+
+  # Reusable Parameters
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      description: Page number
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    
+    PageSizeParam:
+      name: pageSize
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    
+    SortParam:
+      name: sort
+      in: query
+      description: Sort order (field:asc|desc)
+      schema:
+        type: string
+        example: "createdAt:desc"
+    
+    RequestIdHeader:
+      name: X-Request-ID
+      in: header
+      description: Unique request identifier for tracing
+      schema:
+        type: string
+        format: uuid
+      required: false
+
+  # Reusable Responses
+  responses:
+    UnauthorizedError:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    ForbiddenError:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    ValidationError:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    RateLimitError:
+      description: Rate limit exceeded
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+          description: Request limit per time window
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+          description: Remaining requests in current window
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+          description: Unix timestamp when limit resets
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+# API Paths
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Returns the health status of the service
+      operationId: getHealth
+      tags:
+        - Health
+      security: []  # No authentication required
+      responses:
+        '200':
+          description: Service health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+  
+  /ready:
+    get:
+      summary: Readiness check endpoint
+      description: Returns whether the service is ready to handle requests
+      operationId: getReady
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: Service is ready
+        '503':
+          description: Service is not ready
+
+  # Add your API endpoints here following this pattern:
+  # /resource:
+  #   get:
+  #     summary: List resources
+  #     ...
+  #   post:
+  #     summary: Create resource
+  #     ...
+
+# Tags for grouping operations
+tags:
+  - name: Health
+    description: Health and readiness checks
+  # Add more tags for your resource groups
+
+# External Documentation
+externalDocs:
+  description: Full API documentation
+  url: https://docs.example.com/api
+
+---
+# Validation & Testing Commands
+#
+# Validate OpenAPI spec:
+#   npx @openapitools/openapi-generator-cli validate -i openapi.yaml
+#
+# Generate client SDK:
+#   npx @openapitools/openapi-generator-cli generate \
+#     -i openapi.yaml \
+#     -g typescript-axios \
+#     -o ./sdk
+#
+# Generate server stub:
+#   npx @openapitools/openapi-generator-cli generate \
+#     -i openapi.yaml \
+#     -g nodejs-express-server \
+#     -o ./server
+#
+# Run contract tests:
+#   npx dredd openapi.yaml http://localhost:3000
+#
+# Generate documentation:
+#   npx redoc-cli bundle openapi.yaml -o api-docs.html

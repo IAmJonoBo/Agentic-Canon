@@ -1,0 +1,32 @@
+name: Jupyter Book • deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          pip install jupyter-book ghp-import
+      
+      - name: Build Jupyter Book
+        run: jupyter-book build docs
+      
+      - name: Publish to gh-pages
+        run: ghp-import -n -p -f docs/_build/html
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

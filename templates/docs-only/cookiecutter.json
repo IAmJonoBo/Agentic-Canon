@@ -1,0 +1,10 @@
+{
+  "project_name": "Acme Documentation",
+  "project_slug": "acme-docs",
+  "description": "Documentation for Acme Project",
+  "author_name": "Your Name",
+  "author_email": "you@example.com",
+  "license": ["Apache-2.0", "MIT", "CC-BY-4.0"],
+  "ci_provider": ["github", "gitlab"],
+  "_copy_without_render": []
+}

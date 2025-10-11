@@ -27,8 +27,13 @@ Each ADR follows this structure:
 - [ADR-002: Jupytext for Notebook Version Control](ADR-002-jupytext-notebook-version-control.md) - Using Jupytext to version control notebooks as MyST Markdown
 - [ADR-003: GitHub Actions for CI/CD](ADR-003-github-actions-cicd.md) - Using GitHub Actions as the primary CI/CD platform
 
+### Observability & Operations
+
+- [ADR-004: OpenTelemetry for Observability](ADR-004-opentelemetry-observability.md) - Using OpenTelemetry for vendor-neutral observability
+
 ### Security & Compliance
 
+- [ADR-005: SLSA for Supply Chain Security](ADR-005-slsa-supply-chain-security.md) - Implementing SLSA framework for supply chain security
 - [ADR-006: Security Scanning Strategy](ADR-006-security-scanning-strategy.md) - Multi-layered security scanning with specialized tools
 - [ADR-007: Secret Management Approach](ADR-007-secret-management.md) - Prevention, detection, and secure storage of secrets
 - [ADR-008: Dependency Management and Updates](ADR-008-dependency-management.md) - Automated dependency updates with safety checks
@@ -37,8 +42,6 @@ Each ADR follows this structure:
 
 The following ADRs are planned based on TASKS.md:
 
-- **ADR-004**: OpenTelemetry for observability
-- **ADR-005**: SLSA for supply chain security
 - **ADR-009**: Trunk-based development workflow
 - **ADR-010**: Progressive delivery strategy
 - **ADR-011**: Error budgets and SLO tracking

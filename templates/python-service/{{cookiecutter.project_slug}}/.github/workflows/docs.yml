@@ -1,0 +1,36 @@
+{% if cookiecutter.include_jupyter_book == "yes" %}name: Documentation
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '{{ cookiecutter.python_version }}'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          pip install jupyter-book ghp-import
+          pip install -e .[docs]
+      
+      - name: Build Jupyter Book
+        run: jupyter-book build docs
+      
+      - name: Publish to gh-pages
+        if: {% raw %}github.event_name == 'push' && github.ref == 'refs/heads/main'{% endraw %}
+        run: ghp-import -n -p -f docs/_build/html
+        env:
+          GITHUB_TOKEN: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+{% endif %}

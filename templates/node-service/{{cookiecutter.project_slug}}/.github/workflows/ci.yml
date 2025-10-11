@@ -13,10 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js {% raw %}${{ matrix.node-version }}{% endraw %}
         uses: actions/setup-node@v5
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: {% raw %}${{ matrix.node-version }}{% endraw %}
           cache: 'npm'
       
       - name: Install dependencies
@@ -38,8 +38,8 @@ jobs:
         run: npm test
       
       - name: Upload coverage
-        if: matrix.node-version == 20
+        if: {% raw %}matrix.node-version == 20{% endraw %}
         uses: codecov/codecov-action@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: {% raw %}${{ secrets.CODECOV_TOKEN }}{% endraw %}
           fail_ci_if_error: false

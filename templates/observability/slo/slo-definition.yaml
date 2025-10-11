@@ -1,0 +1,205 @@
+# Service Level Objectives (SLO) Definition
+# Stack-agnostic template for defining SLOs, SLIs, and error budgets
+# Implements: ISO/IEC 25010 Reliability, SRE best practices
+
+---
+# SLO Configuration
+service:
+  name: {{ SERVICE_NAME }}
+  team: {{ TEAM_NAME }}
+  tier: {{ TIER }}  # tier-0 (critical), tier-1 (important), tier-2 (standard)
+  
+slos:
+  # Availability SLO
+  - name: service_availability
+    description: "Percentage of time service is responding successfully"
+    sli:
+      metric: availability
+      query: |
+        (
+          sum(rate(http_requests_total{status=~"2.."}[5m]))
+          /
+          sum(rate(http_requests_total[5m]))
+        ) * 100
+      unit: percent
+    target:
+      value: 99.9
+      window: 30d
+    error_budget:
+      remaining_percent: 10  # 10% of 0.1% = 0.01% downtime allowed
+      burn_rate_alerts:
+        - window: 1h
+          threshold: 14.4
+          severity: critical
+        - window: 6h
+          threshold: 6
+          severity: high
+        - window: 24h
+          threshold: 3
+          severity: medium
+    compliance:
+      - ISO/IEC 25010 - Reliability
+      - Internal SLA
+
+  # Latency SLO
+  - name: api_latency_p95
+    description: "95th percentile API response time"
+    sli:
+      metric: latency
+      query: |
+        histogram_quantile(0.95,
+          sum(rate(http_request_duration_seconds_bucket[5m])) by (le)
+        )
+      unit: milliseconds
+    target:
+      value: 300
+      window: 30d
+    error_budget:
+      remaining_percent: 5
+      burn_rate_alerts:
+        - window: 1h
+          threshold: 14.4
+          severity: critical
+    compliance:
+      - ISO/IEC 25010 - Performance Efficiency
+
+  # Error Rate SLO
+  - name: error_rate
+    description: "Percentage of failed requests"
+    sli:
+      metric: error_rate
+      query: |
+        (
+          sum(rate(http_requests_total{status=~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total[5m]))
+        ) * 100
+      unit: percent
+    target:
+      value: 0.1  # Max 0.1% error rate
+      window: 30d
+    error_budget:
+      remaining_percent: 10
+      burn_rate_alerts:
+        - window: 1h
+          threshold: 14.4
+          severity: critical
+    compliance:
+      - ISO/IEC 25010 - Reliability
+
+# Error Budget Policy
+error_budget_policy:
+  actions:
+    # When 100% of budget consumed
+    - threshold: 100
+      actions:
+        - block_deployments
+        - page_oncall
+        - trigger_incident
+        - notify_leadership
+    
+    # When 75% of budget consumed
+    - threshold: 75
+      actions:
+        - slow_rollouts
+        - increase_monitoring
+        - notify_team
+        - schedule_review
+    
+    # When 50% of budget consumed
+    - threshold: 50
+      actions:
+        - alert_team
+        - review_changes
+  
+  exceptions:
+    - reason: "Security hotfix"
+      requires_approval: security_team_lead
+    - reason: "Data loss prevention"
+      requires_approval: engineering_director
+
+# Alerting Rules
+alerts:
+  - name: HighErrorBudgetBurnRate
+    expr: |
+      (
+        1 - slo:availability:ratio_rate1h
+      ) > 14.4 * (1 - 0.999)
+    duration: 2m
+    severity: critical
+    labels:
+      team: {{ TEAM_NAME }}
+      service: {{ SERVICE_NAME }}
+    annotations:
+      summary: "High error budget burn rate"
+      description: "Error budget is burning at {{ $value }}x the acceptable rate"
+      runbook: https://runbooks.example.com/high-error-budget-burn
+  
+  - name: SLOViolation
+    expr: |
+      slo:availability:ratio_rate30d < 0.999
+    duration: 5m
+    severity: high
+    labels:
+      team: {{ TEAM_NAME }}
+      service: {{ SERVICE_NAME }}
+    annotations:
+      summary: "SLO violation detected"
+      description: "Service availability is {{ $value }}, below target of 99.9%"
+      runbook: https://runbooks.example.com/slo-violation
+
+# Dashboards
+dashboards:
+  - name: SLO Overview
+    url: https://grafana.example.com/d/slo-overview
+    panels:
+      - Current SLO compliance
+      - Error budget remaining
+      - Burn rate trends
+      - Historical performance
+  
+  - name: Error Budget
+    url: https://grafana.example.com/d/error-budget
+    panels:
+      - Budget consumption over time
+      - Burn rate by service
+      - Incident impact on budget
+      - Forecast
+
+# Progressive Delivery Integration
+progressive_delivery:
+  enabled: true
+  analysis:
+    - metric: error_rate
+      threshold: 0.1
+      action: rollback
+    - metric: latency_p95
+      threshold: 300
+      action: pause
+  rollback_conditions:
+    - slo_violation
+    - error_budget_depleted
+
+# Reporting
+reporting:
+  frequency: weekly
+  recipients:
+    - {{ TEAM_NAME }}@example.com
+    - engineering-leadership@example.com
+  include:
+    - slo_compliance
+    - error_budget_status
+    - incidents_impact
+    - improvement_actions
+
+# Validation Commands
+# 
+# Validate SLO definition:
+#   promtool check rules slo-rules.yml
+#
+# Test SLI queries:
+#   curl -G 'http://prometheus:9090/api/v1/query' \
+#     --data-urlencode 'query=<SLI_QUERY>'
+#
+# Calculate error budget:
+#   ./scripts/calculate-error-budget.sh {{ SERVICE_NAME }}

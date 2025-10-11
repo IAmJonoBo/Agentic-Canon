@@ -147,15 +147,15 @@ Last Updated: 2025-10-11
   - [ ] Create example React app with Storybook components
   - [ ] Build example Go gRPC service with protobuf definitions
 
-### Video Tutorials 🚧
+### Video Tutorials ✅
 - [x] Create tutorial scripts for:
   - [x] "Getting Started with Agentic Canon" (01-getting-started.md)
   - [x] "Creating a new service with Cookiecutter" (02-creating-services.md)
   - [x] "Setting up CI/CD pipelines" (03-cicd-setup.md)
-  - [ ] "Implementing security gates"
-  - [ ] "Adding observability to your service"
-  - [ ] "Using Jupyter Book for documentation"
-- [ ] Record video tutorials (scripts are ready)
+  - [x] "Implementing security gates" (04-security-gates.md)
+  - [x] "Adding observability to your service" (05-observability-setup.md)
+  - [x] "Using Jupyter Book for documentation" (06-jupyter-book.md)
+- [ ] Record video tutorials (all scripts are ready - ~65 minutes total content)
 - [ ] Create YouTube channel for video hosting
 - [ ] Upload recorded tutorials to YouTube/video platform
 - [ ] Add video links to documentation

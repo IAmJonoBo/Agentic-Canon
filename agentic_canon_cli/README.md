@@ -105,6 +105,28 @@ Audits:
 - CODEOWNERS file
 - Dependabot configuration
 
+#### `agentic-canon update`
+
+Update project from template using Cruft:
+
+```bash
+cd your-project
+agentic-canon update
+```
+
+This command:
+- Checks if project was created with Cruft
+- Checks for template updates
+- Shows diff preview of changes
+- Prompts for confirmation
+- Applies updates to project
+- Detects merge conflicts
+- Guides through resolution process
+
+**Prerequisites:**
+- Project must have `.cruft.json` file
+- Cruft must be installed: `pip install cruft`
+
 ### Example Session
 
 ```
@@ -270,11 +292,20 @@ Run security and quality audit.
 - CODEOWNERS
 - Dependabot config
 
-### Future Commands (Planned)
+### `agentic-canon update`
 
-- `agentic-canon update` - Update existing project from template
-- `agentic-canon check` - Validate project structure
-- `agentic-canon list` - List available templates
+Update existing project from template using Cruft.
+
+**Features:**
+- Check for template updates
+- Preview changes with diff
+- Apply updates interactively
+- Detect and handle merge conflicts
+- Guide through resolution process
+
+**Requirements:**
+- Project created with Cruft (has `.cruft.json`)
+- Cruft installed: `pip install cruft`
 
 ## Template Variables
 

@@ -16,31 +16,203 @@ jobs:
             const fs = require('fs');
             const path = 'TASKS.md';
             if (!fs.existsSync(path)) { return; }
+            
+            console.log('📋 Scanning TASKS.md for unchecked items...');
+            
             let text = fs.readFileSync(path, 'utf8');
-            const unchecked = [...text.matchAll(/^-\s\[\s\]\s+(.*)$/gm)].map(m => m[1].trim());
-            for (const title of unchecked) {
-              // Skip if already a tracked issue link
-              if (/#\d+/.test(title)) continue;
+            const lines = text.split('\n');
+            
+            // Parse task items with context
+            const tasks = [];
+            let currentSection = '';
+            let currentSubsection = '';
+            let currentContext = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+              const line = lines[i];
+              
+              // Track section headers for context
+              if (line.match(/^## /)) {
+                currentSection = line.replace(/^## /, '').trim();
+                currentSubsection = '';
+                currentContext = [];
+              } else if (line.match(/^### /)) {
+                currentSubsection = line.replace(/^### /, '').trim();
+                currentContext = [];
+              }
+              
+              // Find unchecked items
+              const match = line.match(/^-\s\[\s\]\s+(.*)$/);
+              if (match) {
+                const title = match[1].trim();
+                
+                // Skip if already tracked
+                if (/#\d+/.test(title)) continue;
+                
+                // Extract metadata from title and context
+                const metadata = {
+                  title: title,
+                  section: currentSection,
+                  subsection: currentSubsection,
+                  adrRefs: [],
+                  issueRefs: [],
+                  labels: ['task', 'from:tasklist'],
+                  lineNumber: i,
+                  contextLines: []
+                };
+                
+                // Look for ADR references in title and surrounding context
+                const adrPattern = /ADR-(\d{3})/g;
+                let adrMatch;
+                while ((adrMatch = adrPattern.exec(title)) !== null) {
+                  metadata.adrRefs.push(`ADR-${adrMatch[1]}`);
+                }
+                
+                // Look for issue references
+                const issuePattern = /#(\d+)/g;
+                let issueMatch;
+                while ((issueMatch = issuePattern.exec(title)) !== null) {
+                  metadata.issueRefs.push(parseInt(issueMatch[1]));
+                }
+                
+                // Check preceding lines for context (up to 5 lines back)
+                for (let j = Math.max(0, i - 5); j < i; j++) {
+                  const contextLine = lines[j].trim();
+                  if (contextLine && !contextLine.match(/^-\s\[/)) {
+                    metadata.contextLines.push(contextLine);
+                    
+                    // Extract ADRs from context
+                    let contextAdrMatch;
+                    const contextAdrPattern = /ADR-(\d{3})/g;
+                    while ((contextAdrMatch = contextAdrPattern.exec(contextLine)) !== null) {
+                      const adrRef = `ADR-${contextAdrMatch[1]}`;
+                      if (!metadata.adrRefs.includes(adrRef)) {
+                        metadata.adrRefs.push(adrRef);
+                      }
+                    }
+                  }
+                }
+                
+                // Add component labels based on section
+                if (currentSection.includes('Template')) {
+                  metadata.labels.push('component:templates');
+                } else if (currentSection.includes('Notebook')) {
+                  metadata.labels.push('component:notebooks');
+                } else if (currentSection.includes('Documentation')) {
+                  metadata.labels.push('component:documentation');
+                } else if (currentSection.includes('CLI') || currentSection.includes('Wizard')) {
+                  metadata.labels.push('component:cli');
+                } else if (currentSection.includes('Security')) {
+                  metadata.labels.push('security');
+                } else if (currentSection.includes('Testing')) {
+                  metadata.labels.push('component:testing');
+                }
+                
+                // Add priority based on section or keywords
+                if (currentSection.includes('High Priority') || title.includes('CRITICAL') || title.includes('urgent')) {
+                  metadata.labels.push('priority:high');
+                } else if (currentSection.includes('Medium Priority')) {
+                  metadata.labels.push('priority:medium');
+                } else if (currentSection.includes('Lower Priority') || currentSection.includes('Future')) {
+                  metadata.labels.push('priority:low');
+                }
+                
+                tasks.push(metadata);
+              }
+            }
+            
+            console.log(`Found ${tasks.length} unchecked items`);
+            
+            // Create issues with rich metadata
+            let issuesCreated = 0;
+            for (const task of tasks) {
               // De-dupe by existing issue title
               const { data: existing } = await github.rest.search.issuesAndPullRequests({
-                q: `repo:${context.repo.owner}/${context.repo.repo} is:issue in:title "${title.replace(/"/g,'\\"')}"`
+                q: `repo:${context.repo.owner}/${context.repo.repo} is:issue in:title "${task.title.replace(/"/g,'\\"')}"`
               });
-              let number = existing.items.find(i => i.title === title)?.number;
+              
+              let number = existing.items.find(i => i.title === task.title)?.number;
+              
               if (!number) {
+                // Build issue body with context
+                let body = `## Description\n\n${task.title}\n\n`;
+                
+                if (task.section) {
+                  body += `## Context\n\n**Section:** ${task.section}`;
+                  if (task.subsection) {
+                    body += ` > ${task.subsection}`;
+                  }
+                  body += '\n\n';
+                }
+                
+                if (task.contextLines.length > 0) {
+                  body += `**Additional Context:**\n\n`;
+                  task.contextLines.slice(-3).forEach(line => {
+                    body += `${line}\n`;
+                  });
+                  body += '\n';
+                }
+                
+                if (task.adrRefs.length > 0) {
+                  body += `## Related ADRs\n\n`;
+                  task.adrRefs.forEach(adr => {
+                    body += `- ${adr}: [docs/adr/${adr}.md](../docs/adr/${adr}.md)\n`;
+                  });
+                  body += '\n';
+                }
+                
+                if (task.issueRefs.length > 0) {
+                  body += `## Related Issues\n\n`;
+                  task.issueRefs.forEach(issue => {
+                    body += `- #${issue}\n`;
+                  });
+                  body += '\n';
+                }
+                
+                body += `## Source\n\n`;
+                body += `Created from TASKS.md (line ${task.lineNumber + 1})\n\n`;
+                body += `**Automatically tracked** - This issue was created automatically from TASKS.md.\n`;
+                body += `When this issue is closed, the corresponding item in TASKS.md will be marked as complete.\n`;
+                
+                // Create the issue
                 const created = await github.rest.issues.create({
-                  owner: context.repo.owner, repo: context.repo.repo,
-                  title, labels: ['task','from:tasklist']
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: task.title,
+                  body: body,
+                  labels: task.labels
                 });
+                
                 number = created.data.number;
+                issuesCreated++;
+                console.log(`  ✓ Created issue #${number}: ${task.title}`);
+                
+                // If there are ADR references, add them as comments
+                if (task.adrRefs.length > 0) {
+                  const adrComment = `📋 **Related Architecture Decisions**\n\nThis task is related to the following ADRs:\n\n${task.adrRefs.map(adr => `- [${adr}](../docs/adr/${adr}.md)`).join('\n')}\n\nPlease review these decisions when working on this task.`;
+                  
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: number,
+                    body: adrComment
+                  });
+                }
               }
+              
               // Replace the line with a tracked-issue checkbox
-              const safeTitle = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+              const safeTitle = task.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
               const re = new RegExp(`^-\\s\\[\\s\\]\\s+${safeTitle}$`, 'm');
-              text = text.replace(re, `- [ ] #${number} ${title}`);
+              text = text.replace(re, `- [ ] #${number} ${task.title}`);
             }
+            
+            // Write back the updated file
             fs.writeFileSync(path, text);
+            
+            console.log(`\n✅ Created ${issuesCreated} new issues`);
+            console.log(`✅ Updated TASKS.md with issue references`);
       - name: Commit back
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A && git diff --cached --quiet || git commit -m "chore: track checklist items as issues" && git push
+          git add -A && git diff --cached --quiet || git commit -m "chore: track checklist items as issues with metadata [skip ci]" && git push

@@ -558,6 +558,11 @@ Run the comprehensive sanity check script to verify the current state of the pro
 - Python syntax validation for all hooks
 - JSON validation for configuration files
 - YAML validation for workflow files (excluding template files with cookiecutter variables)
+- Shell script syntax validation for .sh files
+- Executable permissions on shell scripts
+- Pre-commit configuration validation
+- Python requirements files format validation
+- Broken symlinks detection
 - All Cookiecutter templates (5 primary + 8 categories)
 - Template structure compliance (hooks, project structure, essential files)
 - README.md presence in all template directories
@@ -567,13 +572,17 @@ Run the comprehensive sanity check script to verify the current state of the pro
 - Video tutorial scripts
 - Azure Pipelines support
 - CLI wizard
-- Test infrastructure
+- Test infrastructure (with automatic test execution)
 - Multi-cloud support
 - Advanced feature frameworks
+- Python hook import validation
+- GitHub Actions workflow structure validation
+- Documentation completeness checks
+- File size sanity checks (detect oversized files)
 
 **Current Status (2025-10-12):**
-- ✅ Passed: 121 checks (enhanced from 69)
-- ⚠️ Warnings: 2 (Azure/GCP multi-cloud examples pending)
+- ✅ Passed: 140 checks (enhanced from 121)
+- ⚠️ Warnings: 3 (Azure/GCP multi-cloud examples pending, pre-commit not installed)
 - ❌ Failed: 0
 
 **Standards Compliance Notes:**

@@ -159,6 +159,97 @@ else
 fi
 echo ""
 
+# 1.9. Shell Script Syntax Validation
+echo "🐚 Validating Shell Script Syntax..."
+shell_syntax_errors=0
+shell_count=0
+for shell_file in *.sh scripts/*.sh; do
+    if [ -f "$shell_file" ]; then
+        shell_count=$((shell_count + 1))
+        if bash -n "$shell_file" 2>/dev/null; then
+            check_pass "$(basename $shell_file) has valid syntax"
+        else
+            check_fail "$(basename $shell_file) has syntax errors"
+            shell_syntax_errors=$((shell_syntax_errors + 1))
+        fi
+        
+        # Check if script is executable
+        if [ -x "$shell_file" ]; then
+            check_pass "$(basename $shell_file) is executable"
+        else
+            check_warn "$(basename $shell_file) is not executable (might be intentional)"
+        fi
+    fi
+done
+
+if [ $shell_syntax_errors -eq 0 ] && [ $shell_count -gt 0 ]; then
+    check_pass "All $shell_count shell scripts have valid syntax"
+elif [ $shell_count -eq 0 ]; then
+    check_warn "No shell scripts found in root or scripts/ directory"
+fi
+echo ""
+
+# 1.10. Pre-commit Configuration Validation
+echo "🔒 Validating Pre-commit Configuration..."
+if [ -f ".pre-commit-config.yaml" ]; then
+    check_pass ".pre-commit-config.yaml exists"
+    # Validate it's valid YAML
+    if python -c "import yaml; yaml.safe_load(open('.pre-commit-config.yaml'))" > /dev/null 2>&1; then
+        check_pass ".pre-commit-config.yaml is valid YAML"
+    else
+        check_fail ".pre-commit-config.yaml has YAML errors"
+    fi
+    
+    # Check if pre-commit is installed and can validate
+    if command -v pre-commit &> /dev/null; then
+        if pre-commit validate-config 2>/dev/null; then
+            check_pass "Pre-commit hooks configuration is valid"
+        else
+            check_warn "Pre-commit config may have issues (non-critical)"
+        fi
+    else
+        check_warn "pre-commit not installed, skipping validation"
+    fi
+else
+    check_warn ".pre-commit-config.yaml not found"
+fi
+echo ""
+
+# 1.11. Requirements Files Validation
+echo "📦 Validating Python Requirements Files..."
+req_errors=0
+for req_file in requirements.txt requirements-dev.txt */requirements*.txt; do
+    if [ -f "$req_file" ]; then
+        # Check if file is not empty
+        if [ -s "$req_file" ]; then
+            # Check for common issues (spaces around ==, invalid package names)
+            if grep -E "^\s+[a-zA-Z]|[a-zA-Z]\s+$" "$req_file" > /dev/null 2>&1; then
+                check_warn "$(basename $req_file) may have formatting issues (leading/trailing spaces)"
+            else
+                check_pass "$(basename $req_file) format looks good"
+            fi
+        else
+            check_warn "$(basename $req_file) is empty"
+        fi
+    fi
+done
+echo ""
+
+# 1.12. Check for Broken Symlinks
+echo "🔗 Checking for Broken Symlinks..."
+broken_symlinks=0
+while IFS= read -r -d '' symlink; do
+    if [ ! -e "$symlink" ]; then
+        check_fail "Broken symlink: $symlink"
+        broken_symlinks=$((broken_symlinks + 1))
+    fi
+done < <(find . -type l -print0 2>/dev/null)
+
+if [ $broken_symlinks -eq 0 ]; then
+    check_pass "No broken symlinks found"
+fi
+echo ""
+
 # 2. Cookiecutter Templates (The big discovery!)
 echo "🍪 Checking Cookiecutter Templates..."
 templates=(
@@ -424,6 +515,114 @@ for feature in "${advanced_features[@]}"; do
         check_warn "$(basename $feature) not yet implemented"
     fi
 done
+echo ""
+
+# 12. Python Hook Import Validation
+echo "🔍 Checking Python Hook Imports..."
+hook_import_errors=0
+for hook_file in templates/*/hooks/*.py; do
+    if [ -f "$hook_file" ]; then
+        # Skip pre_gen_project.py as it uses sys.exit() by design for validation
+        if [[ "$(basename $hook_file)" == "pre_gen_project.py" ]]; then
+            continue
+        fi
+        
+        # Try to import the module to check for import errors
+        if python -c "import sys; sys.path.insert(0, 'templates/_shared'); exec(open('$hook_file').read())" > /dev/null 2>&1; then
+            # Success, but don't spam output
+            :
+        else
+            check_warn "$(basename $hook_file) may have import or runtime issues"
+            hook_import_errors=$((hook_import_errors + 1))
+        fi
+    fi
+done
+
+if [ $hook_import_errors -eq 0 ]; then
+    check_pass "All hook files can be loaded without import errors"
+fi
+echo ""
+
+# 13. GitHub Actions Workflow Validation
+echo "⚙️  Checking GitHub Actions Workflows..."
+workflow_errors=0
+workflow_count=0
+for workflow_file in .github/workflows/*.yml; do
+    if [ -f "$workflow_file" ]; then
+        workflow_count=$((workflow_count + 1))
+        # Check for required keys
+        if grep -q "^name:" "$workflow_file" && grep -q "^on:" "$workflow_file"; then
+            check_pass "$(basename $workflow_file) has required keys"
+        else
+            check_warn "$(basename $workflow_file) may be missing required workflow keys"
+            workflow_errors=$((workflow_errors + 1))
+        fi
+        
+        # Check for jobs section
+        if grep -q "^jobs:" "$workflow_file"; then
+            # Valid workflow structure
+            :
+        else
+            check_warn "$(basename $workflow_file) missing jobs section"
+            workflow_errors=$((workflow_errors + 1))
+        fi
+    fi
+done
+
+if [ $workflow_errors -eq 0 ] && [ $workflow_count -gt 0 ]; then
+    check_pass "All $workflow_count GitHub Actions workflows have proper structure"
+fi
+echo ""
+
+# 14. Documentation Completeness Check
+echo "📚 Checking Documentation Completeness..."
+critical_docs=(
+    "README.md"
+    "CONTRIBUTING.md"
+    "SECURITY.md"
+    "LICENSE"
+    "CHANGELOG.md"
+    "FRAMEWORK.md"
+    "QUALITY_STANDARDS.md"
+    "CONVENTIONS.md"
+)
+
+doc_missing=0
+for doc in "${critical_docs[@]}"; do
+    if [ -f "$doc" ]; then
+        # Check if file has reasonable content (more than just a title)
+        if [ $(wc -l < "$doc") -gt 10 ]; then
+            # Good, has content
+            :
+        else
+            check_warn "$doc exists but may be incomplete (< 10 lines)"
+        fi
+    else
+        check_fail "$doc is missing"
+        doc_missing=$((doc_missing + 1))
+    fi
+done
+
+if [ $doc_missing -eq 0 ]; then
+    check_pass "All critical documentation files present"
+fi
+echo ""
+
+# 15. File Size Sanity Checks
+echo "📏 Checking File Sizes..."
+oversized_files=0
+# Check for unreasonably large text files (>10MB) that might be accidentally committed
+while IFS= read -r -d '' large_file; do
+    file_size=$(stat -f%z "$large_file" 2>/dev/null || stat -c%s "$large_file" 2>/dev/null)
+    if [ "$file_size" -gt 10485760 ]; then  # 10MB
+        check_warn "Large file detected: $(basename $large_file) ($(( file_size / 1048576 ))MB)"
+        oversized_files=$((oversized_files + 1))
+    fi
+done < <(find . -type f \( -name "*.md" -o -name "*.txt" -o -name "*.json" -o -name "*.yaml" -o -name "*.yml" \) -not -path "./.git/*" -print0 2>/dev/null)
+
+if [ $oversized_files -eq 0 ]; then
+    check_pass "No unusually large text files detected"
+fi
 echo ""
 
 # Summary

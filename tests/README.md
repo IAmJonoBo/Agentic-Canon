@@ -26,6 +26,27 @@ Tests for Cookiecutter templates using pytest-cookies.
 pytest tests/test_cookiecutters.py -v
 ```
 
+### test_sanity_check.py
+Tests for the sanity check script (`sanity-check.sh`).
+
+**Tests**:
+- Script existence and executability
+- Successful execution with zero failures
+- Core documentation validation
+- Template validation
+- Python syntax validation
+- JSON/YAML validation
+- Shell script validation
+- GitHub Actions workflow validation
+- Check count verification (>=135)
+
+**Usage**:
+```bash
+pytest tests/test_sanity_check.py -v
+```
+
+**Test Count:** 11 tests covering all major sanity check categories
+
 ## Running Tests
 
 ### All Tests

@@ -1,0 +1,20 @@
+{% if cookiecutter.enable_todo_tracking == "yes" -%}
+name: TODOs → Issues
+on: [push]
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+jobs:
+  todo_to_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: alstr/todo-to-issue-action@v5
+        with:
+          CLOSE_ISSUES: "true"
+          INSERT_ISSUE_URLS: "true"
+          AUTO_ASSIGN: "@me"
+          LABELS: "task, from:todo"
+          {% raw %}PROJECT: "${{ github.repository_owner }}/${{ github.event.repository.name }}"{% endraw %}
+{% endif -%}

@@ -9,6 +9,8 @@ assignees: ''
 <!-- 
 Tasks are concrete work items with clear acceptance criteria.
 For architectural decisions, use the ADR Proposal template instead.
+
+This template can be auto-populated from TASKS.md when creating issues via automation.
 -->
 
 ## Priority
@@ -23,6 +25,15 @@ Clear description of what needs to be done.
 
 ## Context
 Why is this task needed? What is the background?
+
+<!-- AUTO-POPULATED: Section and subsection from TASKS.md -->
+<!-- This section may be automatically filled when created from TASKS.md -->
+
+## Related ADRs
+<!-- Link to Architecture Decision Records that relate to this task -->
+<!-- AUTO-POPULATED: ADR references found in TASKS.md -->
+
+- ADR-XXX: [Title](../docs/adr/ADR-XXX.md)
 
 ## Acceptance Criteria
 - [ ] Criterion 1
@@ -47,6 +58,7 @@ List any tasks or issues that must be completed first:
 
 ## Component/Area
 <!-- Which component is this task for? Select one or more -->
+<!-- AUTO-POPULATED: Based on section in TASKS.md -->
 - [ ] Templates (Cookiecutter)
 - [ ] Notebooks (Jupyter)
 - [ ] Documentation (Jupyter Book)
@@ -66,6 +78,14 @@ Sprint:
 - Depends on #
 - Blocks #
 - Implements ADR: 
+
+## Source Information
+<!-- AUTO-POPULATED: When created from TASKS.md -->
+<!-- 
+Source: TASKS.md (line XXX)
+Section: [Section Name]
+Subsection: [Subsection Name]
+-->
 
 ## Additional Resources
 Links to relevant documentation, designs, or discussions.

@@ -102,30 +102,73 @@ jobs:
             
             console.log(`Found ${adrFiles.length} ADR files`);
             
-            // Check which ones are not in README
+            // Parse ADR metadata for better issue creation
             const missingInReadme = [];
+            const adrMetadata = {};
+            
             for (const adrFile of adrFiles) {
+              const adrPath = path.join(adrDir, adrFile);
+              const content = fs.readFileSync(adrPath, 'utf8');
+              
+              // Extract metadata
+              const metadata = {
+                file: adrFile,
+                title: '',
+                status: 'unknown',
+                date: '',
+                number: adrFile.match(/ADR-(\d{3})/)?.[1] || ''
+              };
+              
+              // Extract title from first heading
+              const titleMatch = content.match(/^#\s+(.+)$/m);
+              if (titleMatch) {
+                metadata.title = titleMatch[1].replace(/^ADR-\d{3}:\s*/, '').trim();
+              }
+              
+              // Extract status
+              const statusMatch = content.match(/^status:\s*(.+)$/mi);
+              if (statusMatch) {
+                metadata.status = statusMatch[1].trim().toLowerCase();
+              }
+              
+              // Extract date
+              const dateMatch = content.match(/^date:\s*(.+)$/mi);
+              if (dateMatch) {
+                metadata.date = dateMatch[1].trim();
+              }
+              
+              adrMetadata[adrFile] = metadata;
+              
+              // Check if in README
               if (!readme.includes(adrFile)) {
-                missingInReadme.push(adrFile);
+                missingInReadme.push(metadata);
               }
             }
             
             if (missingInReadme.length > 0) {
               console.log(`\n⚠️  Found ${missingInReadme.length} ADRs not linked in README:`);
-              missingInReadme.forEach(f => console.log(`  - ${f}`));
+              missingInReadme.forEach(m => console.log(`  - ${m.file}: ${m.title}`));
               
-              // Create an issue to track this
-              const issueBody = `## ADRs Not Linked in README
+              // Build issue body
+              let issueBody = '## ADRs Not Linked in README\n\n';
+              issueBody += 'The following ADR files exist but are not linked in `docs/adr/README.md`:\n\n';
               
-              The following ADR files exist but are not linked in \`docs/adr/README.md\`:
+              for (const m of missingInReadme) {
+                issueBody += `- [ ] **${m.file}**: ${m.title}\n`;
+                issueBody += `  - **Status**: ${m.status}\n`;
+                issueBody += `  - **Date**: ${m.date || 'Not specified'}\n`;
+                issueBody += `  - **File**: [docs/adr/${m.file}](../docs/adr/${m.file})\n\n`;
+              }
               
-              ${missingInReadme.map(f => `- [ ] ${f}`).join('\n')}
-              
-              **Action Required:**
-              Please update \`docs/adr/README.md\` to include links to these ADRs.
-              
-              **Automatically detected by:** Tasks and ADR Sync workflow
-              `;
+              issueBody += '## Action Required\n\n';
+              issueBody += 'Please update `docs/adr/README.md` to include links to these ADRs in the appropriate section:\n\n';
+              issueBody += '1. Review each ADR\'s status and content\n';
+              issueBody += '2. Add links to the appropriate section in README.md based on status\n';
+              issueBody += '3. Update the status summary counts\n';
+              issueBody += '4. Ensure the "Total ADRs" count is accurate\n\n';
+              issueBody += '## Context\n\n';
+              issueBody += 'These ADRs were detected by the automated sync workflow. They exist in the `docs/adr/` directory but are not referenced in the main README, which could make them hard to discover.\n\n';
+              issueBody += '**Automatically detected by:** Tasks and ADR Sync workflow on ' + new Date().toISOString().split('T')[0] + '\n';
               
               // Check if issue already exists
               const { data: existingIssues } = await github.rest.issues.listForRepo({
@@ -140,14 +183,38 @@ jobs:
               );
               
               if (!hasIssue) {
-                await github.rest.issues.create({
+                const newIssue = await github.rest.issues.create({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   title: '📋 ADRs Not Linked in README',
                   body: issueBody,
-                  labels: ['adr', 'documentation', 'automated']
+                  labels: ['adr', 'documentation', 'automated', 'priority:medium']
                 });
-                console.log('✓ Created issue to track missing ADR links');
+                console.log(`✓ Created issue #${newIssue.data.number} to track missing ADR links`);
+                
+                // Build checklist comment
+                let checklistComment = '## Checklist for updating README\n\n';
+                
+                for (let i = 0; i < missingInReadme.length; i++) {
+                  const m = missingInReadme[i];
+                  checklistComment += `### ${i + 1}. ${m.file}\n\n`;
+                  checklistComment += '- [ ] Review ADR content\n';
+                  checklistComment += '- [ ] Determine appropriate section (Foundation, Observability, Security, etc.)\n';
+                  checklistComment += '- [ ] Add link to README.md\n';
+                  checklistComment += '- [ ] Update status counts if needed\n';
+                  checklistComment += '- [ ] Verify link formatting\n\n';
+                }
+                
+                checklistComment += 'Once all items are complete, close this issue.';
+                
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: newIssue.data.number,
+                  body: checklistComment
+                });
+              } else {
+                console.log('⚠️  Issue already exists for missing ADR links');
               }
             } else {
               console.log('✅ All ADRs are linked in README');
@@ -166,6 +233,109 @@ jobs:
             git push
             echo "✅ Committed TASKS.md updates"
           fi
+      
+      - name: Enrich issues with ADR metadata
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            console.log('🔗 Enriching issues with ADR metadata...');
+            
+            // Get all open issues with the from:tasklist label
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'from:tasklist',
+              per_page: 100
+            });
+            
+            console.log(`Found ${issues.length} open task issues`);
+            
+            let enriched = 0;
+            const adrDir = 'docs/adr';
+            
+            for (const issue of issues) {
+              // Check if issue already has ADR metadata in body
+              if (issue.body && issue.body.includes('## Related ADRs')) {
+                continue;
+              }
+              
+              // Look for ADR references in the title
+              const adrPattern = /ADR-(\d{3})/g;
+              const adrRefs = [];
+              let match;
+              
+              while ((match = adrPattern.exec(issue.title)) !== null) {
+                adrRefs.push(`ADR-${match[1]}`);
+              }
+              
+              // Also check TASKS.md for context
+              if (fs.existsSync('TASKS.md')) {
+                const tasksContent = fs.readFileSync('TASKS.md', 'utf8');
+                const issueRefPattern = new RegExp(`#${issue.number}\\s+([^\\n]+)`, 'g');
+                let taskMatch;
+                
+                while ((taskMatch = issueRefPattern.exec(tasksContent)) !== null) {
+                  const taskLine = taskMatch[1];
+                  let adrMatch;
+                  while ((adrMatch = adrPattern.exec(taskLine)) !== null) {
+                    const adrRef = `ADR-${adrMatch[1]}`;
+                    if (!adrRefs.includes(adrRef)) {
+                      adrRefs.push(adrRef);
+                    }
+                  }
+                }
+              }
+              
+              if (adrRefs.length > 0) {
+                console.log(`  Enriching issue #${issue.number} with ${adrRefs.length} ADR references`);
+                
+                // Build ADR metadata
+                let adrInfo = '\n\n## Related ADRs\n\n';
+                adrInfo += 'This task is related to the following Architecture Decision Records:\n\n';
+                
+                for (const adrRef of adrRefs) {
+                  const adrFile = `${adrRef}.md`;
+                  const adrPath = path.join(adrDir, adrFile);
+                  
+                  if (fs.existsSync(adrPath)) {
+                    const content = fs.readFileSync(adrPath, 'utf8');
+                    const titleMatch = content.match(/^#\s+(.+)$/m);
+                    const statusMatch = content.match(/^status:\s*(.+)$/mi);
+                    
+                    const title = titleMatch ? titleMatch[1] : adrRef;
+                    const status = statusMatch ? statusMatch[1].trim() : 'unknown';
+                    
+                    adrInfo += `- [${adrRef}](../docs/adr/${adrRef}.md) - ${title.replace(/^ADR-\d{3}:\s*/, '')}\n`;
+                    adrInfo += `  - Status: ${status}\n`;
+                  } else {
+                    adrInfo += `- ${adrRef} (file not found)\n`;
+                  }
+                }
+                
+                adrInfo += '\n**Note:** Please review these ADRs when working on this task to ensure alignment with architectural decisions.\n';
+                
+                // Update the issue body
+                const newBody = (issue.body || '') + adrInfo;
+                
+                try {
+                  await github.rest.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    body: newBody
+                  });
+                  enriched++;
+                } catch (error) {
+                  console.log(`  ⚠️  Failed to update issue #${issue.number}: ${error.message}`);
+                }
+              }
+            }
+            
+            console.log(`\n✅ Enriched ${enriched} issues with ADR metadata`);
       
       - name: Generate sync report
         uses: actions/github-script@v8

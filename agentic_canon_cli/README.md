@@ -17,23 +17,22 @@ pip install -e ".[cli]"
 
 ## Usage
 
-### Interactive Wizard
+### Commands
 
-Run the interactive wizard to create a new project:
+The CLI provides several commands for project scaffolding and management:
+
+#### `agentic-canon init`
+
+Launch the interactive wizard to create a new project:
 
 ```bash
 agentic-canon init
-```
-
-or
-
-```bash
-python -m agentic_canon_cli
+# Or: python -m agentic_canon_cli
 ```
 
 The wizard will guide you through:
 
-1. **Template Selection**: Choose from Python, Node.js, React, Go, or Docs-only
+1. **Template Selection**: Choose from Python, Node.js, React, Go, Docs-only, or Project Management
 2. **Project Configuration**: Name, description, author information
 3. **Feature Selection**: Enable/disable optional features
    - Jupyter Book documentation
@@ -43,6 +42,68 @@ The wizard will guide you through:
 4. **CI/CD Provider**: GitHub Actions, GitLab CI, or Azure Pipelines
 5. **License**: Apache-2.0, MIT, or Proprietary
 6. **Generation**: Creates your project with all selected features
+
+#### `agentic-canon repo-init`
+
+Add project management automation to an existing repository:
+
+```bash
+cd your-project
+agentic-canon repo-init
+```
+
+This sets up:
+- TODO/FIXME → GitHub Issues automation
+- Markdown tasklist → GitHub Issues automation
+- PR review follow-ups automation
+- Automatic issue triage and labeling
+- Stale issue management
+- Code owners and PR templates
+
+#### `agentic-canon validate`
+
+Validate project structure and configuration:
+
+```bash
+agentic-canon validate
+```
+
+Checks for:
+- Required files (README.md, etc.)
+- Recommended files (CONTRIBUTING.md, SECURITY.md, LICENSE)
+- .github directory structure
+- Workflow files
+- Git repository initialization
+
+#### `agentic-canon doctor`
+
+Check environment setup and dependencies:
+
+```bash
+agentic-canon doctor
+```
+
+Verifies:
+- Python version
+- Git installation
+- GitHub CLI (gh)
+- Cookiecutter
+- pre-commit
+
+#### `agentic-canon audit`
+
+Run security and quality audit on project:
+
+```bash
+agentic-canon audit
+```
+
+Audits:
+- Security policy (SECURITY.md)
+- Secrets in .gitignore
+- Security workflows
+- CODEOWNERS file
+- Dependabot configuration
 
 ### Example Session
 
@@ -62,8 +123,9 @@ The wizard will guide you through:
   3. React WebApp (Vite + TypeScript)
   4. Go Service
   5. Documentation Only (Jupyter Book)
+  6. Project Management Automation
 
-👉 Enter your choice (1-5): 1
+👉 Enter your choice (1-6): 1
 
 ✅ Selected: Python Service (FastAPI/Flask)
 
@@ -158,17 +220,60 @@ python -m agentic_canon_cli
 Launch the interactive wizard to create a new project.
 
 **Features:**
-- Template selection
+- Template selection (6 templates available)
 - Project configuration
 - Feature toggles
 - Summary and confirmation
 - Automatic project generation
 
+### `agentic-canon repo-init`
+
+Add project management automation to existing repository.
+
+**Features:**
+- TODO/FIXME tracking
+- Tasklist automation
+- PR follow-up automation
+- Issue auto-triage
+- Stale issue management
+- CODEOWNERS setup
+
+### `agentic-canon validate`
+
+Validate project structure and configuration.
+
+**Checks:**
+- Required and recommended files
+- .github directory structure
+- Workflow files
+- Git repository
+
+### `agentic-canon doctor`
+
+Diagnose environment setup and dependencies.
+
+**Checks:**
+- Python version (3.8+)
+- Git
+- GitHub CLI
+- Cookiecutter
+- pre-commit
+
+### `agentic-canon audit`
+
+Run security and quality audit.
+
+**Audits:**
+- Security policy
+- .gitignore patterns
+- Security workflows
+- CODEOWNERS
+- Dependabot config
+
 ### Future Commands (Planned)
 
 - `agentic-canon update` - Update existing project from template
 - `agentic-canon check` - Validate project structure
-- `agentic-canon doctor` - Diagnose common issues
 - `agentic-canon list` - List available templates
 
 ## Template Variables
@@ -188,6 +293,25 @@ The CLI automatically configures these Cookiecutter variables:
 | `enable_security_gates` | Enable security | "yes"/"no" |
 | `enable_sbom_signing` | Enable SBOM | "yes"/"no" |
 | `enable_contract_tests` | Enable contracts | "yes"/"no" |
+| `ci_provider` | CI/CD provider | "github"/"gitlab"/"azure" |
+
+### Project Management Template Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `project_name` | Project name | "My Project" |
+| `project_slug` | Kebab-case slug | "my-project" |
+| `github_org` | GitHub org/user | "my-org" |
+| `project_description` | Brief description | "Well-managed project" |
+| `enable_todo_tracking` | TODO → Issue automation | "yes"/"no" |
+| `enable_tasklist_tracking` | Tasklist → Issue | "yes"/"no" |
+| `enable_pr_followups` | PR follow-ups | "yes"/"no" |
+| `enable_issue_triage` | Auto-triage | "yes"/"no" |
+| `auto_close_stale_issues` | Stale management | "yes"/"no" |
+| `enable_codeowners` | CODEOWNERS file | "yes"/"no" |
+| `default_branch` | Default branch | "main" |
+| `require_approvals` | PR approvals | "2" |
+| `stale_days` | Days before stale | "60" |
 | `ci_provider` | CI/CD platform | "github"/"gitlab"/"azure" |
 
 ## Troubleshooting

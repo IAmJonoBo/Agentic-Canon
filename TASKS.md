@@ -204,11 +204,34 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 121 checks passed, 17 tests 
 - [x] Run initial git setup and pre-commit hooks
 - [x] Display next steps and usage instructions
 
-### CLI Enhancements 🆕
-- [ ] Add `agentic-canon validate` - Validate generated project structure and configuration
+### CLI Enhancements ✅ **COMPLETE**
+- [x] Add `agentic-canon repo-init` - Add project management automation to existing repository
+- [x] Add `agentic-canon validate` - Validate generated project structure and configuration
+- [x] Add `agentic-canon doctor` - Check environment setup and dependencies
+- [x] Add `agentic-canon audit` - Run security and quality audit on project
 - [ ] Add `agentic-canon update` - Update project from template using Cruft
-- [ ] Add `agentic-canon audit` - Run security and quality audit on project
-- [ ] Add `agentic-canon doctor` - Check environment setup and dependencies
+
+### Project Management Automation ✅ **COMPLETE** 🆕
+- [x] Create project-management cookiecutter template
+  - [x] Template variables and configuration (cookiecutter.json)
+  - [x] Pre/post generation hooks with validation
+  - [x] Full documentation (README, PROJECT_MANAGEMENT.md)
+- [x] Implement GitHub Actions workflows:
+  - [x] `todos.yml` - Convert TODO/FIXME comments to GitHub Issues
+  - [x] `tasklist-scan.yml` - Convert markdown checklist items to Issues
+  - [x] `pr-review-followup.yml` - Create issues from PR review comments
+  - [x] `issue-triage.yml` - Auto-label and respond to new issues
+  - [x] `stale.yml` - Automatically close stale issues
+- [x] Create GitHub templates:
+  - [x] Issue templates (bug report, feature request, task)
+  - [x] PR template with checklist
+  - [x] CODEOWNERS file for automatic reviewer assignment
+- [x] Add to root repository (.github/workflows/)
+  - [x] Enable workflows in Agentic Canon itself
+  - [x] Self-dogfooding the automation
+- [x] Comprehensive testing (4 tests, all passing ✅)
+- [x] CLI integration (`agentic-canon repo-init` command)
+- [x] Documentation and usage guide
 
 ### Testing & Deployment
 - [ ] Test generated Python template in a real project scenario

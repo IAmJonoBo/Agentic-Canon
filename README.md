@@ -84,9 +84,9 @@ jupyter notebook notebooks/
 
 ## Available Templates
 
-**All 5 primary templates are complete and tested (8/8 tests passing ✅):**
+**All 6 primary templates are complete and tested (21 cookiecutter tests passing ✅):**
 
-All templates include security scanning, quality gates, SBOM generation, and CI/CD pipelines.
+All templates include security scanning, quality gates, SBOM generation, and CI/CD pipelines (where applicable).
 
 ### Python Service (`templates/python-service`) ✅
 
@@ -95,6 +95,7 @@ Modern Python service with type hints, Black formatting, Ruff linting, pytest wi
 **Generate:**
 ```bash
 cookiecutter templates/python-service
+# Or: agentic-canon init
 ```
 
 ### Node.js Service (`templates/node-service`) ✅
@@ -104,6 +105,7 @@ TypeScript service with ESLint, Prettier, Vitest testing, security scanning, and
 **Generate:**
 ```bash
 cookiecutter templates/node-service
+# Or: agentic-canon init
 ```
 
 ### React WebApp (`templates/react-webapp`) ✅
@@ -113,6 +115,7 @@ Vite + TypeScript + React with Playwright E2E tests, Storybook component library
 **Generate:**
 ```bash
 cookiecutter templates/react-webapp
+# Or: agentic-canon init
 ```
 
 ### Go Service (`templates/go-service`) ✅
@@ -122,6 +125,7 @@ Go service with golangci-lint, testing, Makefile build automation, security scan
 **Generate:**
 ```bash
 cookiecutter templates/go-service
+# Or: agentic-canon init
 ```
 
 ### Docs-Only (`templates/docs-only`) ✅
@@ -131,7 +135,29 @@ Jupyter Book documentation site with MyST Markdown, version control via Jupytext
 **Generate:**
 ```bash
 cookiecutter templates/docs-only
+# Or: agentic-canon init
 ```
+
+### Project Management (`templates/project-management`) ✅ **NEW**
+
+Automated project management setup with GitHub Actions workflows for task tracking and issue management.
+
+**Features:**
+- 🔄 TODO/FIXME → GitHub Issues automation
+- 📋 Markdown tasklist → GitHub Issues automation  
+- 💬 PR review follow-ups → Issues automation
+- 🏷️ Auto-triage and label new issues
+- 🧹 Stale issue management
+- 👥 CODEOWNERS and PR templates
+- 📝 Issue templates (bug, feature, task)
+
+**Generate:**
+```bash
+cookiecutter templates/project-management
+# Or: agentic-canon repo-init  # Add to existing repo
+```
+
+**Use Case:** Add automated task tracking and project management to any repository, eliminating manual overhead while maintaining visibility.
 
 ### Additional Template Categories ✅
 

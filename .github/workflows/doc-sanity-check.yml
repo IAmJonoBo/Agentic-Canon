@@ -1,0 +1,260 @@
+name: Documentation Sanity Check
+on:
+  pull_request:
+    paths:
+      - '**.md'
+      - 'docs/**'
+      - 'TASKS.md'
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday at midnight
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  sanity-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      
+      - name: Check Core Documentation
+        run: |
+          echo "📚 Checking core documentation files..."
+          
+          ERRORS=0
+          WARNINGS=0
+          
+          # Core documentation files that must exist
+          REQUIRED_DOCS=(
+            "README.md"
+            "CONTRIBUTING.md"
+            "SECURITY.md"
+            "CODE_OF_CONDUCT.md"
+            "LICENSE"
+            "TASKS.md"
+            "FRAMEWORK.md"
+            "QUALITY_STANDARDS.md"
+            "CONVENTIONS.md"
+          )
+          
+          for doc in "${REQUIRED_DOCS[@]}"; do
+            if [ -f "$doc" ]; then
+              echo "  ✓ $doc"
+            else
+              echo "  ❌ Missing: $doc"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+          
+          # Check for stale timestamps
+          echo ""
+          echo "📅 Checking documentation freshness..."
+          
+          # TASKS.md should be updated recently
+          if [ -f "TASKS.md" ]; then
+            last_modified=$(stat -c %Y TASKS.md 2>/dev/null || stat -f %m TASKS.md 2>/dev/null)
+            now=$(date +%s)
+            days_old=$(( (now - last_modified) / 86400 ))
+            
+            if [ $days_old -gt 30 ]; then
+              echo "  ⚠️  TASKS.md is $days_old days old (consider updating)"
+              WARNINGS=$((WARNINGS + 1))
+            else
+              echo "  ✓ TASKS.md is fresh ($days_old days old)"
+            fi
+          fi
+          
+          echo "ERRORS=$ERRORS" >> $GITHUB_ENV
+          echo "WARNINGS=$WARNINGS" >> $GITHUB_ENV
+      
+      - name: Check ADRs
+        run: |
+          echo "📋 Checking ADR consistency..."
+          
+          # Count ADRs
+          adr_count=$(find docs/adr -name "ADR-*.md" 2>/dev/null | wc -l)
+          echo "  Found $adr_count ADRs"
+          
+          # Check ADR README
+          if [ -f "docs/adr/README.md" ]; then
+            echo "  ✓ ADR README exists"
+            
+            # Check if README mentions all ADRs
+            for adr in docs/adr/ADR-*.md; do
+              if [ -f "$adr" ]; then
+                adr_name=$(basename "$adr")
+                if ! grep -q "$adr_name" docs/adr/README.md; then
+                  echo "  ⚠️  $adr_name not linked in README"
+                  WARNINGS=$((WARNINGS + 1))
+                fi
+              fi
+            done
+          else
+            echo "  ❌ docs/adr/README.md missing"
+            ERRORS=$((ERRORS + 1))
+          fi
+          
+          echo "ERRORS=$ERRORS" >> $GITHUB_ENV
+          echo "WARNINGS=$WARNINGS" >> $GITHUB_ENV
+      
+      - name: Check Templates
+        run: |
+          echo "📦 Checking template structure..."
+          
+          REQUIRED_TEMPLATES=(
+            "templates/python-service"
+            "templates/node-service"
+            "templates/react-webapp"
+            "templates/go-service"
+            "templates/docs-only"
+          )
+          
+          for template in "${REQUIRED_TEMPLATES[@]}"; do
+            if [ -d "$template" ]; then
+              echo "  ✓ $template"
+              
+              # Check for cookiecutter.json
+              if [ ! -f "$template/cookiecutter.json" ]; then
+                echo "    ⚠️  Missing cookiecutter.json"
+                WARNINGS=$((WARNINGS + 1))
+              fi
+              
+              # Check for hooks
+              if [ ! -d "$template/hooks" ]; then
+                echo "    ⚠️  Missing hooks directory"
+                WARNINGS=$((WARNINGS + 1))
+              fi
+            else
+              echo "  ⚠️  Missing: $template"
+              WARNINGS=$((WARNINGS + 1))
+            fi
+          done
+          
+          echo "ERRORS=$ERRORS" >> $GITHUB_ENV
+          echo "WARNINGS=$WARNINGS" >> $GITHUB_ENV
+      
+      - name: Check Issue Templates
+        run: |
+          echo "🎫 Checking issue templates..."
+          
+          if [ ! -d ".github/ISSUE_TEMPLATE" ]; then
+            echo "  ❌ .github/ISSUE_TEMPLATE directory missing"
+            ERRORS=$((ERRORS + 1))
+          else
+            echo "  ✓ Issue template directory exists"
+            
+            REQUIRED_TEMPLATES=(
+              "bug_report.md"
+              "feature_request.md"
+              "task.md"
+              "adr_proposal.md"
+            )
+            
+            for template in "${REQUIRED_TEMPLATES[@]}"; do
+              if [ -f ".github/ISSUE_TEMPLATE/$template" ]; then
+                echo "    ✓ $template"
+              else
+                echo "    ⚠️  Missing: $template"
+                WARNINGS=$((WARNINGS + 1))
+              fi
+            done
+            
+            # Check for config.yml
+            if [ -f ".github/ISSUE_TEMPLATE/config.yml" ]; then
+              echo "    ✓ config.yml"
+            else
+              echo "    ⚠️  Missing config.yml"
+              WARNINGS=$((WARNINGS + 1))
+            fi
+          fi
+          
+          echo "ERRORS=$ERRORS" >> $GITHUB_ENV
+          echo "WARNINGS=$WARNINGS" >> $GITHUB_ENV
+      
+      - name: Check TASKS.md Consistency
+        run: |
+          echo "📝 Checking TASKS.md consistency..."
+          
+          if [ ! -f "TASKS.md" ]; then
+            echo "  ❌ TASKS.md not found"
+            exit 1
+          fi
+          
+          # Check for unchecked items without issue links
+          unchecked=$(grep -c "^- \[ \] [^#]" TASKS.md || true)
+          
+          if [ $unchecked -gt 0 ]; then
+            echo "  ⚠️  Found $unchecked unchecked items without issue links"
+            echo "     Consider running tasklist-scan workflow to create issues"
+            WARNINGS=$((WARNINGS + 1))
+          else
+            echo "  ✓ All unchecked items have issue links"
+          fi
+          
+          # Check for "SINGLE SOURCE OF TRUTH" marker
+          if grep -q "SINGLE SOURCE OF TRUTH" TASKS.md; then
+            echo "  ✓ TASKS.md marked as single source of truth"
+          else
+            echo "  ⚠️  TASKS.md should be marked as single source of truth"
+            WARNINGS=$((WARNINGS + 1))
+          fi
+          
+          echo "ERRORS=$ERRORS" >> $GITHUB_ENV
+          echo "WARNINGS=$WARNINGS" >> $GITHUB_ENV
+      
+      - name: Summary
+        run: |
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📊 Documentation Sanity Check Summary"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ Errors: $ERRORS"
+          echo "⚠️  Warnings: $WARNINGS"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          
+          if [ $ERRORS -gt 0 ]; then
+            echo "❌ Documentation sanity check failed"
+            exit 1
+          elif [ $WARNINGS -gt 0 ]; then
+            echo "⚠️  Documentation sanity check passed with warnings"
+          else
+            echo "✅ All documentation checks passed!"
+          fi
+      
+      - name: Create issue for stale docs (scheduled only)
+        if: github.event_name == 'schedule' && env.WARNINGS > 5
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const warnings = parseInt(process.env.WARNINGS);
+            
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '📚 Documentation maintenance needed',
+              body: `## Documentation Sanity Check Alert
+              
+              The weekly documentation sanity check found **${warnings} warnings**.
+              
+              This suggests that documentation may need updating or maintenance.
+              
+              **Recommended Actions:**
+              1. Review TASKS.md and ensure it's up to date
+              2. Check that all ADRs are linked in docs/adr/README.md
+              3. Verify issue templates are complete
+              4. Run the tasklist-scan workflow to sync unchecked items
+              
+              **Details:**
+              - Run date: ${new Date().toISOString()}
+              - Warnings: ${warnings}
+              
+              See the [workflow run](${context.payload.repository.html_url}/actions/runs/${context.runId}) for details.
+              `,
+              labels: ['documentation', 'maintenance', 'automated']
+            });
+            
+            console.log(`Created issue #${issue.data.number}`);

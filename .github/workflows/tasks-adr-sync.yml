@@ -1,0 +1,226 @@
+name: Tasks and ADR Sync
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Monday at 6 AM
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  sync-tasks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      
+      - name: Sync TASKS.md with Issues
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            
+            console.log('📊 Syncing TASKS.md with GitHub Issues...');
+            
+            // Read TASKS.md
+            const tasksPath = 'TASKS.md';
+            if (!fs.existsSync(tasksPath)) {
+              console.log('❌ TASKS.md not found');
+              return;
+            }
+            
+            let content = fs.readFileSync(tasksPath, 'utf8');
+            
+            // Find all issue references in TASKS.md
+            const issuePattern = /#(\d+)/g;
+            const issueNumbers = [...content.matchAll(issuePattern)].map(m => parseInt(m[1]));
+            
+            console.log(`Found ${issueNumbers.length} issue references in TASKS.md`);
+            
+            let updates = 0;
+            
+            // Check each issue and update status if closed
+            for (const issueNum of issueNumbers) {
+              try {
+                const { data: issue } = await github.rest.issues.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNum
+                });
+                
+                if (issue.state === 'closed') {
+                  // Find unchecked items with this issue number and mark them as checked
+                  const pattern = new RegExp(`^- \\[ \\] #${issueNum}`, 'gm');
+                  const newContent = content.replace(pattern, `- [x] #${issueNum}`);
+                  
+                  if (newContent !== content) {
+                    console.log(`  ✓ Marked issue #${issueNum} as completed (${issue.title})`);
+                    content = newContent;
+                    updates++;
+                  }
+                }
+              } catch (error) {
+                console.log(`  ⚠️  Could not check issue #${issueNum}: ${error.message}`);
+              }
+            }
+            
+            // Write back if there were changes
+            if (updates > 0) {
+              fs.writeFileSync(tasksPath, content);
+              console.log(`\n✅ Updated ${updates} completed items in TASKS.md`);
+            } else {
+              console.log('\n✅ TASKS.md is up to date');
+            }
+            
+            return updates;
+      
+      - name: Check for new ADRs
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            console.log('📋 Checking for new ADRs...');
+            
+            const adrDir = 'docs/adr';
+            const readmePath = path.join(adrDir, 'README.md');
+            
+            if (!fs.existsSync(readmePath)) {
+              console.log('❌ docs/adr/README.md not found');
+              return;
+            }
+            
+            const readme = fs.readFileSync(readmePath, 'utf8');
+            
+            // Find all ADR files
+            const adrFiles = fs.readdirSync(adrDir)
+              .filter(f => f.startsWith('ADR-') && f.endsWith('.md'))
+              .sort();
+            
+            console.log(`Found ${adrFiles.length} ADR files`);
+            
+            // Check which ones are not in README
+            const missingInReadme = [];
+            for (const adrFile of adrFiles) {
+              if (!readme.includes(adrFile)) {
+                missingInReadme.push(adrFile);
+              }
+            }
+            
+            if (missingInReadme.length > 0) {
+              console.log(`\n⚠️  Found ${missingInReadme.length} ADRs not linked in README:`);
+              missingInReadme.forEach(f => console.log(`  - ${f}`));
+              
+              // Create an issue to track this
+              const issueBody = `## ADRs Not Linked in README
+              
+              The following ADR files exist but are not linked in \`docs/adr/README.md\`:
+              
+              ${missingInReadme.map(f => `- [ ] ${f}`).join('\n')}
+              
+              **Action Required:**
+              Please update \`docs/adr/README.md\` to include links to these ADRs.
+              
+              **Automatically detected by:** Tasks and ADR Sync workflow
+              `;
+              
+              // Check if issue already exists
+              const { data: existingIssues } = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                labels: 'adr,documentation'
+              });
+              
+              const hasIssue = existingIssues.some(i => 
+                i.title.includes('ADRs Not Linked in README')
+              );
+              
+              if (!hasIssue) {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: '📋 ADRs Not Linked in README',
+                  body: issueBody,
+                  labels: ['adr', 'documentation', 'automated']
+                });
+                console.log('✓ Created issue to track missing ADR links');
+              }
+            } else {
+              console.log('✅ All ADRs are linked in README');
+            }
+      
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          if git diff --quiet TASKS.md; then
+            echo "No changes to commit"
+          else
+            git add TASKS.md
+            git commit -m "chore: sync TASKS.md with closed issues [skip ci]"
+            git push
+            echo "✅ Committed TASKS.md updates"
+          fi
+      
+      - name: Generate sync report
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            
+            console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('📊 Tasks and ADR Sync Report');
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            
+            // Count open vs closed items in TASKS.md
+            if (fs.existsSync('TASKS.md')) {
+              const content = fs.readFileSync('TASKS.md', 'utf8');
+              const openTasks = (content.match(/^- \[ \]/gm) || []).length;
+              const completedTasks = (content.match(/^- \[x\]/gm) || []).length;
+              const total = openTasks + completedTasks;
+              const completion = total > 0 ? ((completedTasks / total) * 100).toFixed(1) : 0;
+              
+              console.log(`\n📝 TASKS.md Status:`);
+              console.log(`  Total items: ${total}`);
+              console.log(`  Completed: ${completedTasks}`);
+              console.log(`  Open: ${openTasks}`);
+              console.log(`  Completion: ${completion}%`);
+            }
+            
+            // Count ADRs by status
+            const adrDir = 'docs/adr';
+            if (fs.existsSync(adrDir)) {
+              const adrFiles = fs.readdirSync(adrDir)
+                .filter(f => f.startsWith('ADR-') && f.endsWith('.md'));
+              
+              const statuses = { proposed: 0, accepted: 0, deprecated: 0, superseded: 0, unknown: 0 };
+              
+              for (const file of adrFiles) {
+                const content = fs.readFileSync(`${adrDir}/${file}`, 'utf8');
+                const statusMatch = content.match(/^status:\s*(\w+)/m);
+                if (statusMatch) {
+                  const status = statusMatch[1].toLowerCase();
+                  statuses[status] = (statuses[status] || 0) + 1;
+                } else {
+                  statuses.unknown++;
+                }
+              }
+              
+              console.log(`\n📋 ADR Status:`);
+              console.log(`  Total ADRs: ${adrFiles.length}`);
+              console.log(`  Proposed: ${statuses.proposed}`);
+              console.log(`  Accepted: ${statuses.accepted}`);
+              console.log(`  Deprecated: ${statuses.deprecated}`);
+              console.log(`  Superseded: ${statuses.superseded}`);
+              if (statuses.unknown > 0) {
+                console.log(`  Unknown: ${statuses.unknown}`);
+              }
+            }
+            
+            console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('✅ Sync completed successfully');

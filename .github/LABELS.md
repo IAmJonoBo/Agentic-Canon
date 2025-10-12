@@ -12,6 +12,10 @@ These labels MUST be created in the repository for the workflows to function cor
 - `task` (color: `#0e8a16`) - Work item or task
 - `documentation` (color: `#0075ca`) - Documentation improvements or additions
 - `question` (color: `#d876e3`) - Further information is requested
+- `adr` (color: `#7057ff`) - Architecture Decision Record
+- `type:bug` (color: `#d73a4a`) - Bug type classification
+- `type:feature` (color: `#a2eeef`) - Feature type classification
+- `type:task` (color: `#0e8a16`) - Task type classification
 
 ### Workflow Labels
 - `from:todo` (color: `#d4c5f9`) - Created from TODO/FIXME comment in code
@@ -29,6 +33,19 @@ These labels MUST be created in the repository for the workflows to function cor
 - `security` (color: `#ee0701`) - Security-related issue
 - `performance` (color: `#1d76db`) - Performance-related issue
 - `critical` (color: `#b60205`) - Critical issue that needs immediate attention
+- `needs-review` (color: `#fbca04`) - Needs review from maintainers
+- `in-progress` (color: `#0e8a16`) - Currently being worked on
+- `blocked` (color: `#d93f0b`) - Blocked by another issue or external dependency
+
+### Component Labels
+- `component:templates` (color: `#c2e0c6`) - Related to Cookiecutter templates
+- `component:notebooks` (color: `#c2e0c6`) - Related to Jupyter notebooks
+- `component:docs` (color: `#c2e0c6`) - Related to documentation/Jupyter Book
+- `component:cli` (color: `#c2e0c6`) - Related to CLI tool
+- `component:ci-cd` (color: `#c2e0c6`) - Related to CI/CD workflows
+- `component:testing` (color: `#c2e0c6`) - Related to testing infrastructure
+- `component:security` (color: `#c2e0c6`) - Related to security/compliance
+- `architecture` (color: `#7057ff`) - Architectural decisions and design
 
 ### Exemption Labels
 These labels exempt issues/PRs from being marked as stale:
@@ -53,6 +70,10 @@ gh label create "enhancement" --color "a2eeef" --description "New feature or req
 gh label create "task" --color "0e8a16" --description "Work item or task" || true
 gh label create "documentation" --color "0075ca" --description "Documentation improvements or additions" || true
 gh label create "question" --color "d876e3" --description "Further information is requested" || true
+gh label create "adr" --color "7057ff" --description "Architecture Decision Record" || true
+gh label create "type:bug" --color "d73a4a" --description "Bug type classification" || true
+gh label create "type:feature" --color "a2eeef" --description "Feature type classification" || true
+gh label create "type:task" --color "0e8a16" --description "Task type classification" || true
 
 gh label create "from:todo" --color "d4c5f9" --description "Created from TODO/FIXME comment" || true
 gh label create "from:tasklist" --color "bfdadc" --description "Created from markdown checklist" || true
@@ -68,6 +89,19 @@ gh label create "security" --color "ee0701" --description "Security-related issu
 gh label create "performance" --color "1d76db" --description "Performance-related issue" || true
 gh label create "critical" --color "b60205" --description "Critical issue needing immediate attention" || true
 gh label create "pinned" --color "0e8a16" --description "Pinned, won't be marked stale" || true
+gh label create "needs-review" --color "fbca04" --description "Needs review from maintainers" || true
+gh label create "in-progress" --color "0e8a16" --description "Currently being worked on" || true
+gh label create "blocked" --color "d93f0b" --description "Blocked by another issue or dependency" || true
+
+# Component labels
+gh label create "component:templates" --color "c2e0c6" --description "Related to Cookiecutter templates" || true
+gh label create "component:notebooks" --color "c2e0c6" --description "Related to Jupyter notebooks" || true
+gh label create "component:docs" --color "c2e0c6" --description "Related to documentation/Jupyter Book" || true
+gh label create "component:cli" --color "c2e0c6" --description "Related to CLI tool" || true
+gh label create "component:ci-cd" --color "c2e0c6" --description "Related to CI/CD workflows" || true
+gh label create "component:testing" --color "c2e0c6" --description "Related to testing infrastructure" || true
+gh label create "component:security" --color "c2e0c6" --description "Related to security/compliance" || true
+gh label create "architecture" --color "7057ff" --description "Architectural decisions and design" || true
 ```
 
 ### Using GitHub Web UI

@@ -6,7 +6,7 @@
 
 Last Updated: 2025-10-12  
 Last Verified: 2025-10-12 (Enhanced validation: ✅ 121 checks passed, 17 tests passing, ⚠️ 2 warnings, ❌ 0 failed)  
-**Latest Progress**: 2 working example projects completed (FastAPI User Service ✅, Express User API ✅)
+**Latest Progress**: Self-dogfooding automation complete! ✅ All templates now have .pre-commit-config.yaml ✅ CLI `update` command added ✅ Issue/PR templates added
 
 ## Version 1.0 - Base Infrastructure (Foundation) ✅ COMPLETE
 
@@ -209,7 +209,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 121 checks passed, 17 tests 
 - [x] Add `agentic-canon validate` - Validate generated project structure and configuration
 - [x] Add `agentic-canon doctor` - Check environment setup and dependencies
 - [x] Add `agentic-canon audit` - Run security and quality audit on project
-- [ ] Add `agentic-canon update` - Update project from template using Cruft
+- [x] Add `agentic-canon update` - Update project from template using Cruft
 
 ### Project Management Automation ✅ **COMPLETE** 🆕
 - [x] Create project-management cookiecutter template
@@ -484,12 +484,12 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 121 checks passed, 17 tests 
   - ✓ Exempt from security workflows (documentation only)
   - ⚠️ Missing: .pre-commit-config.yaml
 
-### Template Standardization 🚧 IN PROGRESS
-- [ ] Add .pre-commit-config.yaml to remaining templates (increases compliance to 100%)
-  - [ ] node-service
-  - [ ] react-webapp
-  - [ ] go-service
-  - [ ] docs-only
+### Template Standardization ✅ **COMPLETE**
+- [x] Add .pre-commit-config.yaml to remaining templates (increases compliance to 100%)
+  - [x] node-service
+  - [x] react-webapp
+  - [x] go-service
+  - [x] docs-only
 - [x] All templates have CI/CD workflows ✅
 - [x] All templates have security scanning (except docs-only - exempt) ✅
 - [x] All templates have proper structure (cookiecutter.json, hooks, README) ✅
@@ -801,12 +801,12 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] axe-core integration
   - [ ] pa11y in CI/CD
   - [ ] WCAG 2.2 AA compliance checks
-- [ ] Add .pre-commit-config.yaml to remaining templates (HIGH PRIORITY)
-  - [ ] node-service
-  - [ ] react-webapp
-  - [ ] go-service
-  - [ ] docs-only
-  - [ ] Standardize pre-commit hooks across all templates
+- [x] Add .pre-commit-config.yaml to remaining templates (HIGH PRIORITY) ✅ **COMPLETE**
+  - [x] node-service
+  - [x] react-webapp
+  - [x] go-service
+  - [x] docs-only
+  - [x] Standardize pre-commit hooks across all templates
 
 ### Documentation Improvements
 - [ ] Create video tutorials for templates (scripts ready)

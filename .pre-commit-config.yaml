@@ -8,3 +8,11 @@ repos:
     hooks:
       - id: jupytext
         args: ["--sync"]
+  - repo: local
+    hooks:
+      - id: sanity-check
+        name: Agentic Canon Sanity Check
+        entry: ./sanity-check.sh --quiet
+        language: system
+        pass_filenames: false
+        always_run: true

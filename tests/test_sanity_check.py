@@ -163,5 +163,181 @@ def test_sanity_check_count_increased():
     assert match, "Could not find passed count in output"
     
     passed_count = int(match.group(1))
-    # Should have at least 135 checks (we added several new ones)
-    assert passed_count >= 135, f"Expected at least 135 checks, got {passed_count}"
+    # Should have at least 145 checks (we added more new ones)
+    assert passed_count >= 145, f"Expected at least 145 checks, got {passed_count}"
+
+
+def test_sanity_check_quiet_mode():
+    """Test that sanity check runs in quiet mode."""
+    result = subprocess.run(
+        ["./sanity-check.sh", "--quiet"],
+        capture_output=True,
+        text=True,
+        timeout=180
+    )
+    
+    assert result.returncode == 0
+    # Should still have summary
+    assert "Sanity Check Summary" in result.stdout
+    # But should have fewer output lines
+    lines = result.stdout.split('\n')
+    # Quiet mode should have significantly fewer lines than verbose
+    assert len(lines) < 200, f"Quiet mode should have fewer lines, got {len(lines)}"
+
+
+def test_sanity_check_verbose_mode():
+    """Test that sanity check runs in verbose mode."""
+    result = subprocess.run(
+        ["./sanity-check.sh", "--verbose"],
+        capture_output=True,
+        text=True,
+        timeout=180
+    )
+    
+    assert result.returncode == 0
+    assert "Sanity Check Summary" in result.stdout
+
+
+def test_sanity_check_help():
+    """Test that sanity check shows help message."""
+    result = subprocess.run(
+        ["./sanity-check.sh", "--help"],
+        capture_output=True,
+        text=True,
+        timeout=30
+    )
+    
+    assert result.returncode == 0
+    assert "Usage:" in result.stdout
+    assert "--verbose" in result.stdout
+    assert "--quiet" in result.stdout
+    assert "--parallel" in result.stdout
+    assert "--html-report" in result.stdout
+
+
+def test_sanity_check_html_report():
+    """Test that sanity check generates HTML report."""
+    import os
+    import tempfile
+    
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as f:
+        report_path = f.name
+    
+    try:
+        result = subprocess.run(
+            ["./sanity-check.sh", "--html-report", report_path, "--quiet"],
+            capture_output=True,
+            text=True,
+            timeout=180
+        )
+        
+        assert result.returncode == 0
+        assert os.path.exists(report_path), "HTML report file should be created"
+        
+        # Check HTML content
+        with open(report_path, 'r') as f:
+            html_content = f.read()
+        
+        assert "<!DOCTYPE html>" in html_content
+        assert "Sanity Check Report" in html_content
+        assert "Passed" in html_content
+        assert "Warnings" in html_content
+        assert "Failed" in html_content
+        
+    finally:
+        if os.path.exists(report_path):
+            os.unlink(report_path)
+
+
+def test_sanity_check_performance_metrics():
+    """Test that sanity check includes performance metrics."""
+    result = subprocess.run(
+        ["./sanity-check.sh", "--quiet"],
+        capture_output=True,
+        text=True,
+        timeout=180
+    )
+    
+    assert result.returncode == 0
+    # Check for duration in summary
+    assert "Duration:" in result.stdout
+    import re
+    match = re.search(r"Duration: (\d+)s", result.stdout)
+    assert match, "Could not find duration in output"
+    duration = int(match.group(1))
+    # Should complete in reasonable time (less than 3 minutes)
+    assert duration < 180, f"Sanity check took too long: {duration}s"
+
+
+def test_sanity_check_markdown_linting():
+    """Test that sanity check includes markdown linting."""
+    result = subprocess.run(
+        ["./sanity-check.sh"],
+        capture_output=True,
+        text=True,
+        timeout=180
+    )
+    
+    assert result.returncode == 0
+    # Check for markdown linting section
+    assert "Checking Markdown Formatting" in result.stdout or "📝" in result.stdout
+
+
+def test_sanity_check_dependency_security():
+    """Test that sanity check includes dependency security scanning."""
+    result = subprocess.run(
+        ["./sanity-check.sh"],
+        capture_output=True,
+        text=True,
+        timeout=180
+    )
+    
+    assert result.returncode == 0
+    # Check for dependency security section
+    assert "Checking Dependency Security" in result.stdout or "🔒" in result.stdout
+    # Should check requirements.txt
+    assert "requirements.txt" in result.stdout
+
+
+def test_sanity_check_license_compatibility():
+    """Test that sanity check includes license compatibility checking."""
+    result = subprocess.run(
+        ["./sanity-check.sh"],
+        capture_output=True,
+        text=True,
+        timeout=180
+    )
+    
+    assert result.returncode == 0
+    # Check for license compatibility section
+    assert "Checking License Compatibility" in result.stdout or "⚖️" in result.stdout
+
+
+def test_sanity_check_code_duplication():
+    """Test that sanity check includes code duplication detection."""
+    result = subprocess.run(
+        ["./sanity-check.sh"],
+        capture_output=True,
+        text=True,
+        timeout=180
+    )
+    
+    assert result.returncode == 0
+    # Check for code duplication section
+    assert "Checking for Code Duplication" in result.stdout or "🔍" in result.stdout
+
+
+def test_sanity_check_json_schema_validation():
+    """Test that sanity check includes JSON schema validation."""
+    result = subprocess.run(
+        ["./sanity-check.sh"],
+        capture_output=True,
+        text=True,
+        timeout=180
+    )
+    
+    assert result.returncode == 0
+    # Check for JSON schema validation section
+    assert "Validating JSON Schemas" in result.stdout or "📋" in result.stdout
+    # Should check cookiecutter.json files
+    assert "cookiecutter.json" in result.stdout

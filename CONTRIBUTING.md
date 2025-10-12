@@ -177,6 +177,14 @@ Closes #123
 
 ## Quality Standards
 
+All contributions must meet the Agentic Canon quality standards. See our comprehensive framework:
+
+- **[FRAMEWORK.md](FRAMEWORK.md)** - Overall framework and philosophy
+- **[QUALITY_STANDARDS.md](QUALITY_STANDARDS.md)** - Detailed quality requirements
+- **[CONVENTIONS.md](CONVENTIONS.md)** - Development conventions
+
+### Quick Checklist
+
 All contributions should meet these standards:
 
 ### Documentation
@@ -187,16 +195,30 @@ All contributions should meet these standards:
 - ✅ Examples added for new features
 
 ### Code Quality
-- ✅ Code follows project conventions
+- ✅ Code follows project conventions (see [CONVENTIONS.md](CONVENTIONS.md))
 - ✅ No obvious code smells
 - ✅ Appropriate error handling
 - ✅ Clear variable and function names
+- ✅ Type hints/annotations included (Python/TypeScript)
+
+### Testing
+- ✅ Tests added/updated for changes
+- ✅ Code coverage maintained (≥80%)
+- ✅ All tests pass locally
+- ✅ No flaky tests introduced
+
+### Security
+- ✅ No secrets in code
+- ✅ Input validation where appropriate
+- ✅ Dependencies reviewed and approved
+- ✅ Security best practices followed
 
 ### Templates
 - ✅ Template renders successfully with pytest-cookies
 - ✅ Generated project structure is valid
 - ✅ CI/CD workflows included
 - ✅ Documentation included
+- ✅ All quality gates pass in generated project
 
 ## Submitting Changes
 

@@ -479,6 +479,13 @@ rollout:
 ## Support & References
 
 ### Documentation
+
+#### Framework Core (Start Here!)
+- **[FRAMEWORK.md](FRAMEWORK.md)** - Unified framework defining OUR approach
+- **[QUALITY_STANDARDS.md](QUALITY_STANDARDS.md)** - Comprehensive quality standards for all disciplines
+- **[CONVENTIONS.md](CONVENTIONS.md)** - Development conventions and best practices
+
+#### Implementation Guides
 - Full playbook: `Red Team + Software Excellence.md`
 - Templates: `/templates/` directory
 - Runbooks: `/runbooks/` directory

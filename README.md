@@ -27,10 +27,18 @@ Agentic Canon is a **comprehensive framework for frontier software excellence** 
 
 ### Key Documents
 
+#### Framework Core
+- **[FRAMEWORK.md](FRAMEWORK.md)** - 🎯 **Unified framework defining OUR approach to software excellence**
+- **[QUALITY_STANDARDS.md](QUALITY_STANDARDS.md)** - ⭐ **Comprehensive quality standards for all disciplines**
+- **[CONVENTIONS.md](CONVENTIONS.md)** - 📋 **Development conventions and best practices**
+
+#### Implementation Guides
 - **[TASKS.md](TASKS.md)** - 📍 **SINGLE SOURCE OF TRUTH** - Complete implementation roadmap tracking all features and priorities
 - **[SUMMARY.md](SUMMARY.md)** - Executive summary derived from TASKS.md
 - **[IMPLEMENTATION.md](IMPLEMENTATION.md)** - Technical decisions, architecture, testing strategy, and handover guide
 - **[V110-V200-SUMMARY.md](V110-V200-SUMMARY.md)** - Detailed v1.1.0 and v2.0.0 status
+
+#### Standards References
 - **[BIBLE.md](BIBLE.md)** - AI-friendly reference with implementation checklists, quality gates, and quick-start commands
 - **[INDEX.md](INDEX.md)** - Complete navigation guide for all templates, standards, and usage patterns
 - **[Red Team + Software Excellence.md](Red%20Team%20+%20Software%20Excellence.md)** - Comprehensive playbook for frontier software excellence with detailed controls

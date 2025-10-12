@@ -5,6 +5,7 @@ This directory contains tests for the Agentic Canon project.
 ## Overview
 
 Tests ensure the quality and correctness of:
+
 - Cookiecutter template rendering
 - Template generation hooks
 - Example configurations
@@ -13,23 +14,28 @@ Tests ensure the quality and correctness of:
 ## Test Structure
 
 ### test_cookiecutters.py
+
 Tests for Cookiecutter templates using pytest-cookies.
 
 **Tests**:
+
 - Template rendering for all templates
 - Variable validation
 - Hook execution
 - Generated project structure
 
 **Usage**:
+
 ```bash
 pytest tests/test_cookiecutters.py -v
 ```
 
 ### test_sanity_check.py
+
 Tests for the sanity check script (`sanity-check.sh`).
 
 **Tests**:
+
 - Script existence and executability
 - Successful execution with zero failures
 - Core documentation validation
@@ -41,11 +47,31 @@ Tests for the sanity check script (`sanity-check.sh`).
 - Check count verification (>=135)
 
 **Usage**:
+
 ```bash
 pytest tests/test_sanity_check.py -v
 ```
 
 **Test Count:** 11 tests covering all major sanity check categories
+
+### test_python_template_integration.py
+
+End-to-end validation for the Python service template (Task #52).
+
+**Workflow**:
+
+- Generates the template with Cookiecutter (no input mode)
+- Creates an isolated virtual environment
+- Installs the generated project in editable mode with dev extras
+- Runs the project's pytest suite to verify everything passes
+
+**Usage**:
+
+```bash
+pytest tests/test_python_template_integration.py -k real_world -v
+```
+
+The test is marked as `slow` because it installs dependencies. Exclude it with `pytest -m "not slow"` if you only need fast checks.
 
 ## Running Tests
 
@@ -57,6 +83,9 @@ pytest tests/
 
 # With verbose output
 pytest tests/ -v
+
+# Exclude slow end-to-end tests (like the Python template integration)
+pytest tests/ -m "not slow"
 
 # With coverage
 pytest tests/ --cov
@@ -88,25 +117,31 @@ pytest tests/test_cookiecutters.py::test_python_service_template
 ## Test Categories
 
 ### Unit Tests
+
 Test individual components in isolation.
 
 **Examples**:
+
 - Template variable validation
 - Hook function testing
 - Utility function testing
 
 ### Integration Tests
+
 Test template generation end-to-end.
 
 **Examples**:
+
 - Full template rendering
 - Generated project validation
 - CI workflow execution
 
 ### Template Tests
+
 Verify template correctness using pytest-cookies.
 
 **Examples**:
+
 - Template renders successfully
 - Required files are generated
 - Configuration files are valid
@@ -126,7 +161,7 @@ def test_python_service_template(cookies):
         },
         template='templates/python-service'
     )
-    
+
     assert result.exit_code == 0
     assert result.exception is None
     assert result.project_path.is_dir()
@@ -179,6 +214,7 @@ exclude_lines =
 ## Continuous Integration
 
 Tests run automatically on:
+
 - Every pull request
 - Every push to main
 - Scheduled runs (daily)
@@ -188,11 +224,13 @@ See `.github/workflows/cookiecutters-test.yml`
 ## Dependencies
 
 Test dependencies are in `requirements.txt`:
+
 - pytest - Testing framework
 - pytest-cookies - Cookiecutter testing
 - pytest-cov - Coverage reporting
 
 Install with:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -202,11 +240,13 @@ pip install -r requirements.txt
 ### Tests Failing Locally
 
 1. Update dependencies:
+
    ```bash
    pip install -r requirements.txt --upgrade
    ```
 
 2. Clear cache:
+
    ```bash
    pytest --cache-clear
    ```
@@ -248,6 +288,7 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for details.
 ## Test Metrics
 
 Target metrics:
+
 - **Coverage**: ≥80%
 - **Mutation Score**: ≥70%
 - **Execution Time**: <5 minutes

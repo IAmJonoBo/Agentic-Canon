@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed notebook test workflow pattern to correctly find notebooks
 - React dashboard working example with Storybook, Playwright, and CI workflows (examples/projects/react-dashboard)
 - Go gRPC user service working example with Buf-managed protobufs and integration tests (examples/projects/grpc-service)
+- Python template end-to-end integration test (`tests/test_python_template_integration.py`) and slow test marker configuration (`pytest.ini`)
 
 ### Changed
 

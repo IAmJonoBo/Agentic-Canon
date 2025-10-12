@@ -1,0 +1,8 @@
+title: FastAPI User Service
+author: Agentic Canon Team
+only_build_toc_files: true
+repository:
+  url: https://github.com/YOUR_USERNAME/fastapi-user-service
+  path_to_book: docs
+execute:
+  execute_notebooks: "off"

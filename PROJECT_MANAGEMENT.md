@@ -1,5 +1,10 @@
 Here’s how to get from a flaky Tasks.md to a tight, self-maintaining loop where “new tasks that surface during implementation” become real, trackable GitHub Issues—without you babysitting it.
 
+
+> **✨ Implementation Status:** This repository has implemented an enhanced version of this workflow!
+> See [docs/TASKS-ADR-SYNC.md](docs/TASKS-ADR-SYNC.md) for the live implementation with ADR integration,
+> metadata extraction, and bidirectional sync. The workflows below serve as examples and reference.
+
 Executive summary
 	•	Make GitHub Issues + Projects the single source of truth. Stop hand-editing Tasks.md (keep it as a generated mirror if you must).  ￼
 	•	Auto-harvest work from the code and reviews:

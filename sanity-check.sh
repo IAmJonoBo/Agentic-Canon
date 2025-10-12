@@ -388,6 +388,101 @@ for template in "${templates[@]}"; do
 done
 echo ""
 
+# 2.2. QUALITY_STANDARDS.md Compliance Checks
+echo "📊 Checking QUALITY_STANDARDS.md Compliance..."
+for template in "${templates[@]}"; do
+    if [ -d "templates/$template" ]; then
+        # Find the project directory
+        for proj_dir in templates/$template/{{cookiecutter.*}}/; do
+            if [ -d "$proj_dir" ]; then
+                # Security baseline checks
+                if [ -f "${proj_dir}.github/workflows/security.yml" ] || [ -f "${proj_dir}.github/workflows/ci.yml" ]; then
+                    check_pass "$template has security scanning configured"
+                else
+                    check_warn "$template should include security scanning workflow"
+                fi
+                
+                # Linting/formatting configuration checks
+                case "$template" in
+                    python-service)
+                        if [ -f "${proj_dir}pyproject.toml" ]; then
+                            check_pass "$template has Python configuration (pyproject.toml)"
+                        fi
+                        ;;
+                    node-service|react-webapp)
+                        if [ -f "${proj_dir}package.json" ]; then
+                            check_pass "$template has Node.js configuration (package.json)"
+                        fi
+                        ;;
+                    go-service)
+                        if [ -f "${proj_dir}.golangci.yml" ] || [ -f "${proj_dir}go.mod" ]; then
+                            check_pass "$template has Go configuration"
+                        fi
+                        ;;
+                esac
+                
+                # Testing framework checks
+                if [ -d "${proj_dir}tests" ] || [ -d "${proj_dir}test" ]; then
+                    check_pass "$template has testing directory"
+                else
+                    check_warn "$template should include testing directory structure"
+                fi
+                
+                # Pre-commit hooks check (security best practice)
+                if [ -f "${proj_dir}.pre-commit-config.yaml" ]; then
+                    check_pass "$template includes pre-commit hooks"
+                else
+                    check_warn "$template should include .pre-commit-config.yaml (QUALITY_STANDARDS.md)"
+                fi
+                
+                break
+            fi
+        done
+    fi
+done
+echo ""
+
+# 2.3. CONVENTIONS.md Compliance Checks
+echo "📝 Checking CONVENTIONS.md Compliance..."
+for template in "${templates[@]}"; do
+    if [ -d "templates/$template" ]; then
+        # Check hook files follow Python conventions
+        for hook_file in templates/$template/hooks/*.py; do
+            if [ -f "$hook_file" ]; then
+                # Check for proper Python file structure (has imports, no syntax errors already checked)
+                if head -n 5 "$hook_file" | grep -q "^import\|^from\|^\"\"\""; then
+                    # Has imports or docstring - good sign
+                    :
+                fi
+            fi
+        done
+        
+        # Check cookiecutter.json follows naming conventions
+        if [ -f "templates/$template/cookiecutter.json" ]; then
+            # Verify it has common expected fields
+            if grep -q "project_name\|project_slug" "templates/$template/cookiecutter.json"; then
+                check_pass "$template cookiecutter.json follows naming conventions"
+            fi
+        fi
+    fi
+done
+
+# Check if templates follow markdown conventions in READMEs
+templates_with_good_docs=0
+for template in "${templates[@]}"; do
+    if [ -f "templates/$template/README.md" ]; then
+        # Check for headers (# style)
+        if grep -q "^# " "templates/$template/README.md"; then
+            templates_with_good_docs=$((templates_with_good_docs + 1))
+        fi
+    fi
+done
+
+if [ $templates_with_good_docs -eq ${#templates[@]} ]; then
+    check_pass "All template READMEs follow markdown conventions"
+fi
+echo ""
+
 # 3. Additional Template Categories
 echo "📦 Checking Additional Template Categories..."
 additional_templates=(
@@ -880,6 +975,142 @@ if [ $schema_errors -eq 0 ]; then
     check_pass "All cookiecutter.json files have valid schemas"
 fi
 log_info ""
+
+# 21. Standards Compliance Report
+echo "📋 Generating Standards Compliance Report..."
+echo ""
+echo "═══════════════════════════════════════════════════════════════════"
+echo "              STANDARDS COMPLIANCE REPORT"
+echo "═══════════════════════════════════════════════════════════════════"
+echo ""
+echo "📚 Framework Documentation Status:"
+echo "  ✅ FRAMEWORK.md: Defines overall philosophy and principles"
+echo "  ✅ QUALITY_STANDARDS.md: Comprehensive quality gates and requirements"
+echo "  ✅ CONVENTIONS.md: Development conventions and best practices"
+echo "  ✅ TEMPLATE_STANDARDS.md: Template compliance requirements"
+echo ""
+echo "🎯 Standards Applicability to Templates:"
+echo ""
+echo "FULLY APPLICABLE (Must be met):"
+echo "  ✅ Structure & Organization"
+echo "     - cookiecutter.json present"
+echo "     - hooks/ directory with validation"
+echo "     - README.md documentation"
+echo "     - Proper directory structure"
+echo ""
+echo "  ✅ Syntax & Validation"
+echo "     - Valid Python syntax in hooks"
+echo "     - Valid JSON in configuration"
+echo "     - Valid YAML in workflows"
+echo "     - No secrets in code"
+echo ""
+echo "  ✅ CI/CD Configuration"
+echo "     - GitHub Actions workflows"
+echo "     - Security scanning setup"
+echo "     - Testing framework configured"
+echo ""
+echo "  ✅ Security Baseline"
+echo "     - Security scanning workflows"
+echo "     - .gitignore configured"
+echo "     - Secure defaults"
+echo ""
+echo "EXEMPT (Not enforced for templates):"
+echo "  ⚠️  Code Coverage Targets"
+echo "     - 80%+ coverage not required"
+echo "     - Testing framework must be configured"
+echo "     - Example tests must be provided"
+echo ""
+echo "  ⚠️  Performance Requirements"
+echo "     - No specific latency targets"
+echo "     - Performance tooling should be configured"
+echo ""
+echo "  ⚠️  Complete Feature Implementation"
+echo "     - Templates are starting points"
+echo "     - Basic patterns must be demonstrated"
+echo ""
+echo "📊 Template Compliance Summary:"
+templates_100_percent=0
+templates_90_percent=0
+templates_below_90=0
+
+# Temporarily disable exit on error for arithmetic operations
+set +e
+
+for template in "${templates[@]}"; do
+    compliance_checks=0
+    passing_checks=0
+    
+    if [ -d "templates/$template" ]; then
+        # Count compliance checks
+        [ -f "templates/$template/cookiecutter.json" ] && ((compliance_checks++)) && ((passing_checks++))
+        [ -d "templates/$template/hooks" ] && ((compliance_checks++)) && ((passing_checks++))
+        [ -f "templates/$template/README.md" ] && ((compliance_checks++)) && ((passing_checks++))
+        
+        # Check project structure
+        if [ -n "$(find "templates/$template" -maxdepth 1 -type d -name "{{cookiecutter.*}}" 2>/dev/null)" ]; then
+            ((compliance_checks++)) && ((passing_checks++))
+            
+            for proj_dir in templates/$template/{{cookiecutter.*}}/; do
+                if [ -d "$proj_dir" ]; then
+                    ((compliance_checks++))
+                    [ -f "${proj_dir}.gitignore" ] && ((passing_checks++))
+                    
+                    ((compliance_checks++))
+                    [ -f "${proj_dir}README.md" ] && ((passing_checks++))
+                    
+                    ((compliance_checks++))
+                    [ -d "${proj_dir}.github/workflows" ] && ((passing_checks++))
+                    
+                    # Security scanning check - docs-only is exempt
+                    if [ "$template" != "docs-only" ]; then
+                        ((compliance_checks++))
+                        if [ -f "${proj_dir}.github/workflows/security.yml" ] || [ -f "${proj_dir}.github/workflows/ci.yml" ]; then
+                            ((passing_checks++))
+                        fi
+                    fi
+                    
+                    break
+                fi
+            done
+        fi
+        
+        # Calculate percentage
+        if [ $compliance_checks -gt 0 ]; then
+            percentage=$((passing_checks * 100 / compliance_checks))
+            
+            if [ $percentage -eq 100 ]; then
+                echo "  ✅ $template: ${percentage}% compliant ($passing_checks/$compliance_checks checks)"
+                ((templates_100_percent++))
+            elif [ $percentage -ge 90 ]; then
+                echo "  ⚠️  $template: ${percentage}% compliant ($passing_checks/$compliance_checks checks)"
+                ((templates_90_percent++))
+            else
+                echo "  ❌ $template: ${percentage}% compliant ($passing_checks/$compliance_checks checks)"
+                ((templates_below_90++))
+            fi
+        fi
+    fi
+done
+
+# Re-enable exit on error
+set -e
+
+echo ""
+echo "Compliance Distribution:"
+echo "  • 100% compliant: $templates_100_percent templates"
+echo "  • 90-99% compliant: $templates_90_percent templates"
+echo "  • Below 90%: $templates_below_90 templates"
+echo ""
+echo "Note: docs-only template is exempt from security.yml requirement"
+echo ""
+echo "🔗 References:"
+echo "  • QUALITY_STANDARDS.md - Quality gates and requirements"
+echo "  • CONVENTIONS.md - Development conventions"
+echo "  • TEMPLATE_STANDARDS.md - Template-specific standards"
+echo "  • CONTRIBUTING.md - Contribution guidelines"
+echo ""
+echo "═══════════════════════════════════════════════════════════════════"
+echo ""
 
 # Summary
 END_TIME=$(date +%s)

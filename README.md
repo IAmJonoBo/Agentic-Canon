@@ -264,6 +264,35 @@ See [control-traceability-matrix.json](control-traceability-matrix.json) for com
 - 🧠 **SPACE Signals**: Developer flow, cognitive load, and interruption monitoring
 - 🔧 **Auto-Remediation**: Dependency updates, security patches, drift correction
 
+## Repository Organization
+
+**Separation of Concerns:** The repository is organized with clear boundaries between development tools, distribution assets, and boilerplates:
+
+### 📁 Development Tools (`.dev/`)
+**Internal use - for maintaining this repository:**
+- `.dev/validate-templates.sh` - Template validation
+- `.dev/sanity-check.sh` - Repository health checks
+- `.dev/scripts/` - Maintenance scripts (labels, etc.)
+
+### 📦 Distribution Assets (External use)
+**For end users and AI generators:**
+- `agentic_canon_cli/` - CLI wizard for project generation
+- `templates/` - Cookiecutter templates and supporting files
+- `notebooks/` - Executable guides for bootstrapping, security, testing, observability
+- `docs/` - Jupyter Book documentation
+- `examples/` - Reference implementations and dashboards
+
+### 🎯 Boilerplates (`templates/`)
+**Ready-to-use project templates:**
+- `python-service/` - Modern Python with pytest, mypy, Black
+- `node-service/` - TypeScript with Vitest, ESLint
+- `react-webapp/` - React + Vite + Storybook + Playwright
+- `go-service/` - Go with golangci-lint
+- `docs-only/` - Jupyter Book documentation site
+- Supporting templates for CI/CD, security, observability, and more
+
+See [DIRECTORY_STRUCTURE.md](DIRECTORY_STRUCTURE.md) for complete details.
+
 ## Development
 
 ### Setup for Contributors

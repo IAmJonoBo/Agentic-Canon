@@ -253,7 +253,7 @@ templates/react-webapp/hooks/pre_gen_project.py      ENHANCED
 templates/go-service/hooks/pre_gen_project.py        ENHANCED
 templates/docs-only/hooks/pre_gen_project.py         ENHANCED
 tests/test_cookiecutters.py                          ENHANCED (+9 tests)
-sanity-check.sh                                      ENHANCED
+.dev/sanity-check.sh                                      ENHANCED
 DIFFS.md                                            NEW  (6.7 KB)
 docs/VALIDATION-GUIDE.md                            NEW  (10.6 KB)
 TASKS.md                                            UPDATED
@@ -269,13 +269,13 @@ pytest tests/test_cookiecutters.py -v
 
 ### Run Sanity Check
 ```bash
-./sanity-check.sh
+.dev/sanity-check.sh
 # Result: ✅ 69 passed, ⚠️ 2 warnings, ❌ 0 failed
 ```
 
 ### Run Template Validation
 ```bash
-./validate-templates.sh
+.dev/validate-templates.sh
 # Result: ✅ All validations passed!
 ```
 

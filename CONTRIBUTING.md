@@ -46,7 +46,7 @@ pip install pre-commit
 pre-commit install
 
 # Run sanity check to verify current state
-./sanity-check.sh
+.dev/sanity-check.sh
 
 # Run tests to verify setup
 pytest tests/
@@ -64,7 +64,7 @@ Before contributing, understand the current project state:
 2. **Verify Current State:**
    ```bash
    # Run comprehensive sanity check
-   ./sanity-check.sh
+   .dev/sanity-check.sh
    
    # Current status (2025-10-12):
    # ✅ 44 checks passed
@@ -82,7 +82,7 @@ Before contributing, understand the current project state:
    ```
 
 **⚠️ Important:** Documentation may lag behind implementation. Always:
-- Run `./sanity-check.sh` to verify ground truth
+- Run `.dev/sanity-check.sh` to verify ground truth
 - Check actual file existence, not just documentation
 - Run tests to confirm functionality
 

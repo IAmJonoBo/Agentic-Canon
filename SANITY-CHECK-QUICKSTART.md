@@ -9,7 +9,7 @@ The enhanced sanity check script provides comprehensive validation of the Agenti
 ### Run Sanity Check
 
 ```bash
-./sanity-check.sh
+.dev/sanity-check.sh
 ```
 
 **Expected Output:**
@@ -124,13 +124,13 @@ pytest tests/ -q
 
 ### Scenario 1: Clean Repository
 ```bash
-./sanity-check.sh
+.dev/sanity-check.sh
 # Expected: ✅ 140 passed, ⚠️ 3 warnings, ❌ 0 failed
 ```
 
 ### Scenario 2: After Adding New Template
 ```bash
-./sanity-check.sh
+.dev/sanity-check.sh
 # Check for:
 # - Template structure compliance
 # - README.md presence
@@ -141,7 +141,7 @@ pytest tests/ -q
 ### Scenario 3: Before Committing Changes
 ```bash
 # 1. Run sanity check
-./sanity-check.sh
+.dev/sanity-check.sh
 
 # 2. Run tests
 pytest tests/ -v
@@ -153,7 +153,7 @@ pytest tests/ -v
 ```yaml
 # In .github/workflows/ci.yml
 - name: Run sanity check
-  run: ./sanity-check.sh
+  run: .dev/sanity-check.sh
   
 - name: Run tests
   run: pytest tests/ -v
@@ -223,13 +223,13 @@ grep -v "pytest" sanity-check.sh | bash
 ### Parallel Execution (Future)
 ```bash
 # Not yet implemented, but possible:
-./sanity-check.sh --parallel
+.dev/sanity-check.sh --parallel
 ```
 
 ### Specific Category
 ```bash
 # Run only specific checks (manual filtering)
-./sanity-check.sh 2>&1 | grep -A 10 "Checking Templates"
+.dev/sanity-check.sh 2>&1 | grep -A 10 "Checking Templates"
 ```
 
 ## Integration Examples
@@ -242,7 +242,7 @@ repos:
     hooks:
       - id: sanity-check
         name: Run sanity check
-        entry: ./sanity-check.sh
+        entry: .dev/sanity-check.sh
         language: system
         pass_filenames: false
 ```
@@ -259,7 +259,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run sanity check
-        run: ./sanity-check.sh
+        run: .dev/sanity-check.sh
 ```
 
 ### Make Target
@@ -267,7 +267,7 @@ jobs:
 # Makefile
 .PHONY: sanity-check
 sanity-check:
-	@./sanity-check.sh
+	@.dev/sanity-check.sh
 
 .PHONY: test
 test:
@@ -282,28 +282,28 @@ check: sanity-check test
 ### Verbose Mode
 ```bash
 # Already verbose by default
-./sanity-check.sh
+.dev/sanity-check.sh
 ```
 
 ### Capture Output
 ```bash
 # Save to file
-./sanity-check.sh 2>&1 | tee sanity-check-results.txt
+.dev/sanity-check.sh 2>&1 | tee sanity-check-results.txt
 
 # Save only summary
-./sanity-check.sh 2>&1 | tail -30 > summary.txt
+.dev/sanity-check.sh 2>&1 | tail -30 > summary.txt
 ```
 
 ### Check Specific Components
 ```bash
 # Templates only
-./sanity-check.sh 2>&1 | grep -A 50 "Checking Cookiecutter Templates"
+.dev/sanity-check.sh 2>&1 | grep -A 50 "Checking Cookiecutter Templates"
 
 # Documentation only
-./sanity-check.sh 2>&1 | grep -A 20 "Checking Core Documentation"
+.dev/sanity-check.sh 2>&1 | grep -A 20 "Checking Core Documentation"
 
 # Tests only
-./sanity-check.sh 2>&1 | grep -A 10 "Checking Test Infrastructure"
+.dev/sanity-check.sh 2>&1 | grep -A 10 "Checking Test Infrastructure"
 ```
 
 ## Maintenance
@@ -360,13 +360,13 @@ Include:
 **Quick Reference:**
 ```bash
 # Run checks
-./sanity-check.sh
+.dev/sanity-check.sh
 
 # Run tests
 pytest tests/ -v
 
 # Both
-./sanity-check.sh && pytest tests/ -v
+.dev/sanity-check.sh && pytest tests/ -v
 ```
 
 **Status:** ✅ 140 checks passing, 28 tests passing, ready for production use

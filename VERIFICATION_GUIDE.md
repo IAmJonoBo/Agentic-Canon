@@ -13,7 +13,7 @@ This guide helps verify that all project management automation is working correc
 Run the label setup script to create all required labels:
 
 ```bash
-./scripts/setup-labels.sh
+./.dev/scripts/setup-labels.sh
 ```
 
 **Expected output**:
@@ -303,7 +303,7 @@ gh label list | grep "from:todo"
 
 **Fix**:
 ```bash
-./scripts/setup-labels.sh
+./.dev/scripts/setup-labels.sh
 ```
 
 ### Issues Not Created

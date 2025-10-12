@@ -45,7 +45,7 @@ Comprehensive label system for automation:
 - **Priority**: priority:high, priority:medium, priority:low
 - **Status**: stale, security, performance, critical, pinned
 
-**Setup Script**: `scripts/setup-labels.sh`
+**Setup Script**: `.dev/scripts/setup-labels.sh`
 - Automated label creation using GitHub CLI
 - Idempotent (skips existing labels)
 - Includes all required labels for workflows
@@ -196,7 +196,7 @@ The repository now uses ALL its own automation:
 
 1. **Set up labels** (one-time):
    ```bash
-   ./scripts/setup-labels.sh
+   ./.dev/scripts/setup-labels.sh
    ```
 
 2. **Enable workflows** (already enabled):
@@ -240,7 +240,7 @@ The repository now uses ALL its own automation:
 
 ## Next Steps
 
-1. **Run label setup**: `./scripts/setup-labels.sh` (requires `gh` CLI)
+1. **Run label setup**: `./.dev/scripts/setup-labels.sh` (requires `gh` CLI)
 2. **Test workflows**: Create a test TODO and verify issue creation
 3. **Monitor automation**: Check Actions tab for workflow runs
 4. **Adjust as needed**: Fine-tune label keywords, stale timing, etc.
@@ -254,7 +254,7 @@ The repository now uses ALL its own automation:
 - `.github/PULL_REQUEST_TEMPLATE.md`
 - `.github/workflows/stale.yml`
 - `.github/LABELS.md`
-- `scripts/setup-labels.sh`
+- `.dev/scripts/setup-labels.sh`
 - `templates/node-service/{{cookiecutter.project_slug}}/.pre-commit-config.yaml`
 - `templates/react-webapp/{{cookiecutter.project_slug}}/.pre-commit-config.yaml`
 - `templates/go-service/{{cookiecutter.project_slug}}/.pre-commit-config.yaml`

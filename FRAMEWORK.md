@@ -169,6 +169,22 @@ The Agentic Canon framework consists of **four interconnected layers**:
 ### Layer 4: Implementation Tools
 
 **Ready-to-Use Templates and Automation**
+
+The implementation layer is organized with clear separation of concerns:
+
+**Development Tools (`.dev/`)**
+- Internal maintenance and upgrade scripts
+- Repository validation and health checks
+- CI/CD pipeline maintenance
+- Not for end users
+
+**Distribution Assets**
+- `agentic_canon_cli/` - CLI wizard for project generation
+- `templates/` - Cookiecutter templates and supporting files
+- `notebooks/` - Executable guides and automation
+- `docs/` - Documentation and reference materials
+
+**Templates include:**
 - Cookiecutter templates (Python, Node.js, React, Go, Docs)
 - CI/CD pipelines (GitHub Actions, GitLab CI, Azure Pipelines)
 - Security tooling (SAST, DAST, secret scanning, SBOM)
@@ -176,9 +192,10 @@ The Agentic Canon framework consists of **four interconnected layers**:
 - Observability (OpenTelemetry, Prometheus, Grafana)
 - Documentation (Jupyter Book, ADR templates, runbooks)
 
-**Purpose**: Make frontier practices immediately actionable.
+**Purpose**: Make frontier practices immediately actionable while maintaining clear boundaries between internal tools and external distribution assets.
 
 **Documentation**:
+- [.dev/README.md](.dev/README.md): Development tools documentation
 - [Templates Directory](templates/): All templates and examples
 - [INDEX.md](INDEX.md): Complete catalog of available resources
 

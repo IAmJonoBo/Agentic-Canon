@@ -286,7 +286,9 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
 
 ### Developer Experience Enhancements 🚧 (Planning)
 
-- [ ] #130 Backstage portal integration (catalog entries, sanity-check surfacing, documentation linkage)
+- [x] #130 Backstage portal integration (catalog entries, sanity-check surfacing, documentation linkage)
+  - ✅ Backstage Software Template + README added under `templates/platform/backstage/`
+  - ✅ Documentation entry in `docs/dev-experience-roadmap.md`
 - [ ] #131 OpenFeature/flagd starter bundle for feature-flag readiness across templates
 - [ ] #132 Syft/Grype SBOM + vulnerability scanning workflow for shared CI usage
 - [ ] #133 Remote dev environments (Gitpod workspace and Dev Container templates)

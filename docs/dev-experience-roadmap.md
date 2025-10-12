@@ -6,10 +6,13 @@ tracked alongside the rest of the backlog.
 
 ## Backstage Portal Integration (#130)
 
-- Deliver a Backstage module exposing Agentic Canon templates, sanity check
-  status, and documentation entry points.
-- Provide scripts + guidance for organizations to import the module into their
-  existing Backstage instances without altering template payloads.
+- ✅ Backstage Software Template published at
+  `templates/platform/backstage/service-template.yaml`, accompanied by a
+  usage guide (`templates/platform/backstage/README.md`).
+- ✅ Provides self-service scaffolding plus catalog annotations while keeping
+  cookiecutter templates untouched.
+- ⏳ Future iterations: surface sanity-check and template E2E telemetry inside
+  Backstage dashboards.
 
 ## OpenFeature / flagd Starter Kit (#131)
 

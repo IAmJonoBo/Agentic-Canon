@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Node/React/Go template integration coverage (`tests/test_template_e2e.py`) with tooling-aware slow tests
 - Weekly template E2E CI workflow (`.github/workflows/template-e2e.yml`) and documented sanity-check guidance
 - Added `--skip-templates` option to `.dev/sanity-check.sh` for template-aware runs
+- Backstage portal module + README under `templates/platform/backstage/` (Task #130)
 
 ### Changed
 

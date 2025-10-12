@@ -12,6 +12,40 @@ This repository implements **frontier software excellence** with comprehensive s
 - ✅ Non-negotiable quality gates (80%+ coverage, mutation testing, security scanning)
 - 📚 Jupyter Book integration for beautiful, searchable documentation
 
+## Framework Documents (READ THESE FIRST!)
+
+**Our comprehensive framework is documented in three core files:**
+
+1. **[FRAMEWORK.md](../FRAMEWORK.md)** - Unified framework defining OUR approach to software excellence
+   - Philosophy and principles
+   - Framework architecture (4 layers)
+   - Conformance requirements
+   - Decision-making framework
+   - Onboarding paths
+
+2. **[QUALITY_STANDARDS.md](../QUALITY_STANDARDS.md)** - Comprehensive quality standards for ALL aspects of development
+   - Non-negotiable quality gates
+   - Code quality standards
+   - Testing standards (unit, integration, E2E, mutation, contract)
+   - Security standards (SAST, DAST, secrets, dependencies)
+   - AI/LLM quality standards
+   - Business logic quality
+   - Orchestration quality
+   - Documentation, performance, accessibility standards
+
+3. **[CONVENTIONS.md](../CONVENTIONS.md)** - Development conventions and best practices
+   - Code style conventions (Python, TypeScript, Go)
+   - Naming conventions (files, variables, functions, classes)
+   - Git conventions (branching, commits, PRs)
+   - Documentation conventions
+   - Testing conventions
+   - Security conventions
+   - API conventions (REST, GraphQL, gRPC)
+   - Database conventions
+   - Configuration conventions
+
+**When in doubt, refer to these documents for guidance!**
+
 ## Standards Compliance
 
 All code and templates must comply with:
@@ -412,4 +446,14 @@ Install hooks: `pre-commit install`
 
 ---
 
-**Remember**: This repository implements frontier software excellence. All contributions should maintain or improve the high standards of security, quality, and reliability. When in doubt, refer to the standards listed above or ask in a GitHub Discussion.
+## Quick Reference: Key Framework Documents
+
+When working on Agentic Canon, reference these documents frequently:
+
+- **[FRAMEWORK.md](../FRAMEWORK.md)** - Our philosophy, decision-making framework, and conformance requirements
+- **[QUALITY_STANDARDS.md](../QUALITY_STANDARDS.md)** - All quality gates, testing standards, security requirements
+- **[CONVENTIONS.md](../CONVENTIONS.md)** - Code style, naming, Git, documentation, API conventions
+- **[BIBLE.md](../BIBLE.md)** - AI-friendly reference with implementation checklists
+- **[CONTRIBUTING.md](../CONTRIBUTING.md)** - How to contribute and get PRs merged
+
+**Remember**: This repository implements frontier software excellence. All contributions should maintain or improve the high standards of security, quality, and reliability. **When in doubt, refer to FRAMEWORK.md, QUALITY_STANDARDS.md, or CONVENTIONS.md** or ask in a GitHub Discussion.

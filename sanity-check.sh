@@ -38,6 +38,69 @@ for file in README.md TASKS.md SUMMARY.md V110-V200-SUMMARY.md CHANGELOG.md LICE
 done
 echo ""
 
+# 1.5. Python Syntax Validation for Hooks
+echo "🐍 Validating Python Hook Syntax..."
+hook_syntax_errors=0
+for hook_file in templates/*/hooks/*.py templates/_shared/*.py; do
+    if [ -f "$hook_file" ]; then
+        if python -m py_compile "$hook_file" 2>/dev/null; then
+            check_pass "$(basename $hook_file) syntax valid"
+        else
+            check_fail "$(basename $hook_file) has syntax errors"
+            hook_syntax_errors=$((hook_syntax_errors + 1))
+        fi
+    fi
+done
+
+if [ $hook_syntax_errors -eq 0 ]; then
+    check_pass "All hook files have valid Python syntax"
+fi
+echo ""
+
+# 1.6. JSON Validation for Configuration Files
+echo "📋 Validating JSON Configuration Files..."
+json_errors=0
+for json_file in templates/*/cookiecutter.json examples/dashboards/*.json; do
+    if [ -f "$json_file" ]; then
+        if python -m json.tool "$json_file" > /dev/null 2>&1; then
+            check_pass "$(basename $json_file) is valid JSON"
+        else
+            check_fail "$(basename $json_file) has JSON errors"
+            json_errors=$((json_errors + 1))
+        fi
+    fi
+done
+
+# Special handling for control-traceability-matrix.json (has comments)
+if [ -f "control-traceability-matrix.json" ]; then
+    # Strip comment lines and validate
+    if grep -v '^#' control-traceability-matrix.json | python -m json.tool > /dev/null 2>&1; then
+        check_pass "control-traceability-matrix.json is valid JSON (ignoring comments)"
+    else
+        check_fail "control-traceability-matrix.json has JSON errors"
+        json_errors=$((json_errors + 1))
+    fi
+fi
+
+if [ $json_errors -eq 0 ]; then
+    check_pass "All JSON files are valid"
+fi
+echo ""
+
+# 1.7. Shared Validation Module Check
+echo "🔧 Checking Shared Validation Module..."
+if [ -f "templates/_shared/validation.py" ]; then
+    check_pass "Shared validation module exists"
+    if python templates/_shared/validation.py > /dev/null 2>&1; then
+        check_pass "Validation module self-tests pass"
+    else
+        check_warn "Validation module self-tests failed"
+    fi
+else
+    check_warn "Shared validation module not found"
+fi
+echo ""
+
 # 2. Cookiecutter Templates (The big discovery!)
 echo "🍪 Checking Cookiecutter Templates..."
 templates=(

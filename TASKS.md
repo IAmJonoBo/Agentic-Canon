@@ -5,7 +5,7 @@
 **📍 SINGLE SOURCE OF TRUTH** - All other summary documents (SUMMARY.md, V110-V200-SUMMARY.md) are derived from this tracker.
 
 Last Updated: 2025-10-12
-Last Verified: 2025-10-12 (Comprehensive sanity check: ✅ 44 passed, ⚠️ 2 warnings, ❌ 0 failed)
+Last Verified: 2025-10-12 (Enhanced validation: ✅ 69 checks passed, 17 tests passing, ⚠️ 2 warnings, ❌ 0 failed)
 
 ## Version 1.0 - Base Infrastructure (Foundation) ✅ COMPLETE
 
@@ -384,6 +384,40 @@ Last Verified: 2025-10-12 (Comprehensive sanity check: ✅ 44 passed, ⚠️ 2 w
 - [ ] Performance testing framework
 - [x] Accessibility testing (axe-core, pa11y) - comprehensive workflow created
 - [x] Security testing (SAST, DAST, secret scanning) - comprehensive workflows created
+- [x] Template validation tests - 17 tests passing including edge cases ✅
+
+### Input Validation & Code Hardening 🆕 ✅
+- [x] Shared validation module (`templates/_shared/validation.py`)
+  - [x] Project slug validation (kebab-case)
+  - [x] Python package name validation (snake_case, reserved keywords)
+  - [x] Go module path validation
+  - [x] Email validation (RFC 5322)
+  - [x] Author name validation
+  - [x] License validation (SPDX whitelist)
+  - [x] Description validation
+  - [x] Semantic version validation
+- [x] Enhanced all template hooks with comprehensive validation
+  - [x] Python service template
+  - [x] Node service template
+  - [x] React webapp template
+  - [x] Go service template
+  - [x] Docs-only template
+- [x] Comprehensive validation tests (17 total)
+  - [x] Valid input tests
+  - [x] Invalid format tests
+  - [x] Edge case tests (empty, too short, too long)
+  - [x] Reserved keyword tests
+  - [x] Special validation tests per template type
+- [x] Enhanced sanity-check.sh with:
+  - [x] Python syntax validation for hooks
+  - [x] JSON validation for configuration files
+  - [x] Validation module self-tests
+  - [x] 69+ automated checks passing
+- [x] Validation documentation
+  - [x] VALIDATION-GUIDE.md with all rules and examples
+  - [x] templates/_shared/README.md for developer reference
+  - [x] Error message documentation
+  - [x] Troubleshooting guide
 
 ### CI/CD Quality Gates
 - [x] Lint/format compliance (language-specific) - implemented in templates

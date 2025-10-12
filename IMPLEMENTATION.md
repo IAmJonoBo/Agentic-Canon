@@ -508,7 +508,7 @@ def test_python_cookiecutter_bakes(cookies):
 
 3. **Run Sanity Check:**
    ```bash
-   ./sanity-check.sh
+   .dev/sanity-check.sh
    ```
 
 4. **Test Templates:**
@@ -539,7 +539,7 @@ def test_python_cookiecutter_bakes(cookies):
 
 3. **Run Sanity Checks:**
    ```bash
-   ./sanity-check.sh  # Comprehensive check
+   .dev/sanity-check.sh  # Comprehensive check
    pytest tests/ -v    # Run all tests
    ```
 

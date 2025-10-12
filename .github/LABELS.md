@@ -81,10 +81,10 @@ gh label create "pinned" --color "0e8a16" --description "Pinned, won't be marked
 
 ### Automated Setup Script
 
-A script is provided in `scripts/setup-labels.sh` that will create all required labels:
+A script is provided in `.dev/scripts/setup-labels.sh` that will create all required labels:
 
 ```bash
-./scripts/setup-labels.sh
+.dev/scripts/setup-labels.sh
 ```
 
 ## Verification

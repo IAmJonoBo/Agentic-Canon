@@ -245,13 +245,13 @@ Enhanced the comprehensive sanity check script (`sanity-check.sh`) with addition
 **Example usage:**
 ```bash
 # Quiet mode for CI
-./sanity-check.sh --quiet
+.dev/sanity-check.sh --quiet
 
 # Generate HTML report
-./sanity-check.sh --html-report report.html
+.dev/sanity-check.sh --html-report report.html
 
 # Show help
-./sanity-check.sh --help
+.dev/sanity-check.sh --help
 ```
 
 ### 16. HTML Report Generation ✅ NEW
@@ -284,7 +284,7 @@ Enhanced the comprehensive sanity check script (`sanity-check.sh`) with addition
     hooks:
       - id: sanity-check
         name: Agentic Canon Sanity Check
-        entry: ./sanity-check.sh --quiet
+        entry: .dev/sanity-check.sh --quiet
         language: system
         pass_filenames: false
         always_run: true
@@ -417,27 +417,27 @@ pytest tests/ -v
 
 **Basic usage:**
 ```bash
-./sanity-check.sh
+.dev/sanity-check.sh
 ```
 
 **Quiet mode (for CI):**
 ```bash
-./sanity-check.sh --quiet
+.dev/sanity-check.sh --quiet
 ```
 
 **With HTML report:**
 ```bash
-./sanity-check.sh --html-report report.html
+.dev/sanity-check.sh --html-report report.html
 ```
 
 **Verbose mode:**
 ```bash
-./sanity-check.sh --verbose
+.dev/sanity-check.sh --verbose
 ```
 
 **Show help:**
 ```bash
-./sanity-check.sh --help
+.dev/sanity-check.sh --help
 ```
 
 ### Run Tests

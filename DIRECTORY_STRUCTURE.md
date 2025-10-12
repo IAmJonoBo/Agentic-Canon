@@ -13,13 +13,14 @@ This repository is organized for maximum clarity, ease of access, and maintainab
 ```
 Agentic-Canon/
 ├── 📄 Root Documentation          # Core project documents
-├── 📁 agentic_canon_cli/          # Interactive CLI wizard
+├── 📁 .dev/                       # Development tools (internal)
+├── 📁 agentic_canon_cli/          # Interactive CLI wizard (distribution)
 ├── 📁 binder/                     # Binder environment config
 ├── 📁 docs/                       # Jupyter Book documentation
 ├── 📁 examples/                   # Reference implementations
 ├── 📁 notebooks/                  # Executable Jupyter notebooks
 ├── 📁 runbooks/                   # Operational procedures
-├── 📁 templates/                  # Cookiecutter templates
+├── 📁 templates/                  # Cookiecutter templates (boilerplates)
 └── 📁 tests/                      # Test suite
 ```
 
@@ -59,8 +60,36 @@ Core project documentation files located at repository root for easy discovery:
 - **`jupytext.toml`** - Jupytext notebook pairing settings
 - **`renovate.json`** - Renovate dependency update config
 - **`requirements.txt`** - Python dependencies
-- **`validate-templates.sh`** - Template validation script
+- **`.dev/validate-templates.sh`** - Template validation script (development tool)
 - **`control-traceability-matrix.json`** - Compliance control mapping
+
+---
+
+## 📁 .dev/
+
+**⚠️ Development tools for internal repository maintenance (not for end users)**
+
+```
+.dev/
+├── README.md                      # Development tools documentation
+├── scripts/                       # Development scripts
+│   └── setup-labels.sh           # GitHub labels setup
+├── validate-templates.sh          # Template validation
+└── sanity-check.sh               # Repository health checks
+```
+
+**Purpose:** Internal tools for maintaining and upgrading the Agentic Canon repository itself.
+
+**Key Tools:**
+
+- **`validate-templates.sh`** - Validates Cookiecutter templates for correctness
+- **`sanity-check.sh`** - Runs comprehensive repository health checks
+- **`scripts/setup-labels.sh`** - Sets up GitHub issue labels
+
+**Separation of Concerns:**
+- **Development Tools (`.dev/`)**: Internal maintenance and upgrade scripts
+- **Distribution Assets (`agentic_canon_cli/`, `templates/`)**: For end users and AI generators
+- **Boilerplates (`templates/`)**: Ready-to-use project templates
 
 ---
 

@@ -11,7 +11,7 @@
 | **v1.1.0** | ✅ Nearly Complete | ~98% | Dashboards, examples, scripts done; videos pending |
 | **v2.0.0** | 🚧 In Progress | ~40% | Frameworks built; implementations pending |
 
-**Verification:** `./sanity-check.sh` → ✅ 44 passed, ⚠️ 2 warnings, ❌ 0 failures
+**Verification:** `.dev/sanity-check.sh` → ✅ 44 passed, ⚠️ 2 warnings, ❌ 0 failures
 
 ---
 
@@ -106,7 +106,7 @@
 
 ### Verify Project State
 ```bash
-./sanity-check.sh
+.dev/sanity-check.sh
 ```
 
 ### Run Tests
@@ -183,7 +183,7 @@ cat V110-V200-SUMMARY.md
 
 ### Before Making Changes
 
-1. ✅ Run `./sanity-check.sh` to understand current state
+1. ✅ Run `.dev/sanity-check.sh` to understand current state
 2. ✅ Read [TASKS.md](TASKS.md) for detailed progress
 3. ✅ Check [IMPLEMENTATION.md](IMPLEMENTATION.md) for context
 4. ✅ Run `pytest tests/ -v` to verify tests pass
@@ -194,7 +194,7 @@ cat V110-V200-SUMMARY.md
 2. ✅ Add verification evidence (test results, file existence)
 3. ✅ Update derived docs ([SUMMARY.md](SUMMARY.md), etc.) to stay in sync
 4. ✅ Run tests: `pytest tests/ -v`
-5. ✅ Run sanity check: `./sanity-check.sh`
+5. ✅ Run sanity check: `.dev/sanity-check.sh`
 6. ✅ Commit with descriptive message
 
 ### ⚠️ Critical Warning
@@ -202,7 +202,7 @@ cat V110-V200-SUMMARY.md
 **Documentation may lag behind reality!**
 
 Always verify with:
-- `./sanity-check.sh` for ground truth
+- `.dev/sanity-check.sh` for ground truth
 - Actual file existence checks
 - Test results (`pytest -v`)
 - Don't trust docs without verification
@@ -267,6 +267,6 @@ Documentation was **significantly out of date**:
 
 ---
 
-**Quick Start:** Run `./sanity-check.sh` and check [TASKS.md](TASKS.md)!
+**Quick Start:** Run `.dev/sanity-check.sh` and check [TASKS.md](TASKS.md)!
 
 **Questions?** Open an issue or see [CONTRIBUTING.md](CONTRIBUTING.md)

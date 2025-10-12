@@ -1,0 +1,18 @@
+{
+  "project_name": "My Project",
+  "project_slug": "my-project",
+  "github_org": "my-org",
+  "project_description": "A well-managed project with automated task tracking",
+  "enable_todo_tracking": ["yes", "no"],
+  "enable_tasklist_tracking": ["yes", "no"],
+  "enable_pr_followups": ["yes", "no"],
+  "enable_issue_triage": ["yes", "no"],
+  "enable_projects_board": ["yes", "no"],
+  "enable_branch_protection": ["yes", "no"],
+  "enable_codeowners": ["yes", "no"],
+  "default_branch": "main",
+  "require_approvals": "2",
+  "auto_close_stale_issues": ["yes", "no"],
+  "stale_days": "60",
+  "_copy_without_render": []
+}

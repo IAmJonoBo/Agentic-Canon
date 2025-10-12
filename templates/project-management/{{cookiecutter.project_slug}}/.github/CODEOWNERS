@@ -1,0 +1,29 @@
+{% if cookiecutter.enable_codeowners == "yes" -%}
+# Code Owners for {{ cookiecutter.project_name }}
+# 
+# These owners will be automatically requested for review when someone opens a pull request.
+# 
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @{{ cookiecutter.github_org }}/maintainers
+
+# Workflows and CI/CD
+/.github/ @{{ cookiecutter.github_org }}/devops
+/.github/workflows/ @{{ cookiecutter.github_org }}/devops
+
+# Documentation
+/docs/ @{{ cookiecutter.github_org }}/docs-team
+*.md @{{ cookiecutter.github_org }}/docs-team
+README.md @{{ cookiecutter.github_org }}/maintainers
+
+# Security-sensitive files
+SECURITY.md @{{ cookiecutter.github_org }}/security
+/security/ @{{ cookiecutter.github_org }}/security
+
+# Configuration files
+*.yml @{{ cookiecutter.github_org }}/devops
+*.yaml @{{ cookiecutter.github_org }}/devops
+*.toml @{{ cookiecutter.github_org }}/devops
+*.json @{{ cookiecutter.github_org }}/devops
+{% endif -%}

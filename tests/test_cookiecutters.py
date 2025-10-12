@@ -338,3 +338,102 @@ def test_docs_only_invalid_description(cookies):
         template="templates/docs-only"
     )
     assert result.exit_code != 0
+
+
+def test_project_management_bakes(cookies):
+    """Test that the project management template renders successfully."""
+    result = cookies.bake(
+        extra_context={
+            "project_name": "My Project",
+            "project_slug": "my-project",
+            "github_org": "my-org",
+            "project_description": "A well-managed project",
+            "enable_todo_tracking": "yes",
+            "enable_tasklist_tracking": "yes",
+            "enable_pr_followups": "yes",
+            "enable_issue_triage": "yes",
+            "enable_projects_board": "yes",
+            "enable_branch_protection": "yes",
+            "enable_codeowners": "yes",
+            "default_branch": "main",
+            "require_approvals": "2",
+            "auto_close_stale_issues": "yes",
+            "stale_days": "60",
+        },
+        template="templates/project-management"
+    )
+    
+    assert result.exception is None
+    assert result.exit_code == 0
+    assert result.project_path.is_dir()
+    
+    # Check essential files exist
+    assert (result.project_path / "README.md").exists()
+    assert (result.project_path / "PROJECT_MANAGEMENT.md").exists()
+    assert (result.project_path / "TASKS.md").exists()
+    assert (result.project_path / ".github" / "workflows" / "todos.yml").exists()
+    assert (result.project_path / ".github" / "workflows" / "tasklist-scan.yml").exists()
+    assert (result.project_path / ".github" / "workflows" / "pr-review-followup.yml").exists()
+    assert (result.project_path / ".github" / "workflows" / "issue-triage.yml").exists()
+    assert (result.project_path / ".github" / "workflows" / "stale.yml").exists()
+    assert (result.project_path / ".github" / "CODEOWNERS").exists()
+    assert (result.project_path / ".github" / "ISSUE_TEMPLATE" / "bug_report.md").exists()
+    assert (result.project_path / ".github" / "ISSUE_TEMPLATE" / "feature_request.md").exists()
+    assert (result.project_path / ".github" / "ISSUE_TEMPLATE" / "task.md").exists()
+    assert (result.project_path / ".github" / "PULL_REQUEST_TEMPLATE.md").exists()
+
+
+def test_project_management_minimal(cookies):
+    """Test project management template with minimal options."""
+    result = cookies.bake(
+        extra_context={
+            "project_name": "Minimal Project",
+            "project_slug": "minimal-project",
+            "github_org": "test-org",
+            "enable_todo_tracking": "yes",
+            "enable_tasklist_tracking": "no",
+            "enable_pr_followups": "no",
+            "enable_issue_triage": "no",
+            "enable_codeowners": "no",
+            "auto_close_stale_issues": "no",
+        },
+        template="templates/project-management"
+    )
+    
+    assert result.exception is None
+    assert result.exit_code == 0
+    assert result.project_path.is_dir()
+    
+    # Only todos.yml should have content
+    todos_content = (result.project_path / ".github" / "workflows" / "todos.yml").read_text()
+    assert "TODO" in todos_content
+    
+    # Other workflows should be empty or not generated
+    tasklist_file = result.project_path / ".github" / "workflows" / "tasklist-scan.yml"
+    if tasklist_file.exists():
+        content = tasklist_file.read_text().strip()
+        assert not content or content == ""
+
+
+def test_project_management_invalid_slug(cookies):
+    """Test that project management template rejects invalid slug."""
+    result = cookies.bake(
+        extra_context={
+            "project_slug": "Invalid_Slug",
+            "github_org": "test-org",
+        },
+        template="templates/project-management"
+    )
+    assert result.exit_code != 0
+
+
+def test_project_management_invalid_org(cookies):
+    """Test that project management template rejects invalid org name."""
+    result = cookies.bake(
+        extra_context={
+            "project_slug": "test-project",
+            "github_org": "invalid org name",
+        },
+        template="templates/project-management"
+    )
+    assert result.exit_code != 0

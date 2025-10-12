@@ -183,36 +183,47 @@ jobs:
               );
               
               if (!hasIssue) {
-                const newIssue = await github.rest.issues.create({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  title: '📋 ADRs Not Linked in README',
-                  body: issueBody,
-                  labels: ['adr', 'documentation', 'automated', 'priority:medium']
-                });
-                console.log(`✓ Created issue #${newIssue.data.number} to track missing ADR links`);
-                
-                // Build checklist comment
-                let checklistComment = '## Checklist for updating README\n\n';
-                
-                for (let i = 0; i < missingInReadme.length; i++) {
-                  const m = missingInReadme[i];
-                  checklistComment += `### ${i + 1}. ${m.file}\n\n`;
-                  checklistComment += '- [ ] Review ADR content\n';
-                  checklistComment += '- [ ] Determine appropriate section (Foundation, Observability, Security, etc.)\n';
-                  checklistComment += '- [ ] Add link to README.md\n';
-                  checklistComment += '- [ ] Update status counts if needed\n';
-                  checklistComment += '- [ ] Verify link formatting\n\n';
+                try {
+                  const newIssue = await github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: '📋 ADRs Not Linked in README',
+                    body: issueBody,
+                    labels: ['adr', 'documentation', 'automated', 'priority:medium']
+                  });
+                  console.log(`✓ Created issue #${newIssue.data.number} to track missing ADR links`);
+                  
+                  // Build checklist comment
+                  let checklistComment = '## Checklist for updating README\n\n';
+                  
+                  for (let i = 0; i < missingInReadme.length; i++) {
+                    const m = missingInReadme[i];
+                    checklistComment += `### ${i + 1}. ${m.file}\n\n`;
+                    checklistComment += '- [ ] Review ADR content\n';
+                    checklistComment += '- [ ] Determine appropriate section (Foundation, Observability, Security, etc.)\n';
+                    checklistComment += '- [ ] Add link to README.md\n';
+                    checklistComment += '- [ ] Update status counts if needed\n';
+                    checklistComment += '- [ ] Verify link formatting\n\n';
+                  }
+                  
+                  checklistComment += 'Once all items are complete, close this issue.';
+                  
+                  try {
+                    await github.rest.issues.createComment({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: newIssue.data.number,
+                      body: checklistComment
+                    });
+                  } catch (error) {
+                    console.log(`  ⚠️  Failed to add comment: ${error.message}`);
+                  }
+                } catch (error) {
+                  console.log(`  ❌ Failed to create issue: ${error.message}`);
+                  if (error.status === 403 || error.status === 429) {
+                    console.log(`  ⚠️  Rate limited - issue creation skipped`);
+                  }
                 }
-                
-                checklistComment += 'Once all items are complete, close this issue.';
-                
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: newIssue.data.number,
-                  body: checklistComment
-                });
               } else {
                 console.log('⚠️  Issue already exists for missing ADR links');
               }
@@ -254,10 +265,27 @@ jobs:
             
             console.log(`Found ${issues.length} open task issues`);
             
+            // Rate limiting: Process in batches
+            const MAX_ISSUES_PER_RUN = 20;
+            const DELAY_BETWEEN_CALLS = 1000; // 1 second
+            
+            if (issues.length > MAX_ISSUES_PER_RUN) {
+              console.log(`⚠️  Limiting to ${MAX_ISSUES_PER_RUN} issues per run to avoid rate limits`);
+              issues.length = MAX_ISSUES_PER_RUN;
+            }
+            
+            // Helper function for delay
+            const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+            
             let enriched = 0;
             const adrDir = 'docs/adr';
             
             for (const issue of issues) {
+              // Rate limiting: Add delay between operations
+              if (enriched > 0) {
+                await delay(DELAY_BETWEEN_CALLS);
+              }
+              
               // Check if issue already has ADR metadata in body
               if (issue.body && issue.body.includes('## Related ADRs')) {
                 continue;
@@ -331,6 +359,10 @@ jobs:
                   enriched++;
                 } catch (error) {
                   console.log(`  ⚠️  Failed to update issue #${issue.number}: ${error.message}`);
+                  if (error.status === 403 || error.status === 429) {
+                    console.log(`  ⚠️  Rate limited, stopping enrichment for this run`);
+                    break;
+                  }
                 }
               }
             }

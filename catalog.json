@@ -1,0 +1,556 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/IAmJonoBo/Agentic-Canon/blob/main/catalog.json",
+  "title": "Agentic Canon Catalog",
+  "description": "Machine-readable catalog of templates, assets, and resources for frontier software excellence",
+  "version": "1.0.0",
+  "updated": "2025-10-12",
+  "repository": {
+    "url": "https://github.com/IAmJonoBo/Agentic-Canon",
+    "type": "git",
+    "clone_url": "https://github.com/IAmJonoBo/Agentic-Canon.git",
+    "ssh_url": "git@github.com:IAmJonoBo/Agentic-Canon.git"
+  },
+  "templates": {
+    "cookiecutter": [
+      {
+        "id": "python-service",
+        "name": "Python Service Template",
+        "description": "Production-ready Python service with FastAPI, comprehensive testing, and CI/CD",
+        "path": "templates/python-service",
+        "language": "python",
+        "framework": "fastapi",
+        "version": "1.0.0",
+        "tags": ["service", "api", "python", "fastapi", "microservice"],
+        "features": [
+          "FastAPI web framework",
+          "Pydantic models and validation",
+          "Comprehensive testing with pytest",
+          "Code coverage and mutation testing",
+          "CI/CD with GitHub Actions",
+          "Security scanning (CodeQL, Gitleaks)",
+          "SBOM generation",
+          "Jupyter Book documentation",
+          "Pre-commit hooks",
+          "Type checking with mypy"
+        ],
+        "requirements": {
+          "python": ">=3.11",
+          "cookiecutter": ">=2.0.0"
+        },
+        "example": "examples/projects/fastapi-user-service",
+        "usage": {
+          "cookiecutter": "gh:IAmJonoBo/Agentic-Canon --directory=templates/python-service",
+          "tiged": "npx tiged IAmJonoBo/Agentic-Canon/templates/python-service target/",
+          "sparse_checkout": "git sparse-checkout set templates/python-service"
+        },
+        "documentation": [
+          "templates/python-service/README.md",
+          "examples/projects/fastapi-microservice-README.md"
+        ],
+        "compliance": {
+          "standards": ["NIST SSDF v1.1", "OWASP SAMM", "SLSA Level 3"],
+          "coverage": "87%"
+        }
+      },
+      {
+        "id": "node-service",
+        "name": "Node.js Service Template",
+        "description": "Production-ready Node.js/TypeScript service with Express, testing, and CI/CD",
+        "path": "templates/node-service",
+        "language": "typescript",
+        "framework": "express",
+        "version": "1.0.0",
+        "tags": ["service", "api", "nodejs", "typescript", "express"],
+        "features": [
+          "Express.js with TypeScript",
+          "Zod validation",
+          "Winston structured logging",
+          "Comprehensive testing with Jest",
+          "CI/CD with GitHub Actions",
+          "Security scanning (CodeQL, npm audit)",
+          "SBOM generation",
+          "Pre-commit hooks",
+          "Type checking with tsc"
+        ],
+        "requirements": {
+          "node": ">=18.0.0",
+          "cookiecutter": ">=2.0.0"
+        },
+        "example": "examples/projects/express-user-api",
+        "usage": {
+          "cookiecutter": "gh:IAmJonoBo/Agentic-Canon --directory=templates/node-service",
+          "tiged": "npx tiged IAmJonoBo/Agentic-Canon/templates/node-service target/",
+          "sparse_checkout": "git sparse-checkout set templates/node-service"
+        },
+        "documentation": [
+          "templates/node-service/README.md",
+          "examples/projects/express-api-README.md"
+        ],
+        "compliance": {
+          "standards": ["NIST SSDF v1.1", "OWASP SAMM"],
+          "coverage": "87%"
+        }
+      },
+      {
+        "id": "react-webapp",
+        "name": "React Web Application Template",
+        "description": "Production-ready React app with Vite, Storybook, E2E tests, and CI/CD",
+        "path": "templates/react-webapp",
+        "language": "typescript",
+        "framework": "react",
+        "version": "1.0.0",
+        "tags": ["webapp", "frontend", "react", "typescript", "vite", "storybook"],
+        "features": [
+          "React 18 with TypeScript",
+          "Vite for fast development",
+          "Storybook for component development",
+          "Playwright for E2E testing",
+          "CI/CD with GitHub Actions",
+          "Security scanning",
+          "Accessibility testing (axe-core)",
+          "Performance budgets (Lighthouse CI)",
+          "Storybook deployment to GitHub Pages",
+          "Pre-commit hooks"
+        ],
+        "requirements": {
+          "node": ">=18.0.0",
+          "cookiecutter": ">=2.0.0"
+        },
+        "example": null,
+        "usage": {
+          "cookiecutter": "gh:IAmJonoBo/Agentic-Canon --directory=templates/react-webapp",
+          "tiged": "npx tiged IAmJonoBo/Agentic-Canon/templates/react-webapp target/",
+          "sparse_checkout": "git sparse-checkout set templates/react-webapp"
+        },
+        "documentation": [
+          "templates/react-webapp/README.md",
+          "examples/projects/react-dashboard-README.md"
+        ],
+        "compliance": {
+          "standards": ["NIST SSDF v1.1", "WCAG 2.2 AA"],
+          "coverage": "87%"
+        }
+      },
+      {
+        "id": "go-service",
+        "name": "Go Service Template",
+        "description": "Production-ready Go service with comprehensive testing and CI/CD",
+        "path": "templates/go-service",
+        "language": "go",
+        "framework": null,
+        "version": "1.0.0",
+        "tags": ["service", "api", "go", "golang", "microservice"],
+        "features": [
+          "Go 1.21+ modules",
+          "Comprehensive testing",
+          "golangci-lint for code quality",
+          "CI/CD with GitHub Actions",
+          "Security scanning",
+          "SBOM generation",
+          "Makefile for build automation",
+          "Pre-commit hooks"
+        ],
+        "requirements": {
+          "go": ">=1.21",
+          "cookiecutter": ">=2.0.0"
+        },
+        "example": null,
+        "usage": {
+          "cookiecutter": "gh:IAmJonoBo/Agentic-Canon --directory=templates/go-service",
+          "tiged": "npx tiged IAmJonoBo/Agentic-Canon/templates/go-service target/",
+          "sparse_checkout": "git sparse-checkout set templates/go-service"
+        },
+        "documentation": [
+          "templates/go-service/README.md",
+          "examples/projects/grpc-service-README.md"
+        ],
+        "compliance": {
+          "standards": ["NIST SSDF v1.1", "OWASP SAMM"],
+          "coverage": "87%"
+        }
+      },
+      {
+        "id": "docs-only",
+        "name": "Documentation-Only Template",
+        "description": "Jupyter Book documentation site with automated deployment",
+        "path": "templates/docs-only",
+        "language": null,
+        "framework": "jupyter-book",
+        "version": "1.0.0",
+        "tags": ["documentation", "jupyter-book", "myst", "markdown"],
+        "features": [
+          "Jupyter Book configuration",
+          "MyST Markdown support",
+          "Automated GitHub Pages deployment",
+          "CI/CD for documentation",
+          "Example documentation structure",
+          "Search functionality",
+          "PDF export capability",
+          "Mobile-responsive design"
+        ],
+        "requirements": {
+          "python": ">=3.11",
+          "cookiecutter": ">=2.0.0"
+        },
+        "example": null,
+        "usage": {
+          "cookiecutter": "gh:IAmJonoBo/Agentic-Canon --directory=templates/docs-only",
+          "tiged": "npx tiged IAmJonoBo/Agentic-Canon/templates/docs-only target/",
+          "sparse_checkout": "git sparse-checkout set templates/docs-only"
+        },
+        "documentation": [
+          "templates/docs-only/README.md"
+        ],
+        "compliance": {
+          "standards": ["WCAG 2.2 AA"],
+          "coverage": "85%"
+        }
+      },
+      {
+        "id": "project-management",
+        "name": "Project Management Automation Template",
+        "description": "GitHub Actions workflows for automated project management",
+        "path": "templates/project-management",
+        "language": null,
+        "framework": "github-actions",
+        "version": "1.0.0",
+        "tags": ["automation", "github-actions", "project-management", "devops"],
+        "features": [
+          "TODO/FIXME to GitHub Issues conversion",
+          "Markdown checklist to Issues sync",
+          "PR review comment follow-ups",
+          "Auto-triage and labeling",
+          "Stale issue management",
+          "Issue templates",
+          "PR templates",
+          "CODEOWNERS support"
+        ],
+        "requirements": {
+          "cookiecutter": ">=2.0.0"
+        },
+        "example": null,
+        "usage": {
+          "cookiecutter": "gh:IAmJonoBo/Agentic-Canon --directory=templates/project-management",
+          "tiged": "npx tiged IAmJonoBo/Agentic-Canon/templates/project-management target/",
+          "sparse_checkout": "git sparse-checkout set templates/project-management",
+          "cli": "agentic-canon repo-init"
+        },
+        "documentation": [
+          "templates/project-management/README.md",
+          "templates/project-management/PROJECT_MANAGEMENT.md"
+        ],
+        "compliance": {
+          "standards": [],
+          "coverage": "N/A"
+        }
+      }
+    ]
+  },
+  "assets": {
+    "dashboards": {
+      "grafana": [
+        {
+          "id": "dora-metrics",
+          "name": "DORA Metrics Dashboard",
+          "description": "Production-ready Grafana dashboard for DORA metrics (deployment frequency, lead time, MTTR, change failure rate)",
+          "path": "templates/dashboards/grafana/dora-metrics.json",
+          "datasources": ["prometheus", "loki"],
+          "tags": ["dora", "metrics", "devops", "performance"]
+        },
+        {
+          "id": "space-devex-metrics",
+          "name": "SPACE/DevEx Metrics Dashboard",
+          "description": "Developer experience tracking dashboard",
+          "path": "templates/dashboards/grafana/space-devex-metrics.json",
+          "datasources": ["prometheus", "loki"],
+          "tags": ["devex", "developer-experience", "space", "metrics"]
+        },
+        {
+          "id": "quality-metrics",
+          "name": "Quality Metrics Dashboard",
+          "description": "Code quality and testing metrics dashboard",
+          "path": "templates/dashboards/grafana/quality-metrics.json",
+          "datasources": ["prometheus"],
+          "tags": ["quality", "testing", "coverage", "metrics"]
+        },
+        {
+          "id": "security-metrics",
+          "name": "Security Metrics Dashboard",
+          "description": "Security posture and vulnerability tracking dashboard",
+          "path": "templates/dashboards/grafana/security-metrics.json",
+          "datasources": ["prometheus"],
+          "tags": ["security", "vulnerabilities", "metrics"]
+        }
+      ]
+    },
+    "workflows": {
+      "github-actions": [
+        {
+          "id": "license-compliance",
+          "name": "License Compliance Workflow",
+          "description": "Automated license compliance checking",
+          "path": "templates/cicd/license-compliance.yml",
+          "tags": ["compliance", "license", "security"]
+        },
+        {
+          "id": "container-scanning",
+          "name": "Container Security Scanning",
+          "description": "Trivy and Grype container image scanning",
+          "path": "templates/security/container-scanning.yml",
+          "tags": ["security", "containers", "scanning"]
+        },
+        {
+          "id": "iac-security",
+          "name": "Infrastructure as Code Security",
+          "description": "Checkov and tfsec IaC security scanning",
+          "path": "templates/security/iac-security.yml",
+          "tags": ["security", "iac", "terraform", "scanning"]
+        },
+        {
+          "id": "accessibility-testing",
+          "name": "Accessibility Testing",
+          "description": "WCAG 2.2 AA compliance testing with axe-core and pa11y",
+          "path": "templates/cicd/accessibility-testing.yml",
+          "tags": ["accessibility", "wcag", "testing", "a11y"]
+        },
+        {
+          "id": "performance-budgets",
+          "name": "Performance Budget Enforcement",
+          "description": "Lighthouse CI and bundle size checking",
+          "path": "templates/cicd/performance-budgets.yml",
+          "tags": ["performance", "lighthouse", "budgets"]
+        }
+      ],
+      "azure-pipelines": [
+        {
+          "id": "python-service-pipeline",
+          "name": "Python Service Azure Pipeline",
+          "description": "Complete CI/CD pipeline for Python services on Azure DevOps",
+          "path": "templates/cicd/azure-pipelines-python.yml",
+          "tags": ["azure", "python", "cicd"]
+        },
+        {
+          "id": "node-service-pipeline",
+          "name": "Node.js Service Azure Pipeline",
+          "description": "Complete CI/CD pipeline for Node.js services on Azure DevOps",
+          "path": "templates/cicd/azure-pipelines-node.yml",
+          "tags": ["azure", "nodejs", "cicd"]
+        }
+      ]
+    },
+    "fitness-functions": {
+      "templates": [
+        {
+          "id": "performance-fitness",
+          "name": "Performance Fitness Functions",
+          "description": "Automated performance regression detection",
+          "path": "templates/architecture/fitness-functions/performance.py",
+          "language": "python",
+          "tags": ["fitness", "performance", "testing"]
+        },
+        {
+          "id": "architecture-fitness",
+          "name": "Architecture Fitness Functions",
+          "description": "Cyclic dependency and coupling detection",
+          "path": "templates/architecture/fitness-functions/architecture.py",
+          "language": "python",
+          "tags": ["fitness", "architecture", "quality"]
+        },
+        {
+          "id": "security-fitness",
+          "name": "Security Fitness Functions",
+          "description": "Security vulnerability and attack surface analysis",
+          "path": "templates/architecture/fitness-functions/security.py",
+          "language": "python",
+          "tags": ["fitness", "security", "testing"]
+        }
+      ]
+    }
+  },
+  "documentation": {
+    "framework": [
+      {
+        "id": "framework",
+        "name": "Framework Documentation",
+        "description": "Unified framework defining our approach to software excellence",
+        "path": "FRAMEWORK.md",
+        "size": "788 lines",
+        "topics": ["philosophy", "principles", "decision-making", "conformance"]
+      },
+      {
+        "id": "quality-standards",
+        "name": "Quality Standards",
+        "description": "Comprehensive quality gates and standards",
+        "path": "QUALITY_STANDARDS.md",
+        "size": "1161 lines",
+        "topics": ["quality-gates", "testing", "security", "performance"]
+      },
+      {
+        "id": "conventions",
+        "name": "Development Conventions",
+        "description": "Code style, naming, Git, and API conventions",
+        "path": "CONVENTIONS.md",
+        "size": "1533 lines",
+        "topics": ["code-style", "naming", "git", "api"]
+      },
+      {
+        "id": "template-standards",
+        "name": "Template Standards",
+        "description": "Template compliance rules and validation",
+        "path": "TEMPLATE_STANDARDS.md",
+        "size": "358 lines",
+        "topics": ["templates", "compliance", "validation"]
+      }
+    ],
+    "adrs": {
+      "path": "docs/adr",
+      "count": 8,
+      "index": "docs/adr/README.md",
+      "topics": [
+        "cookiecutter-templates",
+        "jupytext-notebooks",
+        "github-actions",
+        "opentelemetry",
+        "slsa-supply-chain",
+        "security-scanning",
+        "secret-management",
+        "dependency-management"
+      ]
+    },
+    "runbooks": [
+      {
+        "id": "template-creation",
+        "name": "Template Creation Runbook",
+        "path": "runbooks/template-creation-runbook.md",
+        "description": "Step-by-step guide for creating new templates"
+      },
+      {
+        "id": "agent-automation",
+        "name": "Agent Automation Runbook",
+        "path": "runbooks/agent-automation-runbook.md",
+        "description": "Agent-oriented automation patterns and safety mechanisms"
+      }
+    ],
+    "guides": [
+      {
+        "id": "validation-guide",
+        "name": "Validation Guide",
+        "path": "docs/VALIDATION-GUIDE.md",
+        "description": "Input validation rules and examples"
+      },
+      {
+        "id": "ci-rate-limiting",
+        "name": "CI Rate Limiting Guide",
+        "path": "docs/CI-RATE-LIMITING.md",
+        "description": "GitHub Actions rate limiting strategy and troubleshooting"
+      },
+      {
+        "id": "tasks-adr-sync",
+        "name": "Tasks and ADR Sync Documentation",
+        "path": "docs/TASKS-ADR-SYNC.md",
+        "description": "Automated task and ADR synchronization workflows"
+      }
+    ]
+  },
+  "cli": {
+    "name": "agentic-canon",
+    "description": "CLI tool for project scaffolding and management",
+    "installation": "pip install -e .",
+    "commands": [
+      {
+        "name": "init",
+        "description": "Interactive wizard for creating new projects",
+        "usage": "agentic-canon init"
+      },
+      {
+        "name": "repo-init",
+        "description": "Add project management automation to existing repository",
+        "usage": "agentic-canon repo-init"
+      },
+      {
+        "name": "validate",
+        "description": "Validate generated project structure and configuration",
+        "usage": "agentic-canon validate [path]"
+      },
+      {
+        "name": "doctor",
+        "description": "Check environment setup and dependencies",
+        "usage": "agentic-canon doctor"
+      },
+      {
+        "name": "audit",
+        "description": "Run security and quality audit on project",
+        "usage": "agentic-canon audit [path]"
+      },
+      {
+        "name": "update",
+        "description": "Update project from template using Cruft",
+        "usage": "agentic-canon update [path]"
+      }
+    ]
+  },
+  "distribution": {
+    "methods": [
+      {
+        "method": "cookiecutter",
+        "description": "Use Cookiecutter to generate from templates",
+        "command": "cookiecutter gh:IAmJonoBo/Agentic-Canon --directory=templates/{template-id}"
+      },
+      {
+        "method": "tiged",
+        "description": "Use tiged to extract template subdirectories",
+        "command": "npx tiged IAmJonoBo/Agentic-Canon/templates/{template-id} target/"
+      },
+      {
+        "method": "sparse-checkout",
+        "description": "Use Git sparse-checkout for partial clone",
+        "commands": [
+          "git clone --filter=blob:none --no-checkout https://github.com/IAmJonoBo/Agentic-Canon.git",
+          "cd Agentic-Canon",
+          "git sparse-checkout init --cone",
+          "git sparse-checkout set templates/{template-id}",
+          "git checkout main"
+        ]
+      },
+      {
+        "method": "github-releases",
+        "description": "Download from GitHub Releases (when available)",
+        "command": "gh release download {tag} --pattern 'template-{template-id}.zip'"
+      }
+    ]
+  },
+  "compliance": {
+    "standards": [
+      "NIST SSDF v1.1",
+      "OWASP SAMM",
+      "OWASP ASVS",
+      "SLSA Level 3",
+      "ISO/IEC 25010",
+      "WCAG 2.2 AA",
+      "OpenSSF Scorecard"
+    ],
+    "validation": {
+      "script": ".dev/sanity-check.sh",
+      "checks": 167,
+      "categories": 33,
+      "test_coverage": "21 cookiecutter + 21 sanity check tests"
+    }
+  },
+  "metadata": {
+    "license": "MIT",
+    "author": "IAmJonoBo",
+    "maintainers": ["See CODEOWNERS"],
+    "support": {
+      "issues": "https://github.com/IAmJonoBo/Agentic-Canon/issues",
+      "discussions": "https://github.com/IAmJonoBo/Agentic-Canon/discussions",
+      "documentation": "https://github.com/IAmJonoBo/Agentic-Canon#readme"
+    },
+    "links": {
+      "homepage": "https://github.com/IAmJonoBo/Agentic-Canon",
+      "changelog": "https://github.com/IAmJonoBo/Agentic-Canon/blob/main/CHANGELOG.md",
+      "contributing": "https://github.com/IAmJonoBo/Agentic-Canon/blob/main/CONTRIBUTING.md",
+      "security": "https://github.com/IAmJonoBo/Agentic-Canon/blob/main/SECURITY.md"
+    }
+  }
+}

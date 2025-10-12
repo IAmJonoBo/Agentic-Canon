@@ -160,7 +160,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [x] Security scanning and remediation workflow (documented in examples)
   - [x] Contract testing between services (documented in templates)
   - [x] Observability instrumentation example (documented in examples)
-- [ ] Create complete working example projects (not just READMEs):
+- [ ] #46 Create complete working example projects (not just READMEs):
   - [x] **FastAPI User Service** - Complete working Python microservice ✅
     - Full CRUD operations for user management
     - FastAPI with Pydantic models
@@ -188,10 +188,10 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [x] "Implementing security gates" (04-security-gates.md) ✅
   - [x] "Adding observability to your service" (05-observability-setup.md) ✅
   - [x] "Using Jupyter Book for documentation" (06-jupyter-book.md) ✅
-- [ ] Record video tutorials (all scripts are ready - ~65 minutes total content)
-- [ ] Create YouTube channel for video hosting
-- [ ] Upload recorded tutorials to YouTube/video platform
-- [ ] Add video links to documentation
+- [ ] #47 Record video tutorials (all scripts are ready - ~65 minutes total content)
+- [ ] #48 Create YouTube channel for video hosting
+- [ ] #49 Upload recorded tutorials to YouTube/video platform
+- [ ] #50 Add video links to documentation
 
 ### Interactive Wizard ✅
 - [x] Create CLI wizard (`agentic-canon init`) using:
@@ -240,10 +240,10 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [x] Documentation and usage guide
 
 ### Testing & Deployment
-- [ ] Test generated Python template in a real project scenario
-- [ ] Deploy Jupyter Book to GitHub Pages and verify integration
-- [ ] Create end-to-end integration tests for all templates
-- [ ] Set up continuous testing for template updates
+- [ ] #52 Test generated Python template in a real project scenario
+- [ ] #53 Deploy Jupyter Book to GitHub Pages and verify integration
+- [ ] #54 Create end-to-end integration tests for all templates
+- [ ] #55 Set up continuous testing for template updates
 
 ## Version 2.0.0 - Advanced Features
 
@@ -254,7 +254,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [ ] Azure-specific templates and workflows
   - [ ] GCP-specific templates and workflows
   - [ ] Multi-cloud Terraform/OpenTofu modules
-- [ ] Infrastructure as Code templates:
+- [ ] #56 Infrastructure as Code templates:
   - [ ] Terraform/OpenTofu modules for AWS services
   - [ ] Terraform/OpenTofu modules for Azure services
   - [ ] Terraform/OpenTofu modules for GCP services

@@ -1,6 +1,13 @@
 #!/bin/bash
 # Comprehensive Sanity Check Script
 # Validates current state of Agentic Canon project
+#
+# Note: Templates and examples are checked for structure and best practices,
+# but may be exempt from some standards as they:
+# - Are designed to be customized by cookiecutter
+# - Contain template variables (e.g., {{ cookiecutter.* }})
+# - Represent parts of larger systems, not standalone applications
+# - Serve as starting points, not complete implementations
 
 set -e
 
@@ -34,6 +41,25 @@ for file in README.md TASKS.md SUMMARY.md V110-V200-SUMMARY.md CHANGELOG.md LICE
         check_pass "$file exists"
     else
         check_fail "$file missing"
+    fi
+done
+echo ""
+
+# 1.1. Framework Documentation (Standards Compliance)
+echo "📋 Checking Framework Documentation (Standards Compliance)..."
+framework_docs=(
+    "FRAMEWORK.md"
+    "QUALITY_STANDARDS.md"
+    "CONVENTIONS.md"
+    "CONTRIBUTING.md"
+    "SECURITY.md"
+)
+
+for doc in "${framework_docs[@]}"; do
+    if [ -f "$doc" ]; then
+        check_pass "$doc exists"
+    else
+        check_fail "$doc missing (required by framework standards)"
     fi
 done
 echo ""
@@ -87,7 +113,39 @@ if [ $json_errors -eq 0 ]; then
 fi
 echo ""
 
-# 1.7. Shared Validation Module Check
+# 1.7. YAML Validation for Workflow and Configuration Files
+echo "🔧 Validating YAML Configuration Files..."
+yaml_errors=0
+yaml_count=0
+yaml_skipped=0
+for yaml_file in .github/workflows/*.yml examples/*/*.yml examples/*/*.yaml \
+                 examples/dashboards/*.yaml; do
+    if [ -f "$yaml_file" ]; then
+        yaml_count=$((yaml_count + 1))
+        # Skip template files with cookiecutter variables
+        if grep -q "{{cookiecutter\." "$yaml_file" 2>/dev/null; then
+            yaml_skipped=$((yaml_skipped + 1))
+            continue
+        fi
+        if python -c "import yaml; yaml.safe_load(open('$yaml_file'))" > /dev/null 2>&1; then
+            # Only show validation for a sample to avoid cluttering output
+            if [ $yaml_count -le 5 ]; then
+                check_pass "$(basename $yaml_file) is valid YAML"
+            fi
+        else
+            check_fail "$yaml_file has YAML errors"
+            yaml_errors=$((yaml_errors + 1))
+        fi
+    fi
+done
+
+if [ $yaml_errors -eq 0 ]; then
+    validated_count=$((yaml_count - yaml_skipped))
+    check_pass "All $validated_count non-template YAML files are valid ($yaml_skipped template files skipped)"
+fi
+echo ""
+
+# 1.8. Shared Validation Module Check
 echo "🔧 Checking Shared Validation Module..."
 if [ -f "templates/_shared/validation.py" ]; then
     check_pass "Shared validation module exists"
@@ -124,6 +182,56 @@ for template in "${templates[@]}"; do
 done
 echo ""
 
+# 2.1. Template Structure Standards Compliance
+echo "🏗️  Checking Template Structure (Standards Compliance)..."
+for template in "${templates[@]}"; do
+    if [ -d "templates/$template" ]; then
+        # Check for hooks directory
+        if [ -d "templates/$template/hooks" ]; then
+            check_pass "$template has hooks directory"
+        else
+            check_warn "$template missing hooks directory"
+        fi
+        
+        # Check for template project directory (cookiecutter pattern)
+        template_dirs=$(find "templates/$template" -maxdepth 1 -type d -name "{{cookiecutter.*}}" | wc -l)
+        if [ $template_dirs -gt 0 ]; then
+            check_pass "$template has cookiecutter project structure"
+            
+            # For each template, check for essential files in the generated project
+            for proj_dir in templates/$template/{{cookiecutter.*}}/; do
+                if [ -d "$proj_dir" ]; then
+                    # Check for .gitignore
+                    if [ -f "${proj_dir}.gitignore" ]; then
+                        check_pass "$template includes .gitignore"
+                    else
+                        check_warn "$template missing .gitignore in generated project"
+                    fi
+                    
+                    # Check for README.md
+                    if [ -f "${proj_dir}README.md" ]; then
+                        check_pass "$template includes README.md"
+                    else
+                        check_fail "$template missing README.md in generated project"
+                    fi
+                    
+                    # Check for CI/CD workflows (GitHub Actions)
+                    if [ -d "${proj_dir}.github/workflows" ]; then
+                        check_pass "$template includes CI/CD workflows"
+                    else
+                        check_warn "$template missing CI/CD workflows"
+                    fi
+                    
+                    break  # Only check first match
+                fi
+            done
+        else
+            check_warn "$template missing cookiecutter project structure"
+        fi
+    fi
+done
+echo ""
+
 # 3. Additional Template Categories
 echo "📦 Checking Additional Template Categories..."
 additional_templates=(
@@ -146,6 +254,24 @@ for template in "${additional_templates[@]}"; do
 done
 echo ""
 
+# 3.1. Template README Documentation Check
+echo "📖 Checking Template Documentation (Standards Compliance)..."
+template_readme_missing=0
+for template_dir in templates/*/; do
+    template_name=$(basename "$template_dir")
+    if [ -f "${template_dir}README.md" ]; then
+        check_pass "$template_name has README.md"
+    else
+        check_warn "$template_name missing README.md (recommended for standards compliance)"
+        template_readme_missing=$((template_readme_missing + 1))
+    fi
+done
+
+if [ $template_readme_missing -eq 0 ]; then
+    check_pass "All templates have README.md documentation"
+fi
+echo ""
+
 # 4. Example Projects
 echo "📋 Checking Example Project Documentation..."
 projects=(
@@ -162,6 +288,29 @@ for project in "${projects[@]}"; do
         check_fail "$project missing"
     fi
 done
+echo ""
+
+# 4.1. Example Naming Conventions Check
+echo "📝 Checking Example Naming Conventions (Standards Compliance)..."
+naming_violations=0
+for example_file in examples/*/*README*.md; do
+    if [ -f "$example_file" ]; then
+        # Check if filename follows kebab-case or uses proper README naming
+        basename_file=$(basename "$example_file")
+        if [[ "$basename_file" =~ ^[a-z0-9]+(-[a-z0-9]+)*-README\.md$ ]] || \
+           [[ "$basename_file" =~ ^README\.md$ ]]; then
+            # Valid naming
+            :
+        else
+            check_warn "$(basename $example_file) uses non-standard naming (should be kebab-case)"
+            naming_violations=$((naming_violations + 1))
+        fi
+    fi
+done
+
+if [ $naming_violations -eq 0 ]; then
+    check_pass "All example files follow naming conventions"
+fi
 echo ""
 
 # 5. Dashboard JSON Files (Another discovery!)

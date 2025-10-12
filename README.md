@@ -8,7 +8,7 @@
 
 > **🎉 Project Status:** v1.0 ✅ Complete | v1.1.0 ✅ ~98% Complete | v2.0.0 🚧 ~40% Complete  
 > **📍 Progress Tracker:** See [TASKS.md](TASKS.md) for detailed status (single source of truth)  
-> **✅ Verified:** 2025-10-12 via comprehensive sanity check (44 passed, 0 failed)
+> **✅ Verified:** 2025-10-12 via comprehensive sanity check (121 passed, 2 warnings, 0 failed)
 
 ## What is Agentic Canon?
 
@@ -41,6 +41,7 @@ Agentic Canon is a **comprehensive framework for frontier software excellence** 
 #### Standards References
 - **[BIBLE.md](BIBLE.md)** - AI-friendly reference with implementation checklists, quality gates, and quick-start commands
 - **[INDEX.md](INDEX.md)** - Complete navigation guide for all templates, standards, and usage patterns
+- **[TEMPLATE_STANDARDS.md](TEMPLATE_STANDARDS.md)** - 📐 **Standards requirements for templates** - What must be met vs. what can be omitted
 - **[Red Team + Software Excellence.md](Red%20Team%20+%20Software%20Excellence.md)** - Comprehensive playbook for frontier software excellence with detailed controls
 - **[INSTRUCTIONS.md](INSTRUCTIONS.md)** - Technical implementation details for notebooks, templates, and CI/CD setup
 - **[control-traceability-matrix.json](control-traceability-matrix.json)** - Machine-readable standards → implementation → evidence mapping

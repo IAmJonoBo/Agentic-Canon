@@ -7,7 +7,6 @@ Cookiecutter templates with built-in best practices.
 """
 
 import argparse
-import json
 import os
 import subprocess
 import sys
@@ -296,7 +295,7 @@ def generate_project(template: str, context: Dict[str, Any]) -> bool:
 
 def show_next_steps(project_slug: str):
     """Display next steps after project generation."""
-    print(f"\n📋 Next Steps:\n")
+    print("\n📋 Next Steps:\n")
     print(f"  1. cd {project_slug}")
     print("  2. python -m venv venv")
     print("  3. source venv/bin/activate  # On Windows: venv\\Scripts\\activate")
@@ -534,7 +533,7 @@ def cmd_validate():
 
     # Check .github structure
     if Path(".github").exists():
-        print(f"  ✅ .github/")
+        print("  ✅ .github/")
 
         # Check for workflows
         if Path(".github/workflows").exists():
@@ -550,7 +549,7 @@ def cmd_validate():
 
     # Check for git repository
     if Path(".git").exists():
-        print(f"  ✅ Git repository initialized")
+        print("  ✅ Git repository initialized")
     else:
         issues.append("Not a git repository")
 

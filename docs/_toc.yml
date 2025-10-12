@@ -7,3 +7,4 @@ chapters:
   - file: notebooks/04_observability_slos
   - file: notebooks/05_docs_to_book
   - file: dev-experience-roadmap
+  - file: feature-flags

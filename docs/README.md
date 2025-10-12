@@ -176,6 +176,10 @@ pytest tests/test_template_e2e.py -m slow -v
 
 See [`dev-experience-roadmap.md`](dev-experience-roadmap.md) for planned DX initiatives (Backstage integration, feature flags, SBOM workflows, remote dev environments, Semgrep guardrails) tracked in `TASKS.md`.
 
+### Feature Flags
+
+Refer to [`feature-flags.md`](feature-flags.md) for guidance on adopting OpenFeature/flagd using the shared helpers in `templates/_shared/feature_flags/`.
+
 ## Adding Content
 
 ### New Page

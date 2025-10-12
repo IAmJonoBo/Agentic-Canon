@@ -16,9 +16,12 @@ tracked alongside the rest of the backlog.
 
 ## OpenFeature / flagd Starter Kit (#131)
 
-- Publish language-specific shims (Python/TypeScript/Go) under a shared tooling
-  directory to accelerate feature flag adoption.
-- Document how to wire the shims into projects generated from any template.
+- ✅ Shared helpers published under `templates/_shared/feature_flags/`
+  (Python, TypeScript, Go).
+- ✅ Documentation added (`docs/feature-flags.md`) with install instructions
+  and quick-start examples.
+- ⏳ Next step: wire proactive lint/CI guidance into the CLI `fix` routine once
+  flag usage becomes widespread.
 
 ## Syft + Grype Workflow (#132)
 

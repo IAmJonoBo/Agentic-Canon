@@ -155,7 +155,7 @@ project and immediately run the remediation routine.
 
 ### Example Session
 
-```
+```text
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
 ║              🚀 Agentic Canon CLI 🚀                     ║
@@ -263,7 +263,7 @@ python -m agentic_canon_cli
 
 ## Command Reference
 
-### `agentic-canon init`
+### `agentic-canon init` Command
 
 Launch the interactive wizard to create a new project.
 
@@ -275,7 +275,7 @@ Launch the interactive wizard to create a new project.
 - Summary and confirmation
 - Automatic project generation
 
-### `agentic-canon repo-init`
+### `agentic-canon repo-init` Features
 
 Add project management automation to existing repository.
 
@@ -288,7 +288,7 @@ Add project management automation to existing repository.
 - Stale issue management
 - CODEOWNERS setup
 
-### `agentic-canon validate`
+### `agentic-canon validate` Command
 
 Validate project structure and configuration.
 
@@ -299,7 +299,7 @@ Validate project structure and configuration.
 - Workflow files
 - Git repository
 
-### `agentic-canon doctor`
+### `agentic-canon doctor` (Environment Diagnostics)
 
 Diagnose environment setup and dependencies.
 
@@ -311,7 +311,7 @@ Diagnose environment setup and dependencies.
 - Cookiecutter
 - pre-commit
 
-### `agentic-canon audit`
+### `agentic-canon audit` (Security & Quality Audit)
 
 Run security and quality audit.
 
@@ -323,7 +323,7 @@ Run security and quality audit.
 - CODEOWNERS
 - Dependabot config
 
-### `agentic-canon update`
+### `agentic-canon update` Command
 
 Update existing project from template using Cruft.
 
@@ -351,7 +351,7 @@ The CLI automatically configures these Cookiecutter variables:
 | `pkg_name`              | Python package name | "my_awesome_api"          |
 | `project_description`   | Brief description   | "A modern REST API"       |
 | `author_name`           | Author's name       | "John Doe"                |
-| `author_email`          | Author's email      | "john@example.com"        |
+| `author_email`          | Author's email      | `"john@example.com"`      |
 | `license`               | License type        | "Apache-2.0"              |
 | `include_jupyter_book`  | Enable docs         | "yes"/"no"                |
 | `enable_security_gates` | Enable security     | "yes"/"no"                |

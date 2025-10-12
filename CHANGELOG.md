@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added (Unreleased)
+### New Features
 
 - Comprehensive CONTRIBUTING.md with contribution guidelines
 - SECURITY.md with security policy and vulnerability reporting process
@@ -21,15 +21,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `--skip-templates` option to `.dev/sanity-check.sh` for template-aware runs
 - Backstage portal module + README under `templates/platform/backstage/` (Task #130)
 - Intelligent `--fix` flag + `agentic-canon fix` command to remediate common setup issues automatically
+- OpenFeature/flagd starter kit (`templates/_shared/feature_flags/`) with docs (`docs/feature-flags.md`) (Task #131)
 
-### Changed
+### Updates
 
 - Updated repository structure documentation
 - Enhanced documentation organization
 
 ## [1.0.0] - 2025-10-11
 
-### Added
+### New in 1.0.0
 
 - Initial repository structure with core directories (notebooks/, docs/, templates/, examples/)
 - 5 executable Jupyter notebooks covering bootstrap, security, contracts, observability, and documentation

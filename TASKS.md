@@ -289,7 +289,9 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
 - [x] #130 Backstage portal integration (catalog entries, sanity-check surfacing, documentation linkage)
   - ✅ Backstage Software Template + README added under `templates/platform/backstage/`
   - ✅ Documentation entry in `docs/dev-experience-roadmap.md`
-- [ ] #131 OpenFeature/flagd starter bundle for feature-flag readiness across templates
+- [x] #131 OpenFeature/flagd starter bundle for feature-flag readiness across templates
+  - ✅ Shared helpers under `templates/_shared/feature_flags/` (Python, TypeScript, Go)
+  - ✅ Guide published in `docs/feature-flags.md`
 - [ ] #132 Syft/Grype SBOM + vulnerability scanning workflow for shared CI usage
 - [ ] #133 Remote dev environments (Gitpod workspace and Dev Container templates)
 - [ ] #134 Semgrep shared ruleset and automation guidance (CI + pre-commit adoption)

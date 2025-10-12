@@ -314,7 +314,7 @@ ghp-import -n -p -f docs/_build/html
 actionlint .github/workflows/*.yml
 
 # Validate templates
-./validate-templates.sh
+.dev/validate-templates.sh
 
 # Check notebook output is stripped
 git status  # Should show no changes to .ipynb files after execution

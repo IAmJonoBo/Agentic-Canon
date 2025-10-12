@@ -763,6 +763,287 @@ Templates and examples are checked for structure and best practices, but may be 
 - Run tests to confirm functionality
 - Don't assume docs are current without verification
 
+## Version 2.1 - Final Phase Implementations 🚀
+
+**Status:** 🔄 Planned  
+**From:** FINAL PHASE IMPLEMENTATIONS.md
+
+### Template Distribution & Access
+- [ ] Implement sparse-checkout support for template cherry-picking
+  - [ ] Document sparse-checkout + partial clone workflow
+  - [ ] Add examples for public and private repos
+  - [ ] Test with different Git versions
+- [ ] Add tiged support for subfolder extraction
+  - [ ] Document public tiged usage
+  - [ ] Document private SSH-based tiged usage
+  - [ ] Add error handling and fallbacks
+- [ ] Create release bundle automation
+  - [ ] Add `.github/workflows/release-assets.yml` workflow
+  - [ ] Implement template zipping on release tags
+  - [ ] Create wheelhouse for offline Python installs
+  - [ ] Publish to GitHub Releases
+- [ ] Mark templates as template repositories (optional)
+  - [ ] Configure template repository settings
+  - [ ] Document template generation workflow
+  - [ ] Test with private and public access
+
+### Dependency Management & Offline Support
+- [ ] Python offline support
+  - [ ] Document PIP_INDEX_URL configuration
+  - [ ] Implement wheelhouse generation
+  - [ ] Add offline install documentation
+  - [ ] Test offline installation workflow
+- [ ] Node.js offline support
+  - [ ] Implement Yarn Zero-Installs
+  - [ ] Document .yarn/cache commit strategy
+  - [ ] Test Yarn PnP workflow
+  - [ ] Add to relevant templates
+- [ ] Renovate integration
+  - [ ] Enable lockfile maintenance (weekly)
+  - [ ] Configure pip-compile/uv managers
+  - [ ] Configure npm/yarn managers
+  - [ ] Set up cache rebuild on releases
+
+### Automation & Release Management
+- [ ] Release packer workflow
+  - [ ] Create release-assets.yml workflow
+  - [ ] Implement template zipping
+  - [ ] Add wheelhouse generation
+  - [ ] Configure artifact uploads
+  - [ ] Configure GitHub Release publishing
+- [ ] CI/CD caching improvements
+  - [ ] Add pip cache support
+  - [ ] Add yarn cache support
+  - [ ] Document cache key strategies
+  - [ ] Test cache effectiveness
+
+### Storybook Deployment
+- [ ] Private Storybook deployment
+  - [ ] Document private Pages setup (Enterprise Cloud)
+  - [ ] Configure access-controlled Pages
+  - [ ] Test with private repo settings
+- [ ] Public Storybook deployment
+  - [ ] Document public Pages workflow
+  - [ ] Add visibility toggle documentation
+  - [ ] No workflow changes needed
+- [ ] Artifact-only deployment option
+  - [ ] Document build artifact approach
+  - [ ] Add workflow for artifact uploads
+  - [ ] Test artifact downloads
+
+### Agent Setup Wizards
+- [ ] Python environment notebook
+  - [ ] Create notebooks/setup/python_env.ipynb
+  - [ ] Add connectivity detection
+  - [ ] Implement online/offline install logic
+  - [ ] Add machine-readable run log
+  - [ ] Parameterize with Papermill
+- [ ] Node environment notebook
+  - [ ] Create notebooks/setup/node_env.ipynb
+  - [ ] Add Yarn Zero-Installs validation
+  - [ ] Implement online fallback
+  - [ ] Add machine-readable run log
+  - [ ] Parameterize with Papermill
+- [ ] CI integration for setup notebooks
+  - [ ] Add Papermill execution to CI
+  - [ ] Keep outputs current and reproducible
+  - [ ] Test parameterized execution
+
+### Machine-Readable Catalog
+- [ ] Create /catalog.json
+  - [ ] Define catalog schema (templates, artifacts)
+  - [ ] Add all template entries with metadata
+  - [ ] Include release asset patterns
+  - [ ] Add tiged URIs
+  - [ ] Add tags for discovery
+  - [ ] Document catalog usage for agents
+- [ ] Update README with catalog usage
+  - [ ] Add sparse-checkout instructions
+  - [ ] Add tiged instructions
+  - [ ] Add gh release download instructions
+  - [ ] Add dependency management guidance
+
+### MCP Server Implementation 🎯 **HIGH PRIORITY**
+
+**Objective:** Expose Agentic Canon as MCP server for Claude Desktop, OpenAI Agents SDK, and Gemini CLI
+
+#### MCP Resources (Read-Only)
+- [ ] Implement ac://catalog resource
+  - [ ] Serve /catalog.json
+  - [ ] Return templates, releases, assets
+  - [ ] Test with MCP clients
+- [ ] Implement ac://bible/* resources
+  - [ ] Serve machine-readable docs (MD/JSON/YAML)
+  - [ ] Map all Bible sections
+  - [ ] Add quality gates documentation
+- [ ] Implement ac://examples/* resources
+  - [ ] Serve code samples
+  - [ ] Add policy snippets
+  - [ ] Test resource embedding in prompts
+
+#### MCP Prompts (Parameterized Wizards)
+- [ ] scaffold_service prompt
+  - [ ] Define typed arguments
+  - [ ] Bind resources into prompt body
+  - [ ] Test with different languages
+- [ ] add_quality_gates prompt
+  - [ ] Define gate selection parameters
+  - [ ] Add workflow templates
+  - [ ] Test gate application
+- [ ] enable_storybook prompt
+  - [ ] Add Storybook configuration
+  - [ ] Include deployment options
+  - [ ] Test with React templates
+- [ ] enable_golangci prompt
+  - [ ] Add golangci-lint configuration
+  - [ ] Include CI integration
+  - [ ] Test with Go templates
+- [ ] setup_offline_cache prompt
+  - [ ] Add wheelhouse setup
+  - [ ] Add Yarn Zero-Installs setup
+  - [ ] Test offline scenarios
+
+#### MCP Tools (Idempotent Operations)
+- [ ] list_templates() tool
+  - [ ] Read from catalog
+  - [ ] Return structured template list
+  - [ ] Add JSON-schema validation
+- [ ] render_template() tool
+  - [ ] Run Cookiecutter with params
+  - [ ] Support zip or PR delivery
+  - [ ] Return artifact URI or PR URL
+  - [ ] Add error handling
+- [ ] create_repo() tool
+  - [ ] Scaffold project
+  - [ ] Push to GitHub
+  - [ ] Use GitHub API
+  - [ ] Handle visibility (private/public)
+- [ ] add_workflows() tool
+  - [ ] Add notebooks test/build workflows
+  - [ ] Add Pages/Storybook deploy
+  - [ ] Add release packer
+  - [ ] Test workflow additions
+- [ ] build_wheelhouse() tool
+  - [ ] Generate Python cache
+  - [ ] Support requirements files
+  - [ ] Return cache location
+- [ ] yarn_zero_installs() tool
+  - [ ] Set up Yarn cache
+  - [ ] Configure PnP
+  - [ ] Test Zero-Installs
+- [ ] execute_notebook() tool
+  - [ ] Run Papermill execution
+  - [ ] Support parameters
+  - [ ] Return execution results
+  - [ ] Add error handling
+
+#### MCP Server Infrastructure
+- [ ] Choose SDK (FastMCP vs official Python SDK)
+  - [ ] Evaluate FastMCP features
+  - [ ] Evaluate official SDK features
+  - [ ] Make decision and document
+- [ ] Create mcp/ package structure
+  - [ ] resources.py (bible, catalog, examples)
+  - [ ] prompts.py (wizards)
+  - [ ] tools.py (all tools)
+  - [ ] __init__.py
+  - [ ] tests/
+- [ ] Implement STDIO transport
+  - [ ] For local Claude Desktop
+  - [ ] Test local connection
+  - [ ] Add logging
+- [ ] Implement SSE transport (optional)
+  - [ ] Behind VPN for remote access
+  - [ ] Add OIDC/OAuth proxy
+  - [ ] Implement rate limiting
+  - [ ] Add public-ready option
+- [ ] Create Dockerfile
+  - [ ] Non-root user
+  - [ ] Minimal base image
+  - [ ] Container security scanning
+  - [ ] Test container execution
+
+#### MCP Security Model
+- [ ] Implement least privilege design
+  - [ ] Default read-only resources
+  - [ ] Explicit enablement for mutations
+  - [ ] Scope tools to target repos
+- [ ] Ephemeral authentication
+  - [ ] Short-lived GitHub App tokens
+  - [ ] No standing PATs
+  - [ ] Token rotation
+- [ ] Container isolation
+  - [ ] Locked namespace
+  - [ ] Whitelist CLIs only
+  - [ ] JSON-schema validation for args
+- [ ] Audit logging
+  - [ ] Structured logs (stderr/file)
+  - [ ] Per-call audit records
+  - [ ] Log retention policy
+
+#### MCP CI/CD & Operations
+- [ ] Build/test workflow
+  - [ ] Test server functionality
+  - [ ] Contract test MCP schema
+  - [ ] Publish container image
+- [ ] Release workflow
+  - [ ] Package Desktop Extension
+  - [ ] Publish Release assets
+  - [ ] Update documentation
+- [ ] Monitoring & SLOs
+  - [ ] Track SSE endpoint availability
+  - [ ] Track P95 tool latency
+  - [ ] Track error rate
+  - [ ] Alert on auth failures
+
+#### MCP Client Integration
+- [ ] Claude Desktop Extension
+  - [ ] Create .dxt/.mcpb package
+  - [ ] One-click install
+  - [ ] Configuration examples
+  - [ ] Test local server connection
+- [ ] OpenAI Agents SDK example
+  - [ ] Configure agent connection
+  - [ ] Expose tools in UI
+  - [ ] Test tool invocation
+  - [ ] Document setup
+- [ ] Gemini CLI example
+  - [ ] Configure FastMCP integration
+  - [ ] Test connection
+  - [ ] Document setup
+- [ ] Create mcp-config-examples/
+  - [ ] Claude Desktop config
+  - [ ] OpenAI config
+  - [ ] Gemini config
+  - [ ] Test all configurations
+
+#### MCP Testing & Documentation
+- [ ] Guardrail tests
+  - [ ] Test schema validation
+  - [ ] Test allowlists
+  - [ ] Test destructive ops blocking
+  - [ ] Test human-in-the-loop
+- [ ] Integration tests
+  - [ ] Test all tools
+  - [ ] Test all resources
+  - [ ] Test all prompts
+  - [ ] Test error scenarios
+- [ ] Documentation
+  - [ ] MCP server README
+  - [ ] Tool reference docs
+  - [ ] Resource reference docs
+  - [ ] Prompt reference docs
+  - [ ] Security model docs
+  - [ ] Deployment guide
+
+### Rollout Timeline (2 weeks)
+- [ ] Day 1-2: SDK selection, repo layout, Dockerization
+- [ ] Day 3-5: Implement resources and list_templates()
+- [ ] Day 6-8: Implement render_template() and create_repo()
+- [ ] Day 9-10: Implement offline cache tools and execute_notebook()
+- [ ] Day 11-12: Wire prompts (scaffold, gates, Storybook, Go lint)
+- [ ] Day 13-14: Package Desktop Extension, add examples, write tests
+
 ## Future Maintenance & Improvements
 
 ### Standards Maintenance

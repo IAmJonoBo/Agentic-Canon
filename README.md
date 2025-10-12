@@ -74,10 +74,11 @@ jupyter notebook notebooks/
 
 ### For AI Agents
 
-1. **Read**: [BIBLE.md](BIBLE.md) for comprehensive guidance and quality gates
-2. **Check**: [control-traceability-matrix.json](control-traceability-matrix.json) for compliance requirements
-3. **Execute**: [runbooks/agent-runbook.json](runbooks/agent-runbook.json) for step-by-step automation
-4. **Use**: Templates from [templates/](templates/) directory with machine-readable configurations
+1. **Discover**: [catalog.json](catalog.json) - Machine-readable catalog of all templates, assets, and resources ([docs](docs/CATALOG.md))
+2. **Read**: [BIBLE.md](BIBLE.md) for comprehensive guidance and quality gates
+3. **Check**: [control-traceability-matrix.json](control-traceability-matrix.json) for compliance requirements
+4. **Execute**: [runbooks/agent-runbook.json](runbooks/agent-runbook.json) for step-by-step automation
+5. **Use**: Templates from [templates/](templates/) directory with machine-readable configurations
 
 ### For Platform Teams
 
@@ -176,6 +177,42 @@ cookiecutter templates/project-management
 - **Platform** - Backstage, policy enforcement
 - **Repository** - Common files, configurations
 - **Security** - Scanning tools, SBOM, compliance
+
+## Machine-Readable Catalog
+
+**[catalog.json](catalog.json)** - Complete machine-readable catalog of all templates, assets, and resources ([Documentation](docs/CATALOG.md))
+
+The catalog enables:
+- 🔍 **Discovery**: Find templates by language, framework, or features
+- 🤖 **Automation**: Power CLI tools, agents, and MCP servers
+- 📊 **Validation**: Check requirements and compliance
+- 🔗 **Integration**: Seamless integration with external tools
+
+**Example queries:**
+```bash
+# List all templates
+cat catalog.json | jq '.templates.cookiecutter[] | {id, name, language}'
+
+# Find Python templates
+cat catalog.json | jq '.templates.cookiecutter[] | select(.language == "python")'
+
+# Get template usage commands
+cat catalog.json | jq '.templates.cookiecutter[] | select(.id == "python-service") | .usage'
+
+# Check compliance standards
+cat catalog.json | jq '.compliance.standards'
+```
+
+**What's cataloged:**
+- 6 Cookiecutter templates with full metadata
+- 4 Grafana dashboards (DORA, SPACE, Quality, Security)
+- 5 GitHub Actions workflows + 2 Azure Pipelines
+- 3 Fitness function templates
+- Framework documentation and ADRs
+- CLI commands and distribution methods
+- 7 compliance standards
+
+See [docs/CATALOG.md](docs/CATALOG.md) for usage examples, integration patterns, and API reference.
 
 ## Notebooks
 

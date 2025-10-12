@@ -216,3 +216,125 @@ def test_docs_only_cookiecutter_bakes(cookies):
     assert (result.project_path / "docs" / "index.md").exists()
     assert (result.project_path / "requirements.txt").exists()
     assert (result.project_path / ".github" / "workflows" / "book-deploy.yml").exists()
+
+
+# ============================================================================
+# Enhanced Validation Tests
+# ============================================================================
+
+def test_python_invalid_email(cookies):
+    """Test that invalid email is rejected."""
+    result = cookies.bake(
+        extra_context={
+            "project_slug": "test-service",
+            "pkg_name": "test_service",
+            "author_email": "not-an-email",  # Invalid email
+            "project_description": "A test service for validation",
+        },
+        template="templates/python-service"
+    )
+    assert result.exit_code != 0
+
+
+def test_python_invalid_author_name(cookies):
+    """Test that invalid author name is rejected."""
+    result = cookies.bake(
+        extra_context={
+            "project_slug": "test-service",
+            "pkg_name": "test_service",
+            "author_name": "X",  # Too short
+            "project_description": "A test service for validation",
+        },
+        template="templates/python-service"
+    )
+    assert result.exit_code != 0
+
+
+def test_python_invalid_license(cookies):
+    """Test that invalid license is rejected."""
+    result = cookies.bake(
+        extra_context={
+            "project_slug": "test-service",
+            "pkg_name": "test_service",
+            "license": "InvalidLicense",  # Not in approved list
+            "project_description": "A test service for validation",
+        },
+        template="templates/python-service"
+    )
+    assert result.exit_code != 0
+
+
+def test_python_short_description(cookies):
+    """Test that too short description is rejected."""
+    result = cookies.bake(
+        extra_context={
+            "project_slug": "test-service",
+            "pkg_name": "test_service",
+            "project_description": "Short",  # Less than 10 characters
+        },
+        template="templates/python-service"
+    )
+    assert result.exit_code != 0
+
+
+def test_python_reserved_keyword_package_name(cookies):
+    """Test that Python reserved keyword is rejected for package name."""
+    result = cookies.bake(
+        extra_context={
+            "project_slug": "test-service",
+            "pkg_name": "import",  # Reserved keyword
+            "project_description": "A test service for validation",
+        },
+        template="templates/python-service"
+    )
+    assert result.exit_code != 0
+
+
+def test_node_invalid_email(cookies):
+    """Test that Node template rejects invalid email."""
+    result = cookies.bake(
+        extra_context={
+            "project_slug": "test-node",
+            "author_email": "invalid.email",
+            "description": "A test Node.js service",
+        },
+        template="templates/node-service"
+    )
+    assert result.exit_code != 0
+
+
+def test_react_invalid_slug(cookies):
+    """Test that React template rejects invalid slug."""
+    result = cookies.bake(
+        extra_context={
+            "project_slug": "Invalid-App_Name",
+            "description": "A test React application",
+        },
+        template="templates/react-webapp"
+    )
+    assert result.exit_code != 0
+
+
+def test_go_invalid_module_path(cookies):
+    """Test that Go template rejects invalid module path."""
+    result = cookies.bake(
+        extra_context={
+            "project_slug": "test-go",
+            "module_path": "invalid-path",  # Must have domain/path
+            "description": "A test Go service",
+        },
+        template="templates/go-service"
+    )
+    assert result.exit_code != 0
+
+
+def test_docs_only_invalid_description(cookies):
+    """Test that docs template rejects too short description."""
+    result = cookies.bake(
+        extra_context={
+            "project_slug": "test-docs",
+            "description": "Short",  # Too short
+        },
+        template="templates/docs-only"
+    )
+    assert result.exit_code != 0

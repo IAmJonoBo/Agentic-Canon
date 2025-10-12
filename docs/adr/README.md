@@ -107,14 +107,17 @@ For complete lifecycle management, see [ADR Lifecycle Guide](ADR-LIFECYCLE.md).
 
 ### Workflows
 
-- **ADR Validation** - Validates ADR format on PRs
-- **Tasks and ADR Sync** - Checks for unlinked ADRs weekly
-- **Documentation Sanity Check** - Verifies ADR consistency
+- **ADR Validation** - Validates ADR format on PRs (`.github/workflows/adr-validation.yml`)
+- **Tasks and ADR Sync** - Checks for unlinked ADRs weekly, enriches issues with ADR metadata (`.github/workflows/tasks-adr-sync.yml`)
+- **Tasklist Scanner** - Creates issues from TASKS.md with ADR references (`.github/workflows/tasklist-scan.yml`)
+- **Documentation Sanity Check** - Verifies ADR consistency (`.github/workflows/doc-sanity-check.yml`)
+
+For complete details on how ADRs are automatically linked to tasks and issues, see [TASKS-ADR-SYNC.md](../TASKS-ADR-SYNC.md).
 
 ### Scripts
 
 - **`.dev/scripts/create-adr.sh`** - Interactive ADR creation wizard
-- Run `./dev/scripts/create-adr.sh` to create a new ADR
+- Run `./.dev/scripts/create-adr.sh` to create a new ADR
 
 ## Contributing
 

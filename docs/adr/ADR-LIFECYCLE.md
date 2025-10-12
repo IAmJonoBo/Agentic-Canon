@@ -362,12 +362,21 @@ The following workflows help manage ADRs:
    - Runs on PR and push
 
 2. **Tasks and ADR Sync** (`.github/workflows/tasks-adr-sync.yml`)
-   - Checks for unlinked ADRs
-   - Creates issues for missing links
-   - Generates status reports
-   - Runs weekly
+   - Syncs TASKS.md with closed issues
+   - Checks for unlinked ADRs and creates tracking issues
+   - Enriches issues with ADR metadata
+   - Generates comprehensive status reports
+   - Runs weekly (Monday 6 AM UTC)
+   - See [TASKS-ADR-SYNC.md](../TASKS-ADR-SYNC.md) for details
 
-3. **Documentation Sanity Check** (`.github/workflows/doc-sanity-check.yml`)
+3. **Tasklist Scanner** (`.github/workflows/tasklist-scan.yml`)
+   - Creates GitHub Issues from TASKS.md items
+   - Extracts ADR references and metadata
+   - Links tasks to relevant ADRs automatically
+   - Runs on push to markdown files
+   - See [TASKS-ADR-SYNC.md](../TASKS-ADR-SYNC.md) for details
+
+4. **Documentation Sanity Check** (`.github/workflows/doc-sanity-check.yml`)
    - Verifies ADR README consistency
    - Checks for missing ADRs
    - Runs on push and schedule
@@ -376,6 +385,17 @@ The following workflows help manage ADRs:
 
 - **`.dev/scripts/create-adr.sh`** - Interactive ADR creation
 - **`.dev/scripts/validate-adrs.sh`** - Validate ADR format locally
+
+### Automated Synchronization
+
+The project maintains automated bidirectional sync between TASKS.md, GitHub Issues, and ADRs:
+
+- **Task → Issue**: Unchecked items in TASKS.md automatically create issues with ADR links
+- **Issue → Task**: Closed issues update TASKS.md completion status
+- **ADR → Issue**: Missing ADR links trigger tracking issues with full metadata
+- **Issue Enrichment**: Open issues get updated with related ADR information
+
+For complete documentation on the sync system, see [TASKS-ADR-SYNC.md](../TASKS-ADR-SYNC.md).
 
 ## Best Practices
 

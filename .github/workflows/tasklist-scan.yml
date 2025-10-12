@@ -98,14 +98,16 @@ jobs:
                   metadata.labels.push('component:templates');
                 } else if (currentSection.includes('Notebook')) {
                   metadata.labels.push('component:notebooks');
-                } else if (currentSection.includes('Documentation')) {
+                } else if (currentSubsection.includes('Documentation') || currentSection.includes('Documentation')) {
                   metadata.labels.push('component:documentation');
                 } else if (currentSection.includes('CLI') || currentSection.includes('Wizard')) {
                   metadata.labels.push('component:cli');
-                } else if (currentSection.includes('Security')) {
+                } else if (currentSubsection.includes('Security') || currentSection.includes('Security')) {
                   metadata.labels.push('security');
                 } else if (currentSection.includes('Testing')) {
                   metadata.labels.push('component:testing');
+                } else if (currentSubsection.includes('Performance') || currentSection.includes('Performance')) {
+                  metadata.labels.push('performance');
                 }
                 
                 // Add priority based on section or keywords

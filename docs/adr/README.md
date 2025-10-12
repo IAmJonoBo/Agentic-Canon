@@ -2,6 +2,12 @@
 
 This directory contains Architecture Decision Records (ADRs) for the Agentic Canon project. ADRs document significant architectural decisions made during the project's development.
 
+## Quick Links
+
+- **[ADR Lifecycle Guide](ADR-LIFECYCLE.md)** - Complete guide to creating, reviewing, and managing ADRs
+- **[ADR Template](../../templates/architecture/adr/template.md)** - Template for creating new ADRs
+- **[Create ADR Script](.dev/scripts/create-adr.sh)** - Automated ADR creation
+
 ## What is an ADR?
 
 An Architecture Decision Record (ADR) is a document that captures an important architectural decision made along with its context and consequences.
@@ -20,6 +26,14 @@ Each ADR follows this structure:
 - **References**: Links to relevant resources
 
 ## Current ADRs
+
+**Total ADRs:** 8 (all accepted)
+
+### Status Summary
+- ✅ Accepted: 8
+- 🔄 Proposed: 0  
+- ⚠️ Deprecated: 0
+- 🔀 Superseded: 0
 
 ### Foundation & Infrastructure
 
@@ -48,22 +62,40 @@ The following ADRs are planned based on TASKS.md:
 
 ## Creating a New ADR
 
-1. Copy the template (if available) or use the existing ADRs as examples
-2. Number it sequentially (ADR-NNN)
-3. Fill in all sections thoughtfully
-4. Submit as part of a pull request
-5. Link from this README once accepted
+### Using the Script (Recommended)
+
+```bash
+# Run the interactive script
+.dev/scripts/create-adr.sh
+
+# Or create manually:
+cp templates/architecture/adr/template.md docs/adr/ADR-NNN-your-decision.md
+```
+
+### Using GitHub Issue Template
+
+1. Go to repository issues
+2. Click "New Issue" 
+3. Select "Architecture Decision Record (ADR) Proposal"
+4. Fill in the template and submit
+5. After approval, convert to ADR document
+
+For detailed guidance, see [ADR Lifecycle Guide](ADR-LIFECYCLE.md).
 
 ## ADR Lifecycle
 
 ```
-Proposed → Accepted → (Deprecated | Superseded)
+Proposed → [Review] → Accepted → [Implementation] → Active
+                                                      ↓
+                                            Deprecated/Superseded
 ```
 
-- **Proposed**: Under discussion
-- **Accepted**: Decision has been made and implemented
+- **Proposed**: Under discussion, gathering feedback
+- **Accepted**: Decision approved and being/been implemented
 - **Deprecated**: No longer recommended but not replaced
 - **Superseded**: Replaced by a newer ADR
+
+For complete lifecycle management, see [ADR Lifecycle Guide](ADR-LIFECYCLE.md).
 
 ## References
 
@@ -71,14 +103,32 @@ Proposed → Accepted → (Deprecated | Superseded)
 - [Michael Nygard's ADR Post](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
 - [ADR Tools](https://github.com/npryce/adr-tools)
 
+## Automation
+
+### Workflows
+
+- **ADR Validation** - Validates ADR format on PRs
+- **Tasks and ADR Sync** - Checks for unlinked ADRs weekly
+- **Documentation Sanity Check** - Verifies ADR consistency
+
+### Scripts
+
+- **`.dev/scripts/create-adr.sh`** - Interactive ADR creation wizard
+- Run `./dev/scripts/create-adr.sh` to create a new ADR
+
 ## Contributing
 
 When making significant architectural decisions:
 
-1. Create a new ADR document
-2. Discuss with the team (open an issue or discussion)
-3. Update the status as the decision progresses
-4. Link related ADRs if the decision supersedes or relates to previous decisions
+1. **Propose**: Create ADR or use issue template
+2. **Discuss**: Open PR and gather stakeholder feedback  
+3. **Review**: Hold review meeting if needed
+4. **Accept**: Update status when approved
+5. **Implement**: Execute the decision
+6. **Link**: Update this README with the new ADR
+7. **Maintain**: Review annually and update as needed
+
+See [ADR Lifecycle Guide](ADR-LIFECYCLE.md) for detailed instructions.
 
 ---
 

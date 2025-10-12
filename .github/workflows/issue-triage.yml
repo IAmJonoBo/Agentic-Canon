@@ -20,23 +20,49 @@ jobs:
             // Auto-label based on title/body keywords
             const text = (issue.title + ' ' + issue.body).toLowerCase();
             
+            // Type labels
             if (text.includes('bug') || text.includes('error') || text.includes('fail')) {
-              labels.push('bug');
+              labels.push('bug', 'type:bug');
             }
             if (text.includes('feature') || text.includes('enhancement') || text.includes('add')) {
-              labels.push('enhancement');
+              labels.push('enhancement', 'type:feature');
             }
-            if (text.includes('doc') || text.includes('readme')) {
+            if (text.includes('[task]')) {
+              labels.push('task', 'type:task');
+            }
+            if (text.includes('[adr]') || text.includes('architecture decision')) {
+              labels.push('adr', 'architecture', 'needs-review');
+            }
+            
+            // Topic labels
+            if (text.includes('doc') || text.includes('readme') || text.includes('documentation')) {
               labels.push('documentation');
             }
             if (text.includes('security') || text.includes('vulnerability') || text.includes('cve')) {
-              labels.push('security');
+              labels.push('security', 'critical');
             }
-            if (text.includes('performance') || text.includes('slow')) {
+            if (text.includes('performance') || text.includes('slow') || text.includes('optimization')) {
               labels.push('performance');
             }
-            if (text.includes('question') || text.includes('how to')) {
+            if (text.includes('question') || text.includes('how to') || text.includes('help')) {
               labels.push('question');
+            }
+            
+            // Component labels
+            if (text.includes('template') || text.includes('cookiecutter')) {
+              labels.push('component:templates');
+            }
+            if (text.includes('notebook') || text.includes('jupyter')) {
+              labels.push('component:notebooks');
+            }
+            if (text.includes('cli') || text.includes('agentic-canon')) {
+              labels.push('component:cli');
+            }
+            if (text.includes('ci') || text.includes('workflow') || text.includes('github actions')) {
+              labels.push('component:ci-cd');
+            }
+            if (text.includes('test') && !text.includes('testing infrastructure')) {
+              labels.push('component:testing');
             }
             
             // Apply labels
@@ -50,6 +76,12 @@ jobs:
             }
             
             // Add comment with next steps
+            const priorityGuide = labels.includes('critical') || labels.includes('security') ? 
+              '\n**⚠️ This issue has been marked as high priority and will be reviewed urgently.**\n' : '';
+            
+            const componentGuide = labels.filter(l => l.startsWith('component:')).length > 0 ?
+              '\n**🎯 Component:** ' + labels.filter(l => l.startsWith('component:')).map(l => l.replace('component:', '')).join(', ') : '';
+            
             await github.rest.issues.createComment({
               issue_number: issue.number,
               owner: context.repo.owner,
@@ -57,14 +89,18 @@ jobs:
               body: `👋 Thank you for opening this issue!
 
 This issue has been automatically triaged and labeled. A maintainer will review it soon.
+${priorityGuide}${componentGuide}
 
 **Next steps:**
 - Ensure you've provided all necessary information
 - Check if a similar issue already exists
-- Consider adding relevant labels if appropriate
+- For architectural decisions, consider creating an ADR (Architecture Decision Record)
+- Link related issues or PRs if applicable
 
 **For contributors:**
 - Read our [CONTRIBUTING.md](../CONTRIBUTING.md) guide
 - Check our [Code of Conduct](../CODE_OF_CONDUCT.md)
+- Review [FRAMEWORK.md](../FRAMEWORK.md) for our development philosophy
+- See [QUALITY_STANDARDS.md](../QUALITY_STANDARDS.md) for quality gates
 `
             });

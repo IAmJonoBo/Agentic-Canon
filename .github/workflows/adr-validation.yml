@@ -1,0 +1,206 @@
+name: ADR Validation
+on:
+  pull_request:
+    paths:
+      - 'docs/adr/**'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/adr/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate-adrs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      
+      - name: Validate ADR Format
+        run: |
+          echo "🔍 Validating ADR format and consistency..."
+          
+          ADR_DIR="docs/adr"
+          ERRORS=0
+          WARNINGS=0
+          
+          # Check that ADR directory exists
+          if [ ! -d "$ADR_DIR" ]; then
+            echo "❌ ADR directory not found: $ADR_DIR"
+            exit 1
+          fi
+          
+          # Validate each ADR file
+          for adr in "$ADR_DIR"/ADR-[0-9]*.md; do
+            if [ ! -f "$adr" ]; then
+              continue
+            fi
+            
+            filename=$(basename "$adr")
+            echo "Checking $filename..."
+            
+            # Check filename format: ADR-NNN-kebab-case.md
+            if ! [[ "$filename" =~ ^ADR-[0-9]{3}-.+\.md$ ]]; then
+              echo "  ❌ Invalid filename format: $filename"
+              echo "     Expected: ADR-NNN-kebab-case.md"
+              ERRORS=$((ERRORS + 1))
+            fi
+            
+            # Check for required sections
+            required_sections=(
+              "# Metadata"
+              "## Context"
+              "## Decision"
+              "## Alternatives Considered"
+              "## Impact Assessment"
+              "## Implementation"
+              "## References"
+            )
+            
+            for section in "${required_sections[@]}"; do
+              if ! grep -q "^${section}" "$adr"; then
+                echo "  ⚠️  Missing section: $section"
+                WARNINGS=$((WARNINGS + 1))
+              fi
+            done
+            
+            # Check for metadata fields
+            if ! grep -q "^number:" "$adr"; then
+              echo "  ⚠️  Missing metadata field: number"
+              WARNINGS=$((WARNINGS + 1))
+            fi
+            
+            if ! grep -q "^status:" "$adr"; then
+              echo "  ⚠️  Missing metadata field: status"
+              WARNINGS=$((WARNINGS + 1))
+            fi
+            
+            # Check status is valid
+            status=$(grep "^status:" "$adr" | head -1 | sed 's/status: *//' | xargs)
+            if [ -n "$status" ]; then
+              if [[ ! "$status" =~ ^(proposed|accepted|deprecated|superseded)$ ]]; then
+                echo "  ❌ Invalid status: $status"
+                echo "     Must be: proposed, accepted, deprecated, or superseded"
+                ERRORS=$((ERRORS + 1))
+              fi
+            fi
+            
+            # Check for placeholder text
+            if grep -q "{{ " "$adr"; then
+              echo "  ⚠️  Contains placeholder text ({{ ... }})"
+              WARNINGS=$((WARNINGS + 1))
+            fi
+            
+            echo "  ✓ Basic validation passed"
+          done
+          
+          # Check ADR README is up to date
+          if [ ! -f "$ADR_DIR/README.md" ]; then
+            echo "⚠️  docs/adr/README.md not found"
+            WARNINGS=$((WARNINGS + 1))
+          else
+            echo "✓ ADR README exists"
+          fi
+          
+          # Summary
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📊 Validation Summary"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ Errors: $ERRORS"
+          echo "⚠️  Warnings: $WARNINGS"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          
+          if [ $ERRORS -gt 0 ]; then
+            echo "❌ ADR validation failed with $ERRORS error(s)"
+            exit 1
+          elif [ $WARNINGS -gt 0 ]; then
+            echo "⚠️  ADR validation passed with $WARNINGS warning(s)"
+            echo "   Please review warnings above"
+          else
+            echo "✅ All ADRs validated successfully!"
+          fi
+      
+      - name: Check ADR Sequence
+        run: |
+          echo "🔢 Checking ADR numbering sequence..."
+          
+          cd docs/adr
+          numbers=$(ls ADR-[0-9]*.md 2>/dev/null | sed 's/ADR-\([0-9]*\)-.*/\1/' | sort -n)
+          
+          if [ -z "$numbers" ]; then
+            echo "No ADRs found"
+            exit 0
+          fi
+          
+          expected=1
+          gaps=()
+          
+          for num in $numbers; do
+            num=$((10#$num))  # Remove leading zeros
+            if [ $num -ne $expected ]; then
+              gaps+=("Expected ADR-$(printf '%03d' $expected), found ADR-$(printf '%03d' $num)")
+            fi
+            expected=$((num + 1))
+          done
+          
+          if [ ${#gaps[@]} -gt 0 ]; then
+            echo "⚠️  ADR numbering has gaps:"
+            for gap in "${gaps[@]}"; do
+              echo "   - $gap"
+            done
+          else
+            echo "✅ ADR numbering is sequential"
+          fi
+      
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Count ADRs
+            const adrDir = 'docs/adr';
+            const files = fs.readdirSync(adrDir).filter(f => f.match(/^ADR-\d{3}-.+\.md$/));
+            
+            const comment = `## 📋 ADR Validation Results
+            
+            ✅ ADR format validation passed!
+            
+            **ADRs in this PR:**
+            ${files.map(f => `- \`${f}\``).join('\n')}
+            
+            **Total ADRs:** ${files.length}
+            
+            **Reminder:**
+            - [ ] Update \`docs/adr/README.md\` to link new ADRs
+            - [ ] Ensure stakeholders have reviewed the decision
+            - [ ] Check that status is correct (proposed/accepted/deprecated/superseded)
+            - [ ] Verify all placeholder text has been replaced
+            `;
+            
+            // Only comment if we haven't already
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const existingComment = comments.find(c => 
+              c.body.includes('ADR Validation Results') && 
+              c.user.type === 'Bot'
+            );
+            
+            if (!existingComment) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }

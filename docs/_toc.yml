@@ -8,3 +8,4 @@ chapters:
   - file: notebooks/05_docs_to_book
   - file: dev-experience-roadmap
   - file: feature-flags
+  - file: sbom-workflow

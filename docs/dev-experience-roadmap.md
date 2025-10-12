@@ -25,10 +25,10 @@ tracked alongside the rest of the backlog.
 
 ## Syft + Grype Workflow (#132)
 
-- Add reusable GitHub Actions workflow(s) that generate SBOMs via Syft and run
-  Grype vulnerability scanning.
-- Update CI docs so teams can layer the workflow on top of their generated
-  projects with minimal effort.
+- ✅ Reusable workflow published at `.github/workflows/sbom-scan.yml`
+- ✅ Documentation added in `docs/sbom-workflow.md`
+- ⏳ Future iteration: integrate summaries into Backstage and the CLI `fix`
+  routine once adoption stabilises.
 
 ## Remote Development Environments (#133)
 

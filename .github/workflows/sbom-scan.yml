@@ -1,0 +1,54 @@
+name: Security • SBOM Scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Path or image reference to scan (default: repository contents)"
+        required: false
+        default: .
+  workflow_call:
+    inputs:
+      target:
+        required: false
+        type: string
+        default: .
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+    env:
+      TARGET: ${{ inputs.target || github.event.inputs.target || '.' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate SBOM with Syft
+        id: syft
+        uses: anchore/syft-action@v0.16.0
+        with:
+          path: ${{ env.TARGET }}
+          format: spdx-json
+          output-file: sbom.spdx.json
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-spdx-json
+          path: sbom.spdx.json
+
+      - name: Scan SBOM with Grype
+        id: grype
+        uses: anchore/grype-action@v0.19.0
+        with:
+          sbom: sbom.spdx.json
+          fail-build: false
+          severity-cutoff: medium
+
+      - name: Summarise results
+        run: |
+          echo "Generated SBOM: sbom.spdx.json" >> $GITHUB_STEP_SUMMARY
+          echo "Grype findings (medium+):" >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.grype.outputs.vulnerabilities }}' >> $GITHUB_STEP_SUMMARY

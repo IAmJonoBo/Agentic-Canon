@@ -292,7 +292,9 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
 - [x] #131 OpenFeature/flagd starter bundle for feature-flag readiness across templates
   - ✅ Shared helpers under `templates/_shared/feature_flags/` (Python, TypeScript, Go)
   - ✅ Guide published in `docs/feature-flags.md`
-- [ ] #132 Syft/Grype SBOM + vulnerability scanning workflow for shared CI usage
+- [x] #132 Syft/Grype SBOM + vulnerability scanning workflow for shared CI usage
+  - ✅ Reusable workflow `.github/workflows/sbom-scan.yml`
+  - ✅ Documentation in `docs/sbom-workflow.md`
 - [ ] #133 Remote dev environments (Gitpod workspace and Dev Container templates)
 - [ ] #134 Semgrep shared ruleset and automation guidance (CI + pre-commit adoption)
 

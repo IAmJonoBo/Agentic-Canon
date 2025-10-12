@@ -180,6 +180,11 @@ See [`dev-experience-roadmap.md`](dev-experience-roadmap.md) for planned DX init
 
 Refer to [`feature-flags.md`](feature-flags.md) for guidance on adopting OpenFeature/flagd using the shared helpers in `templates/_shared/feature_flags/`.
 
+### SBOM & Vulnerability Scanning
+
+[`sbom-workflow.md`](sbom-workflow.md) describes the reusable Syft/Grype GitHub
+Actions workflow located at `.github/workflows/sbom-scan.yml`.
+
 ## Adding Content
 
 ### New Page

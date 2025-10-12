@@ -53,6 +53,7 @@ agentic-canon repo-init
 ```
 
 This sets up:
+
 - TODO/FIXME → GitHub Issues automation
 - Markdown tasklist → GitHub Issues automation
 - PR review follow-ups automation
@@ -69,6 +70,7 @@ agentic-canon validate
 ```
 
 Checks for:
+
 - Required files (README.md, etc.)
 - Recommended files (CONTRIBUTING.md, SECURITY.md, LICENSE)
 - .github directory structure
@@ -84,6 +86,7 @@ agentic-canon doctor
 ```
 
 Verifies:
+
 - Python version
 - Git installation
 - GitHub CLI (gh)
@@ -99,6 +102,7 @@ agentic-canon audit
 ```
 
 Audits:
+
 - Security policy (SECURITY.md)
 - Secrets in .gitignore
 - Security workflows
@@ -115,6 +119,7 @@ agentic-canon update
 ```
 
 This command:
+
 - Checks if project was created with Cruft
 - Checks for template updates
 - Shows diff preview of changes
@@ -124,8 +129,29 @@ This command:
 - Guides through resolution process
 
 **Prerequisites:**
+
 - Project must have `.cruft.json` file
 - Cruft must be installed: `pip install cruft`
+
+#### `agentic-canon fix`
+
+Run the intelligent fixer to diagnose and remediate common issues:
+
+```bash
+agentic-canon fix
+```
+
+What it does:
+
+- Executes the validation routine to surface missing project scaffolding
+- Ensures a `.venv/` virtual environment exists and installs `requirements.txt`
+- Installs/refreshes pre-commit hooks when configured
+- Runs `.dev/sanity-check.sh --quiet --skip-templates` to spot any lingering problems
+- Produces a concise summary highlighting remaining actions
+
+💡 You can append the global `--fix` flag to any other command to run the fixer
+after the primary action. Example: `agentic-canon init --fix` will scaffold a
+project and immediately run the remediation routine.
 
 ### Example Session
 
@@ -154,8 +180,8 @@ This command:
 📝 Project Configuration:
 
   Project name (e.g., 'My Awesome Service'): My API
-  Project slug [my-api]: 
-  Package name [my_api]: 
+  Project slug [my-api]:
+  Package name [my_api]:
   Description: A modern REST API
   Author name: John Doe
   Author email: john@example.com
@@ -242,6 +268,7 @@ python -m agentic_canon_cli
 Launch the interactive wizard to create a new project.
 
 **Features:**
+
 - Template selection (6 templates available)
 - Project configuration
 - Feature toggles
@@ -253,6 +280,7 @@ Launch the interactive wizard to create a new project.
 Add project management automation to existing repository.
 
 **Features:**
+
 - TODO/FIXME tracking
 - Tasklist automation
 - PR follow-up automation
@@ -265,6 +293,7 @@ Add project management automation to existing repository.
 Validate project structure and configuration.
 
 **Checks:**
+
 - Required and recommended files
 - .github directory structure
 - Workflow files
@@ -275,6 +304,7 @@ Validate project structure and configuration.
 Diagnose environment setup and dependencies.
 
 **Checks:**
+
 - Python version (3.8+)
 - Git
 - GitHub CLI
@@ -286,6 +316,7 @@ Diagnose environment setup and dependencies.
 Run security and quality audit.
 
 **Audits:**
+
 - Security policy
 - .gitignore patterns
 - Security workflows
@@ -297,6 +328,7 @@ Run security and quality audit.
 Update existing project from template using Cruft.
 
 **Features:**
+
 - Check for template updates
 - Preview changes with diff
 - Apply updates interactively
@@ -304,6 +336,7 @@ Update existing project from template using Cruft.
 - Guide through resolution process
 
 **Requirements:**
+
 - Project created with Cruft (has `.cruft.json`)
 - Cruft installed: `pip install cruft`
 
@@ -311,45 +344,46 @@ Update existing project from template using Cruft.
 
 The CLI automatically configures these Cookiecutter variables:
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `project_name` | Human-readable name | "My Awesome API" |
-| `project_slug` | Kebab-case slug | "my-awesome-api" |
-| `pkg_name` | Python package name | "my_awesome_api" |
-| `project_description` | Brief description | "A modern REST API" |
-| `author_name` | Author's name | "John Doe" |
-| `author_email` | Author's email | "john@example.com" |
-| `license` | License type | "Apache-2.0" |
-| `include_jupyter_book` | Enable docs | "yes"/"no" |
-| `enable_security_gates` | Enable security | "yes"/"no" |
-| `enable_sbom_signing` | Enable SBOM | "yes"/"no" |
-| `enable_contract_tests` | Enable contracts | "yes"/"no" |
-| `ci_provider` | CI/CD provider | "github"/"gitlab"/"azure" |
+| Variable                | Description         | Example                   |
+| ----------------------- | ------------------- | ------------------------- |
+| `project_name`          | Human-readable name | "My Awesome API"          |
+| `project_slug`          | Kebab-case slug     | "my-awesome-api"          |
+| `pkg_name`              | Python package name | "my_awesome_api"          |
+| `project_description`   | Brief description   | "A modern REST API"       |
+| `author_name`           | Author's name       | "John Doe"                |
+| `author_email`          | Author's email      | "john@example.com"        |
+| `license`               | License type        | "Apache-2.0"              |
+| `include_jupyter_book`  | Enable docs         | "yes"/"no"                |
+| `enable_security_gates` | Enable security     | "yes"/"no"                |
+| `enable_sbom_signing`   | Enable SBOM         | "yes"/"no"                |
+| `enable_contract_tests` | Enable contracts    | "yes"/"no"                |
+| `ci_provider`           | CI/CD provider      | "github"/"gitlab"/"azure" |
 
 ### Project Management Template Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `project_name` | Project name | "My Project" |
-| `project_slug` | Kebab-case slug | "my-project" |
-| `github_org` | GitHub org/user | "my-org" |
-| `project_description` | Brief description | "Well-managed project" |
-| `enable_todo_tracking` | TODO → Issue automation | "yes"/"no" |
-| `enable_tasklist_tracking` | Tasklist → Issue | "yes"/"no" |
-| `enable_pr_followups` | PR follow-ups | "yes"/"no" |
-| `enable_issue_triage` | Auto-triage | "yes"/"no" |
-| `auto_close_stale_issues` | Stale management | "yes"/"no" |
-| `enable_codeowners` | CODEOWNERS file | "yes"/"no" |
-| `default_branch` | Default branch | "main" |
-| `require_approvals` | PR approvals | "2" |
-| `stale_days` | Days before stale | "60" |
-| `ci_provider` | CI/CD platform | "github"/"gitlab"/"azure" |
+| Variable                   | Description             | Example                   |
+| -------------------------- | ----------------------- | ------------------------- |
+| `project_name`             | Project name            | "My Project"              |
+| `project_slug`             | Kebab-case slug         | "my-project"              |
+| `github_org`               | GitHub org/user         | "my-org"                  |
+| `project_description`      | Brief description       | "Well-managed project"    |
+| `enable_todo_tracking`     | TODO → Issue automation | "yes"/"no"                |
+| `enable_tasklist_tracking` | Tasklist → Issue        | "yes"/"no"                |
+| `enable_pr_followups`      | PR follow-ups           | "yes"/"no"                |
+| `enable_issue_triage`      | Auto-triage             | "yes"/"no"                |
+| `auto_close_stale_issues`  | Stale management        | "yes"/"no"                |
+| `enable_codeowners`        | CODEOWNERS file         | "yes"/"no"                |
+| `default_branch`           | Default branch          | "main"                    |
+| `require_approvals`        | PR approvals            | "2"                       |
+| `stale_days`               | Days before stale       | "60"                      |
+| `ci_provider`              | CI/CD platform          | "github"/"gitlab"/"azure" |
 
 ## Troubleshooting
 
 ### "Cookiecutter not found"
 
 Install cookiecutter:
+
 ```bash
 pip install cookiecutter
 ```
@@ -361,6 +395,7 @@ Make sure you're running the CLI from the Agentic Canon repository root or have 
 ### "Permission denied"
 
 On Unix systems, you may need to make the script executable:
+
 ```bash
 chmod +x agentic_canon_cli/cli.py
 ```

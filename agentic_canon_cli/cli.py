@@ -12,7 +12,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 
 
 def print_banner():
@@ -142,6 +142,127 @@ def select_features() -> Dict[str, str]:
     return features
 
 
+def _run_command(
+    cmd: list[str], cwd: Optional[Path] = None
+) -> subprocess.CompletedProcess:
+    """Run a shell command, capturing output for diagnostics."""
+    result = subprocess.run(
+        cmd,
+        cwd=cwd,
+        check=False,
+        text=True,
+        capture_output=True,
+    )
+    return result
+
+
+def _venv_python_path(venv_path: Path) -> Path:
+    """Return the python executable within a virtual environment."""
+    if os.name == "nt":
+        return venv_path / "Scripts" / "python.exe"
+    return venv_path / "bin" / "python"
+
+
+def _ensure_virtualenv() -> Tuple[bool, str]:
+    """Ensure a local virtual environment is ready when requirements exist."""
+    requirements = Path("requirements.txt")
+    if not requirements.exists():
+        return True, "No requirements.txt detected, skipping Python environment setup"
+
+    venv_path = Path(".venv")
+    if not venv_path.exists():
+        result = _run_command([sys.executable, "-m", "venv", str(venv_path)])
+        if result.returncode != 0:
+            detail = (
+                result.stderr.strip() or result.stdout.strip() or "venv creation failed"
+            )
+            return False, detail
+
+    venv_python = _venv_python_path(venv_path)
+    if not venv_python.exists():
+        return False, "Unable to locate python executable inside .venv"
+
+    upgrade = _run_command(
+        [str(venv_python), "-m", "pip", "install", "--upgrade", "pip"]
+    )
+    if upgrade.returncode != 0:
+        detail = (
+            upgrade.stderr.strip() or upgrade.stdout.strip() or "pip upgrade failed"
+        )
+        return False, detail
+
+    install = _run_command(
+        [str(venv_python), "-m", "pip", "install", "-r", str(requirements)]
+    )
+    if install.returncode != 0:
+        detail = (
+            install.stderr.strip() or install.stdout.strip() or "pip install failed"
+        )
+        return False, detail
+
+    return True, "Python virtual environment ready"
+
+
+def _install_precommit_hooks() -> Tuple[bool, str]:
+    """Install pre-commit hooks when configuration is present."""
+    config = Path(".pre-commit-config.yaml")
+    if not config.exists():
+        return True, "No .pre-commit-config.yaml detected"
+
+    venv_path = Path(".venv")
+    if not venv_path.exists():
+        success, detail = _ensure_virtualenv()
+        if not success:
+            return False, detail
+
+    venv_python = _venv_python_path(venv_path)
+    install_pkg = _run_command([str(venv_python), "-m", "pip", "install", "pre-commit"])
+    if install_pkg.returncode != 0:
+        detail = (
+            install_pkg.stderr.strip()
+            or install_pkg.stdout.strip()
+            or "Unable to install pre-commit"
+        )
+        return False, detail
+
+    hook_install = _run_command([str(venv_python), "-m", "pre_commit", "install"])
+    if hook_install.returncode != 0:
+        detail = (
+            hook_install.stderr.strip()
+            or hook_install.stdout.strip()
+            or "pre-commit install failed"
+        )
+        return False, detail
+
+    return True, "pre-commit hooks installed"
+
+
+def _run_sanity_check() -> Tuple[bool, str]:
+    """Execute the repository sanity check in quiet mode."""
+    script = Path(".dev/sanity-check.sh")
+    if not script.exists():
+        return True, "Sanity check script not found; skipped"
+
+    result = _run_command(["bash", str(script), "--quiet", "--skip-templates"])
+    if result.returncode == 0:
+        return True, "Sanity check passed"
+
+    summary = "Review sanity-check output"
+    if result.stdout:
+        lines = [line for line in result.stdout.strip().splitlines() if line]
+        if lines:
+            summary = lines[-1]
+    return False, summary
+
+
+def _run_validation_check() -> Tuple[bool, str]:
+    """Run structural validation and summarize the outcome."""
+    status = cmd_validate()
+    if status == 0:
+        return True, "Validation checks passed"
+    return False, "Validation reported issues (see above)"
+
+
 def generate_project(template: str, context: Dict[str, Any]) -> bool:
     """Generate project using Cookiecutter."""
     print("\n🔨 Generating project...\n")
@@ -162,12 +283,12 @@ def generate_project(template: str, context: Dict[str, Any]) -> bool:
         cmd.extend([f"{key}={value}"])
 
     try:
-        subprocess.run(cmd, check=True)
+        result = _run_command(cmd)
+        if result.returncode != 0:
+            print(f"\n❌ Cookiecutter failed: {result.stderr or result.stdout}")
+            return False
         print("\n✅ Project generated successfully!")
         return True
-    except subprocess.CalledProcessError as e:
-        print(f"\n❌ Failed to generate project: {e}")
-        return False
     except FileNotFoundError:
         print("\n❌ Cookiecutter not installed. Install with: pip install cookiecutter")
         return False
@@ -700,11 +821,55 @@ def cmd_update():
         return 1
 
 
+def cmd_fix() -> int:
+    """Run intelligent heuristics to remediate common setup issues."""
+    print("\n🧠 Intelligent Auto-Fix (beta)\n")
+
+    actions = [
+        ("Project validation", _run_validation_check),
+        ("Python environment", _ensure_virtualenv),
+        ("pre-commit hooks", _install_precommit_hooks),
+        ("Sanity check", _run_sanity_check),
+    ]
+
+    results = []
+    for name, func in actions:
+        print(f"🔧 {name}...")
+        try:
+            success, detail = func()
+        except Exception as exc:  # noqa: BLE001
+            success = False
+            detail = str(exc)
+        results.append((name, success, detail))
+
+    print("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    print(" Fix Summary")
+    print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    for name, success, detail in results:
+        icon = "✅" if success else "❌"
+        print(f" {icon} {name}: {detail}")
+
+    if all(success for _, success, _ in results):
+        print("\n✨ All checks completed successfully. You're good to go!\n")
+        return 0
+
+    print(
+        "\n⚠️  Some routines reported issues above. Review the notes and rerun after addressing them.\n"
+    )
+    return 1
+
+
 def main():
     """Main CLI entry point with subcommands."""
     parser = argparse.ArgumentParser(
         description="Agentic Canon CLI - Project scaffolding and management",
         formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+
+    parser.add_argument(
+        "--fix",
+        action="store_true",
+        help="Run the intelligent auto-fix routine after executing the selected command (or standalone).",
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
@@ -731,10 +896,15 @@ def main():
     # update command
     subparsers.add_parser("update", help="Update project from template using Cruft")
 
+    # fix command
+    subparsers.add_parser("fix", help="Run the intelligent auto-fix routine")
+
     args = parser.parse_args()
 
     # If no command specified, default to init
     if not args.command:
+        if args.fix:
+            return cmd_fix()
         return cmd_init()
 
     # Route to appropriate command
@@ -745,14 +915,21 @@ def main():
         "doctor": cmd_doctor,
         "audit": cmd_audit,
         "update": cmd_update,
+        "fix": cmd_fix,
     }
 
     command_func = commands.get(args.command)
-    if command_func:
-        return command_func()
-    else:
+    if not command_func:
         parser.print_help()
         return 1
+
+    result = command_func()
+
+    if args.fix and args.command != "fix":
+        fix_result = cmd_fix()
+        return result if result != 0 else fix_result
+
+    return result
 
 
 if __name__ == "__main__":

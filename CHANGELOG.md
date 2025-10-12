@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Weekly template E2E CI workflow (`.github/workflows/template-e2e.yml`) and documented sanity-check guidance
 - Added `--skip-templates` option to `.dev/sanity-check.sh` for template-aware runs
 - Backstage portal module + README under `templates/platform/backstage/` (Task #130)
+- Intelligent `--fix` flag + `agentic-canon fix` command to remediate common setup issues automatically
 
 ### Changed
 

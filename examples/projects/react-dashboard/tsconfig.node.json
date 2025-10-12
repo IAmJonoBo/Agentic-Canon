@@ -1,10 +1,15 @@
 {
   "compilerOptions": {
     "composite": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext", // Modern Node module resolution
     "allowSyntheticDefaultImports": true,
-    "types": ["node", "vite/client", "vitest"]
+    "types": ["node", "vite/client", "vitest"],
+    "ignoreDeprecations": "6.0", // Silences deprecated options warnings
+    "strict": true, // Enforce strict type checking
+    "esModuleInterop": true, // Improves compatibility with CommonJS modules
+    "forceConsistentCasingInFileNames": true, // Prevents casing issues
+    "skipLibCheck": true // Speeds up build, recommended for config files
   },
   "include": ["vite.config.ts", "vitest.config.ts", "playwright.config.ts", "tailwind.config.ts"]
 }

@@ -4,7 +4,7 @@ This example shows how to build a production-grade gRPC backend with Agentic Can
 
 ## Architecture Summary
 
-```
+```test
 cmd/server/main.go      # Application entry point
 internal/
   config/               # Environment-driven configuration

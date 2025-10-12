@@ -4,12 +4,11 @@ from datetime import datetime
 from typing import List
 from uuid import UUID
 
-from fastapi import FastAPI, HTTPException, status
-from fastapi.middleware.cors import CORSMiddleware
-
 from acme_service.database import db
 from acme_service.models import User, UserCreate, UserInDB, UserUpdate
 from acme_service.security import get_password_hash
+from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 
 # Create FastAPI app
 app = FastAPI(
@@ -53,7 +52,9 @@ async def ready() -> dict:
     return {"status": "ready"}
 
 
-@app.post("/users", response_model=User, status_code=status.HTTP_201_CREATED, tags=["users"])
+@app.post(
+    "/users", response_model=User, status_code=status.HTTP_201_CREATED, tags=["users"]
+)
 async def create_user(user_data: UserCreate) -> User:
     """Create a new user."""
     # Check if user with email already exists

@@ -16,6 +16,7 @@ This document tracks the implementation of **complete working example projects**
 A production-ready Python microservice for user management built with FastAPI.
 
 **Features**:
+
 - ✅ Full CRUD operations (Create, Read, Update, Delete)
 - ✅ RESTful API with automatic OpenAPI/Swagger documentation
 - ✅ Pydantic models for data validation
@@ -29,6 +30,7 @@ A production-ready Python microservice for user management built with FastAPI.
 - ✅ Detailed EXAMPLE-README.md (8.4KB)
 
 **Key Files**:
+
 - `src/acme_service/main.py` - FastAPI application
 - `src/acme_service/models.py` - Pydantic models
 - `src/acme_service/database.py` - In-memory database
@@ -37,6 +39,7 @@ A production-ready Python microservice for user management built with FastAPI.
 - `pyproject.toml` - Dependencies and configuration
 
 **Dependencies**:
+
 - FastAPI 0.104+
 - Uvicorn (ASGI server)
 - Pydantic 2.0+ with email validation
@@ -53,6 +56,7 @@ A production-ready Python microservice for user management built with FastAPI.
 A production-ready Node.js API for user management built with Express.js and TypeScript.
 
 **Features**:
+
 - ✅ Full CRUD operations with Express.js
 - ✅ TypeScript with strict type checking
 - ✅ Zod validation for request schemas
@@ -67,6 +71,7 @@ A production-ready Node.js API for user management built with Express.js and Typ
 - ✅ Detailed EXAMPLE-README.md (8.2KB)
 
 **Key Files**:
+
 - `src/app.ts` - Express application
 - `src/types.ts` - TypeScript types and Zod schemas
 - `src/database.ts` - In-memory database
@@ -75,6 +80,7 @@ A production-ready Node.js API for user management built with Express.js and Typ
 - `package.json` - Dependencies and scripts
 
 **Dependencies**:
+
 - Express 4.18+
 - TypeScript 5.3+
 - Zod 3.22+ (validation)
@@ -84,51 +90,49 @@ A production-ready Node.js API for user management built with Express.js and Typ
 
 **Test Coverage**: >80% (enforced)
 
-## Pending Examples
+## Newly Completed Examples
 
-### 3. React Dashboard App (Planned)
+### 3. React Dashboard App ✅
 
-**Location**: `examples/projects/react-dashboard/` (to be created)
+**Location**: `examples/projects/react-dashboard/`
 
-**Planned Features**:
-- React 18 with TypeScript
-- Vite for build tooling
-- Multiple dashboard views
-- TanStack Query for data fetching
-- Recharts for visualizations
-- Tailwind CSS + shadcn/ui components
-- Storybook for component development
-- Playwright E2E tests
-- CI/CD with GitHub Actions
+**Highlights**:
 
-### 4. Go gRPC Service (Planned)
+- React 18 + TypeScript with Vite build tooling
+- TanStack Query + Zustand for realtime metrics and state management
+- Recharts visualisations, Tailwind CSS theming, lucide icons
+- Storybook with accessibility addon and component stories
+- Playwright smoke tests, Vitest unit tests, CI + Storybook deployment workflows
 
-**Location**: `examples/projects/grpc-service/` (to be created)
+### 4. Go gRPC Service ✅
 
-**Planned Features**:
-- Go 1.22+
-- gRPC with Protocol Buffers
-- Bidirectional streaming support
-- gRPC-Gateway for RESTful JSON API
-- OpenTelemetry tracing
-- Comprehensive table-driven tests
-- CI/CD with GitHub Actions
+**Location**: `examples/projects/grpc-service/`
+
+**Highlights**:
+
+- Buf-managed protobufs with gRPC + grpc-gateway HTTP bridge
+- In-memory repository, structured logging, graceful shutdown support
+- bufconn integration tests and service-layer unit tests
+- Dockerfile, docker-compose, and Kubernetes manifests
+- GitHub Actions CI (build/test/proto) + govulncheck security workflow
 
 ## Implementation Approach
 
 ### Phase 1: Core Services ✅ (Complete)
+
 1. ✅ Generate base project from template (cookiecutter)
 2. ✅ Add domain-specific implementation (models, routes, business logic)
 3. ✅ Create comprehensive tests
 4. ✅ Write detailed README with usage examples
 5. ✅ Ensure CI/CD workflows are functional
 
-### Phase 2: Frontend & Advanced (Planned)
-1. [ ] Generate React dashboard from template
-2. [ ] Add dashboard components and Storybook stories
-3. [ ] Generate Go gRPC service from template
-4. [ ] Add protobuf definitions and implementations
-5. [ ] Update TASKS.md to mark all examples complete
+### Phase 2: Frontend & Advanced ✅ (Complete)
+
+1. ✅ Generate React dashboard from template
+2. ✅ Add dashboard components and Storybook stories
+3. ✅ Generate Go gRPC service from template
+4. ✅ Add protobuf definitions and implementations
+5. ✅ Update TASKS.md to mark all examples complete
 
 ## Quality Standards
 
@@ -140,16 +144,18 @@ All example projects meet these standards:
 ✅ **Secure**: Security best practices (Helmet, input validation, etc.)  
 ✅ **Production-Ready**: CI/CD, health checks, structured logging  
 ✅ **Type-Safe**: Full TypeScript/type hints throughout  
-✅ **Standards-Compliant**: Follows NIST SSDF, OWASP guidelines  
+✅ **Standards-Compliant**: Follows NIST SSDF, OWASP guidelines
 
 ## Key Differences from READMEs
 
 The **existing** example README files (e.g., `fastapi-microservice-README.md`) are:
+
 - ✅ Documentation-focused
 - ✅ Describe architecture and best practices
 - ✅ Show what a production implementation would look like
 
 The **new** working example projects are:
+
 - ✅ **Fully functional code** you can run immediately
 - ✅ **Real implementations** with actual business logic
 - ✅ **Complete test suites** demonstrating testing patterns
@@ -214,6 +220,7 @@ Access at http://localhost:3000
 ## Technical Achievements
 
 ### Code Quality
+
 - ✅ Full type safety (TypeScript strict mode, Python type hints)
 - ✅ Input validation (Zod schemas, Pydantic models)
 - ✅ Error handling with proper HTTP status codes
@@ -221,6 +228,7 @@ Access at http://localhost:3000
 - ✅ Security headers (Helmet, CORS)
 
 ### Testing
+
 - ✅ Unit tests for business logic
 - ✅ Integration tests for API endpoints
 - ✅ Test fixtures and factories
@@ -228,6 +236,7 @@ Access at http://localhost:3000
 - ✅ CI/CD test automation
 
 ### DevOps
+
 - ✅ GitHub Actions CI/CD pipelines
 - ✅ Security scanning (CodeQL, Gitleaks)
 - ✅ Dependency management
@@ -238,18 +247,21 @@ Access at http://localhost:3000
 ## Next Steps
 
 ### Immediate (Priority 1)
+
 1. [ ] Create React dashboard example
 2. [ ] Create Go gRPC service example
 3. [ ] Test examples in actual deployment scenarios
 4. [ ] Add Docker Compose setup for multi-service demos
 
 ### Near-term (Priority 2)
+
 1. [ ] Add database migrations (Alembic for Python, Prisma for Node)
 2. [ ] Implement authentication endpoints
 3. [ ] Add OpenAPI spec generation
 4. [ ] Create cross-service contract tests
 
 ### Future (Priority 3)
+
 1. [ ] Deploy examples to demo environments
 2. [ ] Create video walkthroughs
 3. [ ] Add monitoring dashboards
@@ -259,34 +271,37 @@ Access at http://localhost:3000
 
 ### Lines of Code Added
 
-| Project | Source Code | Tests | Docs | Total |
-|---------|-------------|-------|------|-------|
-| FastAPI User Service | ~300 | ~150 | ~350 | ~800 |
-| Express User API | ~280 | ~140 | ~330 | ~750 |
-| **Total** | **~580** | **~290** | **~680** | **~1,550** |
+| Project              | Source Code | Tests    | Docs     | Total      |
+| -------------------- | ----------- | -------- | -------- | ---------- |
+| FastAPI User Service | ~300        | ~150     | ~350     | ~800       |
+| Express User API     | ~280        | ~140     | ~330     | ~750       |
+| **Total**            | **~580**    | **~290** | **~680** | **~1,550** |
 
 ### Files Created
 
-| Project | Source Files | Test Files | Config Files | Total |
-|---------|-------------|------------|--------------|-------|
-| FastAPI | 4 | 2 | 6 | 12 |
-| Express | 5 | 2 | 7 | 14 |
-| **Total** | **9** | **4** | **13** | **26** |
+| Project   | Source Files | Test Files | Config Files | Total  |
+| --------- | ------------ | ---------- | ------------ | ------ |
+| FastAPI   | 4            | 2          | 6            | 12     |
+| Express   | 5            | 2          | 7            | 14     |
+| **Total** | **9**        | **4**      | **13**       | **26** |
 
 ## Lessons Learned
 
 ### What Worked Well
+
 1. ✅ Templates provided excellent starting points
 2. ✅ Clear separation of concerns (models, routes, database)
 3. ✅ Type systems caught errors early
 4. ✅ Test-driven development accelerated implementation
 
 ### Challenges
+
 1. ⚠️ Dependency management (email-validator for Pydantic)
 2. ⚠️ Balancing simplicity vs production-readiness
 3. ⚠️ Network timeouts during package installation
 
 ### Improvements for Next Examples
+
 1. 💡 Pre-document all dependencies
 2. 💡 Create Docker Compose for immediate running
 3. 💡 Add more inline code comments
@@ -297,6 +312,7 @@ Access at http://localhost:3000
 **Phase 1 Complete**: Two fully functional example projects have been implemented, demonstrating the power and flexibility of the Agentic Canon templates. These examples provide developers with working code they can learn from, extend, and deploy.
 
 **Impact**: Developers can now:
+
 - See complete implementations, not just documentation
 - Run and test the examples immediately
 - Learn best practices from working code

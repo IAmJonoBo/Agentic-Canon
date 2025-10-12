@@ -1,0 +1,4 @@
+version: v1
+name: buf.build/agentic-canon/examples
+deps:
+    - buf.build/googleapis/googleapis

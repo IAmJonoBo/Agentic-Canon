@@ -8,17 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Comprehensive CONTRIBUTING.md with contribution guidelines
 - SECURITY.md with security policy and vulnerability reporting process
 - Fixed notebook test workflow pattern to correctly find notebooks
+- React dashboard working example with Storybook, Playwright, and CI workflows (examples/projects/react-dashboard)
+- Go gRPC user service working example with Buf-managed protobufs and integration tests (examples/projects/grpc-service)
 
 ### Changed
+
 - Updated repository structure documentation
 - Enhanced documentation organization
 
 ## [1.0.0] - 2025-10-11
 
 ### Added
+
 - Initial repository structure with core directories (notebooks/, docs/, templates/, examples/)
 - 5 executable Jupyter notebooks covering bootstrap, security, contracts, observability, and documentation
 - Jupyter Book documentation with MyST markdown support
@@ -37,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - LICENSE (Apache-2.0)
 
 ### Documentation
+
 - Unified playbook (Agentic_Canon.md) with implementation guide
 - Machine-readable documentation for AI agents
 - Standards mapping (NIST SSDF, OWASP SAMM/ASVS, SLSA, OpenSSF Scorecard)
@@ -44,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project completion summary (SUMMARY.md)
 
 ### Templates
+
 - Python service template with FastAPI/Flask support
 - Node.js service template with TypeScript
 - React webapp template with Vite, Playwright, and Storybook
@@ -51,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs-only template for documentation projects
 
 ### Infrastructure
+
 - CI/CD workflows for GitHub Actions
 - Azure Pipelines examples
 - Grafana dashboards for metrics

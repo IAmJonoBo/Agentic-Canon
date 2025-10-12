@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: grpc-user-service
+    labels:
+        app: grpc-user-service
+spec:
+    type: ClusterIP
+    selector:
+        app: grpc-user-service
+    ports:
+        - name: grpc
+          port: 9090
+          targetPort: grpc
+        - name: http
+          port: 8080
+          targetPort: http

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: grpc-user-service
+    labels:
+        app: grpc-user-service
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: grpc-user-service
+    template:
+        metadata:
+            labels:
+                app: grpc-user-service
+        spec:
+            containers:
+                - name: grpc-user-service
+                  image: ghcr.io/example/grpc-user-service:latest
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                      - containerPort: 9090
+                        name: grpc
+                      - containerPort: 8080
+                        name: http
+                  env:
+                      - name: APP_ENV
+                        value: production
+                      - name: GRPC_PORT
+                        value: "9090"
+                      - name: HTTP_PORT
+                        value: "8080"
+                  readinessProbe:
+                      httpGet:
+                          path: /v1/users
+                          port: http
+                  livenessProbe:
+                      grpc:
+                          port: grpc
+                  resources:
+                      requests:
+                          cpu: 100m
+                          memory: 128Mi
+                      limits:
+                          cpu: 250m
+                          memory: 256Mi

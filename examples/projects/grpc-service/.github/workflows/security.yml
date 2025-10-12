@@ -1,0 +1,19 @@
+name: Go gRPC Service • Security
+
+on:
+    schedule:
+        - cron: "0 5 * * 1"
+    workflow_dispatch:
+
+jobs:
+    govulncheck:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-go@v5
+              with:
+                  go-version: "1.22"
+            - name: Run govulncheck
+              run: |
+                  go install golang.org/x/vuln/cmd/govulncheck@latest
+                  govulncheck ./...

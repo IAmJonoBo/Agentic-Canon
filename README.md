@@ -28,17 +28,20 @@ Agentic Canon is a **comprehensive framework for frontier software excellence** 
 ### Key Documents
 
 #### Framework Core
+
 - **[FRAMEWORK.md](FRAMEWORK.md)** - 🎯 **Unified framework defining OUR approach to software excellence**
 - **[QUALITY_STANDARDS.md](QUALITY_STANDARDS.md)** - ⭐ **Comprehensive quality standards for all disciplines**
 - **[CONVENTIONS.md](CONVENTIONS.md)** - 📋 **Development conventions and best practices**
 
 #### Implementation Guides
+
 - **[TASKS.md](TASKS.md)** - 📍 **SINGLE SOURCE OF TRUTH** - Complete implementation roadmap tracking all features and priorities
 - **[SUMMARY.md](SUMMARY.md)** - Executive summary derived from TASKS.md
 - **[IMPLEMENTATION.md](IMPLEMENTATION.md)** - Technical decisions, architecture, testing strategy, and handover guide
 - **[V110-V200-SUMMARY.md](V110-V200-SUMMARY.md)** - Detailed v1.1.0 and v2.0.0 status
 
 #### Standards References
+
 - **[BIBLE.md](BIBLE.md)** - AI-friendly reference with implementation checklists, quality gates, and quick-start commands
 - **[INDEX.md](INDEX.md)** - Complete navigation guide for all templates, standards, and usage patterns
 - **[TEMPLATE_STANDARDS.md](TEMPLATE_STANDARDS.md)** - 📐 **Standards requirements for templates** - What must be met vs. what can be omitted
@@ -47,6 +50,7 @@ Agentic Canon is a **comprehensive framework for frontier software excellence** 
 - **[control-traceability-matrix.json](control-traceability-matrix.json)** - Machine-readable standards → implementation → evidence mapping
 
 #### Process & Management
+
 - **[docs/adr/](docs/adr/)** - Architecture Decision Records with [lifecycle guide](docs/adr/ADR-LIFECYCLE.md)
 - **[docs/ISSUE_MANAGEMENT.md](docs/ISSUE_MANAGEMENT.md)** - Comprehensive issue and sprint management guide
 - **[docs/TASKS-ADR-SYNC.md](docs/TASKS-ADR-SYNC.md)** - Automated TASKS.md and ADR synchronization system
@@ -100,6 +104,7 @@ All templates include security scanning, quality gates, SBOM generation, and CI/
 Modern Python service with type hints, Black formatting, Ruff linting, pytest with coverage, optional Jupyter Book documentation, optional security scanning (CodeQL, Gitleaks), and optional SBOM generation.
 
 **Generate:**
+
 ```bash
 cookiecutter templates/python-service
 # Or: agentic-canon init
@@ -110,6 +115,7 @@ cookiecutter templates/python-service
 TypeScript service with ESLint, Prettier, Vitest testing, security scanning, and CI/CD pipeline.
 
 **Generate:**
+
 ```bash
 cookiecutter templates/node-service
 # Or: agentic-canon init
@@ -120,6 +126,7 @@ cookiecutter templates/node-service
 Vite + TypeScript + React with Playwright E2E tests, Storybook component library, accessibility testing (WCAG 2.2 AA), and GitHub Pages deployment.
 
 **Generate:**
+
 ```bash
 cookiecutter templates/react-webapp
 # Or: agentic-canon init
@@ -130,6 +137,7 @@ cookiecutter templates/react-webapp
 Go service with golangci-lint, testing, Makefile build automation, security scanning, and CI/CD pipeline.
 
 **Generate:**
+
 ```bash
 cookiecutter templates/go-service
 # Or: agentic-canon init
@@ -140,6 +148,7 @@ cookiecutter templates/go-service
 Jupyter Book documentation site with MyST Markdown, version control via Jupytext, and automated GitHub Pages deployment.
 
 **Generate:**
+
 ```bash
 cookiecutter templates/docs-only
 # Or: agentic-canon init
@@ -150,8 +159,9 @@ cookiecutter templates/docs-only
 Automated project management setup with GitHub Actions workflows for task tracking and issue management.
 
 **Features:**
+
 - 🔄 TODO/FIXME → GitHub Issues automation
-- 📋 Markdown tasklist → GitHub Issues automation  
+- 📋 Markdown tasklist → GitHub Issues automation
 - 💬 PR review follow-ups → Issues automation
 - 🏷️ Auto-triage and label new issues
 - 🧹 Stale issue management
@@ -159,6 +169,7 @@ Automated project management setup with GitHub Actions workflows for task tracki
 - 📝 Issue templates (bug, feature, task)
 
 **Generate:**
+
 ```bash
 cookiecutter templates/project-management
 # Or: agentic-canon repo-init  # Add to existing repo
@@ -169,6 +180,7 @@ cookiecutter templates/project-management
 ### Additional Template Categories ✅
 
 8 specialized template categories covering:
+
 - **Architecture** - ADRs, C4 diagrams, fitness functions
 - **Automation** - Hooks, bots, workflows
 - **CI/CD** - GitHub Actions, GitLab CI, Azure Pipelines
@@ -183,12 +195,14 @@ cookiecutter templates/project-management
 **[catalog.json](catalog.json)** - Complete machine-readable catalog of all templates, assets, and resources ([Documentation](docs/CATALOG.md))
 
 The catalog enables:
+
 - 🔍 **Discovery**: Find templates by language, framework, or features
 - 🤖 **Automation**: Power CLI tools, agents, and MCP servers
 - 📊 **Validation**: Check requirements and compliance
 - 🔗 **Integration**: Seamless integration with external tools
 
 **Example queries:**
+
 ```bash
 # List all templates
 cat catalog.json | jq '.templates.cookiecutter[] | {id, name, language}'
@@ -204,6 +218,7 @@ cat catalog.json | jq '.compliance.standards'
 ```
 
 **What's cataloged:**
+
 - 6 Cookiecutter templates with full metadata
 - 4 Grafana dashboards (DORA, SPACE, Quality, Security)
 - 5 GitHub Actions workflows + 2 Azure Pipelines
@@ -225,6 +240,7 @@ Each notebook is executable, parameterizable with Papermill, and version-control
 5. **05_docs_to_book.ipynb**: Jupytext synchronization and Jupyter Book build automation
 
 **Key Features:**
+
 - Git-friendly via Jupytext pairing (ipynb ↔ md:myst)
 - Automated execution in CI with nbmake/pytest
 - Scheduled runs with Papermill for continuous validation
@@ -235,6 +251,7 @@ Each notebook is executable, parameterizable with Papermill, and version-control
 This framework embeds industry-leading standards and best practices directly into templates and workflows:
 
 ### Security & Supply Chain
+
 - **NIST SSDF v1.1**: Complete Secure Software Development Framework compliance
 - **OWASP SAMM 2.0**: Software Assurance Maturity Model (Level 2 maturity)
 - **OWASP ASVS 4.0**: Application Security Verification Standard (L2/L3 for web/API)
@@ -244,14 +261,17 @@ This framework embeds industry-leading standards and best practices directly int
 - **CWE Top 25**: Complete coverage of most dangerous software weaknesses
 
 ### Quality & Architecture
+
 - **ISO/IEC 25010**: Software quality characteristics (maintainability, reliability, performance, usability)
 - **ISO/IEC 5055**: Structural quality metrics and automated weakness detection
 - **ISO 9241-210**: User-centered design process compliance
 
 ### Accessibility
+
 - **WCAG 2.2 AA**: Web Content Accessibility Guidelines (automated testing integrated)
 
 ### Governance & Compliance
+
 - **Control Traceability Matrix**: Machine-readable mapping of standards → controls → implementation → evidence
 - **Audit-Ready Evidence**: Automated collection of SBOMs, provenance, test results, scan results, and logs
 - **Policy-as-Code**: OPA/Kyverno for admission control and drift prevention
@@ -312,13 +332,17 @@ See [control-traceability-matrix.json](control-traceability-matrix.json) for com
 **Separation of Concerns:** The repository is organized with clear boundaries between development tools, distribution assets, and boilerplates:
 
 ### 📁 Development Tools (`.dev/`)
+
 **Internal use - for maintaining this repository:**
+
 - `.dev/validate-templates.sh` - Template validation
 - `.dev/sanity-check.sh` - Repository health checks
 - `.dev/scripts/` - Maintenance scripts (labels, etc.)
 
 ### 📦 Distribution Assets (External use)
+
 **For end users and AI generators:**
+
 - `agentic_canon_cli/` - CLI wizard for project generation
 - `templates/` - Cookiecutter templates and supporting files
 - `notebooks/` - Executable guides for bootstrapping, security, testing, observability
@@ -326,7 +350,9 @@ See [control-traceability-matrix.json](control-traceability-matrix.json) for com
 - `examples/` - Reference implementations and dashboards
 
 ### 🎯 Boilerplates (`templates/`)
+
 **Ready-to-use project templates:**
+
 - `python-service/` - Modern Python with pytest, mypy, Black
 - `node-service/` - TypeScript with Vitest, ESLint
 - `react-webapp/` - React + Vite + Storybook + Playwright
@@ -395,6 +421,7 @@ git status  # Should show no changes to .ipynb files after execution
 ## Roadmap
 
 ### v1.0 (Current - Foundation)
+
 - ✅ Core notebooks (01-05) with Jupytext pairing
 - ✅ Python service template with complete CI/CD
 - ✅ GitHub Actions workflows (notebooks-test, book-deploy, cookiecutters-test, notebooks-schedule)
@@ -406,6 +433,7 @@ git status  # Should show no changes to .ipynb files after execution
 - 🚧 Validation scripts and testing infrastructure
 
 ### v1.1.0 (Next - Enhanced Capabilities)
+
 - **Azure Pipelines**: Complete Azure DevOps CI/CD templates
 - **Enhanced Dashboards**: Grafana templates for DORA, SPACE, security, and quality metrics
 - **Additional Examples**: FastAPI microservice, Express API, React dashboard, gRPC service
@@ -415,6 +443,7 @@ git status  # Should show no changes to .ipynb files after execution
 - **Performance Budgets**: Automated Core Web Vitals and API latency enforcement
 
 ### v2.0.0 (Future - Advanced Automation)
+
 - **Multi-Cloud Support**: AWS, Azure, GCP templates with cloud-agnostic abstractions
 - **Advanced Fitness Functions**: Automated architecture quality gates (coupling, cyclic dependencies, attack surface)
 - **ML-Powered Insights**: Anomaly detection, predictive failure analysis, intelligent alerting
@@ -428,14 +457,18 @@ See [TASKS.md](TASKS.md) for detailed implementation tracking and priority matri
 ## Architecture & Key Concepts
 
 ### Security by Construction
+
 Security is embedded from the start, not bolted on later. Every template includes:
+
 - **Shift-Left Security**: SAST/DAST in CI before deployment
 - **Supply Chain Integrity**: SLSA L3 provenance, signed artifacts, SBOMs
 - **Zero-Trust Architecture**: Workload identities, admission controllers, policy-as-code
 - **Continuous Verification**: Automated scanning, drift detection, compliance checks
 
 ### Quality Gates
+
 Non-negotiable gates enforce quality standards:
+
 ```yaml
 gates:
   build:
@@ -460,21 +493,27 @@ gates:
 ```
 
 ### Observability & SLOs
+
 Instrumentation and monitoring built-in:
+
 - **OpenTelemetry**: Unified traces, metrics, and logs
 - **SLI/SLO Framework**: User-journey-based service level objectives
 - **Error Budgets**: Automated tracking with deployment blocks when exhausted
 - **Progressive Delivery**: Canary analysis with automated rollback on SLO violations
 
 ### Developer Platform
+
 Self-service infrastructure reduces friction:
+
 - **Backstage Integration**: Software templates, TechDocs, service catalog
 - **Golden Paths**: Pre-validated patterns for common use cases
 - **GitOps**: Declarative infrastructure with drift detection
 - **Auto-Remediation**: Dependency updates, security patches, configuration fixes
 
 ### Agent-Friendly Design
+
 Optimized for AI/agent automation:
+
 - **Machine-Readable Formats**: JSON, YAML, structured Markdown
 - **Task Graphs**: Explicit dependencies, predicates, rollback paths
 - **Control Traceability**: Standards → Implementation → Evidence mapping
@@ -485,6 +524,7 @@ Optimized for AI/agent automation:
 We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ### Areas for Contribution
+
 - New Cookiecutter templates for additional languages/frameworks
 - Enhanced dashboards and observability configurations
 - Additional examples and tutorials
@@ -493,6 +533,7 @@ We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for 
 - Cloud provider integrations (AWS, Azure, GCP)
 
 ### Contribution Process
+
 1. Review [Red Team + Software Excellence.md](Red%20Team%20+%20Software%20Excellence.md) for standards
 2. Check [TASKS.md](TASKS.md) for current priorities
 3. Open an issue to discuss major changes
@@ -510,6 +551,7 @@ Apache-2.0
 ## Acknowledgments
 
 This project is inspired by and builds upon:
+
 - [Cookiecutter](https://github.com/cookiecutter/cookiecutter) - Project templating
 - [Jupyter Book](https://jupyterbook.org/) - Beautiful documentation from notebooks
 - [Jupytext](https://jupytext.readthedocs.io/) - Version control for notebooks
@@ -524,6 +566,7 @@ This project is inspired by and builds upon:
 ## Related Resources
 
 ### Standards & Frameworks
+
 - [NIST SSDF v1.1](https://csrc.nist.gov/publications/detail/sp/800-218/final) - Secure Software Development Framework
 - [OWASP SAMM 2.0](https://owaspsamm.org/) - Software Assurance Maturity Model
 - [OWASP ASVS 4.0](https://owasp.org/www-project-application-security-verification-standard/) - Application Security Verification Standard
@@ -532,6 +575,7 @@ This project is inspired by and builds upon:
 - [WCAG 2.2](https://www.w3.org/WAI/WCAG22/quickref/) - Web Content Accessibility Guidelines
 
 ### Tools & Projects
+
 - [OpenSSF Scorecard](https://github.com/ossf/scorecard) - Security health metrics
 - [in-toto](https://in-toto.io/) - Supply chain integrity framework
 - [CycloneDX](https://cyclonedx.org/) - SBOM standard
@@ -555,4 +599,4 @@ This project is inspired by and builds upon:
 **Last Updated:** 2025-10-11  
 **Maintained By:** Jonathan Boardman (@IAmJonoBo)
 
-*Built with ❤️ for developers, platform teams, and AI agents*
+_Built with ❤️ for developers, platform teams, and AI agents_

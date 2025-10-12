@@ -8,8 +8,8 @@ Usage:
 """
 
 import sys
-from agentic_canon_cli.cli import main
 
+from agentic_canon_cli.cli import main
 
 if __name__ == "__main__":
     sys.exit(main())

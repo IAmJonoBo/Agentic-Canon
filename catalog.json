@@ -100,7 +100,14 @@
         "language": "typescript",
         "framework": "react",
         "version": "1.0.0",
-        "tags": ["webapp", "frontend", "react", "typescript", "vite", "storybook"],
+        "tags": [
+          "webapp",
+          "frontend",
+          "react",
+          "typescript",
+          "vite",
+          "storybook"
+        ],
         "features": [
           "React 18 with TypeScript",
           "Vite for fast development",
@@ -117,7 +124,7 @@
           "node": ">=18.0.0",
           "cookiecutter": ">=2.0.0"
         },
-        "example": null,
+        "example": "examples/projects/react-dashboard",
         "usage": {
           "cookiecutter": "gh:IAmJonoBo/Agentic-Canon --directory=templates/react-webapp",
           "tiged": "npx tiged IAmJonoBo/Agentic-Canon/templates/react-webapp target/",
@@ -125,7 +132,8 @@
         },
         "documentation": [
           "templates/react-webapp/README.md",
-          "examples/projects/react-dashboard-README.md"
+          "examples/projects/react-dashboard-README.md",
+          "examples/projects/react-dashboard/EXAMPLE-README.md"
         ],
         "compliance": {
           "standards": ["NIST SSDF v1.1", "WCAG 2.2 AA"],
@@ -155,7 +163,7 @@
           "go": ">=1.21",
           "cookiecutter": ">=2.0.0"
         },
-        "example": null,
+        "example": "examples/projects/grpc-service",
         "usage": {
           "cookiecutter": "gh:IAmJonoBo/Agentic-Canon --directory=templates/go-service",
           "tiged": "npx tiged IAmJonoBo/Agentic-Canon/templates/go-service target/",
@@ -163,7 +171,8 @@
         },
         "documentation": [
           "templates/go-service/README.md",
-          "examples/projects/grpc-service-README.md"
+          "examples/projects/grpc-service-README.md",
+          "examples/projects/grpc-service/EXAMPLE-README.md"
         ],
         "compliance": {
           "standards": ["NIST SSDF v1.1", "OWASP SAMM"],
@@ -199,9 +208,7 @@
           "tiged": "npx tiged IAmJonoBo/Agentic-Canon/templates/docs-only target/",
           "sparse_checkout": "git sparse-checkout set templates/docs-only"
         },
-        "documentation": [
-          "templates/docs-only/README.md"
-        ],
+        "documentation": ["templates/docs-only/README.md"],
         "compliance": {
           "standards": ["WCAG 2.2 AA"],
           "coverage": "85%"
@@ -215,7 +222,12 @@
         "language": null,
         "framework": "github-actions",
         "version": "1.0.0",
-        "tags": ["automation", "github-actions", "project-management", "devops"],
+        "tags": [
+          "automation",
+          "github-actions",
+          "project-management",
+          "devops"
+        ],
         "features": [
           "TODO/FIXME to GitHub Issues conversion",
           "Markdown checklist to Issues sync",

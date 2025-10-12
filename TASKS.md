@@ -1,12 +1,15 @@
 # Agentic Canon - Implementation Tasks
 
-**⚠️ ACTIVE PROGRESS TRACKER - This document tracks all implementation progress**
+## ⚠️ ACTIVE PROGRESS TRACKER - This document tracks all implementation progress
 
 **📍 SINGLE SOURCE OF TRUTH** - All other summary documents (SUMMARY.md, V110-V200-SUMMARY.md) are derived from this tracker.
 
-Last Updated: 2025-10-12  
-Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests passing, ⚠️ 11 warnings, ❌ 0 failed)  
-**Latest Progress**: 
+Last Updated: 2025-10-13
+Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests passing, ⚠️ 11 warnings, ❌ 0 failed)
+**Latest Progress**:
+
+- ✅ Added production-grade React dashboard example (examples/projects/react-dashboard) with Storybook, Playwright, and CI
+- ✅ Added Go gRPC user service example (examples/projects/grpc-service) with Buf toolchain and integration tests
 - ✅ Fixed CI rate limiting issues in GitHub Actions workflows (tasklist-scan.yml, tasks-adr-sync.yml)
 - ✅ Created machine-readable catalog.json (20KB) with comprehensive metadata for all templates and assets
 - ✅ Created catalog documentation (docs/CATALOG.md, 10KB) with usage examples and integration patterns
@@ -17,6 +20,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 ## Version 1.0 - Base Infrastructure (Foundation) ✅ COMPLETE
 
 ### Core Repository Structure ✅
+
 - [x] Create `notebooks/` directory with 5 notebooks:
   - [x] `01_bootstrap.ipynb` - Repo scaffolding, gates, SBOM/signing demo
   - [x] `02_security_supply_chain.ipynb` - SAST, secret scan, SBOM & provenance
@@ -32,12 +36,14 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [x] `requirements.txt` - Binder environment dependencies
 
 ### Configuration Files ✅
+
 - [x] `jupytext.toml` - Notebook pairing configuration
 - [x] `.gitattributes` - nbstripout filter settings
 - [x] `.pre-commit-config.yaml` - Pre-commit hooks for nbstripout and jupytext
 - [x] `requirements.txt` - Python dependencies (jupyter, jupytext, nbstripout, pytest, nbmake, papermill, jupyter-book)
 
 ### GitHub Actions Workflows ✅
+
 - [x] `.github/workflows/notebooks-test.yml` - Run notebooks with nbmake via pytest
 - [x] `.github/workflows/book-deploy.yml` - Build and deploy Jupyter Book to GitHub Pages
 - [x] `.github/workflows/notebooks-schedule.yml` - Scheduled notebook execution with Papermill
@@ -45,11 +51,13 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 ## Version 1.0 - Cookiecutter Templates ✅ COMPLETE
 
 ### Template Infrastructure ✅
+
 - [x] Create `templates/` directory structure
 - [x] Create `tests/test_cookiecutters.py` - Template rendering tests with pytest-cookies
 - [x] Create `.github/workflows/cookiecutters-test.yml` - CI for template testing
 
 ### Python Service Template ✅
+
 - [x] `templates/python-service/cookiecutter.json` - Template variables
 - [x] `templates/python-service/hooks/pre_gen_project.py` - Validation hook
 - [x] `templates/python-service/hooks/post_gen_project.py` - Post-generation setup
@@ -67,6 +75,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [x] `notebooks/01_bootstrap.ipynb` - Bootstrap notebook
 
 ### Node Service Template ✅ **COMPLETE**
+
 - [x] `templates/node-service/cookiecutter.json` - Template variables
 - [x] `templates/node-service/hooks/` - Pre/post generation hooks
 - [x] `templates/node-service/{{cookiecutter.project_slug}}/`:
@@ -80,6 +89,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [x] Tests passing (pytest-cookies validation ✅)
 
 ### React WebApp Template ✅ **COMPLETE**
+
 - [x] `templates/react-webapp/cookiecutter.json` - Template variables
 - [x] `templates/react-webapp/hooks/` - Pre/post generation hooks
 - [x] `templates/react-webapp/{{cookiecutter.project_slug}}/`:
@@ -98,6 +108,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [x] Tests passing (pytest-cookies validation ✅)
 
 ### Go Service Template ✅ **COMPLETE**
+
 - [x] `templates/go-service/cookiecutter.json` - Template variables
 - [x] `templates/go-service/hooks/` - Pre/post generation hooks
 - [x] `templates/go-service/{{cookiecutter.project_slug}}/`:
@@ -111,6 +122,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [x] Tests passing (pytest-cookies validation ✅)
 
 ### Docs-Only Template ✅ **COMPLETE**
+
 - [x] `templates/docs-only/cookiecutter.json` - Template variables
 - [x] `templates/docs-only/hooks/post_gen_project.py` - Post-generation setup
 - [x] `templates/docs-only/{{cookiecutter.project_slug}}/`:
@@ -122,6 +134,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 ## Version 1.1.0 - Enhanced Features ✅ **~98% COMPLETE**
 
 ### Azure Pipelines Support ✅ **COMPLETE**
+
 - [x] Create `azure-pipelines.yml` template for Python service
 - [x] Create `azure-pipelines.yml` template for Node.js service
 - [x] Add Azure Pipelines README documentation
@@ -133,6 +146,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [x] SBOM generation
 
 ### Enhanced Dashboards ✅ **COMPLETE**
+
 - [x] Create Grafana dashboard templates for:
   - [x] DORA metrics (deployment frequency, lead time, MTTR, change failure rate)
   - [x] SPACE/DevEx metrics (flow time, cognitive load, interruptions)
@@ -150,6 +164,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [x] Add performance budgets dashboard (Core Web Vitals for web apps)
 
 ### Additional Examples ✅ **COMPLETE**
+
 - [x] Create example projects using each Cookiecutter template:
   - [x] Python microservice example (FastAPI) - fastapi-microservice-README.md created ✅
   - [x] Node.js API service example (Express) - express-api-README.md created ✅
@@ -177,10 +192,18 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
     - Comprehensive tests (smoke.test.ts, api.test.ts)
     - EXAMPLE-README.md with full documentation
     - Located: `examples/projects/express-user-api/`
-  - [ ] Create example React app with Storybook components
-  - [ ] Build example Go gRPC service with protobuf definitions
+  - [x] Create example React app with Storybook components
+    - ✅ Located at `examples/projects/react-dashboard/`
+    - React 18 + Vite + TypeScript with Tailwind theming
+    - TanStack Query + Zustand for realtime metrics, Recharts visualisations
+    - Storybook stories with accessibility addon, Playwright smoke suite, CI workflows
+  - [x] Build example Go gRPC service with protobuf definitions
+    - ✅ Located at `examples/projects/grpc-service/`
+    - Buf-based protobuf toolchain with grpc-gateway HTTP bridge
+    - In-memory repository, structured logging, bufconn integration tests, Docker/K8s manifests
 
 ### Video Tutorials ✅ **COMPLETE** (Scripts Ready, Recording Pending)
+
 - [x] Create tutorial scripts for:
   - [x] "Getting Started with Agentic Canon" (01-getting-started.md) ✅
   - [x] "Creating a new service with Cookiecutter" (02-creating-services.md) ✅
@@ -194,6 +217,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [ ] #50 Add video links to documentation
 
 ### Interactive Wizard ✅
+
 - [x] Create CLI wizard (`agentic-canon init`) using:
   - [x] Python Click or Typer for CLI interface
   - [x] Interactive prompts for project configuration
@@ -211,6 +235,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [x] Display next steps and usage instructions
 
 ### CLI Enhancements ✅ **COMPLETE**
+
 - [x] Add `agentic-canon repo-init` - Add project management automation to existing repository
 - [x] Add `agentic-canon validate` - Validate generated project structure and configuration
 - [x] Add `agentic-canon doctor` - Check environment setup and dependencies
@@ -218,6 +243,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [x] Add `agentic-canon update` - Update project from template using Cruft
 
 ### Project Management Automation ✅ **COMPLETE** 🆕
+
 - [x] Create project-management cookiecutter template
   - [x] Template variables and configuration (cookiecutter.json)
   - [x] Pre/post generation hooks with validation
@@ -240,6 +266,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [x] Documentation and usage guide
 
 ### Testing & Deployment
+
 - [ ] #52 Test generated Python template in a real project scenario
 - [ ] #53 Deploy Jupyter Book to GitHub Pages and verify integration
 - [ ] #54 Create end-to-end integration tests for all templates
@@ -248,6 +275,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 ## Version 2.0.0 - Advanced Features
 
 ### Multi-Cloud Support 🚧 (~30% Complete)
+
 - [x] Add cloud provider abstractions (basic framework in place):
   - [x] AWS-specific examples (basic structure created)
   - [ ] Complete AWS Terraform modules (VPC, ECS, RDS, Lambda, etc.)
@@ -273,6 +301,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [ ] #59 Cloud-agnostic examples and patterns
 
 ### Advanced Fitness Functions 🚧 (~70% Complete)
+
 - [x] Create comprehensive fitness function framework with examples:
   - [x] Performance fitness functions (latency, throughput, load testing)
   - [x] Architecture fitness functions (cyclic dependencies, coupling metrics)
@@ -297,6 +326,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [ ] Technical debt accumulation tracking
 
 ### ML-Powered Insights 🚧 (~60% Complete)
+
 - [x] Create comprehensive ML framework documentation (19KB):
   - [x] Anomaly detection using Isolation Forest
   - [x] Predictive failure analysis using Random Forest
@@ -328,6 +358,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [ ] Intelligent alert routing
 
 ### Full Automation
+
 - [ ] #67 Auto-remediation workflows:
   - [ ] Dependency update PRs with automated testing
   - [ ] Security patch automation with canary rollouts
@@ -346,6 +377,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [ ] Chaos engineering automation
 
 ### Community Templates 🚧 (~50% Complete)
+
 - [x] Create template contribution framework (11.4KB documentation):
   - [x] Template submission guidelines (CONTRIBUTING-TEMPLATES.md)
   - [x] Review and approval process documented
@@ -375,6 +407,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 ## Documentation & Support
 
 ### Core Documentation
+
 - [x] `README.md` - Project overview and quick start
 - [x] `CONTRIBUTING.md` - Contribution guidelines
 - [x] `SECURITY.md` - Security policy and reporting
@@ -384,6 +417,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [x] `CHANGELOG.md` - Version history
 
 ### Technical Documentation ✅
+
 - [x] Architecture Decision Records (ADRs):
   - [x] ADR-001: Cookiecutter for multi-template approach
   - [x] ADR-002: Jupytext for notebook version control
@@ -407,6 +441,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [x] Agent-oriented automation runbook
 
 ### Compliance & Standards Mapping
+
 - [ ] #74 NIST SSDF v1.1 compliance mapping
 - [ ] #75 OWASP SAMM assessment
 - [ ] #76 OWASP ASVS controls (L2/L3 for web/API)
@@ -420,6 +455,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 ## Quality Assurance
 
 ### Standards Compliance Framework ✅ COMPLETE (2025-10-12)
+
 - [x] FRAMEWORK.md - 788 lines, defines philosophy and principles
   - [x] Our way of achieving frontier software excellence
   - [x] Decision-making framework
@@ -472,6 +508,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [x] Standards compliance report integrated
 
 **Template Compliance Status (2025-10-12)**:
+
 - ✅ python-service: 87% compliant (7/8 checks) - **BEST**
   - ✓ All structure, CI/CD, security, tests present
   - ✓ Only template with .pre-commit-config.yaml
@@ -491,6 +528,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - ⚠️ Missing: .pre-commit-config.yaml
 
 ### Template Standardization ✅ **COMPLETE**
+
 - [x] Add .pre-commit-config.yaml to remaining templates (increases compliance to 100%)
   - [x] node-service
   - [x] react-webapp
@@ -502,6 +540,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [x] All code templates have testing frameworks ✅
 
 ### Testing Infrastructure
+
 - [ ] #92 Unit tests for all templates
 - [ ] #94 Integration tests for workflow orchestration
 - [ ] #95 E2E tests for generated projects
@@ -513,6 +552,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [x] Template validation tests - 17 tests passing including edge cases ✅
 
 ### Input Validation & Code Hardening 🆕 ✅
+
 - [x] Shared validation module (`templates/_shared/validation.py`)
   - [x] Project slug validation (kebab-case)
   - [x] Python package name validation (snake_case, reserved keywords)
@@ -563,13 +603,14 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [x] 30 validation categories (up from 24)
 - [x] Validation documentation
   - [x] VALIDATION-GUIDE.md with all rules and examples
-  - [x] templates/_shared/README.md for developer reference
+  - [x] templates/\_shared/README.md for developer reference
   - [x] Error message documentation
   - [x] Troubleshooting guide
   - [x] SANITY-CHECK-ENHANCEMENTS.md (enhanced with v2.0 features)
   - [x] SANITY-CHECK-QUICKSTART-v2.md (new quick reference)
 
 ### CI/CD Quality Gates
+
 - [x] Lint/format compliance (language-specific) - implemented in templates
 - [x] Unit test coverage ≥ 80% - configured in templates
 - [ ] #102 Mutation test score targets
@@ -584,6 +625,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [x] Accessibility checks (axe-core, pa11y) - comprehensive WCAG 2.2 workflow created
 
 ### Security Enhancements 🆕
+
 - [x] Implement artifact signing with Sigstore/Cosign
 - [x] Add comprehensive SAST with CodeQL and Semgrep
 - [x] Integrate TruffleHog for secret scanning
@@ -601,6 +643,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 ## Monitoring & Observability
 
 ### Metrics Collection
+
 - [ ] #103 DORA metrics tracking
 - [ ] #104 SPACE/DevEx metrics
 - [ ] #105 SLO/SLI definitions
@@ -610,6 +653,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [ ] #109 Quality metrics
 
 ### Observability Stack
+
 - [ ] #111 OpenTelemetry instrumentation examples
 - [ ] #112 Collector configuration
 - [ ] #113 Trace, metrics, logs aggregation
@@ -620,6 +664,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 ## Deployment & Operations
 
 ### GitOps Configuration
+
 - [ ] #120 ArgoCD/Flux setup examples
 - [ ] #122 Environment definitions (dev/stage/prod)
 - [ ] #124 Progressive delivery (canary, blue-green)
@@ -627,6 +672,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [ ] #128 Policy enforcement (OPA, Kyverno)
 
 ### Infrastructure
+
 - [ ] Kubernetes manifests
 - [ ] Helm charts
 - [ ] Terraform/OpenTofu modules
@@ -636,6 +682,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 ## Priority Matrix
 
 ### High Priority (Immediate)
+
 1. Version 1.0 - Base Infrastructure
 2. Python Service Template
 3. Core documentation
@@ -643,6 +690,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 5. Testing infrastructure
 
 ### Medium Priority (Near-term)
+
 1. Node Service Template
 2. React WebApp Template
 3. Go Service Template
@@ -650,6 +698,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 5. Enhanced dashboards
 
 ### Lower Priority (Future)
+
 1. Version 2.0.0 features
 2. Community templates
 3. ML-powered insights
@@ -680,6 +729,7 @@ Run the comprehensive sanity check script to verify the current state of the pro
 ```
 
 **Command-line options (v3.0):**
+
 ```bash
 ./sanity-check.sh --help              # Show all options
 ./sanity-check.sh --quiet             # Minimal output (for CI)
@@ -689,6 +739,7 @@ Run the comprehensive sanity check script to verify the current state of the pro
 ```
 
 **What it checks (33 categories, v3.0):**
+
 - Core documentation files (README.md, LICENSE, CHANGELOG.md, etc.)
 - Framework documentation (FRAMEWORK.md, QUALITY_STANDARDS.md, CONVENTIONS.md)
 - Python syntax validation for all hooks
@@ -726,6 +777,7 @@ Run the comprehensive sanity check script to verify the current state of the pro
 - **Standards compliance report** ✨ NEW - Template compliance matrix and exemption tracking
 
 **Current Status (2025-10-12 v3.0):**
+
 - ✅ Passed: 167 checks (enhanced from 149)
 - ⚠️ Warnings: 27 (non-critical: unpinned deps, pre-commit not in 4 templates, etc.)
 - ❌ Failed: 0
@@ -734,12 +786,14 @@ Run the comprehensive sanity check script to verify the current state of the pro
 - 📈 Template Compliance: 85-87% (python-service at 87%, docs-only at 85%)
 
 **New Dependencies (v2.0):**
+
 ```bash
 pip install pip-audit pip-licenses
 ```
 
 **Standards Compliance Notes:**
 Templates and examples are checked for structure and best practices, but may be exempt from some standards as they:
+
 - Are designed to be customized by cookiecutter
 - Contain template variables (e.g., {{ cookiecutter.* }})
 - Represent parts of larger systems, not standalone applications
@@ -748,6 +802,7 @@ Templates and examples are checked for structure and best practices, but may be 
 ### For Seamless Handover
 
 **Agents/Contributors should:**
+
 1. Run `./sanity-check.sh` to understand current state
 2. Check [TASKS.md](TASKS.md) for detailed progress (single source of truth)
 3. Review [IMPLEMENTATION.md](IMPLEMENTATION.md) for technical context
@@ -755,6 +810,7 @@ Templates and examples are checked for structure and best practices, but may be 
 5. Generate a test project: `cookiecutter templates/python-service`
 
 **Before making changes:**
+
 - Verify assumptions with sanity check
 - Update TASKS.md with progress
 - Keep other docs in sync
@@ -764,6 +820,7 @@ Templates and examples are checked for structure and best practices, but may be 
 ### Context Awareness
 
 **⚠️ Important:** Documentation may lag behind implementation. Always verify:
+
 - Run sanity-check.sh for ground truth
 - Check actual file existence
 - Run tests to confirm functionality
@@ -775,6 +832,7 @@ Templates and examples are checked for structure and best practices, but may be 
 **From:** FINAL PHASE IMPLEMENTATIONS.md
 
 ### Template Distribution & Access
+
 - [ ] Implement sparse-checkout support for template cherry-picking
   - [ ] Document sparse-checkout + partial clone workflow
   - [ ] Add examples for public and private repos
@@ -794,6 +852,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Test with private and public access
 
 ### Dependency Management & Offline Support
+
 - [ ] Python offline support
   - [ ] Document PIP_INDEX_URL configuration
   - [ ] Implement wheelhouse generation
@@ -811,6 +870,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Set up cache rebuild on releases
 
 ### Automation & Release Management
+
 - [ ] Release packer workflow
   - [ ] Create release-assets.yml workflow
   - [ ] Implement template zipping
@@ -824,6 +884,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Test cache effectiveness
 
 ### Storybook Deployment
+
 - [ ] Private Storybook deployment
   - [ ] Document private Pages setup (Enterprise Cloud)
   - [ ] Configure access-controlled Pages
@@ -838,6 +899,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Test artifact downloads
 
 ### Agent Setup Wizards
+
 - [ ] Python environment notebook
   - [ ] Create notebooks/setup/python_env.ipynb
   - [ ] Add connectivity detection
@@ -856,6 +918,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Test parameterized execution
 
 ### Machine-Readable Catalog
+
 - [x] Create /catalog.json ✅ **COMPLETE (2025-10-12)**
   - [x] Define catalog schema (templates, artifacts)
   - [x] Add all template entries with metadata
@@ -874,20 +937,22 @@ Templates and examples are checked for structure and best practices, but may be 
 **Objective:** Expose Agentic Canon as MCP server for Claude Desktop, OpenAI Agents SDK, and Gemini CLI
 
 #### MCP Resources (Read-Only)
+
 - [ ] Implement ac://catalog resource
   - [ ] Serve /catalog.json
   - [ ] Return templates, releases, assets
   - [ ] Test with MCP clients
-- [ ] Implement ac://bible/* resources
+- [ ] Implement ac://bible/\* resources
   - [ ] Serve machine-readable docs (MD/JSON/YAML)
   - [ ] Map all Bible sections
   - [ ] Add quality gates documentation
-- [ ] Implement ac://examples/* resources
+- [ ] Implement ac://examples/\* resources
   - [ ] Serve code samples
   - [ ] Add policy snippets
   - [ ] Test resource embedding in prompts
 
 #### MCP Prompts (Parameterized Wizards)
+
 - [ ] scaffold_service prompt
   - [ ] Define typed arguments
   - [ ] Bind resources into prompt body
@@ -910,6 +975,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Test offline scenarios
 
 #### MCP Tools (Idempotent Operations)
+
 - [ ] list_templates() tool
   - [ ] Read from catalog
   - [ ] Return structured template list
@@ -944,6 +1010,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Add error handling
 
 #### MCP Server Infrastructure
+
 - [ ] Choose SDK (FastMCP vs official Python SDK)
   - [ ] Evaluate FastMCP features
   - [ ] Evaluate official SDK features
@@ -952,7 +1019,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] resources.py (bible, catalog, examples)
   - [ ] prompts.py (wizards)
   - [ ] tools.py (all tools)
-  - [ ] __init__.py
+  - [ ] **init**.py
   - [ ] tests/
 - [ ] Implement STDIO transport
   - [ ] For local Claude Desktop
@@ -970,6 +1037,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Test container execution
 
 #### MCP Security Model
+
 - [ ] Implement least privilege design
   - [ ] Default read-only resources
   - [ ] Explicit enablement for mutations
@@ -988,6 +1056,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Log retention policy
 
 #### MCP CI/CD & Operations
+
 - [ ] Build/test workflow
   - [ ] Test server functionality
   - [ ] Contract test MCP schema
@@ -1003,6 +1072,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Alert on auth failures
 
 #### MCP Client Integration
+
 - [ ] Claude Desktop Extension
   - [ ] Create .dxt/.mcpb package
   - [ ] One-click install
@@ -1024,6 +1094,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Test all configurations
 
 #### MCP Testing & Documentation
+
 - [ ] Guardrail tests
   - [ ] Test schema validation
   - [ ] Test allowlists
@@ -1043,6 +1114,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Deployment guide
 
 ### Rollout Timeline (2 weeks)
+
 - [ ] Day 1-2: SDK selection, repo layout, Dockerization
 - [ ] Day 3-5: Implement resources and list_templates()
 - [ ] Day 6-8: Implement render_template() and create_repo()
@@ -1053,6 +1125,7 @@ Templates and examples are checked for structure and best practices, but may be 
 ## Future Maintenance & Improvements
 
 ### Standards Maintenance
+
 - [ ] Quarterly review of QUALITY_STANDARDS.md (next: 2026-01-12)
   - [ ] Review against latest NIST SSDF, OWASP SAMM updates
   - [ ] Update quality gates based on industry trends
@@ -1072,6 +1145,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Overall project health badge
 
 ### Template Enhancement Backlog
+
 - [ ] Add mutation testing examples to templates
   - [ ] mutmut for Python
   - [ ] Stryker for JavaScript/TypeScript
@@ -1096,6 +1170,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [x] Standardize pre-commit hooks across all templates
 
 ### Documentation Improvements
+
 - [ ] Create video tutorials for templates (scripts ready)
   - [ ] Record Getting Started (8 min)
   - [ ] Record Creating Services (12 min)
@@ -1113,6 +1188,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Historical trend visualization
 
 ### Automation Enhancements
+
 - [ ] Automated template updates via Cruft
   - [ ] Monitor for template drift
   - [ ] Auto-generate update PRs
@@ -1127,6 +1203,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Undo/rollback capability
 
 ### Community & Ecosystem
+
 - [ ] Template marketplace development
   - [ ] Web frontend for browsing
   - [ ] Rating and review system

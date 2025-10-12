@@ -611,20 +611,20 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 
 ### Observability Stack
 - [ ] #111 OpenTelemetry instrumentation examples
-- [ ] Collector configuration
-- [ ] Trace, metrics, logs aggregation
-- [ ] Dashboards (Grafana)
-- [ ] Alerting rules (Prometheus)
-- [ ] Incident management integration
+- [ ] #112 Collector configuration
+- [ ] #113 Trace, metrics, logs aggregation
+- [ ] #114 Dashboards (Grafana)
+- [ ] #116 Alerting rules (Prometheus)
+- [ ] #118 Incident management integration
 
 ## Deployment & Operations
 
 ### GitOps Configuration
-- [ ] ArgoCD/Flux setup examples
-- [ ] Environment definitions (dev/stage/prod)
-- [ ] Progressive delivery (canary, blue-green)
-- [ ] Automated rollback policies
-- [ ] Policy enforcement (OPA, Kyverno)
+- [ ] #120 ArgoCD/Flux setup examples
+- [ ] #122 Environment definitions (dev/stage/prod)
+- [ ] #124 Progressive delivery (canary, blue-green)
+- [ ] #126 Automated rollback policies
+- [ ] #128 Policy enforcement (OPA, Kyverno)
 
 ### Infrastructure
 - [ ] Kubernetes manifests

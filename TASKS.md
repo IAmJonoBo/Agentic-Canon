@@ -507,7 +507,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 - [ ] #95 E2E tests for generated projects
 - [ ] #98 Contract tests between services
 - [ ] #99 Mutation testing configuration
-- [ ] Performance testing framework
+- [ ] #101 Performance testing framework
 - [x] Accessibility testing (axe-core, pa11y) - comprehensive workflow created
 - [x] Security testing (SAST, DAST, secret scanning) - comprehensive workflows created
 - [x] Template validation tests - 17 tests passing including edge cases ✅
@@ -572,7 +572,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 ### CI/CD Quality Gates
 - [x] Lint/format compliance (language-specific) - implemented in templates
 - [x] Unit test coverage ≥ 80% - configured in templates
-- [ ] Mutation test score targets
+- [ ] #102 Mutation test score targets
 - [x] SAST scan (CodeQL, Semgrep) - implemented in all templates
 - [x] Secret scanning (Gitleaks, TruffleHog) - implemented in all templates
 - [x] Dependency scanning (Dependabot, Renovate) - Renovate configured
@@ -601,16 +601,16 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
 ## Monitoring & Observability
 
 ### Metrics Collection
-- [ ] DORA metrics tracking
-- [ ] SPACE/DevEx metrics
-- [ ] SLO/SLI definitions
-- [ ] Error budgets
-- [ ] Performance metrics
-- [ ] Security metrics
-- [ ] Quality metrics
+- [ ] #103 DORA metrics tracking
+- [ ] #104 SPACE/DevEx metrics
+- [ ] #105 SLO/SLI definitions
+- [ ] #106 Error budgets
+- [ ] #107 Performance metrics
+- [ ] #108 Security metrics
+- [ ] #109 Quality metrics
 
 ### Observability Stack
-- [ ] OpenTelemetry instrumentation examples
+- [ ] #111 OpenTelemetry instrumentation examples
 - [ ] Collector configuration
 - [ ] Trace, metrics, logs aggregation
 - [ ] Dashboards (Grafana)

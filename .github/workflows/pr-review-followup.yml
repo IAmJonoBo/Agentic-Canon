@@ -33,18 +33,14 @@ jobs:
             
             if (hasFollowup) {
               const issueTitle = `Follow-up from PR #${pr.number}: ${pr.title}`;
-              const issueBody = `## Context
-From PR #${pr.number} - ${pr.title}
-
-## Review Comment
-${review.body}
-
-## Reviewer
-@${review.user.login}
-
-## PR Link
-${pr.html_url}
-`;
+              const issueBody = '## Context\n' +
+                `From PR #${pr.number} - ${pr.title}\n\n` +
+                '## Review Comment\n' +
+                `${review.body}\n\n` +
+                '## Reviewer\n' +
+                `@${review.user.login}\n\n` +
+                '## PR Link\n' +
+                `${pr.html_url}`;
               
               await github.rest.issues.create({
                 owner: context.repo.owner,

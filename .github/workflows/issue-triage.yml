@@ -86,21 +86,17 @@ jobs:
               issue_number: issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `👋 Thank you for opening this issue!
-
-This issue has been automatically triaged and labeled. A maintainer will review it soon.
-${priorityGuide}${componentGuide}
-
-**Next steps:**
-- Ensure you've provided all necessary information
-- Check if a similar issue already exists
-- For architectural decisions, consider creating an ADR (Architecture Decision Record)
-- Link related issues or PRs if applicable
-
-**For contributors:**
-- Read our [CONTRIBUTING.md](../CONTRIBUTING.md) guide
-- Check our [Code of Conduct](../CODE_OF_CONDUCT.md)
-- Review [FRAMEWORK.md](../FRAMEWORK.md) for our development philosophy
-- See [QUALITY_STANDARDS.md](../QUALITY_STANDARDS.md) for quality gates
-`
+              body: '👋 Thank you for opening this issue!\n\n' +
+                'This issue has been automatically triaged and labeled. A maintainer will review it soon.\n' +
+                priorityGuide + componentGuide + '\n\n' +
+                '**Next steps:**\n' +
+                '- Ensure you have provided all necessary information\n' +
+                '- Check if a similar issue already exists\n' +
+                '- For architectural decisions, consider creating an ADR (Architecture Decision Record)\n' +
+                '- Link related issues or PRs if applicable\n\n' +
+                '**For contributors:**\n' +
+                '- Read our [CONTRIBUTING.md](../CONTRIBUTING.md) guide\n' +
+                '- Check our [Code of Conduct](../CODE_OF_CONDUCT.md)\n' +
+                '- Review [FRAMEWORK.md](../FRAMEWORK.md) for our development philosophy\n' +
+                '- See [QUALITY_STANDARDS.md](../QUALITY_STANDARDS.md) for quality gates'
             });

@@ -7,6 +7,8 @@ This directory contains comprehensive templates for building production-ready so
 1. **Cookiecutter Templates** - Complete project scaffolding for new services
 2. **Supporting Templates** - Drag-and-drop files for specific capabilities
 
+**📋 Standards Compliance:** See [TEMPLATE_STANDARDS.md](../TEMPLATE_STANDARDS.md) for details on what standards templates must meet versus what can be reasonably omitted. Templates serve as **starting points** and are designed to be customized.
+
 ## Navigation
 
 ### 📦 Cookiecutter Templates (Full Project Generation)

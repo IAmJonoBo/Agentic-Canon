@@ -5,7 +5,7 @@
 **📍 SINGLE SOURCE OF TRUTH** - All other summary documents (SUMMARY.md, V110-V200-SUMMARY.md) are derived from this tracker.
 
 Last Updated: 2025-10-12
-Last Verified: 2025-10-12 (Enhanced validation: ✅ 69 checks passed, 17 tests passing, ⚠️ 2 warnings, ❌ 0 failed)
+Last Verified: 2025-10-12 (Enhanced validation: ✅ 121 checks passed, 17 tests passing, ⚠️ 2 warnings, ❌ 0 failed)
 
 ## Version 1.0 - Base Infrastructure (Foundation) ✅ COMPLETE
 
@@ -411,8 +411,16 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 69 checks passed, 17 tests p
 - [x] Enhanced sanity-check.sh with:
   - [x] Python syntax validation for hooks
   - [x] JSON validation for configuration files
+  - [x] YAML validation for workflow files (with template exemptions)
+  - [x] Framework documentation compliance checks (FRAMEWORK.md, QUALITY_STANDARDS.md, CONVENTIONS.md)
+  - [x] Template structure validation (hooks, project structure, essential files)
+  - [x] README.md presence in all template directories
+  - [x] CI/CD workflow presence in templates
+  - [x] .gitignore presence in templates
+  - [x] Example naming convention validation
   - [x] Validation module self-tests
-  - [x] 69+ automated checks passing
+  - [x] 121+ automated checks passing (up from 69)
+  - [x] Template exemption documentation (templates contain cookiecutter variables)
 - [x] Validation documentation
   - [x] VALIDATION-GUIDE.md with all rules and examples
   - [x] templates/_shared/README.md for developer reference
@@ -530,10 +538,17 @@ Run the comprehensive sanity check script to verify the current state of the pro
 ```
 
 **What it checks:**
-- Core documentation files
+- Core documentation files (README.md, LICENSE, CHANGELOG.md, etc.)
+- Framework documentation (FRAMEWORK.md, QUALITY_STANDARDS.md, CONVENTIONS.md)
+- Python syntax validation for all hooks
+- JSON validation for configuration files
+- YAML validation for workflow files (excluding template files with cookiecutter variables)
 - All Cookiecutter templates (5 primary + 8 categories)
+- Template structure compliance (hooks, project structure, essential files)
+- README.md presence in all template directories
 - Dashboard JSON files
 - Example project documentation
+- Example naming convention compliance
 - Video tutorial scripts
 - Azure Pipelines support
 - CLI wizard
@@ -542,9 +557,16 @@ Run the comprehensive sanity check script to verify the current state of the pro
 - Advanced feature frameworks
 
 **Current Status (2025-10-12):**
-- ✅ Passed: 44 checks
+- ✅ Passed: 121 checks (enhanced from 69)
 - ⚠️ Warnings: 2 (Azure/GCP multi-cloud examples pending)
 - ❌ Failed: 0
+
+**Standards Compliance Notes:**
+Templates and examples are checked for structure and best practices, but may be exempt from some standards as they:
+- Are designed to be customized by cookiecutter
+- Contain template variables (e.g., {{ cookiecutter.* }})
+- Represent parts of larger systems, not standalone applications
+- Serve as starting points, not complete implementations
 
 ### For Seamless Handover
 

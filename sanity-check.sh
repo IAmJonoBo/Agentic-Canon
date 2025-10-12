@@ -702,7 +702,7 @@ for md_file in *.md docs/**/*.md templates/**/README.md examples/**/README.md; d
         # Check for basic markdown issues
         # 1. Check for broken reference-style links
         if grep -q '^\[.*\]: $' "$md_file" 2>/dev/null; then
-            check_warn "$(basename $md_file): Empty reference-style link found"
+            check_warn "$(basename "$md_file"): Empty reference-style link found"
             markdown_issues=$((markdown_issues + 1))
         fi
         
@@ -712,7 +712,7 @@ for md_file in *.md docs/**/*.md templates/**/README.md examples/**/README.md; d
             # Check for very long lines (>500 chars) which might indicate formatting issues
             if grep -E '^.{500,}$' "$md_file" >/dev/null 2>&1; then
                 if [ $VERBOSE -eq 1 ]; then
-                    check_warn "$(basename $md_file): Contains very long lines (>500 chars)"
+                    check_warn "$(basename "$md_file"): Contains very long lines (>500 chars)"
                 fi
                 markdown_issues=$((markdown_issues + 1))
             fi

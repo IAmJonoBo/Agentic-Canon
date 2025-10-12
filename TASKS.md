@@ -423,7 +423,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 121 checks passed, 17 tests 
   - [x] Edge case tests (empty, too short, too long)
   - [x] Reserved keyword tests
   - [x] Special validation tests per template type
-- [x] Enhanced sanity-check.sh with:
+- [x] Enhanced sanity-check.sh v1.0 with:
   - [x] Python syntax validation for hooks
   - [x] JSON validation for configuration files
   - [x] YAML validation for workflow files (with template exemptions)
@@ -434,13 +434,29 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 121 checks passed, 17 tests 
   - [x] .gitignore presence in templates
   - [x] Example naming convention validation
   - [x] Validation module self-tests
-  - [x] 121+ automated checks passing (up from 69)
+  - [x] 140 automated checks passing (up from 69)
   - [x] Template exemption documentation (templates contain cookiecutter variables)
+- [x] Enhanced sanity-check.sh v2.0 with (2025-10-12): 🆕 ✅
+  - [x] Markdown linting - Validate markdown formatting and link integrity
+  - [x] Dependency security scanning - Check for known vulnerabilities (pip-audit/safety)
+  - [x] License compatibility - Validate license compatibility across dependencies (ADR-008)
+  - [x] Code duplication detection - Identify duplicate content across examples
+  - [x] Performance metrics - Track script execution time and optimization
+  - [x] JSON schema validation - Validate against specific schemas (cookiecutter.json)
+  - [x] Verbose/Quiet modes - Command-line options for output control
+  - [x] Parallel execution - Infrastructure ready (--parallel flag)
+  - [x] HTML report generation - Generate detailed HTML reports
+  - [x] Integration with pre-commit - Run as pre-commit hook
+  - [x] 149 automated checks (up from 140, +6.4%)
+  - [x] 38 tests passing (21 sanity check + 17 cookiecutter)
+  - [x] 30 validation categories (up from 24)
 - [x] Validation documentation
   - [x] VALIDATION-GUIDE.md with all rules and examples
   - [x] templates/_shared/README.md for developer reference
   - [x] Error message documentation
   - [x] Troubleshooting guide
+  - [x] SANITY-CHECK-ENHANCEMENTS.md (enhanced with v2.0 features)
+  - [x] SANITY-CHECK-QUICKSTART-v2.md (new quick reference)
 
 ### CI/CD Quality Gates
 - [x] Lint/format compliance (language-specific) - implemented in templates
@@ -552,7 +568,16 @@ Run the comprehensive sanity check script to verify the current state of the pro
 ./sanity-check.sh
 ```
 
-**What it checks:**
+**Command-line options (v2.0):**
+```bash
+./sanity-check.sh --help              # Show all options
+./sanity-check.sh --quiet             # Minimal output (for CI)
+./sanity-check.sh --verbose           # Detailed output (default)
+./sanity-check.sh --html-report FILE  # Generate HTML report
+./sanity-check.sh --parallel          # Parallel execution (infrastructure ready)
+```
+
+**What it checks (30 categories):**
 - Core documentation files (README.md, LICENSE, CHANGELOG.md, etc.)
 - Framework documentation (FRAMEWORK.md, QUALITY_STANDARDS.md, CONVENTIONS.md)
 - Python syntax validation for all hooks
@@ -579,11 +604,24 @@ Run the comprehensive sanity check script to verify the current state of the pro
 - GitHub Actions workflow structure validation
 - Documentation completeness checks
 - File size sanity checks (detect oversized files)
+- **Markdown linting** ✨ NEW - Formatting and link integrity validation
+- **Dependency security scanning** ✨ NEW - Vulnerability detection (pip-audit/safety)
+- **License compatibility** ✨ NEW - ADR-008 compliance checking
+- **Code duplication detection** ✨ NEW - Duplicate file identification in examples
+- **JSON schema validation** ✨ NEW - cookiecutter.json structure validation
+- **Performance metrics** ✨ NEW - Execution time tracking
 
-**Current Status (2025-10-12):**
-- ✅ Passed: 140 checks (enhanced from 121)
-- ⚠️ Warnings: 3 (Azure/GCP multi-cloud examples pending, pre-commit not installed)
+**Current Status (2025-10-12 v2.0):**
+- ✅ Passed: 149 checks (enhanced from 140)
+- ⚠️ Warnings: 7 (non-critical: unpinned deps, pre-commit not installed, etc.)
 - ❌ Failed: 0
+- ⏱️ Duration: ~9 seconds
+- 📊 Test Coverage: 38 tests (21 sanity check + 17 cookiecutter)
+
+**New Dependencies (v2.0):**
+```bash
+pip install pip-audit pip-licenses
+```
 
 **Standards Compliance Notes:**
 Templates and examples are checked for structure and best practices, but may be exempt from some standards as they:

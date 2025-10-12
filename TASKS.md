@@ -279,7 +279,18 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
   - ✅ Added `tests/test_template_e2e.py` for Node, React, and Go templates (npm/go toolchain validation)
   - ✅ Ensures lint/build/test commands succeed using Cookiecutter-generated projects
   - ✅ Documentation updated for slow-test coverage in `tests/README.md`
-- [ ] #55 Set up continuous testing for template updates
+- [x] #55 Set up continuous testing for template updates
+  - ✅ New `Templates • e2e` workflow runs weekly + on demand (`.github/workflows/template-e2e.yml`)
+  - ✅ Slow-marker tests expanded to cover Python, docs build, and template E2E paths
+  - ✅ Documented local execution instructions in `docs/README.md`
+
+### Developer Experience Enhancements 🚧 (Planning)
+
+- [ ] #130 Backstage portal integration (catalog entries, sanity-check surfacing, documentation linkage)
+- [ ] #131 OpenFeature/flagd starter bundle for feature-flag readiness across templates
+- [ ] #132 Syft/Grype SBOM + vulnerability scanning workflow for shared CI usage
+- [ ] #133 Remote dev environments (Gitpod workspace and Dev Container templates)
+- [ ] #134 Semgrep shared ruleset and automation guidance (CI + pre-commit adoption)
 
 ## Version 2.0.0 - Advanced Features
 

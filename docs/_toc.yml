@@ -6,3 +6,4 @@ chapters:
   - file: notebooks/03_contracts_and_tests
   - file: notebooks/04_observability_slos
   - file: notebooks/05_docs_to_book
+  - file: dev-experience-roadmap

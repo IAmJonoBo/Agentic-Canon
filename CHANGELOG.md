@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Python template end-to-end integration test (`tests/test_python_template_integration.py`) and slow test marker configuration (`pytest.ini`)
 - Jupyter Book documentation build verification (`tests/test_docs_build.py`) and refreshed Pages workflow environment
 - Node/React/Go template integration coverage (`tests/test_template_e2e.py`) with tooling-aware slow tests
+- Weekly template E2E CI workflow (`.github/workflows/template-e2e.yml`) and documented sanity-check guidance
+- Added `--skip-templates` option to `.dev/sanity-check.sh` for template-aware runs
 
 ### Changed
 

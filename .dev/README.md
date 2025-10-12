@@ -44,6 +44,12 @@ Runs comprehensive repository health checks:
 
 ```bash
 .dev/sanity-check.sh
+
+# Quiet summary only
+.dev/sanity-check.sh --quiet
+
+# Skip template-heavy checks (useful when running with older Bash versions)
+.dev/sanity-check.sh --skip-templates --quiet
 ```
 
 ### trunk-with-progress.sh

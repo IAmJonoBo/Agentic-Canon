@@ -13,7 +13,7 @@ The documentation is organized as:
 
 ## Structure
 
-```
+```text
 docs/
 ├── _config.yml          # Jupyter Book configuration
 ├── _toc.yml            # Table of contents
@@ -107,6 +107,7 @@ Documentation uses MyST (Markedly Structured Text) Markdown, an enhanced version
   ```
 
 - **Citations**: Bibliography and citations
+
   ```markdown
   {cite}`reference-key`
   ```
@@ -160,21 +161,39 @@ jupyter-book build docs --path-output /tmp/book-output
 
 The GitHub workflow uses Python 3.12 and installs dependencies from `requirements.txt`, so local verification mirrors production as closely as possible.
 
+### Template Integration CI
+
+The `Templates • e2e` workflow (`.github/workflows/template-e2e.yml`) runs weekly and on-demand to ensure every template still boots, installs dependencies, and executes its smoke tests. Locally you can mirror the check with:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+pytest tests/test_template_e2e.py -m slow -v
+```
+
+### Developer Experience Roadmap
+
+See [`dev-experience-roadmap.md`](dev-experience-roadmap.md) for planned DX initiatives (Backstage integration, feature flags, SBOM workflows, remote dev environments, Semgrep guardrails) tracked in `TASKS.md`.
+
 ## Adding Content
 
 ### New Page
 
 1. Create a Markdown file in `docs/`
 2. Add to `_toc.yml`:
+
    ```yaml
    - file: your-page
    ```
+
 3. Rebuild the book
 
 ### New Section
 
 1. Create directory with pages
 2. Add to `_toc.yml`:
+
    ```yaml
    - file: section/index
      sections:
@@ -186,14 +205,19 @@ The GitHub workflow uses Python 3.12 and installs dependencies from `requirement
 
 1. Create notebook in `../notebooks/`
 2. Pair with MyST:
+
    ```bash
    jupytext --set-formats ../notebooks/notebook.ipynb,notebooks/notebook.md:myst
    ```
+
 3. Sync:
+
    ```bash
    jupytext --sync ../notebooks/notebook.ipynb
    ```
+
 4. Add to `_toc.yml`:
+
    ```yaml
    - file: notebooks/notebook
    ```

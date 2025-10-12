@@ -334,12 +334,12 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [ ] Infrastructure drift detection and correction
   - [ ] Failed test auto-retry and quarantine
   - [ ] Performance regression auto-rollback
-- [ ] Self-service capabilities:
+- [ ] #68 Self-service capabilities:
   - [ ] Automated environment provisioning
   - [ ] Self-healing infrastructure
   - [ ] Automated incident response workflows
   - [ ] Auto-scaling based on SLO budgets
-- [ ] Intelligent orchestration:
+- [ ] #69 Intelligent orchestration:
   - [ ] Smart deployment scheduling
   - [ ] Automated canary analysis
   - [ ] Progressive delivery automation
@@ -354,18 +354,18 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [x] Validation system (pre/post generation hooks)
   - [x] Testing requirements with pytest-cookies
   - [x] PR template with comprehensive checklist
-- [ ] Build community template gallery/marketplace:
+- [ ] #70 Build community template gallery/marketplace:
   - [ ] Web frontend for browsing templates
   - [ ] Search and filtering capabilities
   - [ ] Rating and review system
   - [ ] Usage statistics tracking
   - [ ] Template discovery UI
-- [ ] Additional community-contributed templates:
+- [ ] #71 Additional community-contributed templates:
   - [ ] Language-specific templates (Rust, Java, C#, Ruby, PHP, etc.)
   - [ ] Framework-specific templates (Django, Rails, Spring Boot, .NET, Laravel, etc.)
   - [ ] Domain-specific templates (ML/AI, IoT, blockchain, microservices, etc.)
   - [ ] Infrastructure templates (Kubernetes operators, Helm charts, etc.)
-- [ ] Template marketplace features:
+- [ ] #72 Template marketplace features:
   - [ ] Version management with Cruft integration
   - [ ] Dependency tracking between templates
   - [ ] Security scanning for templates
@@ -397,7 +397,7 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [x] Context diagram
   - [x] Container diagram
   - [x] Component diagram
-- [ ] API Documentation:
+- [ ] #73 API Documentation:
   - [ ] OpenAPI specs for any APIs
   - [ ] AsyncAPI specs for event-driven components
 - [x] Runbooks:
@@ -407,10 +407,10 @@ Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests 
   - [x] Agent-oriented automation runbook
 
 ### Compliance & Standards Mapping
-- [ ] NIST SSDF v1.1 compliance mapping
-- [ ] OWASP SAMM assessment
-- [ ] OWASP ASVS controls (L2/L3 for web/API)
-- [ ] SLSA level tracking
+- [ ] #74 NIST SSDF v1.1 compliance mapping
+- [ ] #75 OWASP SAMM assessment
+- [ ] #76 OWASP ASVS controls (L2/L3 for web/API)
+- [ ] #80 SLSA level tracking
 - [ ] OpenSSF Scorecard metrics
 - [ ] ISO/IEC 25010 quality characteristics
 - [ ] ISO/IEC 5055 structural quality

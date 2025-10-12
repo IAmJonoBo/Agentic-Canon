@@ -1,5 +1,9 @@
 # Frontier Software Excellence - Complete Index
 
+> **📍 For Current Project Status:** See [TASKS.md](TASKS.md) (single source of truth)  
+> **✅ Verified:** 2025-10-12 via sanity check (44 passed, 0 failed)  
+> **📊 Status:** v1.0 ✅ Complete | v1.1.0 ✅ ~98% | v2.0.0 🚧 ~40%
+
 ## AI-Friendly Bible + Templates
 
 ## Quick Links

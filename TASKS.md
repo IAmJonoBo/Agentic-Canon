@@ -484,3 +484,54 @@ Last Verified: 2025-10-12 (Comprehensive sanity check: ✅ 44 passed, ⚠️ 2 w
 - Follow trunk-based development
 - Implement progressive delivery
 - Maintain error budgets and SLOs
+
+## Verification & Handover
+
+### Sanity Check Script
+
+Run the comprehensive sanity check script to verify the current state of the project:
+
+```bash
+./sanity-check.sh
+```
+
+**What it checks:**
+- Core documentation files
+- All Cookiecutter templates (5 primary + 8 categories)
+- Dashboard JSON files
+- Example project documentation
+- Video tutorial scripts
+- Azure Pipelines support
+- CLI wizard
+- Test infrastructure
+- Multi-cloud support
+- Advanced feature frameworks
+
+**Current Status (2025-10-12):**
+- ✅ Passed: 44 checks
+- ⚠️ Warnings: 2 (Azure/GCP multi-cloud examples pending)
+- ❌ Failed: 0
+
+### For Seamless Handover
+
+**Agents/Contributors should:**
+1. Run `./sanity-check.sh` to understand current state
+2. Check [TASKS.md](TASKS.md) for detailed progress (single source of truth)
+3. Review [IMPLEMENTATION.md](IMPLEMENTATION.md) for technical context
+4. Run `pytest tests/test_cookiecutters.py -v` to verify templates
+5. Generate a test project: `cookiecutter templates/python-service`
+
+**Before making changes:**
+- Verify assumptions with sanity check
+- Update TASKS.md with progress
+- Keep other docs in sync
+- Run tests after changes
+- Add verification evidence
+
+### Context Awareness
+
+**⚠️ Important:** Documentation may lag behind implementation. Always verify:
+- Run sanity-check.sh for ground truth
+- Check actual file existence
+- Run tests to confirm functionality
+- Don't assume docs are current without verification

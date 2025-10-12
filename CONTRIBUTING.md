@@ -45,9 +45,46 @@ pip install -r requirements.txt
 pip install pre-commit
 pre-commit install
 
+# Run sanity check to verify current state
+./sanity-check.sh
+
 # Run tests to verify setup
 pytest tests/
 ```
+
+### Understanding Project State
+
+Before contributing, understand the current project state:
+
+1. **Read the Progress Tracker:**
+   - [TASKS.md](TASKS.md) - 📍 Single source of truth for all progress
+   - [SUMMARY.md](SUMMARY.md) - Executive summary derived from TASKS.md
+   - [IMPLEMENTATION.md](IMPLEMENTATION.md) - Technical decisions and handover guide
+
+2. **Verify Current State:**
+   ```bash
+   # Run comprehensive sanity check
+   ./sanity-check.sh
+   
+   # Current status (2025-10-12):
+   # ✅ 44 checks passed
+   # ⚠️ 2 warnings (Azure/GCP multi-cloud pending)
+   # ❌ 0 failures
+   ```
+
+3. **Test Templates:**
+   ```bash
+   # Run template tests
+   pytest tests/test_cookiecutters.py -v
+   
+   # Generate a test project
+   cookiecutter templates/python-service
+   ```
+
+**⚠️ Important:** Documentation may lag behind implementation. Always:
+- Run `./sanity-check.sh` to verify ground truth
+- Check actual file existence, not just documentation
+- Run tests to confirm functionality
 
 ### Repository Structure
 

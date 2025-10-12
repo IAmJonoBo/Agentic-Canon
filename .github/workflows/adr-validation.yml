@@ -34,7 +34,7 @@ jobs:
           fi
           
           # Validate each ADR file
-          for adr in "$ADR_DIR"/ADR-*.md; do
+          for adr in "$ADR_DIR"/ADR-[0-9]*.md; do
             if [ ! -f "$adr" ]; then
               continue
             fi
@@ -129,7 +129,7 @@ jobs:
           echo "🔢 Checking ADR numbering sequence..."
           
           cd docs/adr
-          numbers=$(ls ADR-*.md 2>/dev/null | sed 's/ADR-\([0-9]*\)-.*/\1/' | sort -n)
+          numbers=$(ls ADR-[0-9]*.md 2>/dev/null | sed 's/ADR-\([0-9]*\)-.*/\1/' | sort -n)
           
           if [ -z "$numbers" ]; then
             echo "No ADRs found"
@@ -166,7 +166,7 @@ jobs:
             
             // Count ADRs
             const adrDir = 'docs/adr';
-            const files = fs.readdirSync(adrDir).filter(f => f.startsWith('ADR-') && f.endsWith('.md'));
+            const files = fs.readdirSync(adrDir).filter(f => f.match(/^ADR-\d{3}-.+\.md$/));
             
             const comment = `## 📋 ADR Validation Results
             

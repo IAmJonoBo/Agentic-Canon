@@ -24,11 +24,17 @@ fi
 # Function to get next ADR number
 get_next_adr_number() {
     local max_num=0
-    for file in "$ADR_DIR"/ADR-*.md; do
+    for file in "$ADR_DIR"/ADR-[0-9]*.md; do
         if [ -f "$file" ]; then
-            num=$(basename "$file" | sed 's/ADR-\([0-9]*\)-.*/\1/')
-            if [ "$num" -gt "$max_num" ]; then
-                max_num=$num
+            filename=$(basename "$file")
+            # Only process files matching ADR-NNN-*.md pattern
+            if [[ "$filename" =~ ^ADR-([0-9]{3})-.*\.md$ ]]; then
+                num="${BASH_REMATCH[1]}"
+                # Remove leading zeros for comparison
+                num=$((10#$num))
+                if [ "$num" -gt "$max_num" ]; then
+                    max_num=$num
+                fi
             fi
         fi
     done

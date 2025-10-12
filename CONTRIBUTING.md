@@ -61,7 +61,12 @@ Before contributing, understand the current project state:
    - [SUMMARY.md](SUMMARY.md) - Executive summary derived from TASKS.md
    - [IMPLEMENTATION.md](IMPLEMENTATION.md) - Technical decisions and handover guide
 
-2. **Verify Current State:**
+2. **Review Process Guides:**
+   - [docs/adr/ADR-LIFECYCLE.md](docs/adr/ADR-LIFECYCLE.md) - How to create and manage ADRs
+   - [docs/ISSUE_MANAGEMENT.md](docs/ISSUE_MANAGEMENT.md) - Issue creation and sprint management
+   - [.github/LABELS.md](.github/LABELS.md) - Label taxonomy and usage
+
+3. **Verify Current State:**
    ```bash
    # Run comprehensive sanity check
    .dev/sanity-check.sh
@@ -72,7 +77,7 @@ Before contributing, understand the current project state:
    # ❌ 0 failures
    ```
 
-3. **Test Templates:**
+4. **Test Templates:**
    ```bash
    # Run template tests
    pytest tests/test_cookiecutters.py -v
@@ -187,12 +192,63 @@ All contributions must meet the Agentic Canon quality standards. See our compreh
 
 All contributions should meet these standards:
 
+#### For Code Changes
+- ✅ Tests added/updated (80%+ coverage)
+- ✅ Linting passes
+- ✅ Type hints included (Python/TypeScript)
+- ✅ Security scanning clean
+- ✅ Documentation updated
+
 ### Documentation
 - ✅ Public APIs and functions documented
 - ✅ README updated if needed
-- ✅ ADR created for significant architectural decisions
+- ✅ ADR created for significant architectural decisions (see [ADR Lifecycle](docs/adr/ADR-LIFECYCLE.md))
 - ✅ CHANGELOG updated for user-facing changes
 - ✅ Examples added for new features
+- ✅ TASKS.md updated if tracking items
+
+### Architecture Decisions
+
+For **significant architectural decisions**, create an ADR:
+
+1. **Determine if ADR is needed:**
+   - Technology or framework choices
+   - Design patterns or architecture changes
+   - Infrastructure decisions
+   - API design choices
+
+2. **Create the ADR:**
+   ```bash
+   # Use the automated script
+   .dev/scripts/create-adr.sh
+   
+   # Or manually
+   cp templates/architecture/adr/template.md docs/adr/ADR-009-your-decision.md
+   ```
+
+3. **Follow the lifecycle:**
+   - Propose → Review → Accept → Implement
+   - See [ADR Lifecycle Guide](docs/adr/ADR-LIFECYCLE.md) for details
+
+4. **Link the ADR:**
+   - Reference in issues/PRs: "Implements ADR-009"
+   - Update docs/adr/README.md
+   - Link from TASKS.md if applicable
+
+### Issues and Tasks
+
+Use the appropriate issue template:
+
+- **Bug Report** - For defects or unexpected behavior
+- **Feature Request** - For new functionality or enhancements
+- **Task** - For concrete work items
+- **ADR Proposal** - For architectural decisions
+
+See [Issue Management Guide](docs/ISSUE_MANAGEMENT.md) for best practices on:
+- Creating well-formed issues
+- Labeling and categorization
+- Sprint planning
+- Tracking progress
 
 ### Code Quality
 - ✅ Code follows project conventions (see [CONVENTIONS.md](CONVENTIONS.md))

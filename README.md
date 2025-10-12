@@ -46,6 +46,11 @@ Agentic Canon is a **comprehensive framework for frontier software excellence** 
 - **[INSTRUCTIONS.md](INSTRUCTIONS.md)** - Technical implementation details for notebooks, templates, and CI/CD setup
 - **[control-traceability-matrix.json](control-traceability-matrix.json)** - Machine-readable standards → implementation → evidence mapping
 
+#### Process & Management
+- **[docs/adr/](docs/adr/)** - Architecture Decision Records with [lifecycle guide](docs/adr/ADR-LIFECYCLE.md)
+- **[docs/ISSUE_MANAGEMENT.md](docs/ISSUE_MANAGEMENT.md)** - Comprehensive issue and sprint management guide
+- **[PROJECT_MANAGEMENT.md](PROJECT_MANAGEMENT.md)** - Automated project management setup
+
 ## Quick Start
 
 ### For Developers

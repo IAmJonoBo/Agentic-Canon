@@ -97,7 +97,7 @@ jobs:
             
             // Find all ADR files
             const adrFiles = fs.readdirSync(adrDir)
-              .filter(f => f.startsWith('ADR-') && f.endsWith('.md'))
+              .filter(f => f.match(/^ADR-\d{3}-.+\.md$/))
               .sort();
             
             console.log(`Found ${adrFiles.length} ADR files`);
@@ -196,7 +196,7 @@ jobs:
             const adrDir = 'docs/adr';
             if (fs.existsSync(adrDir)) {
               const adrFiles = fs.readdirSync(adrDir)
-                .filter(f => f.startsWith('ADR-') && f.endsWith('.md'));
+                .filter(f => f.match(/^ADR-\d{3}-.+\.md$/));
               
               const statuses = { proposed: 0, accepted: 0, deprecated: 0, superseded: 0, unknown: 0 };
               

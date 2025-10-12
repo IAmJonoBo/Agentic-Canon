@@ -76,7 +76,7 @@ jobs:
           echo "📋 Checking ADR consistency..."
           
           # Count ADRs
-          adr_count=$(find docs/adr -name "ADR-*.md" 2>/dev/null | wc -l)
+          adr_count=$(find docs/adr -name "ADR-[0-9]*.md" 2>/dev/null | wc -l)
           echo "  Found $adr_count ADRs"
           
           # Check ADR README
@@ -84,7 +84,7 @@ jobs:
             echo "  ✓ ADR README exists"
             
             # Check if README mentions all ADRs
-            for adr in docs/adr/ADR-*.md; do
+            for adr in docs/adr/ADR-[0-9]*.md; do
               if [ -f "$adr" ]; then
                 adr_name=$(basename "$adr")
                 if ! grep -q "$adr_name" docs/adr/README.md; then

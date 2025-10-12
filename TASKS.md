@@ -7,11 +7,12 @@
 Last Updated: 2025-10-12  
 Last Verified: 2025-10-12 (Enhanced validation: ✅ 180 checks passed, 42 tests passing, ⚠️ 11 warnings, ❌ 0 failed)  
 **Latest Progress**: 
-- ✅ Fixed YAML syntax errors in GitHub Actions workflows (issue-triage.yml, pr-review-followup.yml)
-- ✅ Updated test suite to reference .dev/sanity-check.sh path
-- ✅ Pinned all dependencies in requirements.txt for security (12 dependencies now versioned)
-- ✅ All 42 tests passing (21 cookiecutter + 21 sanity check)
-- ✅ Sanity check improvements: 180 checks passed (up from 179), 11 warnings (down from 24)
+- ✅ Fixed CI rate limiting issues in GitHub Actions workflows (tasklist-scan.yml, tasks-adr-sync.yml)
+- ✅ Created machine-readable catalog.json (20KB) with comprehensive metadata for all templates and assets
+- ✅ Created catalog documentation (docs/CATALOG.md, 10KB) with usage examples and integration patterns
+- ✅ Created CI rate limiting guide (docs/CI-RATE-LIMITING.md, 7.4KB) with troubleshooting
+- ✅ Updated README.md with catalog section and AI agent discovery features
+- ✅ All 21 tests passing, YAML syntax validated, no breaking changes
 
 ## Version 1.0 - Base Infrastructure (Foundation) ✅ COMPLETE
 
@@ -855,18 +856,18 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Test parameterized execution
 
 ### Machine-Readable Catalog
-- [ ] Create /catalog.json
-  - [ ] Define catalog schema (templates, artifacts)
-  - [ ] Add all template entries with metadata
-  - [ ] Include release asset patterns
-  - [ ] Add tiged URIs
-  - [ ] Add tags for discovery
-  - [ ] Document catalog usage for agents
-- [ ] Update README with catalog usage
-  - [ ] Add sparse-checkout instructions
-  - [ ] Add tiged instructions
-  - [ ] Add gh release download instructions
-  - [ ] Add dependency management guidance
+- [x] Create /catalog.json ✅ **COMPLETE (2025-10-12)**
+  - [x] Define catalog schema (templates, artifacts)
+  - [x] Add all template entries with metadata
+  - [x] Include release asset patterns
+  - [x] Add tiged URIs
+  - [x] Add tags for discovery
+  - [x] Document catalog usage for agents
+- [x] Update README with catalog usage ✅ **COMPLETE (2025-10-12)**
+  - [x] Add sparse-checkout instructions
+  - [x] Add tiged instructions
+  - [x] Add gh release download instructions
+  - [x] Add dependency management guidance
 
 ### MCP Server Implementation 🎯 **HIGH PRIORITY**
 

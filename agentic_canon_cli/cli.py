@@ -537,6 +537,90 @@ def cmd_audit():
     return 0
 
 
+def cmd_update():
+    """Update project from template using Cruft."""
+    print("\n🔄 Updating Project from Template\n")
+    
+    # Check if cruft is installed
+    try:
+        subprocess.run(["cruft", "--version"], capture_output=True, check=True)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print("❌ Cruft is not installed.")
+        print("\n📦 Install with: pip install cruft")
+        return 1
+    
+    # Check if .cruft.json exists
+    if not Path(".cruft.json").exists():
+        print("❌ This project was not created with Cruft.")
+        print("\n💡 To enable template updates:")
+        print("  1. Use Cruft to create projects: cruft create <template-url>")
+        print("  2. Or link existing project: cruft link <template-url>")
+        return 1
+    
+    print("📋 Checking for template updates...\n")
+    
+    # Check if update is available
+    try:
+        result = subprocess.run(["cruft", "check"], capture_output=True, text=True)
+        if result.returncode == 0:
+            print("✅ Project is up to date with template!")
+            return 0
+        elif result.returncode == 1:
+            print("🔔 Template updates are available!")
+        else:
+            print(f"❌ Error checking for updates: {result.stderr}")
+            return 1
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Error checking for updates: {e}")
+        return 1
+    
+    # Show diff
+    print("\n📊 Preview changes:\n")
+    try:
+        result = subprocess.run(["cruft", "diff"], capture_output=True, text=True)
+        if result.stdout:
+            print(result.stdout)
+        else:
+            print("  (No diff available)")
+    except subprocess.CalledProcessError as e:
+        print(f"⚠️  Could not generate diff: {e}")
+    
+    # Confirm update
+    confirm = input("\n❓ Apply these updates? [y/N]: ").strip().lower()
+    if confirm != "y":
+        print("\n❌ Update cancelled.")
+        return 0
+    
+    # Apply update
+    print("\n🔨 Applying updates...\n")
+    try:
+        result = subprocess.run(["cruft", "update", "--skip-apply-ask"], capture_output=True, text=True, check=True)
+        print("✅ Template updates applied successfully!")
+        
+        # Check for conflicts
+        git_status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+        if git_status.stdout:
+            print("\n📝 Modified files:")
+            print(git_status.stdout)
+            
+            # Check for merge conflicts
+            if any("UU " in line for line in git_status.stdout.split('\n')):
+                print("\n⚠️  Merge conflicts detected!")
+                print("  Please resolve conflicts and commit the changes.")
+                return 1
+            
+            print("\n💡 Next steps:")
+            print("  1. Review the changes: git diff")
+            print("  2. Test the updated code")
+            print("  3. Commit: git add . && git commit -m 'chore: update from template'")
+        
+        return 0
+    except subprocess.CalledProcessError as e:
+        print(f"\n❌ Failed to apply updates: {e}")
+        print("\n💡 You may need to resolve conflicts manually.")
+        return 1
+
+
 def main():
     """Main CLI entry point with subcommands."""
     parser = argparse.ArgumentParser(
@@ -561,6 +645,9 @@ def main():
     # audit command
     subparsers.add_parser("audit", help="Run security and quality audit")
     
+    # update command
+    subparsers.add_parser("update", help="Update project from template using Cruft")
+    
     args = parser.parse_args()
     
     # If no command specified, default to init
@@ -574,6 +661,7 @@ def main():
         "validate": cmd_validate,
         "doctor": cmd_doctor,
         "audit": cmd_audit,
+        "update": cmd_update,
     }
     
     command_func = commands.get(args.command)

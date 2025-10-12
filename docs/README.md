@@ -5,6 +5,7 @@ This directory contains the source files for the Agentic Canon documentation, bu
 ## Overview
 
 The documentation is organized as:
+
 - Configuration files for Jupyter Book
 - MyST Markdown versions of notebooks
 - Architecture Decision Records (ADRs)
@@ -24,6 +25,7 @@ docs/
 ## Jupyter Book
 
 This documentation is built using [Jupyter Book](https://jupyterbook.org/), which provides:
+
 - Beautiful, book-like documentation
 - Integration with Jupyter notebooks
 - MyST Markdown support
@@ -32,18 +34,20 @@ This documentation is built using [Jupyter Book](https://jupyterbook.org/), whic
 
 ### Configuration
 
-#### _config.yml
+#### \_config.yml
 
 Main Jupyter Book configuration including:
+
 - Book metadata (title, author, logo)
 - Repository information
 - Execution settings
 - Build options
 - Theme customization
 
-#### _toc.yml
+#### \_toc.yml
 
 Table of contents defining:
+
 - Page order
 - Chapter structure
 - Section hierarchy
@@ -81,6 +85,7 @@ Documentation uses MyST (Markedly Structured Text) Markdown, an enhanced version
 ### Features
 
 - **Directives**: Special blocks for notes, warnings, code, etc.
+
   ```markdown
   :::{note}
   This is a note!
@@ -88,11 +93,13 @@ Documentation uses MyST (Markedly Structured Text) Markdown, an enhanced version
   ```
 
 - **Roles**: Inline markup for cross-references, math, etc.
+
   ```markdown
   See {ref}`section-label` for details.
   ```
 
 - **Math**: LaTeX math equations
+
   ```markdown
   $$
   E = mc^2
@@ -138,6 +145,20 @@ See `.github/workflows/book-deploy.yml`
 ### URL
 
 Published documentation: `https://IAmJonoBo.github.io/Agentic-Canon/`
+
+### Verifying the Build Locally
+
+Before pushing, you can confirm the book builds the same way the CI workflow does:
+
+```bash
+# Run the pytest helper (marked as slow) to execute the full Jupyter Book build
+pytest tests/test_docs_build.py -k builds_successfully -v
+
+# Or call jupyter-book directly if you prefer
+jupyter-book build docs --path-output /tmp/book-output
+```
+
+The GitHub workflow uses Python 3.12 and installs dependencies from `requirements.txt`, so local verification mirrors production as closely as possible.
 
 ## Adding Content
 

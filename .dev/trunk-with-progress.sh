@@ -20,7 +20,12 @@ supports_color() {
 	[[ -n ${term} && ${term} != "dumb" ]]
 }
 
+supports_color_result=1
 if supports_color; then
+	supports_color_result=0
+fi
+
+if [[ $supports_color_result -eq 0 ]]; then
 	GREEN='\033[0;32m'
 	YELLOW='\033[1;33m'
 	BLUE='\033[0;34m'
@@ -33,14 +38,6 @@ else
 	RED=''
 	NC=''
 fi
-
-TEMP_OUTPUT=$(mktemp -t trunk-progress.XXXXXX)
-
-cleanup() {
-	[[ -n ${SPINNER_PID-} ]] && kill "${SPINNER_PID}" 2>/dev/null || true
-	[[ -n ${CURSOR_SHOWN-} ]] || restore_cursor
-	rm -f "${TEMP_OUTPUT}"
-}
 
 restore_cursor() {
 	if [[ -t 1 ]]; then

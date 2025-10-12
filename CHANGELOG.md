@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Added (Unreleased)
 
 - Comprehensive CONTRIBUTING.md with contribution guidelines
 - SECURITY.md with security policy and vulnerability reporting process
@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - React dashboard working example with Storybook, Playwright, and CI workflows (examples/projects/react-dashboard)
 - Go gRPC user service working example with Buf-managed protobufs and integration tests (examples/projects/grpc-service)
 - Python template end-to-end integration test (`tests/test_python_template_integration.py`) and slow test marker configuration (`pytest.ini`)
+- Jupyter Book documentation build verification (`tests/test_docs_build.py`) and refreshed Pages workflow environment
+- Node/React/Go template integration coverage (`tests/test_template_e2e.py`) with tooling-aware slow tests
 
 ### Changed
 

@@ -73,6 +73,35 @@ pytest tests/test_python_template_integration.py -k real_world -v
 
 The test is marked as `slow` because it installs dependencies. Exclude it with `pytest -m "not slow"` if you only need fast checks.
 
+### test_docs_build.py
+
+Validates that the Jupyter Book documentation builds successfully (Task #53).
+
+**Workflow**:
+
+- Invokes `jupyter-book build docs` with a temporary output directory
+- Confirms the HTML index page is generated, matching the GitHub Pages pipeline expectations
+
+**Usage**:
+
+```bash
+pytest tests/test_docs_build.py -k builds_successfully -v
+```
+
+This test is also marked as `slow` because it performs a full documentation build.
+
+### test_template_e2e.py
+
+Comprehensive coverage for the remaining service templates (Task #54).
+
+**Scenarios**:
+
+- Node service template → `npm install`, `npm run lint`, `npm run test -- --run`
+- React webapp template → `npm install`, `npm run lint`, `npm run build`, `npm run test -- --run`
+- Go service template → `go test ./...`
+
+Each scenario is marked `slow` and automatically skips if the required toolchain (Node.js ≥ 20, npm, Go ≥ 1.21) is not present on the host.
+
 ## Running Tests
 
 ### All Tests

@@ -10,8 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
-        with: { python-version: '3.14' }
-      - run: pip install jupyter-book ghp-import
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - run: pip install --upgrade pip
+      - run: pip install -r requirements.txt
       - run: jupyter-book build docs
       - name: Publish to gh-pages
         run: ghp-import -n -p -f docs/_build/html

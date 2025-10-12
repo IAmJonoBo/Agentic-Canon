@@ -271,8 +271,14 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
   - ✅ Added `tests/test_python_template_integration.py` with full venv install + pytest run
   - ✅ Uses Cookiecutter no-input flow to mirror real-world adoption
   - ✅ Introduced `pytest.ini` slow marker for opt-in execution
-- [ ] #53 Deploy Jupyter Book to GitHub Pages and verify integration
-- [ ] #54 Create end-to-end integration tests for all templates
+- [x] #53 Deploy Jupyter Book to GitHub Pages and verify integration
+  - ✅ Updated `book-deploy` workflow to Python 3.12 with shared requirements install
+  - ✅ Added `tests/test_docs_build.py` to mirror the workflow build (`slow` marker)
+  - ✅ Documented local verification steps in `docs/README.md`
+- [x] #54 Create end-to-end integration tests for all templates
+  - ✅ Added `tests/test_template_e2e.py` for Node, React, and Go templates (npm/go toolchain validation)
+  - ✅ Ensures lint/build/test commands succeed using Cookiecutter-generated projects
+  - ✅ Documentation updated for slow-test coverage in `tests/README.md`
 - [ ] #55 Set up continuous testing for template updates
 
 ## Version 2.0.0 - Advanced Features

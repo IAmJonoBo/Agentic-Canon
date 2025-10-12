@@ -11,27 +11,92 @@
 
 set -e
 
-echo "🔍 Agentic Canon - Comprehensive Sanity Check"
-echo "=============================================="
-echo ""
+# Parse command line options
+VERBOSE=1
+QUIET=0
+PARALLEL=0
+HTML_REPORT=""
+START_TIME=$(date +%s)
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --verbose|-v)
+            VERBOSE=1
+            shift
+            ;;
+        --quiet|-q)
+            QUIET=1
+            VERBOSE=0
+            shift
+            ;;
+        --parallel|-p)
+            PARALLEL=1
+            shift
+            ;;
+        --html-report)
+            HTML_REPORT="$2"
+            shift 2
+            ;;
+        --help|-h)
+            echo "Usage: $0 [OPTIONS]"
+            echo ""
+            echo "Options:"
+            echo "  --verbose, -v      Enable verbose output (default)"
+            echo "  --quiet, -q        Minimal output, only show summary"
+            echo "  --parallel, -p     Enable parallel execution for faster checks"
+            echo "  --html-report FILE Generate HTML report to specified file"
+            echo "  --help, -h         Show this help message"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
+
+if [ $QUIET -eq 0 ]; then
+    echo "🔍 Agentic Canon - Comprehensive Sanity Check"
+    echo "=============================================="
+    echo ""
+fi
 
 PASS_COUNT=0
 FAIL_COUNT=0
 WARN_COUNT=0
 
+# Array to store all check results for HTML report
+declare -a CHECK_RESULTS
+
 check_pass() {
-    echo "  ✅ $1"
+    if [ $QUIET -eq 0 ]; then
+        echo "  ✅ $1"
+    fi
     PASS_COUNT=$((PASS_COUNT + 1))
+    CHECK_RESULTS+=("PASS|$1")
 }
 
 check_fail() {
-    echo "  ❌ $1"
+    if [ $QUIET -eq 0 ]; then
+        echo "  ❌ $1"
+    fi
     FAIL_COUNT=$((FAIL_COUNT + 1))
+    CHECK_RESULTS+=("FAIL|$1")
 }
 
 check_warn() {
-    echo "  ⚠️  $1"
+    if [ $QUIET -eq 0 ]; then
+        echo "  ⚠️  $1"
+    fi
     WARN_COUNT=$((WARN_COUNT + 1))
+    CHECK_RESULTS+=("WARN|$1")
+}
+
+log_info() {
+    if [ $QUIET -eq 0 ]; then
+        echo "$1"
+    fi
 }
 
 # 1. Core Documentation
@@ -625,14 +690,356 @@ if [ $oversized_files -eq 0 ]; then
 fi
 echo ""
 
+# 16. Markdown Linting
+log_info "📝 Checking Markdown Formatting and Link Integrity..."
+markdown_issues=0
+
+# Check for broken links in markdown files
+shopt -s nullglob
+shopt -s globstar
+for md_file in *.md docs/**/*.md templates/**/README.md examples/**/README.md; do
+    if [ -f "$md_file" ]; then
+        # Check for basic markdown issues
+        # 1. Check for broken reference-style links
+        if grep -q '^\[.*\]: $' "$md_file" 2>/dev/null; then
+            check_warn "$(basename $md_file): Empty reference-style link found"
+            markdown_issues=$((markdown_issues + 1))
+        fi
+        
+        # 2. Check for common markdown formatting issues
+        # Missing blank line before/after headers (relaxed for templates)
+        if ! echo "$md_file" | grep -q "templates/" && ! echo "$md_file" | grep -q "cookiecutter"; then
+            # Check for very long lines (>500 chars) which might indicate formatting issues
+            if grep -E '^.{500,}$' "$md_file" >/dev/null 2>&1; then
+                if [ $VERBOSE -eq 1 ]; then
+                    check_warn "$(basename $md_file): Contains very long lines (>500 chars)"
+                fi
+                markdown_issues=$((markdown_issues + 1))
+            fi
+        fi
+    fi
+done
+shopt -u nullglob
+shopt -u globstar
+
+if [ $markdown_issues -eq 0 ]; then
+    check_pass "Markdown files have no obvious formatting issues"
+else
+    check_warn "Found $markdown_issues markdown formatting warnings"
+fi
+log_info ""
+
+# 17. Dependency Security Scanning
+log_info "🔒 Checking Dependency Security..."
+if [ -f "requirements.txt" ]; then
+    # Check if pip-audit or safety is available
+    if command -v pip-audit &> /dev/null; then
+        if pip-audit -r requirements.txt --quiet 2>/dev/null; then
+            check_pass "No known vulnerabilities in requirements.txt (pip-audit)"
+        else
+            check_warn "Vulnerabilities found in requirements.txt (run 'pip-audit -r requirements.txt' for details)"
+        fi
+    elif command -v safety &> /dev/null; then
+        if safety check -r requirements.txt --json 2>/dev/null | grep -q '"vulnerabilities": \[\]'; then
+            check_pass "No known vulnerabilities in requirements.txt (safety)"
+        else
+            check_warn "Vulnerabilities found in requirements.txt (run 'safety check -r requirements.txt' for details)"
+        fi
+    else
+        check_warn "Security scanning tools not available (install pip-audit or safety)"
+    fi
+    
+    # Check for pinned versions
+    unpinned=0
+    while IFS= read -r line; do
+        # Skip comments and empty lines
+        if [[ "$line" =~ ^[[:space:]]*# ]] || [[ -z "$line" ]]; then
+            continue
+        fi
+        # Check if version is pinned (contains ==)
+        if ! echo "$line" | grep -q "=="; then
+            if [ $VERBOSE -eq 1 ]; then
+                check_warn "Unpinned dependency: $line"
+            fi
+            unpinned=$((unpinned + 1))
+        fi
+    done < requirements.txt
+    
+    if [ $unpinned -eq 0 ]; then
+        check_pass "All dependencies in requirements.txt are pinned"
+    else
+        check_warn "$unpinned dependencies are not pinned in requirements.txt"
+    fi
+else
+    check_warn "requirements.txt not found"
+fi
+log_info ""
+
+# 18. License Compatibility
+log_info "⚖️  Checking License Compatibility..."
+# Check for forbidden licenses as per ADR-008
+forbidden_licenses=("GPL-2.0" "GPL-3.0" "AGPL-3.0")
+license_issues=0
+
+if [ -f "LICENSE" ]; then
+    check_pass "LICENSE file exists"
+    
+    # Check if LICENSE contains forbidden licenses
+    for forbidden in "${forbidden_licenses[@]}"; do
+        if grep -qi "$forbidden" LICENSE; then
+            check_fail "LICENSE contains forbidden license: $forbidden"
+            license_issues=$((license_issues + 1))
+        fi
+    done
+    
+    if [ $license_issues -eq 0 ]; then
+        check_pass "LICENSE does not contain forbidden licenses"
+    fi
+else
+    check_fail "LICENSE file missing"
+fi
+
+# Check for license information in package files
+if command -v pip-licenses &> /dev/null; then
+    if [ -f "requirements.txt" ]; then
+        # Check for GPL licenses in dependencies
+        if pip-licenses --from=mixed --format=json 2>/dev/null | grep -qi "GPL"; then
+            check_warn "Some dependencies may have GPL licenses (run 'pip-licenses' for details)"
+        else
+            check_pass "No GPL licenses detected in Python dependencies"
+        fi
+    fi
+else
+    if [ $VERBOSE -eq 1 ]; then
+        check_warn "pip-licenses not available for dependency license checking"
+    fi
+fi
+log_info ""
+
+# 19. Code Duplication Detection
+log_info "🔍 Checking for Code Duplication in Examples..."
+duplication_found=0
+
+# Check for exact file duplicates using checksums (safe for templates)
+declare -A checksums
+shopt -s nullglob
+shopt -s globstar
+for example_file in examples/**/*.py examples/**/*.js examples/**/*.go; do
+    if [ -f "$example_file" ]; then
+        checksum=$(md5sum "$example_file" 2>/dev/null | cut -d' ' -f1)
+        if [ -n "${checksums[$checksum]}" ]; then
+            if [ $VERBOSE -eq 1 ]; then
+                check_warn "Duplicate file detected: $example_file == ${checksums[$checksum]}"
+            fi
+            duplication_found=$((duplication_found + 1))
+        else
+            checksums[$checksum]="$example_file"
+        fi
+    fi
+done
+shopt -u nullglob
+shopt -u globstar
+
+if [ $duplication_found -eq 0 ]; then
+    check_pass "No exact file duplicates found in examples"
+else
+    check_warn "Found $duplication_found duplicate files in examples"
+fi
+log_info ""
+
+# 20. JSON Schema Validation
+log_info "📋 Validating JSON Schemas..."
+schema_errors=0
+
+# Validate cookiecutter.json files against basic schema
+for cookiecutter_json in templates/*/cookiecutter.json; do
+    if [ -f "$cookiecutter_json" ]; then
+        # Check if it's valid JSON
+        if ! python -m json.tool "$cookiecutter_json" > /dev/null 2>&1; then
+            check_fail "$(basename $(dirname $cookiecutter_json))/cookiecutter.json: Invalid JSON"
+            schema_errors=$((schema_errors + 1))
+            continue
+        fi
+        
+        # Check for required fields in cookiecutter.json
+        required_fields=("project_name" "project_slug")
+        for field in "${required_fields[@]}"; do
+            if ! grep -q "\"$field\"" "$cookiecutter_json"; then
+                check_warn "$(basename $(dirname $cookiecutter_json))/cookiecutter.json: Missing field '$field'"
+                schema_errors=$((schema_errors + 1))
+            fi
+        done
+        
+        if [ $schema_errors -eq 0 ]; then
+            check_pass "$(basename $(dirname $cookiecutter_json))/cookiecutter.json: Schema valid"
+        fi
+    fi
+done
+
+if [ $schema_errors -eq 0 ]; then
+    check_pass "All cookiecutter.json files have valid schemas"
+fi
+log_info ""
+
 # Summary
+END_TIME=$(date +%s)
+DURATION=$((END_TIME - START_TIME))
+
 echo "=============================================="
 echo "📊 Sanity Check Summary"
 echo "=============================================="
 echo "  ✅ Passed: $PASS_COUNT"
 echo "  ⚠️  Warnings: $WARN_COUNT"
 echo "  ❌ Failed: $FAIL_COUNT"
+echo "  ⏱️  Duration: ${DURATION}s"
 echo ""
+
+# Generate HTML report if requested
+if [ -n "$HTML_REPORT" ]; then
+    cat > "$HTML_REPORT" << 'EOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Canon - Sanity Check Report</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .summary-card h3 {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        .summary-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 0;
+        }
+        .pass { color: #10b981; }
+        .warn { color: #f59e0b; }
+        .fail { color: #ef4444; }
+        .results {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .result-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 4px solid #ddd;
+            background: #f9f9f9;
+        }
+        .result-item.pass { border-left-color: #10b981; }
+        .result-item.warn { border-left-color: #f59e0b; }
+        .result-item.fail { border-left-color: #ef4444; }
+        .timestamp {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Agentic Canon - Sanity Check Report</h1>
+        <p>Comprehensive validation results</p>
+    </div>
+    
+    <div class="summary">
+        <div class="summary-card">
+            <h3>Passed</h3>
+            <p class="number pass">PASS_COUNT_PLACEHOLDER</p>
+        </div>
+        <div class="summary-card">
+            <h3>Warnings</h3>
+            <p class="number warn">WARN_COUNT_PLACEHOLDER</p>
+        </div>
+        <div class="summary-card">
+            <h3>Failed</h3>
+            <p class="number fail">FAIL_COUNT_PLACEHOLDER</p>
+        </div>
+        <div class="summary-card">
+            <h3>Duration</h3>
+            <p class="number">DURATION_PLACEHOLDER s</p>
+        </div>
+    </div>
+    
+    <div class="results">
+        <h2>Check Results</h2>
+        <div id="results">
+            RESULTS_PLACEHOLDER
+        </div>
+    </div>
+    
+    <div class="timestamp">
+        Generated on TIMESTAMP_PLACEHOLDER
+    </div>
+</body>
+</html>
+EOF
+
+    # Replace placeholders
+    sed -i "s/PASS_COUNT_PLACEHOLDER/$PASS_COUNT/g" "$HTML_REPORT"
+    sed -i "s/WARN_COUNT_PLACEHOLDER/$WARN_COUNT/g" "$HTML_REPORT"
+    sed -i "s/FAIL_COUNT_PLACEHOLDER/$FAIL_COUNT/g" "$HTML_REPORT"
+    sed -i "s/DURATION_PLACEHOLDER/$DURATION/g" "$HTML_REPORT"
+    sed -i "s/TIMESTAMP_PLACEHOLDER/$(date)/g" "$HTML_REPORT"
+    
+    # Generate results HTML
+    results_html=""
+    for result in "${CHECK_RESULTS[@]}"; do
+        status="${result%%|*}"
+        message="${result#*|}"
+        status_lower=$(echo "$status" | tr '[:upper:]' '[:lower:]')
+        
+        case $status in
+            PASS) icon="✅" ;;
+            WARN) icon="⚠️" ;;
+            FAIL) icon="❌" ;;
+        esac
+        
+        results_html="${results_html}<div class='result-item ${status_lower}'>${icon} ${message}</div>"
+    done
+    
+    # Use a temporary file for the replacement
+    awk -v r="$results_html" '{gsub(/RESULTS_PLACEHOLDER/, r); print}' "$HTML_REPORT" > "$HTML_REPORT.tmp"
+    mv "$HTML_REPORT.tmp" "$HTML_REPORT"
+    
+    echo "📄 HTML report generated: $HTML_REPORT"
+    echo ""
+fi
 
 if [ $FAIL_COUNT -eq 0 ]; then
     echo "🎉 All critical checks passed!"

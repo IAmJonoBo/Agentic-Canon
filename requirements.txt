@@ -8,3 +8,5 @@ jupyter-book
 ghp-import
 cookiecutter
 pytest-cookies
+pip-audit
+pip-licenses

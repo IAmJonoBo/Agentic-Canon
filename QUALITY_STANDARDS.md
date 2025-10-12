@@ -37,6 +37,8 @@ This document defines the **frontier-grade quality standards** for all software 
 - **AI-friendly**: Machine-readable for automated enforcement
 - **Standards-aligned**: Mapped to NIST SSDF, OWASP, ISO, SLSA, WCAG
 
+**Part of the Agentic Canon Framework**: This document is Layer 2 of the [FRAMEWORK.md](FRAMEWORK.md) architecture, defining measurable quality criteria that are implemented consistently through the conventions in [CONVENTIONS.md](CONVENTIONS.md).
+
 ### Quality Philosophy
 
 1. **Prevention over Detection**: Build quality in from the start

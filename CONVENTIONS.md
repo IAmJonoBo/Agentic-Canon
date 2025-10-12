@@ -34,6 +34,8 @@ This document defines the **consistent conventions** used across all Agentic Can
 - **Collaboration**: Team members can work seamlessly together
 - **Automation**: Conventions enable automated tooling
 
+**Part of the Agentic Canon Framework**: This document is Layer 3 of the [FRAMEWORK.md](FRAMEWORK.md) architecture, implementing consistent development practices that enforce the quality standards defined in [QUALITY_STANDARDS.md](QUALITY_STANDARDS.md).
+
 ### Convention Philosophy
 
 1. **Consistency over Perfection**: Follow conventions even if you disagree

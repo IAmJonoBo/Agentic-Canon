@@ -1,13 +1,84 @@
 # Templates Index
 
 ## Purpose
-This directory contains drag-and-drop, stack-agnostic templates for implementing frontier software excellence practices.
 
-## Usage
-1. Copy the relevant template(s) to your project
-2. Customize placeholders (marked with `{{ }}`)
-3. Validate with provided verification commands
-4. Commit and enable in your CI/CD
+This directory contains comprehensive templates for building production-ready software with frontier excellence practices baked in. Templates are organized into two categories:
+
+1. **Cookiecutter Templates** - Complete project scaffolding for new services
+2. **Supporting Templates** - Drag-and-drop files for specific capabilities
+
+## Navigation
+
+### 📦 Cookiecutter Templates (Full Project Generation)
+
+Generate complete, production-ready projects with all tooling configured:
+
+- **[Python Service](python-service/README.md)** - Modern Python with pytest, type hints, security scanning
+- **[Node.js Service](node-service/README.md)** - TypeScript, Vitest, ESLint, comprehensive testing
+- **[React WebApp](react-webapp/README.md)** - Vite, TypeScript, Storybook, Playwright E2E
+- **[Go Service](go-service/README.md)** - Clean architecture, golangci-lint, table-driven tests
+- **[Documentation Site](docs-only/README.md)** - Jupyter Book for beautiful documentation
+
+### 🎯 Supporting Templates (Individual Files)
+
+Pick and choose templates for specific needs:
+
+- **[Architecture](architecture/README.md)** - ADRs, C4 diagrams, fitness functions
+- **[Automation](automation/README.md)** - Git hooks, Renovate dependency management
+- **[CI/CD](cicd/README.md)** - GitHub Actions, GitLab CI pipelines
+- **[Contracts](contracts/README.md)** - OpenAPI, AsyncAPI specifications
+- **[Observability](observability/README.md)** - OpenTelemetry, SLO definitions
+- **[Platform](platform/README.md)** - Backstage templates, OPA policies
+- **[Repository](repository/README.md)** - SECURITY.md, CONTRIBUTING.md, CODEOWNERS
+- **[Security](security/README.md)** - SBOM, signing, accessibility, performance budgets
+
+## Quick Start
+
+### Option 1: Generate Complete Project (Recommended)
+
+```bash
+# Install Cookiecutter
+pip install cookiecutter
+
+# Generate a new project
+cookiecutter templates/python-service
+# or
+cookiecutter templates/node-service
+# or
+cookiecutter templates/react-webapp
+# or
+cookiecutter templates/go-service
+# or
+cookiecutter templates/docs-only
+
+# Or use the Agentic Canon CLI
+pip install -e .
+agentic-canon init
+```
+
+### Option 2: Add Individual Templates
+
+```bash
+# Add architecture documentation
+cp -r templates/architecture/adr/ docs/adr/
+cp -r templates/architecture/c4/ docs/architecture/
+
+# Add automation
+cp templates/automation/hooks/pre-commit .git/hooks/
+cp templates/automation/bots/renovate.json .
+
+# Add CI/CD
+cp templates/cicd/github-actions/complete-pipeline.yml .github/workflows/ci.yml
+
+# Add observability
+cp templates/observability/otel/collector-config.yaml otel-config.yaml
+cp templates/observability/slo/slo-definition.yaml slo-config.yaml
+
+# Add repository governance
+cp templates/repository/common/SECURITY.md .
+cp templates/repository/common/CONTRIBUTING.md .
+cp templates/repository/common/CODEOWNERS .github/
+```
 
 ## Template Categories
 
@@ -190,6 +261,125 @@ cp templates/cicd/github-actions/security-scan.yml .github/workflows/
 # Add SBOM generation
 cp templates/security/sbom/cyclonedx-action.yml .github/workflows/
 ```
+
+## Quick Reference
+
+### For New Projects
+
+**Generate a complete project:**
+```bash
+cookiecutter templates/python-service    # Python API service
+cookiecutter templates/node-service      # Node.js/TypeScript service
+cookiecutter templates/react-webapp      # React web application
+cookiecutter templates/go-service        # Go microservice
+cookiecutter templates/docs-only         # Documentation site
+```
+
+**Or use the interactive CLI:**
+```bash
+agentic-canon init
+```
+
+### For Existing Projects
+
+**Add quality gates:**
+```bash
+# CI/CD pipeline
+cp templates/cicd/github-actions/complete-pipeline.yml .github/workflows/ci.yml
+
+# Pre-commit hooks
+cp templates/automation/hooks/pre-commit .git/hooks/
+chmod +x .git/hooks/pre-commit
+
+# Security scanning
+cp templates/security/sbom/cyclonedx-workflow.yml .github/workflows/
+cp templates/security/signing/cosign-workflow.yml .github/workflows/
+```
+
+**Add documentation:**
+```bash
+# Repository governance
+cp templates/repository/common/SECURITY.md .
+cp templates/repository/common/CONTRIBUTING.md .
+cp templates/repository/common/CODEOWNERS .github/
+
+# Architecture decisions
+cp -r templates/architecture/adr/ docs/adr/
+cp -r templates/architecture/c4/ docs/architecture/
+```
+
+**Add observability:**
+```bash
+# OpenTelemetry
+cp templates/observability/otel/collector-config.yaml otel-config.yaml
+
+# SLO definitions
+cp templates/observability/slo/slo-definition.yaml slo-config.yaml
+```
+
+### Common Workflows
+
+**Setting up a new Python service:**
+```bash
+cookiecutter templates/python-service
+cd my-service
+pip install -e .[dev]
+pre-commit install
+pytest
+```
+
+**Setting up a new React app:**
+```bash
+cookiecutter templates/react-webapp
+cd my-app
+npm install
+npm run dev
+```
+
+**Adding security scanning to existing project:**
+```bash
+mkdir -p .github/workflows
+cp templates/cicd/github-actions/security-scan.yml .github/workflows/
+git add .github/workflows/security-scan.yml
+git commit -m "ci: add security scanning"
+git push
+```
+
+## Directory Structure
+
+```
+templates/
+├── README.md (this file)
+│
+├── Cookiecutter Templates (Full Projects)
+├── python-service/          # Python service with pytest, mypy, black
+├── node-service/            # Node.js/TypeScript with Vitest, ESLint
+├── react-webapp/            # React + Vite + Storybook + Playwright
+├── go-service/              # Go service with golangci-lint
+├── docs-only/               # Jupyter Book documentation
+│
+└── Supporting Templates (Individual Files)
+    ├── architecture/        # ADR, C4, fitness functions
+    ├── automation/          # Git hooks, Renovate bot
+    ├── cicd/               # GitHub Actions, GitLab CI
+    │   ├── github-actions/
+    │   └── gitlab-ci/
+    ├── contracts/          # OpenAPI, AsyncAPI
+    ├── observability/      # OpenTelemetry, SLOs
+    ├── platform/           # Backstage, OPA policies
+    ├── repository/         # SECURITY.md, CONTRIBUTING.md
+    └── security/           # SBOM, signing, accessibility
+```
+
+## Template Features Matrix
+
+| Template | Testing | Security | Docs | CI/CD | Observability |
+|----------|---------|----------|------|-------|---------------|
+| Python Service | ✅ pytest | ✅ CodeQL | ✅ Jupyter Book | ✅ GH Actions | ✅ OTel |
+| Node Service | ✅ Vitest | ✅ CodeQL | ✅ JSDoc | ✅ GH Actions | ✅ OTel |
+| React WebApp | ✅ Vitest, Playwright | ✅ CodeQL | ✅ Storybook | ✅ GH Actions | ✅ Lighthouse |
+| Go Service | ✅ table-driven | ✅ CodeQL | ✅ godoc | ✅ GH Actions | ✅ OTel |
+| Docs-Only | ✅ link check | N/A | ✅ Jupyter Book | ✅ GH Actions | N/A |
 
 ## Validation
 

@@ -1,7 +1,6 @@
 """FastAPI User Service - Main application."""
 
 from datetime import datetime
-from typing import List
 from uuid import UUID
 
 from fastapi import FastAPI, HTTPException, status
@@ -76,8 +75,8 @@ async def create_user(user_data: UserCreate) -> User:
     return User(**created_user.model_dump(exclude={"hashed_password"}))
 
 
-@app.get("/users", response_model=List[User], tags=["users"])
-async def list_users() -> List[User]:
+@app.get("/users", response_model=list[User], tags=["users"])
+async def list_users() -> list[User]:
     """List all users."""
     users = db.list_all()
     return [User(**user.model_dump(exclude={"hashed_password"})) for user in users]

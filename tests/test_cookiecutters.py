@@ -1,8 +1,5 @@
 """Tests for Cookiecutter templates."""
 
-import pytest
-
-
 def test_python_cookiecutter_bakes(bake_template):
     """Test that the Python service template renders successfully."""
     result = bake_template(

@@ -11,7 +11,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 SAFE_PIP_SPEC = "pip @ git+https://github.com/pypa/pip@f2b92314da012b9fffa36b3f3e67748a37ef464a"
 """Patched pip build that includes the GHSA-4xh5-x5gv-qwph fix."""
@@ -43,7 +43,7 @@ def select_template() -> str:
         "6": ("project-management", "Project Management Automation"),
     }
 
-    for key, (slug, desc) in templates.items():
+    for key, (_slug, desc) in templates.items():
         print(f"  {key}. {desc}")
 
     while True:
@@ -55,7 +55,7 @@ def select_template() -> str:
         print("❌ Invalid choice. Please enter a number between 1 and 6.")
 
 
-def get_project_details() -> Dict[str, Any]:
+def get_project_details() -> dict[str, Any]:
     """Collect project details from user."""
     print("\n📝 Project Configuration:\n")
 
@@ -95,7 +95,7 @@ def get_project_details() -> Dict[str, Any]:
     return details
 
 
-def select_features() -> Dict[str, str]:
+def select_features() -> dict[str, str]:
     """Select optional features."""
     print("\n⚙️  Optional Features:\n")
 
@@ -145,7 +145,7 @@ def select_features() -> Dict[str, str]:
 
 
 def _run_command(
-    cmd: list[str], cwd: Optional[Path] = None
+    cmd: list[str], cwd: Path | None = None
 ) -> subprocess.CompletedProcess:
     """Run a shell command, capturing output for diagnostics."""
     result = subprocess.run(
@@ -165,7 +165,7 @@ def _venv_python_path(venv_path: Path) -> Path:
     return venv_path / "bin" / "python"
 
 
-def _ensure_virtualenv() -> Tuple[bool, str]:
+def _ensure_virtualenv() -> tuple[bool, str]:
     """Ensure a local virtual environment is ready when requirements exist."""
     requirements = Path("requirements.txt")
     if not requirements.exists():
@@ -212,7 +212,7 @@ def _ensure_virtualenv() -> Tuple[bool, str]:
     return True, "Python virtual environment ready"
 
 
-def _install_precommit_hooks() -> Tuple[bool, str]:
+def _install_precommit_hooks() -> tuple[bool, str]:
     """Install pre-commit hooks when configuration is present."""
     config = Path(".pre-commit-config.yaml")
     if not config.exists():
@@ -246,7 +246,7 @@ def _install_precommit_hooks() -> Tuple[bool, str]:
     return True, "pre-commit hooks installed"
 
 
-def _run_sanity_check() -> Tuple[bool, str]:
+def _run_sanity_check() -> tuple[bool, str]:
     """Execute the repository sanity check in quiet mode."""
     script = Path(".dev/sanity-check.sh")
     if not script.exists():
@@ -264,7 +264,7 @@ def _run_sanity_check() -> Tuple[bool, str]:
     return False, summary
 
 
-def _run_validation_check() -> Tuple[bool, str]:
+def _run_validation_check() -> tuple[bool, str]:
     """Run structural validation and summarize the outcome."""
     status = cmd_validate()
     if status == 0:
@@ -272,7 +272,7 @@ def _run_validation_check() -> Tuple[bool, str]:
     return False, "Validation reported issues (see above)"
 
 
-def generate_project(template: str, context: Dict[str, Any]) -> bool:
+def generate_project(template: str, context: dict[str, Any]) -> bool:
     """Generate project using Cookiecutter."""
     print("\n🔨 Generating project...\n")
 
@@ -565,9 +565,13 @@ def cmd_validate():
 
     # Summary
     print("\n📊 Validation Summary:")
-    print(
-        f"  ✅ Checks passed: {len(required_files) + len(recommended_files) - len(issues) - len(warnings)}"
+    checks_passed = (
+        len(required_files)
+        + len(recommended_files)
+        - len(issues)
+        - len(warnings)
     )
+    print(f"  ✅ Checks passed: {checks_passed}")
 
     if warnings:
         print(f"\n⚠️  Warnings ({len(warnings)}):")
@@ -862,9 +866,11 @@ def cmd_fix() -> int:
         print("\n✨ All checks completed successfully. You're good to go!\n")
         return 0
 
-    print(
-        "\n⚠️  Some routines reported issues above. Review the notes and rerun after addressing them.\n"
+    warning_msg = (
+        "\n⚠️  Some routines reported issues above. Review the notes "
+        "and rerun after addressing them.\n"
     )
+    print(warning_msg)
     return 1
 
 
@@ -878,7 +884,10 @@ def main():
     parser.add_argument(
         "--fix",
         action="store_true",
-        help="Run the intelligent auto-fix routine after executing the selected command (or standalone).",
+        help=(
+            "Run the intelligent auto-fix routine after executing the selected "
+            "command (or standalone)."
+        ),
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")

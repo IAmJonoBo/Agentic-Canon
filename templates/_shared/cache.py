@@ -7,8 +7,9 @@ import hashlib
 import json
 import os
 import shutil
+from collections.abc import Callable, Iterable, Mapping
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, Mapping, Optional
+from typing import Any
 
 try:  # pragma: no cover
     import fcntl
@@ -59,7 +60,7 @@ def _normalise_payload(data: Mapping[str, Any]) -> str:
     return json.dumps(data, sort_keys=True, separators=(",", ":"))
 
 
-def _manifest_digest(template_name: str) -> Optional[str]:
+def _manifest_digest(template_name: str) -> str | None:
     try:
         from .manifest import get_template_config  # pylint: disable=import-outside-toplevel
     except Exception:  # pragma: no cover - manifest unavailable during bootstrap
@@ -87,7 +88,9 @@ def file_lock(lock_path: Path):
         os.close(fd)
 
 
-def context_hash(template_name: str, extra_context: Dict[str, Any], manifest_hash: Optional[str] = None) -> str:
+def context_hash(
+    template_name: str, extra_context: dict[str, Any], manifest_hash: str | None = None
+) -> str:
     payload = {
         "template": template_name,
         "context": extra_context,
@@ -96,7 +99,7 @@ def context_hash(template_name: str, extra_context: Dict[str, Any], manifest_has
     return hashlib.sha256(_normalise_payload(payload).encode("utf-8")).hexdigest()
 
 
-def get_template_cache_dir(template_name: str, extra_context: Dict[str, Any]) -> Path:
+def get_template_cache_dir(template_name: str, extra_context: dict[str, Any]) -> Path:
     digest = context_hash(template_name, extra_context, _manifest_digest(template_name))
     return TEMPLATE_CACHE_DIR / template_name / digest
 
@@ -121,7 +124,7 @@ def _prepare_cache_dir(cache_dir: Path, force: bool) -> None:
 
 def prime_template_cache(
     template_name: str,
-    extra_context: Dict[str, Any],
+    extra_context: dict[str, Any],
     producer: Callable[[Path], None],
     *,
     force: bool = False,

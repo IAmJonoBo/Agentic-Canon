@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import json
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 try:  # Optional dependency; hooks must continue to work without PyYAML.
     import yaml  # type: ignore
@@ -18,22 +18,22 @@ MANIFEST_YAML = MANIFEST_DIR / "manifest.yaml"
 MANIFEST_JSON = MANIFEST_DIR / "manifest.json"
 
 
-def _load_from_yaml() -> Dict[str, Any]:
+def _load_from_yaml() -> dict[str, Any]:
     if yaml is None or not MANIFEST_YAML.exists():
         raise RuntimeError("YAML manifest unavailable")
     with MANIFEST_YAML.open("r", encoding="utf-8") as handle:
         return yaml.safe_load(handle)
 
 
-def _load_from_json() -> Dict[str, Any]:
+def _load_from_json() -> dict[str, Any]:
     if not MANIFEST_JSON.exists():
         raise FileNotFoundError("manifest.json is missing")
     with MANIFEST_JSON.open("r", encoding="utf-8") as handle:
         return json.load(handle)
 
 
-@lru_cache(maxsize=None)
-def load_manifest() -> Dict[str, Any]:
+@cache
+def load_manifest() -> dict[str, Any]:
     """
     Load the template manifest.
 
@@ -45,7 +45,7 @@ def load_manifest() -> Dict[str, Any]:
     return _load_from_json()
 
 
-def get_template_config(template_name: str) -> Dict[str, Any]:
+def get_template_config(template_name: str) -> dict[str, Any]:
     manifest = load_manifest()
     templates = manifest.get("templates", {})
     config = templates.get(template_name)
@@ -54,5 +54,5 @@ def get_template_config(template_name: str) -> Dict[str, Any]:
     return config
 
 
-def list_templates() -> Dict[str, Dict[str, Any]]:
+def list_templates() -> dict[str, dict[str, Any]]:
     return load_manifest().get("templates", {})

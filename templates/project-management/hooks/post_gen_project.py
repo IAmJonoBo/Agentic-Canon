@@ -1,15 +1,26 @@
 """Post-generation setup hook for project-management template."""
 from __future__ import annotations
 
+import importlib
 import subprocess
 import sys
 from pathlib import Path
+from types import ModuleType
 
-TEMPLATE_ROOT = Path("{{ cookiecutter._template }}").resolve()
-if TEMPLATE_ROOT.exists():
-    sys.path.insert(0, str(TEMPLATE_ROOT.parent))
 
-from _shared import hooks  # type: ignore  # pylint: disable=wrong-import-position
+def _load_hooks() -> ModuleType:
+    template_root = Path("{{ cookiecutter._template }}").resolve()
+    if template_root.exists():
+        repo_root = template_root.parent.parent
+        for candidate in (repo_root, template_root.parent):
+            candidate_str = str(candidate)
+            if candidate_str and candidate_str not in sys.path:
+                sys.path.insert(0, candidate_str)
+
+    return importlib.import_module("templates._shared.hooks")
+
+
+hooks = _load_hooks()
 
 CONFIG = {
     "issue_triage": "{{ cookiecutter.enable_issue_triage }}",
@@ -92,9 +103,12 @@ def setup_branch_protection() -> None:
     print(
         "  --field required_pull_request_reviews[require_code_owner_reviews]=true \\"
     )
-    print(
-        "  --field required_pull_request_reviews[required_approving_review_count]={{ cookiecutter.require_approvals }} \\"
+    approval_field = (
+        "  --field "
+        "required_pull_request_reviews[required_approving_review_count]="
+        '{{ cookiecutter.require_approvals }} \\'
     )
+    print(approval_field)
     print("  --field required_linear_history=true \\")
     print("  --field allow_force_pushes=false \\")
     print("  --field allow_deletions=false")

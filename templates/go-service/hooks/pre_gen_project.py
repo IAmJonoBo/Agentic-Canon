@@ -23,7 +23,7 @@ APPROVED_LICENSES = {
 
 def validate_project_slug(slug):
     if not slug or not re.match(r"^[a-z0-9]+(?:-[a-z0-9]+)*$", slug):
-        print(f"ERROR: project_slug must be kebab-case")
+        print("ERROR: project_slug must be kebab-case")
         print("Examples: my-go-service, grpc-api, microservice")
         sys.exit(1)
     print(f"✓ Validated project_slug: {slug}")
@@ -33,13 +33,13 @@ def validate_go_module_path(module_path):
     if not module_path or not re.match(
         r"^[a-zA-Z0-9.-]+(?:[./][a-zA-Z0-9._-]+)+$", module_path
     ):
-        print(f"ERROR: module_path is not a valid Go module path")
+        print("ERROR: module_path is not a valid Go module path")
         print("Format: domain.com/path/to/module")
         print("Examples: github.com/user/project, example.com/my/module")
         sys.exit(1)
     parts = re.split(r"[./]", module_path)
     if len(parts) < 2:
-        print(f"ERROR: module_path must have at least domain and path")
+        print("ERROR: module_path must have at least domain and path")
         sys.exit(1)
     print(f"✓ Validated module_path: {module_path}")
 
@@ -61,7 +61,7 @@ def validate_author_name(name):
         or not re.search(r"[a-zA-Z]", name)
     ):
         print(
-            f"ERROR: author_name must be a valid name (at least 2 characters with letters)"
+            "ERROR: author_name must be a valid name (at least 2 characters with letters)"
         )
         sys.exit(1)
     print(f"✓ Validated author_name: {name}")

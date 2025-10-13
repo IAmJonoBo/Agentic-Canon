@@ -1,13 +1,11 @@
 """Tests for sanity-check.sh script."""
 
+import os
 import subprocess
-
-import pytest
 
 
 def test_sanity_check_script_exists():
     """Test that sanity-check.sh script exists and is executable."""
-    import os
 
     script_path = ".dev/sanity-check.sh"
     assert os.path.exists(script_path), ".dev/sanity-check.sh not found"
@@ -211,7 +209,7 @@ def test_sanity_check_html_report():
         assert os.path.exists(report_path), "HTML report file should be created"
 
         # Check HTML content
-        with open(report_path, "r") as f:
+        with open(report_path) as f:
             html_content = f.read()
 
         assert "<!DOCTYPE html>" in html_content

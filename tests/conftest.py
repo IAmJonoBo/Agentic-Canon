@@ -4,11 +4,41 @@ from __future__ import annotations
 
 import importlib
 import json
-from typing import Any, Dict
+import os
+import sys
+from pathlib import Path
+from typing import Any
 
 import pytest
 
-_BAKE_CACHE: Dict[str, Any] = {}
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+_TEMPLATES_DIR = _REPO_ROOT / "templates"
+
+
+def _ensure_sys_path(path: Path) -> None:
+    resolved = str(path)
+    if resolved not in sys.path:
+        sys.path.insert(0, resolved)
+
+
+def _ensure_pythonpath(*paths: Path) -> None:
+    existing = os.environ.get("PYTHONPATH", "")
+    components = [component for component in existing.split(os.pathsep) if component]
+    updated = False
+    for path in paths:
+        resolved = str(path)
+        if resolved not in components:
+            components.insert(0, resolved)
+            updated = True
+    if updated:
+        os.environ["PYTHONPATH"] = os.pathsep.join(components)
+
+
+_ensure_sys_path(_REPO_ROOT)
+_ensure_sys_path(_TEMPLATES_DIR)
+_ensure_pythonpath(_REPO_ROOT, _TEMPLATES_DIR)
+
+_BAKE_CACHE: dict[str, Any] = {}
 
 
 @pytest.fixture(autouse=True)

@@ -10,6 +10,7 @@
 - [x] Resolve React template npm peer dependency conflict so e2e test can pass (Owner: Agent, Due: 2025-02-07) _(storybook/tooling pinned to 8.6 with Node 22 shims; validated via `pytest` chunk 48e64d)_
 - [x] Resolve Node template npm/vitest failures uncovered during e2e run (Owner: Agent, Due: 2025-02-07) _(Vitest scripts now bypass shim; `pytest` chunk 48e64d)_
 - [x] Configure mypy targets and add a dedicated Nox/typecheck gate (Owner: Agent, Due: 2025-02-07) _(tracked by `mypy.ini` + nox session; clean run chunk 7679c3)_
+- [x] Wire CLI auto-fix through template validation flag and quiet pipeline (Owner: Agent, Due: 2025-02-08) _(implemented this pass; regression covered by `pytest tests/test_cli_fix.py` chunk 82e19d)_
 - [ ] Expand `.dev/validate-templates.sh` / Nox to run lint + type + security stages post-render (Owner: Agent, Due: 2025-02-08) _(baseline gaps reconfirmed via `ruff format --check` chunk fbd829 and `pip-audit` chunk 623fd8)_
 - [ ] Align cookiecutter/boilerplate quality requirements with unified lint/format CLI updates (Owner: Agent, Due: 2025-02-09)
 - [ ] Investigate `pip-audit` invalid requirements failure and capture remediation plan (Owner: Agent, Due: 2025-02-08)
@@ -29,6 +30,7 @@
 - [x] Address Node npm/vitest failure highlighted in e2e suite
 - [x] Define mypy coverage scope and codify invocation in automation
 - [x] Re-ran baseline validation commands to refresh evidence (`pytest` chunk c5a613; `ruff check` chunk 1d832c; `mypy` chunk 26642a; `ruff format --check` chunk fbd829; `pip-audit` chunk 623fd8)
+- [x] Added CLI regression coverage to confirm template pipeline visibility (chunk 82e19d)
 - [x] Reviewed template standards/docs to extract cookiecutter + boilerplate quality expectations for upcoming CLI alignment (see TEMPLATE_STANDARDS.md)
 
 ## Deliverables
@@ -41,10 +43,10 @@
 
 ## Quality Gates
 
-- [x] Tests: pytest (pass or documented blockers) _(clean run chunk c5a613)_
-- [x] Lint: ruff check (passing; monitor for regressions) _(chunk 1d832c)_
-- [x] Type-check: mypy (configured and passing) _(chunk 26642a)_
-- [ ] Security: secret scan (tool configured and passing) _(`pip-audit` currently failing with invalid requirements; see chunk 623fd8)_
+- [ ] Tests: pytest (react webapp e2e build failing: `npm run build` cannot resolve `.bin/vite` symlink target; see chunk 85297b)
+- [x] Lint: ruff check (passing; monitor for regressions) _(chunk 5691af)_
+- [x] Type-check: mypy (configured and passing) _(chunk 8ffaae)_
+- [ ] Security: secret scan (tool configured and passing) _(`pip-audit` reports pip GHSA-4xh5-x5gv-qwph; see chunk 5d06c7)_
 - [ ] Build: applicable build commands succeed
 
 ## Links
@@ -66,6 +68,7 @@
 - [ ] Ruff config deprecation warnings from generated projects _(pending validation after next render)_
 - [ ] Baseline commands currently failing or incomplete
 - [ ] React Storybook 8 upgrade: confirm docs/changelog guidance added for template consumers
+- [ ] React template npm build failing to locate `vite` CLI after node_modules cache restore — investigate symlink preservation (`npm run build` chunk 85297b)
 - [ ] Quick-mode sanity `PASS_COUNT` (150) must be kept in sync with future script additions
 - [ ] Evaluate adding targeted tests for `.dev/sanity-check.sh` quick-mode output to prevent regressions
 - [ ] `pip-audit` virtualenv bootstrap occasionally hangs; investigate caching/timeout strategy before gating CI

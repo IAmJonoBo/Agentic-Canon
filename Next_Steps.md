@@ -2,6 +2,9 @@
 
 ## Tasks
 
+- [ ] Restore React template Storybook toolchain pin drift uncovered by baseline run (Owner: Agent, Due: 2025-02-10)
+- [ ] Resolve React template npm install failure caused by Storybook 9 peer mismatch during e2e bake (Owner: Agent, Due: 2025-02-10)
+- [ ] Capture actionable coverage plan for `agentic_canon_cli` to raise baseline from 8% (Owner: Agent, Due: 2025-02-11)
 - [x] Reconcile repository formatting with 88-character Ruff limit (Owner: Agent, Due: 2025-02-06) _(repo-wide `ruff check` clean in chunk 2fc5ed after wrapping CLI/tests/templates)_
 - [x] Align Ruff line-length configuration with Black default (Owner: Agent, Due: 2025-02-05) _(root `ruff.toml` + Python service template `pyproject.toml` updated to 88)_
 - [x] Establish pipeline remediation plan (Owner: Agent, Due: 2025-02-05)
@@ -23,6 +26,8 @@
 
 ## Steps
 
+- [ ] Record 2025-02-10 baseline command results (pytest chunk 70599f; `ruff check` chunk c7031c; `mypy` chunk 6499c4; `pip-audit` chunk fbca2e; `make sanity-fast` chunk 8b5fbd/2bafbe)
+- [ ] Investigate Storybook dependency drift observed in baked React template (`package.json` contains `^9.0.0`, breaking addon pin) _(pytest chunk 70599f)_
 - [x] Updated Ruff + Black line-length defaults and verified Python template bake regression (`pytest tests/test_cookiecutters.py::test_python_cookiecutter_bakes` chunk 00ff2a)
 - [x] Document current pipeline baseline results
 - [x] Identify root causes for template validation failures (missing PYTHONPATH wiring)
@@ -47,6 +52,7 @@
 
 ## Deliverables
 
+- [ ] 2025-02-10 baseline evidence set (pytest chunk 70599f; lint/type/security/build chunks c7031c/6499c4/fbca2e/2bafbe)
 - [x] Updated SCRATCH.md with detailed remediation plan
 - [x] Baseline command results logged
 - [x] Add-on design notes covering lint/type/security flow adjustments
@@ -55,11 +61,11 @@
 
 ## Quality Gates
 
-- [ ] Tests: pytest (full suite still blocked by React Storybook dependency resolution; see chunk 1a5277, targeted bake regression chunk 00ff2a passes)
+- [ ] Tests: pytest (React Storybook pin drift breaks regression + e2e suites; chunk 70599f captures current failure)
 - [x] Lint: ruff check (clean in chunk 2fc5ed)
 - [x] Type-check: mypy (configured and passing) _(chunk cba5cc)_
-- [ ] Security: pip-audit (current run hung while auditing; spinner chunk fe8014 — requires follow-up execution)
-- [x] Build: applicable build commands succeed _(template renders + audits passing; see chunks f33a16, 8f1475, 58e2e8, 077e58)_
+- [x] Security: pip-audit (`--progress-spinner off` run clean; chunk fbca2e)
+- [ ] Build: make sanity-fast (session interrupted while rendering templates; see chunk 2bafbe — rerun after React fixes)
 
 ## Links
 
@@ -79,8 +85,9 @@
 - [x] Ruff tightening surfaced widespread 90-100 char lines across CLI/tests; capture reformatting strategy before enabling gating (addressed via wrapping in chunk 2fc5ed)
 - [x] Validate template hook imports across other entry points (nox sessions, pytest-cookies) _(shell wrapper tests guard PYTHONPATH + skip flows; chunk 5cd380)_
 - [x] Ruff config deprecation warnings from generated projects _(validated via new regression in `tests/test_cookiecutters.py`; pytest chunk e8dedd)_
-- [ ] Monitor baseline command health; security gate still pending due to `pip-audit` hang (spinner chunk fe8014)
+- [ ] Monitor baseline command health; prior `pip-audit` hang (chunk fe8014) mitigated by spinner-off rerun (chunk fbca2e)
 - [x] React Storybook 8 upgrade: confirm docs/changelog guidance added for template consumers _(React template README refreshed; coverage added via `tests/test_cookiecutters.py::test_react_cookiecutter_storybook_scripts`, pytest chunk 3d7b60)_
+- [ ] Storybook dependency auto-updated to ^9.0.0, breaking validated addon pin; investigate lock strategy to prevent npm e2e regression (pytest chunk 70599f)
 - [ ] Replace temporary SAFE_PIP_SPEC pin once upstream pip publishes a patched release
 - [x] Quick-mode sanity summary now derives from recorded passes (guarded by `tests/test_sanity_check.py::test_sanity_check_quick_mode_summary_matches_passes`, pytest chunk cd2c27)
 - [x] Evaluate adding targeted tests for `.dev/sanity-check.sh` quick-mode output to prevent regressions _(HTML report parity locked by pytest chunk 59ba8a)_

@@ -5,4 +5,4 @@ repository:
   url: https://github.com/IAmJonoBo/Agentic-Canon
   path_to_book: docs
 execute:
-  execute_notebooks: "off"   # CI runs notebooks; book consumes MyST outputs
+  execute_notebooks: "off" # CI runs notebooks; book consumes MyST outputs

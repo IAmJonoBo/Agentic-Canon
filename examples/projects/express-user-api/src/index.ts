@@ -2,8 +2,8 @@
  * Main entry point for Express User API
  */
 
-import app from './app.js';
-import { logger } from './logger.js';
+import app from "./app.js";
+import { logger } from "./logger.js";
 
 const PORT = process.env.PORT || 3000;
 

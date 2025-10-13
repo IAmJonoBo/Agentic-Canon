@@ -1,7 +1,9 @@
 name: CI
+
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -9,28 +11,30 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ['1.21', '1.22']
+        go-version:
+          - "1.21"
+          - "1.22"
     steps:
-      - uses: actions/checkout@v5
-      
-      - name: Setup Go {% raw %}${{ matrix.go-version }}{% endraw %}
-        uses: actions/setup-go@v6
+      - uses: actions/checkout@v4
+
+      - name: "Setup Go ${{ matrix.go-version }}"
+        uses: actions/setup-go@v5
         with:
-          go-version: {% raw %}${{ matrix.go-version }}{% endraw %}
+          go-version: { { "${{ matrix.go-version }}" } }
           cache: true
-      
+
       - name: Install dependencies
         run: go mod download
-      
+
       - name: Verify dependencies
         run: go mod verify
-      
+
       - name: Build
         run: go build -v ./...
-      
+
       - name: Run tests
         run: go test -v -race -cover ./...
-      
+
       - name: Check formatting
         run: |
           if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then

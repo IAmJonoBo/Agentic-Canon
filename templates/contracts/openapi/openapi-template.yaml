@@ -5,26 +5,26 @@
 openapi: 3.1.0
 
 info:
-  title: {{ API_NAME }}
-  version: {{ VERSION }}
+  title: { { API_NAME } }
+  version: { { VERSION } }
   description: |
     {{ API_DESCRIPTION }}
-    
+
     ## Standards Compliance
     - OWASP API Security Top 10
     - REST API Design Best Practices
     - OAuth 2.0 / OpenID Connect
-  
+
   contact:
-    name: {{ TEAM_NAME }}
-    email: {{ TEAM_EMAIL }}
-    url: {{ TEAM_URL }}
-  
+    name: { { TEAM_NAME } }
+    email: { { TEAM_EMAIL } }
+    url: { { TEAM_URL } }
+
   license:
-    name: {{ LICENSE }}
-    url: {{ LICENSE_URL }}
-  
-  termsOfService: {{ TERMS_URL }}
+    name: { { LICENSE } }
+    url: { { LICENSE_URL } }
+
+  termsOfService: { { TERMS_URL } }
 
 servers:
   - url: https://api.example.com/v1
@@ -46,13 +46,13 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: JWT token obtained from /auth/token endpoint
-    
+
     apiKey:
       type: apiKey
       in: header
       name: X-API-Key
       description: API key for service-to-service authentication
-    
+
     oauth2:
       type: oauth2
       flows:
@@ -99,7 +99,7 @@ components:
           type: string
           format: uuid
           description: Unique request identifier for tracing
-    
+
     Pagination:
       type: object
       properties:
@@ -118,7 +118,7 @@ components:
         totalPages:
           type: integer
           description: Total number of pages
-    
+
     HealthStatus:
       type: object
       required:
@@ -159,7 +159,7 @@ components:
         type: integer
         minimum: 1
         default: 1
-    
+
     PageSizeParam:
       name: pageSize
       in: query
@@ -169,7 +169,7 @@ components:
         minimum: 1
         maximum: 100
         default: 20
-    
+
     SortParam:
       name: sort
       in: query
@@ -177,7 +177,7 @@ components:
       schema:
         type: string
         example: "createdAt:desc"
-    
+
     RequestIdHeader:
       name: X-Request-ID
       in: header
@@ -194,29 +194,29 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
-    
+            $ref: "#/components/schemas/Error"
+
     ForbiddenError:
       description: Insufficient permissions
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
-    
+            $ref: "#/components/schemas/Error"
+
     NotFoundError:
       description: Resource not found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
-    
+            $ref: "#/components/schemas/Error"
+
     ValidationError:
       description: Invalid request parameters
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
-    
+            $ref: "#/components/schemas/Error"
+
     RateLimitError:
       description: Rate limit exceeded
       headers:
@@ -235,7 +235,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
 
 # API Paths
 paths:
@@ -246,15 +246,15 @@ paths:
       operationId: getHealth
       tags:
         - Health
-      security: []  # No authentication required
+      security: [] # No authentication required
       responses:
-        '200':
+        "200":
           description: Service health status
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthStatus'
-  
+                $ref: "#/components/schemas/HealthStatus"
+
   /ready:
     get:
       summary: Readiness check endpoint
@@ -264,9 +264,9 @@ paths:
         - Health
       security: []
       responses:
-        '200':
+        "200":
           description: Service is ready
-        '503':
+        "503":
           description: Service is not ready
 
   # Add your API endpoints here following this pattern:

@@ -21,9 +21,9 @@ jobs:
 
       - name: Download release assets
         env:
-          GITHUB_TOKEN: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+          GITHUB_TOKEN: $\u007B\u007B secrets.GITHUB_TOKEN \u007D\u007D
         run: |
-          gh release download {% raw %}${{ github.event.release.tag_name }}{% endraw %} -D ./artifacts || true
+          gh release download $\u007B\u007B github.event.release.tag_name \u007D\u007D -D ./artifacts || true
 
       - name: Sign artifacts with Cosign
         env:
@@ -38,11 +38,11 @@ jobs:
 
       - name: Upload signed bundles
         env:
-          GITHUB_TOKEN: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+          GITHUB_TOKEN: $\u007B\u007B secrets.GITHUB_TOKEN \u007D\u007D
         run: |
           for bundle in ./artifacts/*.cosign.bundle; do
             if [ -f "$bundle" ]; then
-              gh release upload {% raw %}${{ github.event.release.tag_name }}{% endraw %} "$bundle" --clobber
+              gh release upload $\u007B\u007B github.event.release.tag_name \u007D\u007D "$bundle" --clobber
             fi
           done
 
@@ -59,7 +59,7 @@ jobs:
       - name: Generate SLSA provenance
         uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.0.0
         with:
-          base64-subjects: {% raw %}${{ steps.hash.outputs.hashes }}{% endraw %}
+          base64-subjects: $\u007B\u007B steps.hash.outputs.hashes \u007D\u007D
           upload-assets: true
 
       - name: Compute artifact hashes

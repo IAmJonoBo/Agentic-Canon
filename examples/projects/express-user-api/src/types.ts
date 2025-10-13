@@ -1,21 +1,21 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * User role enumeration
  */
 export enum UserRole {
-  ADMIN = 'admin',
-  USER = 'user',
-  GUEST = 'guest',
+  ADMIN = "admin",
+  USER = "user",
+  GUEST = "guest",
 }
 
 /**
  * Zod schema for user creation
  */
 export const createUserSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  fullName: z.string().min(1, 'Full name is required').max(100, 'Full name too long'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  email: z.string().email("Invalid email format"),
+  fullName: z.string().min(1, "Full name is required").max(100, "Full name too long"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
   role: z.nativeEnum(UserRole).default(UserRole.USER),
 });
 

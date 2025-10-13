@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 6 * * 1' # Weekly on Monday at 6am
+    - cron: "0 6 * * 1" # Weekly on Monday at 6am
 
 jobs:
   # Lighthouse CI for web applications
@@ -17,8 +17,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -46,8 +46,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -55,7 +55,7 @@ jobs:
       - name: Check bundle size
         uses: andresz1/size-limit-action@v1
         with:
-          github_token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+          github_token: $\u007B\u007B secrets.GITHUB_TOKEN \u007D\u007D
 
   # Web Vitals monitoring
   web-vitals:
@@ -67,8 +67,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -112,10 +112,10 @@ jobs:
           # Install Apache Bench
           sudo apt-get update
           sudo apt-get install -y apache2-utils
-          
+
           # Test API endpoints
           ab -n 1000 -c 10 http://localhost:3000/api/health
-          
+
           # Ensure p95 latency < 200ms
           # (Add custom script to parse ab output and enforce budget)
 
@@ -146,10 +146,10 @@ jobs:
         run: |
           # Enable slow query logging
           psql -h localhost -U postgres -c "ALTER SYSTEM SET log_min_duration_statement = 100;"
-          
+
           # Run tests that generate queries
           # Parse logs for queries > 100ms
-          
+
           # Fail if any query exceeds budget (e.g., 200ms for 95th percentile)
 
   # Memory usage check
@@ -164,5 +164,5 @@ jobs:
           # Start application
           # Measure peak memory usage
           # Fail if exceeds budget (e.g., 512MB for microservices)
-          
+
           echo "Memory budget check - implement with valgrind, heaptrack, or language-specific profilers"

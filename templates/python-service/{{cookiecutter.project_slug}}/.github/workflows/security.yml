@@ -1,11 +1,12 @@
-{% if cookiecutter.enable_security_gates == "yes" -%}
 name: Security
+
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
   schedule:
-    - cron: '0 0 * * 0'  # Weekly on Sunday
+    - cron: "0 0 * * 0"
 
 jobs:
   codeql:
@@ -15,20 +16,19 @@ jobs:
       security-events: write
       actions: read
       contents: read
-
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@v3
         with:
           languages: python
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v4
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@v3
 
   semgrep:
     name: Semgrep SAST
@@ -37,12 +37,11 @@ jobs:
       security-events: write
       actions: read
       contents: read
-
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
       - name: Run Semgrep
-        uses: semgrep/semgrep-action@v1
+        uses: returntocorp/semgrep-action@v1
         with:
           config: >-
             p/security-audit
@@ -53,39 +52,40 @@ jobs:
     name: Secret Scanning
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
-          GITHUB_TOKEN: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+          GITHUB_TOKEN: { { "${{ secrets.GITHUB_TOKEN }}" } }
 
       - name: TruffleHog Secret Scan
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: {% raw %}${{ github.event.repository.default_branch }}{% endraw %}
+          base: { { "${{ github.event.repository.default_branch }}" } }
           head: HEAD
 
   dependency-review:
     name: Dependency Review
     runs-on: ubuntu-latest
-    if: {% raw %}github.event_name == 'pull_request'{% endraw %}
+    if: IF_DEPENDENCY_REVIEW
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
-{% if cookiecutter.enable_sbom_signing == "yes" %}
+
   sbom:
     name: Generate SBOM
     runs-on: ubuntu-latest
+    if: SBOM_JOB_ENABLED
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -100,5 +100,3 @@ jobs:
         with:
           name: sbom
           path: sbom.json
-{% endif %}
-{% endif -%}

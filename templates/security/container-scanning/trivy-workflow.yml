@@ -4,7 +4,7 @@ on:
     branches: [main]
   pull_request:
   schedule:
-    - cron: '0 6 * * 1' # Weekly on Monday at 6am
+    - cron: "0 6 * * 1" # Weekly on Monday at 6am
 
 jobs:
   trivy-scan:
@@ -18,36 +18,36 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t {% raw %}${{ github.repository }}{% endraw %}:{% raw %}${{ github.sha }}{% endraw %} .
+          docker build -t $\u007B\u007B github.repository \u007D\u007D:$\u007B\u007B github.sha \u007D\u007D .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: {% raw %}${{ github.repository }}{% endraw %}:{% raw %}${{ github.sha }}{% endraw %}
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
+          image-ref: $\u007B\u007B github.repository \u007D\u007D:$\u007B\u007B github.sha \u007D\u007D
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH"
 
       - name: Upload Trivy results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
       - name: Run Trivy filesystem scan
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-fs-results.sarif'
-          severity: 'CRITICAL,HIGH'
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-fs-results.sarif"
+          severity: "CRITICAL,HIGH"
 
       - name: Upload filesystem scan results
         uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: 'trivy-fs-results.sarif'
+          sarif_file: "trivy-fs-results.sarif"
 
   grype-scan:
     runs-on: ubuntu-latest
@@ -57,12 +57,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t {% raw %}${{ github.repository }}{% endraw %}:{% raw %}${{ github.sha }}{% endraw %} .
+          docker build -t $\u007B\u007B github.repository \u007D\u007D:$\u007B\u007B github.sha \u007D\u007D .
 
       - name: Run Grype vulnerability scanner
         uses: anchore/scan-action@v4
         with:
-          image: {% raw %}${{ github.repository }}{% endraw %}:{% raw %}${{ github.sha }}{% endraw %}
+          image: $\u007B\u007B github.repository \u007D\u007D:$\u007B\u007B github.sha \u007D\u007D
           fail-build: false
           severity-cutoff: high
 
@@ -70,4 +70,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: {% raw %}${{ steps.scan.outputs.sarif }}{% endraw %}
+          sarif_file: $\u007B\u007B steps.scan.outputs.sarif \u007D\u007D

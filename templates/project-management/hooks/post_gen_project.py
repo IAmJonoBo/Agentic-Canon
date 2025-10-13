@@ -1,9 +1,18 @@
 """Post-generation setup hook for project-management template."""
 
-import os
 import subprocess
 import sys
 from pathlib import Path
+
+CONFIG = {
+    "issue_triage": "{{ cookiecutter.enable_issue_triage }}",
+    "pr_followups": "{{ cookiecutter.enable_pr_followups }}",
+    "stale_issues": "{{ cookiecutter.auto_close_stale_issues }}",
+    "todo_tracking": "{{ cookiecutter.enable_todo_tracking }}",
+    "tasklist_tracking": "{{ cookiecutter.enable_tasklist_tracking }}",
+    "branch_protection": "{{ cookiecutter.enable_branch_protection }}",
+    "projects_board": "{{ cookiecutter.enable_projects_board }}",
+}
 
 
 def run_command(cmd: list[str], description: str) -> bool:
@@ -58,7 +67,7 @@ def setup_github_labels():
 
 def setup_branch_protection():
     """Display branch protection setup instructions."""
-    if "{{ cookiecutter.enable_branch_protection }}" == "yes":
+    if CONFIG["branch_protection"] == "yes":
         print("\n🔒 Branch Protection Setup")
         print("=" * 50)
         print("To enable branch protection, run:")
@@ -84,7 +93,7 @@ def setup_branch_protection():
 
 def setup_projects_board():
     """Display GitHub Projects setup instructions."""
-    if "{{ cookiecutter.enable_projects_board }}" == "yes":
+    if CONFIG["projects_board"] == "yes":
         print("\n📊 GitHub Projects Setup")
         print("=" * 50)
         print("To create a GitHub Project:")
@@ -118,10 +127,10 @@ def display_next_steps():
         "3. Set up GitHub labels (see instructions above)",
     ]
 
-    if "{{ cookiecutter.enable_branch_protection }}" == "yes":
+    if CONFIG["branch_protection"] == "yes":
         steps.append("4. Configure branch protection (see instructions above)")
 
-    if "{{ cookiecutter.enable_projects_board }}" == "yes":
+    if CONFIG["projects_board"] == "yes":
         steps.append("5. Create GitHub Projects board (see instructions above)")
 
     steps.extend(
@@ -146,6 +155,36 @@ def display_next_steps():
 def main():
     """Run post-generation setup."""
     print("\n🚀 Setting up project management automation...\n")
+
+    if CONFIG["issue_triage"] == "no":
+        workflow = Path(".github/workflows/issue-triage.yml")
+        if workflow.exists():
+            workflow.unlink()
+            print("🧹 Removed issue triage workflow (disabled in template options)")
+
+    if CONFIG["pr_followups"] == "no":
+        workflow = Path(".github/workflows/pr-review-followup.yml")
+        if workflow.exists():
+            workflow.unlink()
+            print("🧹 Removed PR review follow-up workflow (disabled in template options)")
+
+    if CONFIG["stale_issues"] == "no":
+        workflow = Path(".github/workflows/stale.yml")
+        if workflow.exists():
+            workflow.unlink()
+            print("🧹 Removed stale issue workflow (disabled in template options)")
+
+    if CONFIG["todo_tracking"] == "no":
+        workflow = Path(".github/workflows/todos.yml")
+        if workflow.exists():
+            workflow.unlink()
+            print("🧹 Removed TODO tracking workflow (disabled in template options)")
+
+    if CONFIG["tasklist_tracking"] == "no":
+        workflow = Path(".github/workflows/tasklist-scan.yml")
+        if workflow.exists():
+            workflow.unlink()
+            print("🧹 Removed tasklist tracking workflow (disabled in template options)")
 
     setup_git_repo()
     setup_github_labels()

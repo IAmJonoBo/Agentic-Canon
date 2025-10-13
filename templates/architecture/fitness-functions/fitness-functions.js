@@ -1,353 +1,335 @@
-# Fitness Functions
-# Automated architectural governance checks
-# Implements: Evolutionary architecture, continuous compliance
-# Standards: ISO/IEC 25010 (Maintainability)
+#!/usr/bin/env node
 
-# These fitness functions run in CI to enforce architectural constraints
+/**
+ * Architecture fitness functions executed in CI.
+ * Ensures coupling, performance, API changes, database safety,
+ * SLO compliance, and security headers meet agreed standards.
+ */
 
----
-# 1. Dependency Coupling Check
-# File: fitness-coupling.js
+const assert = require("assert");
+const fs = require("fs");
+const path = require("path");
 
-const madge = require('madge');
-const assert = require('assert');
+const madge = require("madge");
+const yaml = require("js-yaml");
 
-async function checkCoupling() {
-    const res = await madge('src/');
-    
-    // Check for circular dependencies
-    const circular = res.circular();
-    assert.strictEqual(
-        circular.length, 
-        0, 
-        `Found ${circular.length} circular dependencies: ${JSON.stringify(circular)}`
-    );
-    
-    // Check coupling between modules
-    const dependencies = res.obj();
-    for (const [module, deps] of Object.entries(dependencies)) {
-        // Core modules should not depend on feature modules
-        if (module.includes('core/')) {
-            const featureDeps = deps.filter(d => d.includes('features/'));
-            assert.strictEqual(
-                featureDeps.length,
-                0,
-                `Core module ${module} depends on feature modules: ${featureDeps}`
-            );
-        }
-    }
-    
-    console.log('✅ Coupling check passed');
-}
+const DEFAULT_SRC_DIR = path.resolve("src");
+const DEFAULT_DIST_DIR = path.resolve("dist");
+const DEFAULT_MIGRATIONS_DIR = path.resolve("migrations");
+const DEFAULT_PROMETHEUS_URL =
+  process.env.PROMETHEUS_URL || "http://localhost:9090";
+const DEFAULT_APP_URL = process.env.APP_URL || "http://localhost:3000";
 
-checkCoupling().catch(err => {
-    console.error('❌ Coupling check failed:', err.message);
-    process.exit(1);
-});
-
----
-# 2. Performance Budget Check
-# File: fitness-performance.js
-
-const fs = require('fs');
-const assert = require('assert');
-
-const BUDGETS = {
-    'bundle.js': 170 * 1024,        // 170KB
-    'bundle.css': 50 * 1024,        // 50KB
-    'vendor.js': 300 * 1024,        // 300KB
+const PERFORMANCE_BUDGETS = {
+  "bundle.js": 170 * 1024,
+  "bundle.css": 50 * 1024,
+  "vendor.js": 300 * 1024,
 };
 
-function checkPerformanceBudgets() {
-    const distPath = './dist';
-    
-    for (const [file, maxSize] of Object.entries(BUDGETS)) {
-        const filePath = `${distPath}/${file}`;
-        
-        if (!fs.existsSync(filePath)) {
-            console.log(`⚠️  Skipping ${file} - not found`);
-            continue;
-        }
-        
-        const stats = fs.statSync(filePath);
-        const sizeMB = (stats.size / 1024).toFixed(2);
-        const budgetMB = (maxSize / 1024).toFixed(2);
-        
-        assert.ok(
-            stats.size <= maxSize,
-            `File ${file} is ${sizeMB}KB, exceeds budget of ${budgetMB}KB`
-        );
-        
-        console.log(`✅ ${file}: ${sizeMB}KB (budget: ${budgetMB}KB)`);
-    }
-    
-    console.log('✅ Performance budgets met');
+const MIGRATION_WARN_PATTERNS = [
+  /DROP\s+TABLE/i,
+  /ALTER\s+TABLE.*DROP\s+COLUMN/i,
+  /TRUNCATE/i,
+];
+
+const PROMETHEUS_QUERIES = {
+  availability:
+    '(sum(rate(http_requests_total{status=~"2.."}[30d])) / sum(rate(http_requests_total[30d]))) * 100',
+  latency_p95:
+    "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[30d])) by (le))",
+  error_rate:
+    '(sum(rate(http_requests_total{status=~"5.."}[30d])) / sum(rate(http_requests_total[30d]))) * 100',
+};
+
+const PROMETHEUS_SLOS = {
+  availability: 99.9,
+  latency_p95: 0.3,
+  error_rate: 0.1,
+};
+
+const fetchCache = {
+  client: typeof fetch === "function" ? fetch : null,
+};
+
+async function ensureFetch() {
+  if (fetchCache.client) {
+    return fetchCache.client;
+  }
+
+  const { default: nodeFetch } = await import("node-fetch");
+  fetchCache.client = nodeFetch;
+  return fetchCache.client;
 }
 
-try {
-    checkPerformanceBudgets();
-} catch (err) {
-    console.error('❌ Performance budget check failed:', err.message);
-    process.exit(1);
-}
+async function checkCoupling({ srcDir = DEFAULT_SRC_DIR } = {}) {
+  console.log("🔍 Checking dependency coupling");
+  const result = await madge(srcDir);
 
----
-# 3. API Contract Stability Check
-# File: fitness-api-stability.js
+  const circular = result.circular();
+  assert.strictEqual(
+    circular.length,
+    0,
+    `Found ${circular.length} circular dependencies: ${JSON.stringify(circular)}`,
+  );
 
-const fs = require('fs');
-const yaml = require('js-yaml');
-const assert = require('assert');
-
-function checkAPIStability() {
-    // Load current and previous OpenAPI specs
-    const currentSpec = yaml.load(fs.readFileSync('openapi.yaml', 'utf8'));
-    const previousSpec = yaml.load(fs.readFileSync('openapi-previous.yaml', 'utf8'));
-    
-    // Check for breaking changes
-    const breakingChanges = [];
-    
-    // Check if endpoints were removed
-    for (const path in previousSpec.paths) {
-        if (!currentSpec.paths[path]) {
-            breakingChanges.push(`Removed endpoint: ${path}`);
-        }
-    }
-    
-    // Check if required parameters were added
-    for (const path in currentSpec.paths) {
-        for (const method in currentSpec.paths[path]) {
-            const current = currentSpec.paths[path][method];
-            const previous = previousSpec.paths?.[path]?.[method];
-            
-            if (previous && current.parameters) {
-                const newRequired = current.parameters.filter(p => 
-                    p.required && 
-                    !previous.parameters?.some(pp => pp.name === p.name)
-                );
-                
-                if (newRequired.length > 0) {
-                    breakingChanges.push(
-                        `New required parameter in ${method.toUpperCase()} ${path}: ${newRequired.map(p => p.name).join(', ')}`
-                    );
-                }
-            }
-        }
-    }
-    
-    assert.strictEqual(
-        breakingChanges.length,
+  const dependencies = result.obj();
+  for (const [moduleId, deps] of Object.entries(dependencies)) {
+    if (moduleId.includes("core/")) {
+      const featureDeps = deps.filter((dep) => dep.includes("features/"));
+      assert.strictEqual(
+        featureDeps.length,
         0,
-        `Breaking changes detected:\n${breakingChanges.join('\n')}`
+        `Core module ${moduleId} depends on feature modules: ${featureDeps.join(", ")}`,
+      );
+    }
+  }
+
+  console.log("✅ Coupling check passed");
+}
+
+function checkPerformanceBudgets({
+  distDir = DEFAULT_DIST_DIR,
+  budgets = PERFORMANCE_BUDGETS,
+} = {}) {
+  console.log("🔍 Checking performance budgets");
+
+  for (const [asset, maxSize] of Object.entries(budgets)) {
+    const filePath = path.join(distDir, asset);
+
+    if (!fs.existsSync(filePath)) {
+      console.log(`⚠️  Skipping ${asset} - file not found`);
+      continue;
+    }
+
+    const stats = fs.statSync(filePath);
+    const sizeKb = stats.size / 1024;
+    const budgetKb = maxSize / 1024;
+
+    assert.ok(
+      stats.size <= maxSize,
+      `File ${asset} is ${sizeKb.toFixed(2)}KB, exceeds budget of ${budgetKb.toFixed(2)}KB`,
     );
-    
-    console.log('✅ API contract stability check passed');
+
+    console.log(
+      `✅ ${asset}: ${sizeKb.toFixed(2)}KB (budget: ${budgetKb.toFixed(2)}KB)`,
+    );
+  }
+
+  console.log("✅ Performance budgets met");
 }
 
-try {
-    checkAPIStability();
-} catch (err) {
-    console.error('❌ API stability check failed:', err.message);
-    process.exit(1);
-}
+async function checkApiStability({
+  currentSpecPath = path.resolve("openapi.yaml"),
+  previousSpecPath = path.resolve("openapi-previous.yaml"),
+} = {}) {
+  console.log("🔍 Checking API contract stability");
 
----
-# 4. Database Migration Safety Check
-# File: fitness-db-migrations.js
+  if (!fs.existsSync(currentSpecPath) || !fs.existsSync(previousSpecPath)) {
+    throw new Error(
+      "OpenAPI specs not found; ensure current and previous specs exist",
+    );
+  }
 
-const fs = require('fs');
-const assert = require('assert');
+  const currentSpec = yaml.load(fs.readFileSync(currentSpecPath, "utf8"));
+  const previousSpec = yaml.load(fs.readFileSync(previousSpecPath, "utf8"));
 
-function checkMigrations() {
-    const migrationsDir = './migrations';
-    const migrations = fs.readdirSync(migrationsDir)
-        .filter(f => f.endsWith('.sql'))
-        .sort();
-    
-    const dangerousPatterns = [
-        /DROP\s+TABLE/i,
-        /ALTER\s+TABLE.*DROP\s+COLUMN/i,
-        /TRUNCATE/i,
-    ];
-    
-    const warnings = [];
-    
-    for (const migration of migrations) {
-        const content = fs.readFileSync(`${migrationsDir}/${migration}`, 'utf8');
-        
-        for (const pattern of dangerousPatterns) {
-            if (pattern.test(content)) {
-                warnings.push(`${migration} contains potentially dangerous operation: ${pattern}`);
-            }
-        }
+  const breakingChanges = [];
+
+  for (const pathKey of Object.keys(previousSpec.paths || {})) {
+    if (!currentSpec.paths?.[pathKey]) {
+      breakingChanges.push(`Removed endpoint: ${pathKey}`);
     }
-    
-    if (warnings.length > 0) {
-        console.warn('⚠️  Database migration warnings:');
-        warnings.forEach(w => console.warn(`   ${w}`));
-        console.warn('   Ensure proper rollback scripts exist');
+  }
+
+  for (const [pathKey, methods] of Object.entries(currentSpec.paths || {})) {
+    for (const [method, details] of Object.entries(methods)) {
+      const previousDetails = previousSpec.paths?.[pathKey]?.[method];
+      if (!previousDetails || !Array.isArray(details.parameters)) {
+        continue;
+      }
+
+      const newRequired = details.parameters.filter(
+        (parameter) =>
+          parameter.required &&
+          !previousDetails.parameters?.some(
+            (prev) => prev.name === parameter.name,
+          ),
+      );
+
+      if (newRequired.length > 0) {
+        breakingChanges.push(
+          `New required parameter in ${method.toUpperCase()} ${pathKey}: ${newRequired
+            .map((param) => param.name)
+            .join(", ")}`,
+        );
+      }
+    }
+  }
+
+  assert.strictEqual(
+    breakingChanges.length,
+    0,
+    `Breaking changes detected:\n${breakingChanges.join("\n")}`,
+  );
+
+  console.log("✅ API contract stability check passed");
+}
+
+function checkMigrations({
+  migrationsDir = DEFAULT_MIGRATIONS_DIR,
+  patterns = MIGRATION_WARN_PATTERNS,
+} = {}) {
+  console.log("🔍 Checking database migration safety");
+
+  if (!fs.existsSync(migrationsDir)) {
+    console.log(
+      `⚠️  Migrations directory ${migrationsDir} not found; skipping`,
+    );
+    return;
+  }
+
+  const migrations = fs
+    .readdirSync(migrationsDir)
+    .filter((file) => file.endsWith(".sql"))
+    .sort();
+
+  const warnings = [];
+
+  for (const migration of migrations) {
+    const content = fs.readFileSync(
+      path.join(migrationsDir, migration),
+      "utf8",
+    );
+    for (const pattern of patterns) {
+      if (pattern.test(content)) {
+        warnings.push(
+          `${migration} contains potentially dangerous operation: ${pattern}`,
+        );
+      }
+    }
+  }
+
+  if (warnings.length > 0) {
+    console.warn("⚠️  Database migration warnings:");
+    warnings.forEach((warning) => console.warn(`   ${warning}`));
+    console.warn("   Ensure proper rollback scripts exist");
+  } else {
+    console.log("✅ Database migrations safety check passed");
+  }
+}
+
+async function checkSloCompliance({
+  prometheusUrl = DEFAULT_PROMETHEUS_URL,
+} = {}) {
+  console.log("🔍 Checking SLO compliance");
+  const fetchFn = await ensureFetch();
+
+  for (const [metric, query] of Object.entries(PROMETHEUS_QUERIES)) {
+    const response = await fetchFn(
+      `${prometheusUrl}/api/v1/query?query=${encodeURIComponent(query)}`,
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Prometheus query failed for ${metric}: ${response.statusText}`,
+      );
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data.data?.result) || data.data.result.length === 0) {
+      console.warn(`⚠️  No Prometheus data for ${metric}`);
+      continue;
+    }
+
+    const value = parseFloat(data.data.result[0].value[1]);
+    const threshold = PROMETHEUS_SLOS[metric];
+
+    if (Number.isNaN(value)) {
+      console.warn(`⚠️  Could not parse value for ${metric}`);
+      continue;
+    }
+
+    if (metric === "availability") {
+      assert.ok(
+        value >= threshold,
+        `${metric} is ${value.toFixed(2)}%, below SLO of ${threshold}%`,
+      );
+    } else if (metric === "error_rate") {
+      assert.ok(
+        value <= threshold,
+        `${metric} is ${value.toFixed(2)}%, above SLO of ${threshold}%`,
+      );
+    } else if (metric === "latency_p95") {
+      assert.ok(
+        value <= threshold,
+        `${metric} is ${(value * 1000).toFixed(0)}ms, above SLO of ${(threshold * 1000).toFixed(0)}ms`,
+      );
+    }
+
+    console.log(`✅ ${metric}: ${value.toFixed(2)} (SLO: ${threshold})`);
+  }
+
+  console.log("✅ SLO compliance check completed");
+}
+
+async function checkSecurityHeaders({ appUrl = DEFAULT_APP_URL } = {}) {
+  console.log("🔍 Checking security headers");
+  const fetchFn = await ensureFetch();
+
+  const response = await fetchFn(appUrl);
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch ${appUrl}: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  const headers = response.headers;
+  const requiredHeaders = {
+    "strict-transport-security": /max-age=\d+/i,
+    "x-content-type-options": /^nosniff$/i,
+    "x-frame-options": /^(DENY|SAMEORIGIN)$/i,
+    "x-xss-protection": /^1; mode=block$/i,
+    "content-security-policy": /.+/,
+  };
+
+  for (const [header, expected] of Object.entries(requiredHeaders)) {
+    const value = headers.get(header);
+    assert.ok(value, `Missing security header: ${header}`);
+
+    if (expected instanceof RegExp) {
+      assert.ok(
+        expected.test(value),
+        `Header ${header} has unexpected value: ${value}`,
+      );
     } else {
-        console.log('✅ Database migrations safety check passed');
+      assert.strictEqual(
+        value,
+        expected,
+        `Header ${header} has incorrect value: ${value}`,
+      );
     }
+
+    console.log(`✅ ${header}: ${value}`);
+  }
+
+  console.log("✅ Security headers check passed");
 }
 
-checkMigrations();
-
----
-# 5. SLO Compliance Check
-# File: fitness-slo.js
-
-const assert = require('assert');
-
-async function checkSLOCompliance() {
-    // Fetch metrics from Prometheus
-    const prometheusUrl = process.env.PROMETHEUS_URL || 'http://localhost:9090';
-    
-    const queries = {
-        availability: '(sum(rate(http_requests_total{status=~"2.."}[30d])) / sum(rate(http_requests_total[30d]))) * 100',
-        latency_p95: 'histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[30d])) by (le))',
-        error_rate: '(sum(rate(http_requests_total{status=~"5.."}[30d])) / sum(rate(http_requests_total[30d]))) * 100',
-    };
-    
-    const slos = {
-        availability: 99.9,  // 99.9%
-        latency_p95: 0.3,    // 300ms
-        error_rate: 0.1,     // 0.1%
-    };
-    
-    for (const [metric, query] of Object.entries(queries)) {
-        try {
-            const response = await fetch(
-                `${prometheusUrl}/api/v1/query?query=${encodeURIComponent(query)}`
-            );
-            const data = await response.json();
-            
-            if (data.data.result.length === 0) {
-                console.log(`⚠️  No data for ${metric}`);
-                continue;
-            }
-            
-            const value = parseFloat(data.data.result[0].value[1]);
-            const threshold = slos[metric];
-            
-            if (metric === 'availability') {
-                assert.ok(
-                    value >= threshold,
-                    `${metric} is ${value.toFixed(2)}%, below SLO of ${threshold}%`
-                );
-            } else if (metric === 'error_rate') {
-                assert.ok(
-                    value <= threshold,
-                    `${metric} is ${value.toFixed(2)}%, above SLO of ${threshold}%`
-                );
-            } else if (metric === 'latency_p95') {
-                assert.ok(
-                    value <= threshold,
-                    `${metric} is ${(value * 1000).toFixed(0)}ms, above SLO of ${(threshold * 1000).toFixed(0)}ms`
-                );
-            }
-            
-            console.log(`✅ ${metric}: ${value.toFixed(2)} (SLO: ${threshold})`);
-        } catch (err) {
-            console.error(`❌ Failed to check ${metric}:`, err.message);
-        }
-    }
-    
-    console.log('✅ SLO compliance check completed');
+async function run() {
+  await checkCoupling();
+  checkPerformanceBudgets();
+  await checkApiStability();
+  checkMigrations();
+  await checkSloCompliance();
+  await checkSecurityHeaders();
 }
 
-checkSLOCompliance().catch(err => {
-    console.error('❌ SLO check failed:', err.message);
+run()
+  .then(() => {
+    console.log("✅ All fitness functions completed");
+  })
+  .catch((err) => {
+    console.error("❌ Fitness functions failed:", err.message);
     process.exit(1);
-});
-
----
-# 6. Security Headers Check
-# File: fitness-security-headers.js
-
-const assert = require('assert');
-
-async function checkSecurityHeaders() {
-    const url = process.env.APP_URL || 'http://localhost:3000';
-    
-    const requiredHeaders = {
-        'strict-transport-security': /max-age=\d+/,
-        'x-content-type-options': 'nosniff',
-        'x-frame-options': /DENY|SAMEORIGIN/,
-        'x-xss-protection': '1; mode=block',
-        'content-security-policy': /.+/,
-    };
-    
-    try {
-        const response = await fetch(url);
-        const headers = response.headers;
-        
-        for (const [header, expected] of Object.entries(requiredHeaders)) {
-            const value = headers.get(header);
-            
-            assert.ok(value, `Missing security header: ${header}`);
-            
-            if (typeof expected === 'string') {
-                assert.strictEqual(
-                    value,
-                    expected,
-                    `Header ${header} has incorrect value: ${value}`
-                );
-            } else {
-                assert.ok(
-                    expected.test(value),
-                    `Header ${header} doesn't match pattern: ${value}`
-                );
-            }
-            
-            console.log(`✅ ${header}: ${value}`);
-        }
-        
-        console.log('✅ Security headers check passed');
-    } catch (err) {
-        console.error('❌ Security headers check failed:', err.message);
-        process.exit(1);
-    }
-}
-
-checkSecurityHeaders();
-
----
-# CI Integration
-# Add to .github/workflows/fitness-functions.yml
-
-name: Fitness Functions
-
-on: [push, pull_request]
-
-jobs:
-  fitness-checks:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      
-      - name: Install Dependencies
-        run: npm ci
-      
-      - name: Check Coupling
-        run: node fitness-coupling.js
-      
-      - name: Check Performance Budgets
-        run: node fitness-performance.js
-      
-      - name: Check API Stability
-        run: node fitness-api-stability.js
-      
-      - name: Check DB Migrations
-        run: node fitness-db-migrations.js
-      
-      - name: Check Security Headers
-        run: node fitness-security-headers.js
-
-# All fitness functions should fail fast and fail loud
-# They act as automated architectural governance
+  });

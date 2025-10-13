@@ -16,18 +16,18 @@ jobs:
             const fs = require('fs');
             const path = 'TASKS.md';
             if (!fs.existsSync(path)) { return; }
-            
+
             console.log('📋 Scanning TASKS.md for unchecked items...');
-            
+
             let text = fs.readFileSync(path, 'utf8');
             const lines = text.split('\n');
-            
+
             // Parse task items with context
             const tasks = [];
             let currentSection = '';
             let currentSubsection = '';
             let currentContext = [];
-            
+
             for (let i = 0; i < lines.length; i++) {
               const line = lines[i];
               
@@ -122,22 +122,22 @@ jobs:
                 tasks.push(metadata);
               }
             }
-            
+
             console.log(`Found ${tasks.length} unchecked items`);
-            
+
             // Rate limiting: Process in batches to avoid API rate limits
             const MAX_ISSUES_PER_RUN = 10;
             const DELAY_BETWEEN_CALLS = 2000; // 2 seconds
-            
+
             if (tasks.length > MAX_ISSUES_PER_RUN) {
               console.log(`⚠️  Limiting to ${MAX_ISSUES_PER_RUN} issues per run to avoid rate limits`);
               console.log(`   Remaining ${tasks.length - MAX_ISSUES_PER_RUN} items will be processed in next run`);
               tasks.length = MAX_ISSUES_PER_RUN;
             }
-            
+
             // Helper function for delay
             const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-            
+
             // Create issues with rich metadata
             let issuesCreated = 0;
             for (const task of tasks) {
@@ -249,10 +249,10 @@ jobs:
               const re = new RegExp(`^-\\s\\[\\s\\]\\s+${safeTitle}$`, 'm');
               text = text.replace(re, `- [ ] #${number} ${task.title}`);
             }
-            
+
             // Write back the updated file
             fs.writeFileSync(path, text);
-            
+
             console.log(`\n✅ Created ${issuesCreated} new issues`);
             console.log(`✅ Updated TASKS.md with issue references`);
       - name: Commit back

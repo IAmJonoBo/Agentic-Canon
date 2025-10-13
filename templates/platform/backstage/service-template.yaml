@@ -19,7 +19,7 @@ metadata:
 spec:
   owner: platform-team
   type: service
-  
+
   parameters:
     - title: Service Information
       required:
@@ -31,7 +31,7 @@ spec:
           title: Name
           type: string
           description: Unique name for the service
-          pattern: '^[a-z0-9-]+$'
+          pattern: "^[a-z0-9-]+$"
           ui:autofocus: true
         description:
           title: Description
@@ -46,7 +46,7 @@ spec:
           ui:options:
             catalogFilter:
               kind: Group
-    
+
     - title: Technical Stack
       required:
         - language
@@ -86,7 +86,7 @@ spec:
             - redis
             - none
           default: postgresql
-    
+
     - title: Compliance & Standards
       properties:
         tier:
@@ -118,7 +118,7 @@ spec:
               - PCI-DSS
               - none
           default: [none]
-    
+
     - title: Repository Configuration
       required:
         - repoUrl
@@ -197,7 +197,7 @@ spec:
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps['create-repository'].output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info.yaml'
+        catalogInfoPath: "/catalog-info.yaml"
 
     - id: create-alerts
       name: Create Monitoring Alerts

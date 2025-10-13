@@ -16,6 +16,7 @@ VERBOSE=1
 QUIET=0
 PARALLEL=0
 HTML_REPORT=""
+AUTO_FORMAT=0
 SKIP_TEMPLATES=0
 START_TIME=$(date +%s)
 
@@ -42,6 +43,10 @@ while [[ $# -gt 0 ]]; do
 		SKIP_TEMPLATES=1
 		shift
 		;;
+	--format)
+		AUTO_FORMAT=1
+		shift
+		;;
 	--help | -h)
 		echo "Usage: $0 [OPTIONS]"
 		echo ""
@@ -50,6 +55,7 @@ while [[ $# -gt 0 ]]; do
 		echo "  --quiet, -q        Minimal output, only show summary"
 		echo "  --parallel, -p     Enable parallel execution for faster checks"
 		echo "  --skip-templates   Skip template-specific validation checks"
+		echo "  --format           Apply trunk auto-formatting (runs 'trunk fmt --all')"
 		echo "  --html-report FILE Generate HTML report to specified file"
 		echo "  --help, -h         Show this help message"
 		exit 0
@@ -197,6 +203,33 @@ fi
 
 if [ $json_errors -eq 0 ]; then
 	check_pass "All JSON files are valid"
+fi
+echo ""
+
+# 1.6.1. Trunk Linting/Formatting
+echo "🧹 Running Trunk Linting..."
+if ! command -v trunk >/dev/null 2>&1; then
+	check_warn "trunk CLI not found; skipping formatting check"
+else
+	tmp_output=$(mktemp)
+	if [ $AUTO_FORMAT -eq 1 ]; then
+		if trunk fmt --all >"$tmp_output" 2>&1; then
+			check_pass "Trunk auto-formatting applied successfully"
+			[ $VERBOSE -eq 1 ] && cat "$tmp_output"
+		else
+			check_fail "Trunk auto-formatting failed"
+			cat "$tmp_output"
+		fi
+	else
+		if trunk fmt --all --ci >"$tmp_output" 2>&1; then
+			check_pass "Trunk formatting check passed"
+			[ $VERBOSE -eq 1 ] && cat "$tmp_output"
+		else
+			check_fail "Trunk formatting check detected issues (run with --format to auto-fix)"
+			cat "$tmp_output"
+		fi
+	fi
+	rm -f "$tmp_output"
 fi
 echo ""
 

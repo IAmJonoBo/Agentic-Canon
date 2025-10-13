@@ -4,14 +4,14 @@ on:
     branches: [main]
   pull_request:
     paths:
-      - '**.tf'
-      - '**.tfvars'
-      - '**.yaml'
-      - '**.yml'
-      - 'Dockerfile*'
-      - 'docker-compose*.yml'
+      - "**.tf"
+      - "**.tfvars"
+      - "**.yaml"
+      - "**.yml"
+      - "Dockerfile*"
+      - "docker-compose*.yml"
   schedule:
-    - cron: '0 6 * * 1' # Weekly on Monday at 6am
+    - cron: "0 6 * * 1" # Weekly on Monday at 6am
 
 jobs:
   checkov:
@@ -72,9 +72,9 @@ jobs:
       - name: Run Terrascan
         uses: tenable/terrascan-action@main
         with:
-          iac_type: 'all'
-          iac_version: 'v1'
-          policy_type: 'all'
+          iac_type: "all"
+          iac_version: "v1"
+          policy_type: "all"
           only_warn: true
           sarif_upload: true
 
@@ -96,9 +96,9 @@ jobs:
       - name: Run KICS scan
         uses: checkmarx/kics-github-action@master
         with:
-          path: '.'
+          path: "."
           output_path: kics-results/
-          output_formats: 'json,sarif'
+          output_formats: "json,sarif"
           fail_on: high
           enable_comments: true
 

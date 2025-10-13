@@ -1,5 +1,5 @@
-import { randomUUID } from 'crypto';
-import { User, UserInDB, CreateUserInput, UpdateUserInput } from './types.js';
+import { randomUUID } from "crypto";
+import { User, UserInDB, CreateUserInput, UpdateUserInput } from "./types.js";
 
 /**
  * Simple in-memory database for demonstration
@@ -97,7 +97,7 @@ class UserDatabase {
    * List all users
    */
   list(): User[] {
-    return Array.from(this.users.values()).map(user => this.toPublicUser(user));
+    return Array.from(this.users.values()).map((user) => this.toPublicUser(user));
   }
 
   /**

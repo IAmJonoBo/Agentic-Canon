@@ -1,8 +1,8 @@
 {
-  "name": "{{cookiecutter.project_slug}}",
+  "name": "{{ cookiecutter.project_slug }}",
   "private": true,
   "version": "0.1.0",
-  "description": "{{cookiecutter.description}}",
+  "description": "{{ cookiecutter.description }}",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,14 +10,10 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    {% if cookiecutter.include_e2e_tests == "yes" %}
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    {% endif %}
-    {% if cookiecutter.include_storybook == "yes" %}
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    {% endif %}
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -28,6 +24,10 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.41.0",
+    "@storybook/addon-a11y": "^7.6.0",
+    "@storybook/addon-essentials": "^7.6.0",
+    "@storybook/react-vite": "^7.6.0",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -40,11 +40,7 @@
     "prettier": "^3.2.5",
     "typescript": "^5.2.2",
     "vite": "^5.1.0",
-    "vitest": "^1.2.0"{% if cookiecutter.include_e2e_tests == "yes" %},
-    "@playwright/test": "^1.41.0"{% endif %}{% if cookiecutter.include_storybook == "yes" %},
-    "@storybook/react-vite": "^7.6.0",
-    "@storybook/addon-essentials": "^7.6.0"{% if cookiecutter.enable_accessibility_tests == "yes" %},
-    "@storybook/addon-a11y": "^7.6.0"{% endif %}{% endif %}
+    "vitest": "^1.2.0"
   },
   "engines": {
     "node": ">=18.0.0"

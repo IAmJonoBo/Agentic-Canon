@@ -8,7 +8,7 @@ trigger:
   paths:
     exclude:
       - docs/
-      - '*.md'
+      - "*.md"
 
 pr:
   branches:
@@ -16,78 +16,78 @@ pr:
       - main
 
 variables:
-  nodeVersion: '20.x'
-  vmImage: 'ubuntu-latest'
+  nodeVersion: "20.x"
+  vmImage: "ubuntu-latest"
 
 stages:
-- stage: Build
-  displayName: 'Build and Test'
-  jobs:
-  - job: Test
-    displayName: 'Run Tests'
-    pool:
-      vmImage: $(vmImage)
-    strategy:
-      matrix:
-        Node18:
-          node.version: '18.x'
-        Node20:
-          node.version: '20.x'
-        Node21:
-          node.version: '21.x'
-    steps:
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '$(node.version)'
-      displayName: 'Install Node.js $(node.version)'
-    
-    - script: |
-        npm ci
-      displayName: 'Install dependencies'
-    
-    - script: |
-        npm run typecheck
-        npm run lint
-        npm run format:check
-      displayName: 'Code quality checks'
-    
-    - script: |
-        npm run build
-      displayName: 'Build'
-    
-    - script: |
-        npm test
-      displayName: 'Run tests'
-    
-    - task: PublishCodeCoverageResults@1
-      inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
-      displayName: 'Publish coverage'
-    
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: 'dist'
-        ArtifactName: 'build-output'
-      condition: and(succeeded(), eq(variables['node.version'], '20.x'))
-      displayName: 'Publish build artifacts'
+  - stage: Build
+    displayName: "Build and Test"
+    jobs:
+      - job: Test
+        displayName: "Run Tests"
+        pool:
+          vmImage: $(vmImage)
+        strategy:
+          matrix:
+            Node18:
+              node.version: "18.x"
+            Node20:
+              node.version: "20.x"
+            Node21:
+              node.version: "21.x"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "$(node.version)"
+            displayName: "Install Node.js $(node.version)"
 
-- stage: Security
-  displayName: 'Security Scanning'
-  dependsOn: Build
-  condition: succeeded()
-  jobs:
-  - job: Audit
-    displayName: 'npm audit'
-    pool:
-      vmImage: $(vmImage)
-    steps:
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '$(nodeVersion)'
-    
-    - script: |
-        npm ci
-        npm audit --audit-level=moderate
-      displayName: 'Run npm audit'
-      continueOnError: true
+          - script: |
+              npm ci
+            displayName: "Install dependencies"
+
+          - script: |
+              npm run typecheck
+              npm run lint
+              npm run format:check
+            displayName: "Code quality checks"
+
+          - script: |
+              npm run build
+            displayName: "Build"
+
+          - script: |
+              npm test
+            displayName: "Run tests"
+
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: "Cobertura"
+              summaryFileLocation: "$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml"
+            displayName: "Publish coverage"
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "dist"
+              ArtifactName: "build-output"
+            condition: and(succeeded(), eq(variables['node.version'], '20.x'))
+            displayName: "Publish build artifacts"
+
+  - stage: Security
+    displayName: "Security Scanning"
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: Audit
+        displayName: "npm audit"
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "$(nodeVersion)"
+
+          - script: |
+              npm ci
+              npm audit --audit-level=moderate
+            displayName: "Run npm audit"
+            continueOnError: true

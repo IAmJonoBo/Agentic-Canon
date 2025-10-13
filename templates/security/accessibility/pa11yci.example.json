@@ -15,8 +15,5 @@
     "warnings": 10,
     "notices": 50
   },
-  "runners": [
-    "axe",
-    "htmlcs"
-  ]
+  "runners": ["axe", "htmlcs"]
 }

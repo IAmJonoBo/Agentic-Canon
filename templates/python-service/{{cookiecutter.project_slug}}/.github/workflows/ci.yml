@@ -1,7 +1,9 @@
 name: CI
+
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -9,15 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12"]
-
+        python-version:
+          - "3.11"
+          - "3.12"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v5
         with:
-          python-version: {% raw %}${{ matrix.python-version }}{% endraw %}
-          cache: 'pip'
+          python-version: PY_VERSION_MATRIX
+          cache: pip
 
       - name: Install dependencies
         run: |
@@ -31,21 +34,21 @@ jobs:
           mypy src
 
       - name: Run tests
-        run: |
-          pytest --cov --cov-report=xml --cov-report=term
+        run: pytest --cov --cov-report=xml --cov-report=term
 
       - name: Upload coverage
+        if: IF_MATRIX_PY311
         uses: codecov/codecov-action@v5
-        if: {% raw %}matrix.python-version == '3.11'{% endraw %}
         with:
           files: ./coverage.xml
-{% if cookiecutter.include_jupyter_book == "yes" %}
+
   notebooks:
+    if: IF_NOTEBOOKS_PRESENT
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -56,4 +59,3 @@ jobs:
 
       - name: Test notebooks
         run: pytest --nbmake notebooks/**/*.ipynb -q
-{% endif %}

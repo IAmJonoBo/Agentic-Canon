@@ -15,7 +15,7 @@ jobs:
           script: |
             const review = context.payload.review;
             const pr = context.payload.pull_request;
-            
+
             // Check if review body contains follow-up keywords
             const followupPatterns = [
               /follow-up/i,
@@ -26,11 +26,11 @@ jobs:
               /future work/i,
               /next iteration/i
             ];
-            
+
             if (!review.body) return;
-            
+
             const hasFollowup = followupPatterns.some(pattern => pattern.test(review.body));
-            
+
             if (hasFollowup) {
               const issueTitle = `Follow-up from PR #${pr.number}: ${pr.title}`;
               const issueBody = '## Context\n' +

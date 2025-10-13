@@ -13,13 +13,13 @@ jobs:
           script: |
             const issue = context.payload.issue;
             const labels = [];
-            
+
             // Add needs-triage label to all new issues
             labels.push('needs-triage');
-            
+
             // Auto-label based on title/body keywords
             const text = (issue.title + ' ' + issue.body).toLowerCase();
-            
+
             // Type labels
             if (text.includes('bug') || text.includes('error') || text.includes('fail')) {
               labels.push('bug', 'type:bug');
@@ -33,7 +33,7 @@ jobs:
             if (text.includes('[adr]') || text.includes('architecture decision')) {
               labels.push('adr', 'architecture', 'needs-review');
             }
-            
+
             // Topic labels
             if (text.includes('doc') || text.includes('readme') || text.includes('documentation')) {
               labels.push('documentation');
@@ -47,7 +47,7 @@ jobs:
             if (text.includes('question') || text.includes('how to') || text.includes('help')) {
               labels.push('question');
             }
-            
+
             // Component labels
             if (text.includes('template') || text.includes('cookiecutter')) {
               labels.push('component:templates');
@@ -64,7 +64,7 @@ jobs:
             if (text.includes('test') && !text.includes('testing infrastructure')) {
               labels.push('component:testing');
             }
-            
+
             // Apply labels
             if (labels.length > 0) {
               await github.rest.issues.addLabels({
@@ -74,14 +74,14 @@ jobs:
                 labels: labels
               });
             }
-            
+
             // Add comment with next steps
             const priorityGuide = labels.includes('critical') || labels.includes('security') ? 
               '\n**⚠️ This issue has been marked as high priority and will be reviewed urgently.**\n' : '';
-            
+
             const componentGuide = labels.filter(l => l.startsWith('component:')).length > 0 ?
               '\n**🎯 Component:** ' + labels.filter(l => l.startsWith('component:')).map(l => l.replace('component:', '')).join(', ') : '';
-            
+
             await github.rest.issues.createComment({
               issue_number: issue.number,
               owner: context.repo.owner,

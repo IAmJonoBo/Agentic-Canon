@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Post-generation hook for react-webapp template."""
-import os
+import json
 import pathlib
 import shutil
 import subprocess
@@ -40,6 +40,48 @@ if include_e2e == "no":
 if include_a11y == "no":
     remove_file(".github/workflows/accessibility.yml")
 
+
+def update_package_json() -> None:
+    """Remove optional scripts and dependencies from package.json."""
+    package_path = root / "package.json"
+    if not package_path.exists():
+        return
+
+    data = json.loads(package_path.read_text())
+
+    def pop_script(*keys: str) -> None:
+        for key in keys:
+            data.get("scripts", {}).pop(key, None)
+
+    def pop_dev_dependency(*keys: str) -> None:
+        for key in keys:
+            data.get("devDependencies", {}).pop(key, None)
+
+    if include_e2e == "no":
+        pop_script("test:e2e", "test:e2e:ui")
+        pop_dev_dependency("@playwright/test")
+
+    if include_storybook == "no":
+        pop_script("storybook", "build-storybook")
+        pop_dev_dependency("@storybook/react-vite", "@storybook/addon-essentials", "@storybook/addon-a11y")
+    elif include_a11y == "no":
+        pop_dev_dependency("@storybook/addon-a11y")
+
+    package_path.write_text(json.dumps(data, indent=2) + "\n")
+
+
+def update_workflows() -> None:
+    """Replace placeholder expressions in workflow files."""
+    security_path = root / ".github/workflows/security.yml"
+    if security_path.exists():
+        content = security_path.read_text()
+        content = content.replace(
+            "DEFAULT_BRANCH_EXPR", "${{ github.event.repository.default_branch }}"
+        )
+        content = content.replace("GITHUB_TOKEN_EXPR", "${{ secrets.GITHUB_TOKEN }}")
+        security_path.write_text(content)
+
+
 # Initialize git repository
 try:
     subprocess.run(["git", "init", "-q"], check=False, cwd=root)
@@ -59,7 +101,10 @@ print("\nFor development:")
 if include_storybook == "yes":
     print("  - npm run storybook (Component development)")
 if include_e2e == "yes":
-    print("  - npm run test:e2e (End-to-end tests)")
+print("  - npm run test:e2e (End-to-end tests)")
 print("\nFor CI/CD:")
 print("  - Push to GitHub to trigger workflows")
 print("=" * 60)
+
+update_package_json()
+update_workflows()

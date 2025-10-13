@@ -1,4 +1,3 @@
-{% if cookiecutter.enable_pr_followups == "yes" -%}
 name: PR Review Follow-ups
 on:
   pull_request_review:
@@ -10,14 +9,13 @@ jobs:
   create_followup_issues:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/github-script@v8
+      - uses: actions/checkout@v4
+      - uses: actions/github-script@v7
         with:
           script: |
             const review = context.payload.review;
             const pr = context.payload.pull_request;
-            
-            // Check if review body contains follow-up keywords
+
             const followupPatterns = [
               /follow-up/i,
               /follow up/i,
@@ -27,26 +25,26 @@ jobs:
               /future work/i,
               /next iteration/i
             ];
-            
+
             if (!review.body) return;
-            
-            const hasFollowup = followupPatterns.some(pattern => pattern.test(review.body));
-            
+
+            const hasFollowup = followupPatterns.some((pattern) => pattern.test(review.body));
+
             if (hasFollowup) {
               const issueTitle = `Follow-up from PR #${pr.number}: ${pr.title}`;
               const issueBody = `## Context
-From PR #${pr.number} - ${pr.title}
+                From PR #${pr.number} - ${pr.title}
 
-## Review Comment
-${review.body}
+                ## Review Comment
+                ${review.body}
 
-## Reviewer
-@${review.user.login}
+                ## Reviewer
+                @${review.user.login}
 
-## PR Link
-${pr.html_url}
-`;
-              
+                ## PR Link
+                ${pr.html_url}
+              `;
+
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -55,7 +53,6 @@ ${pr.html_url}
                 labels: ['follow-up', 'from:pr-review'],
                 assignees: [pr.user.login]
               });
-              
+
               console.log('Created follow-up issue for PR review');
             }
-{% endif -%}

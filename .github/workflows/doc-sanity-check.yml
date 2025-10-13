@@ -2,13 +2,13 @@ name: Documentation Sanity Check
 on:
   pull_request:
     paths:
-      - '**.md'
-      - 'docs/**'
-      - 'TASKS.md'
+      - "**.md"
+      - "docs/**"
+      - "TASKS.md"
   push:
     branches: [main]
   schedule:
-    - cron: '0 0 * * 0'  # Weekly on Sunday at midnight
+    - cron: "0 0 * * 0" # Weekly on Sunday at midnight
   workflow_dispatch:
 
 permissions:
@@ -20,14 +20,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      
+
       - name: Check Core Documentation
         run: |
           echo "📚 Checking core documentation files..."
-          
+
           ERRORS=0
           WARNINGS=0
-          
+
           # Core documentation files that must exist
           REQUIRED_DOCS=(
             "README.md"
@@ -40,7 +40,7 @@ jobs:
             "QUALITY_STANDARDS.md"
             "CONVENTIONS.md"
           )
-          
+
           for doc in "${REQUIRED_DOCS[@]}"; do
             if [ -f "$doc" ]; then
               echo "  ✓ $doc"
@@ -49,11 +49,11 @@ jobs:
               ERRORS=$((ERRORS + 1))
             fi
           done
-          
+
           # Check for stale timestamps
           echo ""
           echo "📅 Checking documentation freshness..."
-          
+
           # TASKS.md should be updated recently
           if [ -f "TASKS.md" ]; then
             last_modified=$(stat -c %Y TASKS.md 2>/dev/null || stat -f %m TASKS.md 2>/dev/null)
@@ -67,18 +67,18 @@ jobs:
               echo "  ✓ TASKS.md is fresh ($days_old days old)"
             fi
           fi
-          
+
           echo "ERRORS=$ERRORS" >> $GITHUB_ENV
           echo "WARNINGS=$WARNINGS" >> $GITHUB_ENV
-      
+
       - name: Check ADRs
         run: |
           echo "📋 Checking ADR consistency..."
-          
+
           # Count ADRs
           adr_count=$(find docs/adr -name "ADR-[0-9]*.md" 2>/dev/null | wc -l)
           echo "  Found $adr_count ADRs"
-          
+
           # Check ADR README
           if [ -f "docs/adr/README.md" ]; then
             echo "  ✓ ADR README exists"
@@ -97,14 +97,14 @@ jobs:
             echo "  ❌ docs/adr/README.md missing"
             ERRORS=$((ERRORS + 1))
           fi
-          
+
           echo "ERRORS=$ERRORS" >> $GITHUB_ENV
           echo "WARNINGS=$WARNINGS" >> $GITHUB_ENV
-      
+
       - name: Check Templates
         run: |
           echo "📦 Checking template structure..."
-          
+
           REQUIRED_TEMPLATES=(
             "templates/python-service"
             "templates/node-service"
@@ -112,7 +112,7 @@ jobs:
             "templates/go-service"
             "templates/docs-only"
           )
-          
+
           for template in "${REQUIRED_TEMPLATES[@]}"; do
             if [ -d "$template" ]; then
               echo "  ✓ $template"
@@ -133,14 +133,14 @@ jobs:
               WARNINGS=$((WARNINGS + 1))
             fi
           done
-          
+
           echo "ERRORS=$ERRORS" >> $GITHUB_ENV
           echo "WARNINGS=$WARNINGS" >> $GITHUB_ENV
-      
+
       - name: Check Issue Templates
         run: |
           echo "🎫 Checking issue templates..."
-          
+
           if [ ! -d ".github/ISSUE_TEMPLATE" ]; then
             echo "  ❌ .github/ISSUE_TEMPLATE directory missing"
             ERRORS=$((ERRORS + 1))
@@ -171,22 +171,22 @@ jobs:
               WARNINGS=$((WARNINGS + 1))
             fi
           fi
-          
+
           echo "ERRORS=$ERRORS" >> $GITHUB_ENV
           echo "WARNINGS=$WARNINGS" >> $GITHUB_ENV
-      
+
       - name: Check TASKS.md Consistency
         run: |
           echo "📝 Checking TASKS.md consistency..."
-          
+
           if [ ! -f "TASKS.md" ]; then
             echo "  ❌ TASKS.md not found"
             exit 1
           fi
-          
+
           # Check for unchecked items without issue links
           unchecked=$(grep -c "^- \[ \] [^#]" TASKS.md || true)
-          
+
           if [ $unchecked -gt 0 ]; then
             echo "  ⚠️  Found $unchecked unchecked items without issue links"
             echo "     Consider running tasklist-scan workflow to create issues"
@@ -194,7 +194,7 @@ jobs:
           else
             echo "  ✓ All unchecked items have issue links"
           fi
-          
+
           # Check for "SINGLE SOURCE OF TRUTH" marker
           if grep -q "SINGLE SOURCE OF TRUTH" TASKS.md; then
             echo "  ✓ TASKS.md marked as single source of truth"
@@ -202,10 +202,10 @@ jobs:
             echo "  ⚠️  TASKS.md should be marked as single source of truth"
             WARNINGS=$((WARNINGS + 1))
           fi
-          
+
           echo "ERRORS=$ERRORS" >> $GITHUB_ENV
           echo "WARNINGS=$WARNINGS" >> $GITHUB_ENV
-      
+
       - name: Summary
         run: |
           echo ""
@@ -215,7 +215,7 @@ jobs:
           echo "✅ Errors: $ERRORS"
           echo "⚠️  Warnings: $WARNINGS"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          
+
           if [ $ERRORS -gt 0 ]; then
             echo "❌ Documentation sanity check failed"
             exit 1
@@ -224,14 +224,14 @@ jobs:
           else
             echo "✅ All documentation checks passed!"
           fi
-      
+
       - name: Create issue for stale docs (scheduled only)
         if: github.event_name == 'schedule' && env.WARNINGS > 5
         uses: actions/github-script@v8
         with:
           script: |
             const warnings = parseInt(process.env.WARNINGS);
-            
+
             const issue = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -256,5 +256,5 @@ jobs:
               `,
               labels: ['documentation', 'maintenance', 'automated']
             });
-            
+
             console.log(`Created issue #${issue.data.number}`);

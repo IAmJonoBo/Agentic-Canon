@@ -1,8 +1,9 @@
-# Renovate Configuration
-# Automated dependency updates with security-first approach
-# Implements: NIST SSDF, supply chain security
-
 {
+  "_metadata": {
+    "title": "Renovate Configuration",
+    "description": "Automated dependency updates with a security-first posture",
+    "standards": ["NIST SSDF", "Supply Chain Security"]
+  },
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base",
@@ -11,20 +12,20 @@
     ":separateMajorReleases",
     "group:allNonMajor"
   ],
-  
+
   "timezone": "UTC",
   "schedule": ["before 6am on monday"],
-  
+
   "assignees": ["{{ TEAM_NAME }}"],
   "reviewers": ["{{ TEAM_NAME }}"],
-  
+
   "vulnerabilityAlerts": {
     "enabled": true,
     "labels": ["security", "dependencies"]
   },
-  
+
   "osvVulnerabilityAlerts": true,
-  
+
   "packageRules": [
     {
       "description": "Auto-merge security patches",
@@ -83,18 +84,18 @@
       "labels": ["github-actions"]
     }
   ],
-  
+
   "labels": ["dependencies"],
-  
+
   "prConcurrentLimit": 5,
   "prCreation": "not-pending",
   "prHourlyLimit": 2,
-  
+
   "commitMessagePrefix": "chore(deps):",
   "commitMessageAction": "update",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}",
-  
+
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["before 6am on monday"],
@@ -102,14 +103,11 @@
     "automerge": true,
     "automergeType": "pr"
   },
-  
-  "ignoreDeps": [
-    "node",
-    "npm"
-  ],
-  
+
+  "ignoreDeps": ["node", "npm"],
+
   "prBodyTemplate": "This PR updates dependencies to keep the project secure and up-to-date.\n\n### Changes\n{{{body}}}\n\n### Security\n- ✅ All dependencies scanned for vulnerabilities\n- ✅ SBOM will be regenerated\n- ✅ Signatures will be updated\n\n### Verification\n- [ ] CI checks pass\n- [ ] Security scans clean\n- [ ] No breaking changes\n\n---\n*Automated by Renovate*",
-  
+
   "prBodyColumns": [
     "Package",
     "Change",
@@ -118,18 +116,18 @@
     "Passing",
     "Confidence"
   ],
-  
+
   "prBodyDefinitions": {
     "Age": "[![age](https://developer.mend.io/api/mc/badges/age/{{datasource}}/{{depName}}/{{newVersion}}?slim=true)](https://docs.renovatebot.com/merge-confidence/)",
     "Adoption": "[![adoption](https://developer.mend.io/api/mc/badges/adoption/{{datasource}}/{{depName}}/{{newVersion}}?slim=true)](https://docs.renovatebot.com/merge-confidence/)",
     "Passing": "[![passing](https://developer.mend.io/api/mc/badges/compatibility/{{datasource}}/{{depName}}/{{currentVersion}}/{{newVersion}}?slim=true)](https://docs.renovatebot.com/merge-confidence/)",
     "Confidence": "[![confidence](https://developer.mend.io/api/mc/badges/confidence/{{datasource}}/{{depName}}/{{currentVersion}}/{{newVersion}}?slim=true)](https://docs.renovatebot.com/merge-confidence/)"
   },
-  
+
   "statusCheckVerify": true,
-  
+
   "bumpVersion": "patch",
-  
+
   "enabledManagers": [
     "npm",
     "docker-compose",
@@ -139,27 +137,14 @@
     "helm-values",
     "kubernetes"
   ],
-  
+
   "ignorePaths": [
     "**/node_modules/**",
     "**/bower_components/**",
     "**/vendor/**"
   ],
-  
-  "postUpdateOptions": [
-    "npmDedupe"
-  ],
-  
+
+  "postUpdateOptions": ["npmDedupe"],
+
   "rangeStrategy": "update-lockfile"
 }
-
-# Validation Commands
-#
-# Validate config:
-#   npx renovate-config-validator
-#
-# Dry run:
-#   npx renovate --dry-run=full
-#
-# Check updates:
-#   npx renovate --schedule="" --require-config=ignored

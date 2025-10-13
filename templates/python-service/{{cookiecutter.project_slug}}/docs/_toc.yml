@@ -1,6 +1,4 @@
-{% if cookiecutter.include_jupyter_book == "yes" -%}
 format: jb-book
 root: intro
 chapters:
   - file: notebooks/01_bootstrap
-{% endif -%}

@@ -1,9 +1,6 @@
-# Agent Runbook - Frontier Software Excellence Implementation
-# Machine-readable execution guide for autonomous and assisted agents
-# Version: 1.0.0
-
 {
   "metadata": {
+    "title": "Agent Runbook - Frontier Software Excellence Implementation",
     "version": "1.0.0",
     "created": "2025-10-11T12:22:00Z",
     "purpose": "Autonomous agent execution guide for software excellence implementation",
@@ -32,7 +29,7 @@
   "task_graph": "scaffold → bootstrap → execute → validate → handover",
 
   "phases": ["See full JSON in complete runbook"],
-  
+
   "decision_predicates": {
     "can_proceed": "previous_phase_complete AND all_validations_passed",
     "must_rollback": "critical_failure OR security_violation",

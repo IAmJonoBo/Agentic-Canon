@@ -1,72 +1,63 @@
-{% if cookiecutter.enable_issue_triage == "yes" -%}
 name: Issue Triage
+
 on:
   issues:
-    types: [opened]
+    types:
+      - opened
+
 permissions:
   issues: write
+
 jobs:
   triage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v8
+      - uses: actions/github-script@v7
         with:
           script: |
             const issue = context.payload.issue;
-            const labels = [];
-            
-            // Add needs-triage label to all new issues
-            labels.push('needs-triage');
-            
-            // Auto-label based on title/body keywords
-            const text = (issue.title + ' ' + issue.body).toLowerCase();
-            
-            if (text.includes('bug') || text.includes('error') || text.includes('fail')) {
-              labels.push('bug');
+            const labels = ["needs-triage"];
+            const text = `${issue.title} ${issue.body}`.toLowerCase();
+
+            const labelRules = [
+              { keywords: ["bug", "error", "fail"], label: "bug" },
+              { keywords: ["feature", "enhancement", "add"], label: "enhancement" },
+              { keywords: ["doc", "readme"], label: "documentation" },
+              { keywords: ["security", "vulnerability", "cve"], label: "security" },
+              { keywords: ["performance", "slow"], label: "performance" },
+              { keywords: ["question", "how to"], label: "question" }
+            ];
+
+            for (const rule of labelRules) {
+              if (rule.keywords.some((keyword) => text.includes(keyword))) {
+                labels.push(rule.label);
+              }
             }
-            if (text.includes('feature') || text.includes('enhancement') || text.includes('add')) {
-              labels.push('enhancement');
-            }
-            if (text.includes('doc') || text.includes('readme')) {
-              labels.push('documentation');
-            }
-            if (text.includes('security') || text.includes('vulnerability') || text.includes('cve')) {
-              labels.push('security');
-            }
-            if (text.includes('performance') || text.includes('slow')) {
-              labels.push('performance');
-            }
-            if (text.includes('question') || text.includes('how to')) {
-              labels.push('question');
-            }
-            
-            // Apply labels
+
             if (labels.length > 0) {
               await github.rest.issues.addLabels({
                 issue_number: issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                labels: labels
+                labels
               });
             }
-            
-            // Add comment with next steps
+
             await github.rest.issues.createComment({
               issue_number: issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: `👋 Thank you for opening this issue!
 
-This issue has been automatically triaged and labeled. A maintainer will review it soon.
+                This issue has been automatically triaged and labeled. A maintainer will review it soon.
 
-**Next steps:**
-- Ensure you've provided all necessary information
-- Check if a similar issue already exists
-- Consider adding relevant labels if appropriate
+                **Next steps:**
+                - Ensure you've provided all necessary information
+                - Check if a similar issue already exists
+                - Consider adding relevant labels if appropriate
 
-**For contributors:**
-- Read our [CONTRIBUTING.md](../CONTRIBUTING.md) guide
-- Check our [Code of Conduct](../CODE_OF_CONDUCT.md)
-`
+                **For contributors:**
+                - Read our [CONTRIBUTING.md](../CONTRIBUTING.md) guide
+                - Check our [Code of Conduct](../CODE_OF_CONDUCT.md)
+              `
             });
-{% endif -%}

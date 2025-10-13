@@ -4,7 +4,7 @@ on:
     branches: [main]
   pull_request:
   schedule:
-    - cron: '0 6 * * 1' # Weekly on Monday at 6am
+    - cron: "0 6 * * 1" # Weekly on Monday at 6am
 
 jobs:
   # Python projects
@@ -17,7 +17,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install pip-licenses
         run: pip install pip-licenses
@@ -30,11 +30,11 @@ jobs:
           elif [ -f pyproject.toml ]; then
             pip install .
           fi
-          
+
           # Generate license report
           pip-licenses --format=json --output-file=licenses.json
           pip-licenses --format=markdown --output-file=licenses.md
-          
+
           # Check for forbidden licenses
           pip-licenses --fail-on="GPL;AGPL;LGPL" || echo "Warning: GPL-licensed dependencies found"
 
@@ -56,8 +56,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -69,7 +69,7 @@ jobs:
         run: |
           license-checker --json --out licenses.json
           license-checker --markdown --out licenses.md
-          
+
           # Check for forbidden licenses
           license-checker --failOn "GPL;AGPL;LGPL" || echo "Warning: GPL-licensed dependencies found"
 
@@ -91,7 +91,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: "1.22"
 
       - name: Install go-licenses
         run: go install github.com/google/go-licenses@latest
@@ -119,7 +119,7 @@ jobs:
       - name: Run FOSSA scan
         uses: fossas/fossa-action@main
         with:
-          api-key: {% raw %}${{ secrets.FOSSA_API_KEY }}{% endraw %}
+          api-key: $\u007B\u007B secrets.FOSSA_API_KEY \u007D\u007D
 
   # License header check
   license-header-check:

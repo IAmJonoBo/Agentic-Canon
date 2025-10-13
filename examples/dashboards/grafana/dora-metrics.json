@@ -18,9 +18,9 @@
           "defaults": {
             "thresholds": {
               "steps": [
-                {"value": 0, "color": "red"},
-                {"value": 1, "color": "yellow"},
-                {"value": 7, "color": "green"}
+                { "value": 0, "color": "red" },
+                { "value": 1, "color": "yellow" },
+                { "value": 7, "color": "green" }
               ]
             },
             "unit": "per day"
@@ -41,9 +41,9 @@
           "defaults": {
             "thresholds": {
               "steps": [
-                {"value": 0, "color": "green"},
-                {"value": 24, "color": "yellow"},
-                {"value": 168, "color": "red"}
+                { "value": 0, "color": "green" },
+                { "value": 24, "color": "yellow" },
+                { "value": 168, "color": "red" }
               ]
             },
             "unit": "hours"
@@ -64,9 +64,9 @@
           "defaults": {
             "thresholds": {
               "steps": [
-                {"value": 0, "color": "green"},
-                {"value": 15, "color": "yellow"},
-                {"value": 30, "color": "red"}
+                { "value": 0, "color": "green" },
+                { "value": 15, "color": "yellow" },
+                { "value": 30, "color": "red" }
               ]
             },
             "unit": "percent",
@@ -89,9 +89,9 @@
           "defaults": {
             "thresholds": {
               "steps": [
-                {"value": 0, "color": "green"},
-                {"value": 1, "color": "yellow"},
-                {"value": 24, "color": "red"}
+                { "value": 0, "color": "green" },
+                { "value": 1, "color": "yellow" },
+                { "value": 24, "color": "red" }
               ]
             },
             "unit": "hours"

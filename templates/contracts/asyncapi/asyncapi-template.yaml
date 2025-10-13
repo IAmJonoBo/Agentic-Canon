@@ -5,27 +5,27 @@
 asyncapi: 3.0.0
 
 info:
-  title: {{ API_NAME }}
-  version: {{ VERSION }}
+  title: "{{ API_NAME }}"
+  version: "{{ VERSION }}"
   description: |
     {{ API_DESCRIPTION }}
-    
+
     ## Event-Driven Architecture
     This service uses an event-driven architecture for asynchronous communication.
-    
+
     ## Standards Compliance
     - CloudEvents specification
     - OWASP API Security Top 10
     - Dead Letter Queue pattern
-  
+
   contact:
-    name: {{ TEAM_NAME }}
-    email: {{ TEAM_EMAIL }}
-    url: {{ TEAM_URL }}
-  
+    name: "{{ TEAM_NAME }}"
+    email: "{{ TEAM_EMAIL }}"
+    url: "{{ TEAM_URL }}"
+
   license:
-    name: {{ LICENSE }}
-    url: {{ LICENSE_URL }}
+    name: "{{ LICENSE }}"
+    url: "{{ LICENSE_URL }}"
 
 servers:
   production:
@@ -34,12 +34,12 @@ servers:
     description: Production Kafka cluster
     security:
       - saslScram: []
-  
+
   staging:
     host: kafka-staging.example.com:9092
     protocol: kafka
     description: Staging Kafka cluster
-  
+
   development:
     host: localhost:9092
     protocol: kafka
@@ -53,43 +53,43 @@ channels:
     description: User creation events
     messages:
       UserCreated:
-        $ref: '#/components/messages/UserCreated'
-  
+        $ref: "#/components/messages/UserCreated"
+
   user.updated:
     address: user.updated
     description: User update events
     messages:
       UserUpdated:
-        $ref: '#/components/messages/UserUpdated'
-  
+        $ref: "#/components/messages/UserUpdated"
+
   user.deleted:
     address: user.deleted
     description: User deletion events
     messages:
       UserDeleted:
-        $ref: '#/components/messages/UserDeleted'
-  
+        $ref: "#/components/messages/UserDeleted"
+
   order.placed:
     address: order.placed
     description: Order placement events
     messages:
       OrderPlaced:
-        $ref: '#/components/messages/OrderPlaced'
+        $ref: "#/components/messages/OrderPlaced"
 
 operations:
   publishUserCreated:
     action: send
     channel:
-      $ref: '#/channels/user.created'
+      $ref: "#/channels/user.created"
     summary: Publish user created event
     description: Published when a new user is created
     traits:
-      - $ref: '#/components/operationTraits/kafka'
-  
+      - $ref: "#/components/operationTraits/kafka"
+
   subscribeUserCreated:
     action: receive
     channel:
-      $ref: '#/channels/user.created'
+      $ref: "#/channels/user.created"
     summary: Subscribe to user created events
     description: Consume user creation events
 
@@ -101,9 +101,9 @@ components:
       summary: Event emitted when a user is created
       contentType: application/json
       traits:
-        - $ref: '#/components/messageTraits/commonHeaders'
+        - $ref: "#/components/messageTraits/commonHeaders"
       payload:
-        $ref: '#/components/schemas/UserCreatedPayload'
+        $ref: "#/components/schemas/UserCreatedPayload"
       examples:
         - name: Example User Created Event
           payload:
@@ -115,35 +115,35 @@ components:
               email: "user@example.com"
               name: "John Doe"
               createdAt: "2024-01-01T12:00:00Z"
-    
+
     UserUpdated:
       name: UserUpdated
       title: User Updated Event
       summary: Event emitted when a user is updated
       contentType: application/json
       traits:
-        - $ref: '#/components/messageTraits/commonHeaders'
+        - $ref: "#/components/messageTraits/commonHeaders"
       payload:
-        $ref: '#/components/schemas/UserUpdatedPayload'
-    
+        $ref: "#/components/schemas/UserUpdatedPayload"
+
     UserDeleted:
       name: UserDeleted
       title: User Deleted Event
       summary: Event emitted when a user is deleted
       contentType: application/json
       traits:
-        - $ref: '#/components/messageTraits/commonHeaders'
+        - $ref: "#/components/messageTraits/commonHeaders"
       payload:
-        $ref: '#/components/schemas/UserDeletedPayload'
-    
+        $ref: "#/components/schemas/UserDeletedPayload"
+
     OrderPlaced:
       name: OrderPlaced
       title: Order Placed Event
       contentType: application/json
       traits:
-        - $ref: '#/components/messageTraits/commonHeaders'
+        - $ref: "#/components/messageTraits/commonHeaders"
       payload:
-        $ref: '#/components/schemas/OrderPlacedPayload'
+        $ref: "#/components/schemas/OrderPlacedPayload"
 
   schemas:
     UserCreatedPayload:
@@ -183,7 +183,7 @@ components:
             createdAt:
               type: string
               format: date-time
-    
+
     UserUpdatedPayload:
       type: object
       required:
@@ -209,7 +209,7 @@ components:
             changes:
               type: object
               description: Changed fields
-    
+
     UserDeletedPayload:
       type: object
       required:
@@ -237,7 +237,7 @@ components:
             deletedAt:
               type: string
               format: date-time
-    
+
     OrderPlacedPayload:
       type: object
       required:
@@ -288,7 +288,7 @@ components:
     saslScram:
       type: scramSha256
       description: SASL/SCRAM authentication
-  
+
   messageTraits:
     commonHeaders:
       headers:
@@ -304,14 +304,13 @@ components:
           contentType:
             type: string
             default: application/json
-  
+
   operationTraits:
     kafka:
       bindings:
         kafka:
-          groupId: {{ SERVICE_NAME }}
-          clientId: {{ SERVICE_NAME }}-{{ INSTANCE_ID }}
-
+          groupId: "{{ SERVICE_NAME }}"
+          clientId: "{{ SERVICE_NAME }}-{{ INSTANCE_ID }}"
 # Validation Commands
 #
 # Validate AsyncAPI spec:

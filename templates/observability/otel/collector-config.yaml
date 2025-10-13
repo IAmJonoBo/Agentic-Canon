@@ -10,16 +10,16 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
-  
+
   # Prometheus receiver for metrics
   prometheus:
     config:
       scrape_configs:
-        - job_name: 'otel-collector'
+        - job_name: "otel-collector"
           scrape_interval: 10s
           static_configs:
-            - targets: ['localhost:8888']
-  
+            - targets: ["localhost:8888"]
+
   # Host metrics receiver
   hostmetrics:
     collection_interval: 10s
@@ -38,26 +38,26 @@ processors:
   batch:
     timeout: 10s
     send_batch_size: 1024
-  
+
   # Memory limiter to prevent OOM
   memory_limiter:
     check_interval: 1s
     limit_mib: 512
     spike_limit_mib: 128
-  
+
   # Resource processor to add common attributes
   resource:
     attributes:
       - key: environment
-        value: {{ ENVIRONMENT }}
+        value: { { ENVIRONMENT } }
         action: insert
       - key: service.namespace
-        value: {{ NAMESPACE }}
+        value: { { NAMESPACE } }
         action: insert
       - key: deployment.environment
-        value: {{ ENVIRONMENT }}
+        value: { { ENVIRONMENT } }
         action: insert
-  
+
   # Attributes processor for PII removal
   attributes:
     actions:
@@ -74,14 +74,14 @@ exporters:
   # Logging exporter for debugging
   logging:
     loglevel: info
-  
+
   # Prometheus exporter for metrics
   prometheus:
     endpoint: "0.0.0.0:8889"
-    namespace: {{ SERVICE_NAME }}
+    namespace: { { SERVICE_NAME } }
     const_labels:
-      environment: {{ ENVIRONMENT }}
-  
+      environment: { { ENVIRONMENT } }
+
   # OTLP exporter for backend (e.g., Jaeger, Tempo)
   otlp/jaeger:
     endpoint: jaeger:4317
@@ -89,13 +89,13 @@ exporters:
       insecure: false
       cert_file: /certs/client.crt
       key_file: /certs/client.key
-  
+
   # OTLP exporter for metrics backend
   otlp/metrics:
     endpoint: metrics-backend:4317
     tls:
       insecure: false
-  
+
   # Loki exporter for logs
   loki:
     endpoint: http://loki:3100/loki/api/v1/push
@@ -111,31 +111,31 @@ extensions:
   # Health check extension
   health_check:
     endpoint: 0.0.0.0:13133
-  
+
   # pprof for profiling
   pprof:
     endpoint: 0.0.0.0:1777
-  
+
   # zpages for diagnostics
   zpages:
     endpoint: 0.0.0.0:55679
 
 service:
   extensions: [health_check, pprof, zpages]
-  
+
   pipelines:
     # Traces pipeline
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch, resource, attributes]
       exporters: [otlp/jaeger, logging]
-    
+
     # Metrics pipeline
     metrics:
       receivers: [otlp, prometheus, hostmetrics]
       processors: [memory_limiter, batch, resource]
       exporters: [prometheus, otlp/metrics, logging]
-    
+
     # Logs pipeline
     logs:
       receivers: [otlp]
@@ -153,40 +153,40 @@ service:
 # Application SDK Configuration (Node.js example)
 # File: otel-config.js
 
-const { NodeSDK } = require('@opentelemetry/sdk-node');
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
-const { OTLPMetricExporter } = require('@opentelemetry/exporter-metrics-otlp-grpc');
-const { Resource } = require('@opentelemetry/resources');
-const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
-
-const sdk = new NodeSDK({
-  resource: new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: process.env.SERVICE_NAME || 'my-service',
-    [SemanticResourceAttributes.SERVICE_VERSION]: process.env.SERVICE_VERSION || '1.0.0',
-    [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.ENVIRONMENT || 'development',
-  }),
-  traceExporter: new OTLPTraceExporter({
-    url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4317',
-  }),
-  metricReader: new OTLPMetricExporter({
-    url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4317',
-  }),
-  instrumentations: [
-    // Auto-instrumentation
-    require('@opentelemetry/instrumentation-http').HttpInstrumentation,
-    require('@opentelemetry/instrumentation-express').ExpressInstrumentation,
-    require('@opentelemetry/instrumentation-pg').PgInstrumentation,
-  ],
-});
-
-sdk.start();
-
-process.on('SIGTERM', () => {
-  sdk.shutdown()
-    .then(() => console.log('OpenTelemetry terminated'))
-    .catch((error) => console.log('Error terminating OpenTelemetry', error))
-    .finally(() => process.exit(0));
-});
+# const { NodeSDK } = require("@opentelemetry/sdk-node");
+# const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-grpc");
+# const { OTLPMetricExporter } = require("@opentelemetry/exporter-metrics-otlp-grpc");
+# const { Resource } = require("@opentelemetry/resources");
+# const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
+#
+# const sdk = new NodeSDK({
+#   resource: new Resource({
+#     [SemanticResourceAttributes.SERVICE_NAME]: process.env.SERVICE_NAME || "my-service",
+#     [SemanticResourceAttributes.SERVICE_VERSION]: process.env.SERVICE_VERSION || "1.0.0",
+#     [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.ENVIRONMENT || "development",
+#   }),
+#   traceExporter: new OTLPTraceExporter({
+#     url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4317",
+#   }),
+#   metricReader: new OTLPMetricExporter({
+#     url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4317",
+#   }),
+#   instrumentations: [
+#     require("@opentelemetry/instrumentation-http").HttpInstrumentation,
+#     require("@opentelemetry/instrumentation-express").ExpressInstrumentation,
+#     require("@opentelemetry/instrumentation-pg").PgInstrumentation,
+#   ],
+# });
+#
+# sdk.start();
+#
+# process.on("SIGTERM", () => {
+#   sdk
+#     .shutdown()
+#     .then(() => console.log("OpenTelemetry terminated"))
+#     .catch((error) => console.log("Error terminating OpenTelemetry", error))
+#     .finally(() => process.exit(0));
+# });
 
 ---
 # Kubernetes Deployment
@@ -218,35 +218,35 @@ spec:
         app: otel-collector
     spec:
       containers:
-      - name: otel-collector
-        image: otel/opentelemetry-collector-contrib:latest
-        ports:
-        - containerPort: 4317  # OTLP gRPC
-        - containerPort: 4318  # OTLP HTTP
-        - containerPort: 8888  # Metrics
-        - containerPort: 13133 # Health check
-        volumeMounts:
-        - name: config
-          mountPath: /etc/otel
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 13133
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 13133
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
+        - name: otel-collector
+          image: otel/opentelemetry-collector-contrib:latest
+          ports:
+            - containerPort: 4317 # OTLP gRPC
+            - containerPort: 4318 # OTLP HTTP
+            - containerPort: 8888 # Metrics
+            - containerPort: 13133 # Health check
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otel
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 13133
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 13133
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
       volumes:
-      - name: config
-        configMap:
-          name: otel-collector-config
+        - name: config
+          configMap:
+            name: otel-collector-config
 
 ---
 # Validation Commands

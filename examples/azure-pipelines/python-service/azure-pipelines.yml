@@ -8,7 +8,7 @@ trigger:
   paths:
     exclude:
       - docs/
-      - '*.md'
+      - "*.md"
 
 pr:
   branches:
@@ -16,89 +16,89 @@ pr:
       - main
 
 variables:
-  pythonVersion: '3.11'
-  vmImage: 'ubuntu-latest'
+  pythonVersion: "3.11"
+  vmImage: "ubuntu-latest"
 
 stages:
-- stage: Build
-  displayName: 'Build and Test'
-  jobs:
-  - job: Test
-    displayName: 'Run Tests'
-    pool:
-      vmImage: $(vmImage)
-    strategy:
-      matrix:
-        Python311:
-          python.version: '3.11'
-        Python312:
-          python.version: '3.12'
-    steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '$(python.version)'
-      displayName: 'Use Python $(python.version)'
-    
-    - script: |
-        python -m pip install --upgrade pip
-        pip install -e .[dev]
-      displayName: 'Install dependencies'
-    
-    - script: |
-        pip install pytest pytest-cov
-        pytest --cov --cov-report=xml --cov-report=html
-      displayName: 'Run tests with coverage'
-    
-    - task: PublishCodeCoverageResults@1
-      inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage.xml'
-      displayName: 'Publish coverage results'
+  - stage: Build
+    displayName: "Build and Test"
+    jobs:
+      - job: Test
+        displayName: "Run Tests"
+        pool:
+          vmImage: $(vmImage)
+        strategy:
+          matrix:
+            Python311:
+              python.version: "3.11"
+            Python312:
+              python.version: "3.12"
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "$(python.version)"
+            displayName: "Use Python $(python.version)"
 
-- stage: Security
-  displayName: 'Security Scanning'
-  dependsOn: Build
-  condition: succeeded()
-  jobs:
-  - job: SecurityScan
-    displayName: 'Security Scanning'
-    pool:
-      vmImage: $(vmImage)
-    steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '$(pythonVersion)'
-    
-    - script: |
-        pip install safety bandit
-        safety check --json
-        bandit -r src/ -f json -o bandit-report.json
-      displayName: 'Run security scans'
-      continueOnError: true
-    
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: 'bandit-report.json'
-        ArtifactName: 'security-reports'
-      displayName: 'Publish security reports'
+          - script: |
+              python -m pip install --upgrade pip
+              pip install -e .[dev]
+            displayName: "Install dependencies"
 
-- stage: Quality
-  displayName: 'Code Quality'
-  dependsOn: Build
-  condition: succeeded()
-  jobs:
-  - job: Lint
-    displayName: 'Linting and Format Check'
-    pool:
-      vmImage: $(vmImage)
-    steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '$(pythonVersion)'
-    
-    - script: |
-        pip install ruff black mypy
-        ruff check .
-        black --check .
-        mypy src/
-      displayName: 'Run linters'
+          - script: |
+              pip install pytest pytest-cov
+              pytest --cov --cov-report=xml --cov-report=html
+            displayName: "Run tests with coverage"
+
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: "Cobertura"
+              summaryFileLocation: "$(System.DefaultWorkingDirectory)/coverage.xml"
+            displayName: "Publish coverage results"
+
+  - stage: Security
+    displayName: "Security Scanning"
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: SecurityScan
+        displayName: "Security Scanning"
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "$(pythonVersion)"
+
+          - script: |
+              pip install safety bandit
+              safety check --json
+              bandit -r src/ -f json -o bandit-report.json
+            displayName: "Run security scans"
+            continueOnError: true
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "bandit-report.json"
+              ArtifactName: "security-reports"
+            displayName: "Publish security reports"
+
+  - stage: Quality
+    displayName: "Code Quality"
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: Lint
+        displayName: "Linting and Format Check"
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "$(pythonVersion)"
+
+          - script: |
+              pip install ruff black mypy
+              ruff check .
+              black --check .
+              mypy src/
+            displayName: "Run linters"

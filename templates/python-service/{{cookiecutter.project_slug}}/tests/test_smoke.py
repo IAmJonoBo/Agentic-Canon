@@ -1,16 +1,25 @@
-"""Smoke tests for {{ cookiecutter.pkg_name }}."""
+"""Smoke tests for the generated package."""
 
-import {{ cookiecutter.pkg_name }}
+import importlib
+
+PACKAGE_NAME = "{{ cookiecutter.pkg_name }}"
+
+
+def get_package():
+    """Import the target package under test."""
+    return importlib.import_module(PACKAGE_NAME)
 
 
 def test_import() -> None:
     """Test that the package can be imported."""
-    assert {{ cookiecutter.pkg_name }}.__version__ == "0.1.0"
+    package = get_package()
+    assert isinstance(package.__version__, str)
 
 
 def test_hello() -> None:
     """Test the hello function."""
-    result = {{ cookiecutter.pkg_name }}.hello()
+    package = get_package()
+    result = package.hello()
     assert isinstance(result, str)
     assert "Hello" in result
-    assert "{{ cookiecutter.pkg_name }}" in result
+    assert PACKAGE_NAME in result

@@ -5,10 +5,10 @@
 ---
 # SLO Configuration
 service:
-  name: {{ SERVICE_NAME }}
-  team: {{ TEAM_NAME }}
-  tier: {{ TIER }}  # tier-0 (critical), tier-1 (important), tier-2 (standard)
-  
+  name: { { SERVICE_NAME } }
+  team: { { TEAM_NAME } }
+  tier: { { TIER } } # tier-0 (critical), tier-1 (important), tier-2 (standard)
+
 slos:
   # Availability SLO
   - name: service_availability
@@ -26,7 +26,7 @@ slos:
       value: 99.9
       window: 30d
     error_budget:
-      remaining_percent: 10  # 10% of 0.1% = 0.01% downtime allowed
+      remaining_percent: 10 # 10% of 0.1% = 0.01% downtime allowed
       burn_rate_alerts:
         - window: 1h
           threshold: 14.4
@@ -76,7 +76,7 @@ slos:
         ) * 100
       unit: percent
     target:
-      value: 0.1  # Max 0.1% error rate
+      value: 0.1 # Max 0.1% error rate
       window: 30d
     error_budget:
       remaining_percent: 10
@@ -97,7 +97,7 @@ error_budget_policy:
         - page_oncall
         - trigger_incident
         - notify_leadership
-    
+
     # When 75% of budget consumed
     - threshold: 75
       actions:
@@ -105,13 +105,13 @@ error_budget_policy:
         - increase_monitoring
         - notify_team
         - schedule_review
-    
+
     # When 50% of budget consumed
     - threshold: 50
       actions:
         - alert_team
         - review_changes
-  
+
   exceptions:
     - reason: "Security hotfix"
       requires_approval: security_team_lead
@@ -128,21 +128,21 @@ alerts:
     duration: 2m
     severity: critical
     labels:
-      team: {{ TEAM_NAME }}
-      service: {{ SERVICE_NAME }}
+      team: { { TEAM_NAME } }
+      service: { { SERVICE_NAME } }
     annotations:
       summary: "High error budget burn rate"
       description: "Error budget is burning at {{ $value }}x the acceptable rate"
       runbook: https://runbooks.example.com/high-error-budget-burn
-  
+
   - name: SLOViolation
     expr: |
       slo:availability:ratio_rate30d < 0.999
     duration: 5m
     severity: high
     labels:
-      team: {{ TEAM_NAME }}
-      service: {{ SERVICE_NAME }}
+      team: { { TEAM_NAME } }
+      service: { { SERVICE_NAME } }
     annotations:
       summary: "SLO violation detected"
       description: "Service availability is {{ $value }}, below target of 99.9%"
@@ -157,7 +157,7 @@ dashboards:
       - Error budget remaining
       - Burn rate trends
       - Historical performance
-  
+
   - name: Error Budget
     url: https://grafana.example.com/d/error-budget
     panels:
@@ -184,16 +184,15 @@ progressive_delivery:
 reporting:
   frequency: weekly
   recipients:
-    - {{ TEAM_NAME }}@example.com
+    - "{{ TEAM_NAME }}@example.com"
     - engineering-leadership@example.com
   include:
     - slo_compliance
     - error_budget_status
     - incidents_impact
     - improvement_actions
-
 # Validation Commands
-# 
+#
 # Validate SLO definition:
 #   promtool check rules slo-rules.yml
 #

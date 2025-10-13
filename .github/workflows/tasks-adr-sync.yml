@@ -1,7 +1,7 @@
 name: Tasks and ADR Sync
 on:
   schedule:
-    - cron: '0 6 * * 1'  # Weekly on Monday at 6 AM
+    - cron: "0 6 * * 1" # Weekly on Monday at 6 AM
   workflow_dispatch:
 
 permissions:
@@ -15,32 +15,32 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      
+
       - name: Sync TASKS.md with Issues
         uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
-            
+
             console.log('📊 Syncing TASKS.md with GitHub Issues...');
-            
+
             // Read TASKS.md
             const tasksPath = 'TASKS.md';
             if (!fs.existsSync(tasksPath)) {
               console.log('❌ TASKS.md not found');
               return;
             }
-            
+
             let content = fs.readFileSync(tasksPath, 'utf8');
-            
+
             // Find all issue references in TASKS.md
             const issuePattern = /#(\d+)/g;
             const issueNumbers = [...content.matchAll(issuePattern)].map(m => parseInt(m[1]));
-            
+
             console.log(`Found ${issueNumbers.length} issue references in TASKS.md`);
-            
+
             let updates = 0;
-            
+
             // Check each issue and update status if closed
             for (const issueNum of issueNumbers) {
               try {
@@ -65,7 +65,7 @@ jobs:
                 console.log(`  ⚠️  Could not check issue #${issueNum}: ${error.message}`);
               }
             }
-            
+
             // Write back if there were changes
             if (updates > 0) {
               fs.writeFileSync(tasksPath, content);
@@ -73,39 +73,39 @@ jobs:
             } else {
               console.log('\n✅ TASKS.md is up to date');
             }
-            
+
             return updates;
-      
+
       - name: Check for new ADRs
         uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
             const path = require('path');
-            
+
             console.log('📋 Checking for new ADRs...');
-            
+
             const adrDir = 'docs/adr';
             const readmePath = path.join(adrDir, 'README.md');
-            
+
             if (!fs.existsSync(readmePath)) {
               console.log('❌ docs/adr/README.md not found');
               return;
             }
-            
+
             const readme = fs.readFileSync(readmePath, 'utf8');
-            
+
             // Find all ADR files
             const adrFiles = fs.readdirSync(adrDir)
               .filter(f => f.match(/^ADR-\d{3}-.+\.md$/))
               .sort();
-            
+
             console.log(`Found ${adrFiles.length} ADR files`);
-            
+
             // Parse ADR metadata for better issue creation
             const missingInReadme = [];
             const adrMetadata = {};
-            
+
             for (const adrFile of adrFiles) {
               const adrPath = path.join(adrDir, adrFile);
               const content = fs.readFileSync(adrPath, 'utf8');
@@ -144,7 +144,7 @@ jobs:
                 missingInReadme.push(metadata);
               }
             }
-            
+
             if (missingInReadme.length > 0) {
               console.log(`\n⚠️  Found ${missingInReadme.length} ADRs not linked in README:`);
               missingInReadme.forEach(m => console.log(`  - ${m.file}: ${m.title}`));
@@ -230,12 +230,12 @@ jobs:
             } else {
               console.log('✅ All ADRs are linked in README');
             }
-      
+
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           if git diff --quiet TASKS.md; then
             echo "No changes to commit"
           else
@@ -244,16 +244,16 @@ jobs:
             git push
             echo "✅ Committed TASKS.md updates"
           fi
-      
+
       - name: Enrich issues with ADR metadata
         uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
             const path = require('path');
-            
+
             console.log('🔗 Enriching issues with ADR metadata...');
-            
+
             // Get all open issues with the from:tasklist label
             const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -262,24 +262,24 @@ jobs:
               labels: 'from:tasklist',
               per_page: 100
             });
-            
+
             console.log(`Found ${issues.length} open task issues`);
-            
+
             // Rate limiting: Process in batches
             const MAX_ISSUES_PER_RUN = 20;
             const DELAY_BETWEEN_CALLS = 1000; // 1 second
-            
+
             if (issues.length > MAX_ISSUES_PER_RUN) {
               console.log(`⚠️  Limiting to ${MAX_ISSUES_PER_RUN} issues per run to avoid rate limits`);
               issues.length = MAX_ISSUES_PER_RUN;
             }
-            
+
             // Helper function for delay
             const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-            
+
             let enriched = 0;
             const adrDir = 'docs/adr';
-            
+
             for (const issue of issues) {
               // Rate limiting: Add delay between operations
               if (enriched > 0) {
@@ -366,19 +366,19 @@ jobs:
                 }
               }
             }
-            
+
             console.log(`\n✅ Enriched ${enriched} issues with ADR metadata`);
-      
+
       - name: Generate sync report
         uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
-            
+
             console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             console.log('📊 Tasks and ADR Sync Report');
             console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-            
+
             // Count open vs closed items in TASKS.md
             if (fs.existsSync('TASKS.md')) {
               const content = fs.readFileSync('TASKS.md', 'utf8');
@@ -393,7 +393,7 @@ jobs:
               console.log(`  Open: ${openTasks}`);
               console.log(`  Completion: ${completion}%`);
             }
-            
+
             // Count ADRs by status
             const adrDir = 'docs/adr';
             if (fs.existsSync(adrDir)) {
@@ -423,6 +423,6 @@ jobs:
                 console.log(`  Unknown: ${statuses.unknown}`);
               }
             }
-            
+
             console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             console.log('✅ Sync completed successfully');

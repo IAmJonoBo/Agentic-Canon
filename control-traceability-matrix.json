@@ -1,8 +1,9 @@
-# Control Traceability Matrix
-# Maps standards and controls to implementations, evidence, and verification methods
-# Format: JSON for machine readability and automated compliance checking
-
 {
+  "_metadata": {
+    "title": "Control Traceability Matrix",
+    "description": "Maps standards and controls to implementations, evidence, and verification methods",
+    "format": "JSON for machine readability and automated compliance checking"
+  },
   "version": "1.0.0",
   "generated": "2025-10-11T12:22:00Z",
   "standards": {
@@ -12,14 +13,8 @@
       "controls": {
         "PO.1.1": {
           "title": "Define and communicate security requirements",
-          "implementation": [
-            "SECURITY.md",
-            "docs/security/requirements.md"
-          ],
-          "evidence": [
-            "security-requirements.pdf",
-            "threat-model.md"
-          ],
+          "implementation": ["SECURITY.md", "docs/security/requirements.md"],
+          "evidence": ["security-requirements.pdf", "threat-model.md"],
           "verification": "Annual review",
           "status": "Implemented",
           "owner": "Security Team"
@@ -72,10 +67,7 @@
             ".github/workflows/sast-codeql.yml",
             ".github/workflows/sast-semgrep.yml"
           ],
-          "evidence": [
-            "security-scan-results.sarif",
-            "codeql-database/"
-          ],
+          "evidence": ["security-scan-results.sarif", "codeql-database/"],
           "verification": "Every commit",
           "status": "Implemented",
           "owner": "Security Team"
@@ -134,10 +126,7 @@
             ".github/workflows/complete-pipeline.yml",
             "docs/architecture/security-architecture.md"
           ],
-          "evidence": [
-            "ci-cd-execution-logs/",
-            "architecture-review-records/"
-          ],
+          "evidence": ["ci-cd-execution-logs/", "architecture-review-records/"],
           "verification": "Every build",
           "status": "Implemented",
           "owner": "Architecture Team"
@@ -148,10 +137,7 @@
             ".github/workflows/sbom-generation.yml",
             "cyclonedx.config.json"
           ],
-          "evidence": [
-            "artifacts/sbom/",
-            "sbom-diff-reports/"
-          ],
+          "evidence": ["artifacts/sbom/", "sbom-diff-reports/"],
           "verification": "Every build",
           "status": "Implemented",
           "owner": "Platform Team"
@@ -183,10 +169,7 @@
             ".github/workflows/complete-pipeline.yml",
             "CONTRIBUTING.md"
           ],
-          "evidence": [
-            "ci-cd-logs/",
-            "code-review-records/"
-          ],
+          "evidence": ["ci-cd-logs/", "code-review-records/"],
           "verification": "Continuous",
           "status": "Implemented",
           "owner": "Development Team"
@@ -197,10 +180,7 @@
             "src/auth/password-policy.js",
             "config/auth-config.yaml"
           ],
-          "evidence": [
-            "unit-tests/auth/",
-            "security-audit-reports/"
-          ],
+          "evidence": ["unit-tests/auth/", "security-audit-reports/"],
           "verification": "Every commit + annual audit",
           "status": "Implemented",
           "owner": "Auth Team"
@@ -211,10 +191,7 @@
             ".github/workflows/provenance.yml",
             ".github/workflows/signing.yml"
           ],
-          "evidence": [
-            "artifacts/provenance/",
-            "artifacts/signatures/"
-          ],
+          "evidence": ["artifacts/provenance/", "artifacts/signatures/"],
           "verification": "Every build",
           "status": "Implemented",
           "owner": "Platform Team"
@@ -228,12 +205,8 @@
       "controls": {
         "Build_L1": {
           "title": "Build process is fully scripted/automated",
-          "implementation": [
-            ".github/workflows/complete-pipeline.yml"
-          ],
-          "evidence": [
-            "ci-cd-execution-logs/"
-          ],
+          "implementation": [".github/workflows/complete-pipeline.yml"],
+          "evidence": ["ci-cd-execution-logs/"],
           "verification": "Every build",
           "status": "Implemented",
           "owner": "Platform Team"
@@ -244,9 +217,7 @@
             ".github/workflows/provenance.yml",
             "slsa-generator-config.yml"
           ],
-          "evidence": [
-            "artifacts/provenance/provenance.intoto.jsonl"
-          ],
+          "evidence": ["artifacts/provenance/provenance.intoto.jsonl"],
           "verification": "Every build",
           "status": "Implemented",
           "owner": "Platform Team"
@@ -305,10 +276,7 @@
             "config/slo-definitions.yaml",
             ".github/workflows/chaos-testing.yml"
           ],
-          "evidence": [
-            "uptime-reports/",
-            "incident-postmortems/"
-          ],
+          "evidence": ["uptime-reports/", "incident-postmortems/"],
           "verification": "Continuous monitoring",
           "status": "Implemented",
           "owner": "SRE Team"
@@ -319,10 +287,7 @@
             ".github/workflows/performance-testing.yml",
             "lighthouserc.json"
           ],
-          "evidence": [
-            "performance-budgets/",
-            "load-test-reports/"
-          ],
+          "evidence": ["performance-budgets/", "load-test-reports/"],
           "verification": "Every deployment",
           "status": "Implemented",
           "owner": "Performance Team"
@@ -333,10 +298,7 @@
             ".github/workflows/quality-gate.yml",
             "sonar-project.properties"
           ],
-          "evidence": [
-            "sonarqube-quality-gates/",
-            "technical-debt-reports/"
-          ],
+          "evidence": ["sonarqube-quality-gates/", "technical-debt-reports/"],
           "verification": "Every commit",
           "status": "Implemented",
           "owner": "Development Team"
@@ -354,10 +316,7 @@
             "src/components/accessible/",
             ".github/workflows/accessibility-tests.yml"
           ],
-          "evidence": [
-            "accessibility-reports/",
-            "axe-core-results.json"
-          ],
+          "evidence": ["accessibility-reports/", "axe-core-results.json"],
           "verification": "Every commit",
           "status": "Implemented",
           "owner": "Frontend Team"
@@ -368,10 +327,7 @@
             "src/utils/keyboard-navigation.js",
             "tests/e2e/accessibility/"
           ],
-          "evidence": [
-            "keyboard-navigation-tests/",
-            "screen-reader-audit/"
-          ],
+          "evidence": ["keyboard-navigation-tests/", "screen-reader-audit/"],
           "verification": "Every release",
           "status": "Implemented",
           "owner": "Frontend Team"
@@ -388,10 +344,7 @@
             ".semgrep/rules/xss.yml",
             "src/security/sanitization.js"
           ],
-          "evidence": [
-            "semgrep-scan-results/",
-            "xss-test-results/"
-          ],
+          "evidence": ["semgrep-scan-results/", "xss-test-results/"],
           "verification": "Every commit",
           "status": "Implemented",
           "owner": "Security Team"
@@ -402,10 +355,7 @@
             ".semgrep/rules/sql-injection.yml",
             "src/db/parameterized-queries.js"
           ],
-          "evidence": [
-            "semgrep-scan-results/",
-            "sql-injection-tests/"
-          ],
+          "evidence": ["semgrep-scan-results/", "sql-injection-tests/"],
           "verification": "Every commit",
           "status": "Implemented",
           "owner": "Security Team"
@@ -416,10 +366,7 @@
             "src/validation/",
             ".semgrep/rules/input-validation.yml"
           ],
-          "evidence": [
-            "validation-tests/",
-            "fuzzing-results/"
-          ],
+          "evidence": ["validation-tests/", "fuzzing-results/"],
           "verification": "Every commit",
           "status": "Implemented",
           "owner": "Development Team"
@@ -460,13 +407,8 @@
       "Performance testing",
       "Accessibility checks"
     ],
-    "weekly": [
-      "Dependency scanning"
-    ],
-    "monthly": [
-      "Security metrics review",
-      "Compliance dashboard review"
-    ],
+    "weekly": ["Dependency scanning"],
+    "monthly": ["Security metrics review", "Compliance dashboard review"],
     "quarterly": [
       "Security training",
       "Penetration testing",

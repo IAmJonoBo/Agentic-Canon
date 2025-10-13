@@ -26,7 +26,6 @@ repos:
     hooks:
       - id: mypy
         additional_dependencies: [pydantic>=2.0]
-{% if cookiecutter.include_jupyter_book == "yes" %}
   - repo: https://github.com/kynan/nbstripout
     rev: 0.7.1
     hooks:
@@ -37,4 +36,3 @@ repos:
     hooks:
       - id: jupytext
         args: [--sync]
-{% endif %}

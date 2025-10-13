@@ -16,11 +16,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const variant = primary ? "primary" : "default";
   return (
-    <button
-      type="button"
-      className={`btn btn-${size} btn-${variant}`}
-      onClick={onClick}
-    >
+    <button type="button" className={`btn btn-${size} btn-${variant}`} onClick={onClick}>
       {label}
     </button>
   );

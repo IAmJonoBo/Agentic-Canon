@@ -65,6 +65,7 @@ RUN_FORMAT=0
 RUN_UPGRADE=0
 RUN_ALL=0
 FORCE_REBUILD=0
+QUIET=0
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -96,10 +97,14 @@ while [[ $# -gt 0 ]]; do
 		TEMPLATES+=("$2")
 		shift 2
 		;;
-	--help | -h)
-		usage
-		exit 0
-		;;
+        --quiet)
+                QUIET=1
+                shift
+                ;;
+        --help | -h)
+                usage
+                exit 0
+                ;;
 	*)
 		echo "error: unknown option '$1'" >&2
 		echo "" >&2
@@ -129,12 +134,14 @@ if [[ ${FORCE_REBUILD} -eq 1 ]]; then
 fi
 
 run_nox() {
-	local session="$1"
-	shift
-	echo "🔧 Running nox -s ${session} -- $*"
-	(
-		cd "${REPO_ROOT}"
-		if [[ $# -eq 0 ]]; then
+        local session="$1"
+        shift
+        if [[ ${QUIET} -eq 0 ]]; then
+                echo "🔧 Running nox -s ${session} -- $*"
+        fi
+        (
+                cd "${REPO_ROOT}"
+                if [[ $# -eq 0 ]]; then
 			nox -s "${session}"
 		else
 			nox -s "${session}" -- "$@"

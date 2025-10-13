@@ -10,7 +10,8 @@
 - [x] Resolve React template npm peer dependency conflict so e2e test can pass (Owner: Agent, Due: 2025-02-07) _(storybook/tooling pinned to 8.6 with Node 22 shims; validated via `pytest` chunk 48e64d)_
 - [x] Resolve Node template npm/vitest failures uncovered during e2e run (Owner: Agent, Due: 2025-02-07) _(Vitest scripts now bypass shim; `pytest` chunk 48e64d)_
 - [x] Configure mypy targets and add a dedicated Nox/typecheck gate (Owner: Agent, Due: 2025-02-07) _(tracked by `mypy.ini` + nox session; clean run chunk 7679c3)_
-- [ ] Expand `.dev/validate-templates.sh` / Nox to run lint + type + security stages post-render (Owner: Agent, Due: 2025-02-08) _(baseline gaps reconfirmed via `ruff format --check` chunk fbd829 and `pip-audit` chunk 623fd8)_
+- [x] Wire CLI auto-fix through template validation flag and quiet pipeline (Owner: Agent, Due: 2025-02-08) _(implemented this pass; regression covered by `pytest tests/test_cli_fix.py` chunk 82e19d)_
+- [ ] Expand `.dev/validate-templates.sh` / Nox to run lint + type + security stages post-render (Owner: Agent, Due: 2025-02-08) _(baseline gaps reconfirmed via `ruff format --check` chunk db92c4 and `pip-audit` chunk a928ba)_
 - [ ] Align cookiecutter/boilerplate quality requirements with unified lint/format CLI updates (Owner: Agent, Due: 2025-02-09)
 - [ ] Investigate `pip-audit` invalid requirements failure and capture remediation plan (Owner: Agent, Due: 2025-02-08)
 - [ ] Diagnose template formatting drift reported by `ruff format --check` before enabling enforcement (Owner: Agent, Due: 2025-02-08)
@@ -28,7 +29,8 @@
 - [x] Address React npm peer dependency blocker or document mitigation strategy
 - [x] Address Node npm/vitest failure highlighted in e2e suite
 - [x] Define mypy coverage scope and codify invocation in automation
-- [x] Re-ran baseline validation commands to refresh evidence (`pytest` chunk c5a613; `ruff check` chunk 1d832c; `mypy` chunk 26642a; `ruff format --check` chunk fbd829; `pip-audit` chunk 623fd8)
+- [x] Re-ran baseline validation commands to refresh evidence (`pytest` chunk 5d3429; `ruff check` chunk cf0f15; `mypy` chunk afb872; `ruff format --check` chunk db92c4; `pip-audit` chunk a928ba)
+- [x] Added CLI regression coverage to confirm template pipeline visibility and skip controls (chunks 5951f9 & 5d3429)
 - [x] Reviewed template standards/docs to extract cookiecutter + boilerplate quality expectations for upcoming CLI alignment (see TEMPLATE_STANDARDS.md)
 
 ## Deliverables
@@ -41,10 +43,10 @@
 
 ## Quality Gates
 
-- [x] Tests: pytest (pass or documented blockers) _(clean run chunk c5a613)_
-- [x] Lint: ruff check (passing; monitor for regressions) _(chunk 1d832c)_
-- [x] Type-check: mypy (configured and passing) _(chunk 26642a)_
-- [ ] Security: secret scan (tool configured and passing) _(`pip-audit` currently failing with invalid requirements; see chunk 623fd8)_
+- [ ] Tests: pytest (react webapp e2e build failing: `npm run build` cannot resolve `.bin/vite` symlink target; see chunk 5d3429)
+- [x] Lint: ruff check (passing; monitor for regressions) _(chunk cf0f15)_
+- [x] Type-check: mypy (configured and passing) _(chunk afb872)_
+- [ ] Security: secret scan (tool configured and passing) _(`pip-audit` reports pip GHSA-4xh5-x5gv-qwph; see chunk a928ba)_
 - [ ] Build: applicable build commands succeed
 
 ## Links
@@ -53,7 +55,7 @@
 - [x] `.dev/validate-templates.sh` PYTHONPATH bootstrapping
 - [x] `tests/conftest.py` environment preparation helpers
 - [x] Test + lint failure logs (`pytest` chunks d35d86 & c8cb83, `ruff check` chunk c61c7e, `mypy` chunk 3f2957, `pip-audit` chunk 695db8)
-- [x] Latest baseline runs (`pytest` chunk c5a613; `ruff check` chunk 1d832c; `mypy` chunk 26642a; `ruff format --check` chunk fbd829; `pip-audit` chunk 623fd8)
+- [x] Latest baseline runs (`pytest` chunk 5d3429; `ruff check` chunk cf0f15; `mypy` chunk afb872; `ruff format --check` chunk db92c4; `pip-audit` chunk a928ba)
 - [x] Updated failure snapshots for Node/React e2e (`pytest` chunk 3078d5)
 - [x] Ruff clean pass reference (`ruff check` chunk 0254a4)
 - [x] Project-management targeted test confirmation (`pytest` chunk ea3314)
@@ -66,8 +68,9 @@
 - [ ] Ruff config deprecation warnings from generated projects _(pending validation after next render)_
 - [ ] Baseline commands currently failing or incomplete
 - [ ] React Storybook 8 upgrade: confirm docs/changelog guidance added for template consumers
+- [ ] React template npm build failing to locate `vite` CLI after node_modules cache restore — investigate symlink preservation (`npm run build` chunk 5d3429)
 - [ ] Quick-mode sanity `PASS_COUNT` (150) must be kept in sync with future script additions
 - [ ] Evaluate adding targeted tests for `.dev/sanity-check.sh` quick-mode output to prevent regressions
 - [ ] `pip-audit` virtualenv bootstrap occasionally hangs; investigate caching/timeout strategy before gating CI
-- [ ] `pip-audit` rejecting `requirements.txt` indicates format incompatibility—confirm file syntax aligns with pip-audit expectations before enforcing gate (chunk 623fd8)
-- [ ] Template formatting drift (`ruff format --check`) spans shared hooks/notebooks; need strategy for templated Jinja placeholders prior to strict enforcement (chunk fbd829)
+- [ ] `pip-audit` rejecting `requirements.txt` indicates format incompatibility—confirm file syntax aligns with pip-audit expectations before enforcing gate (chunk a928ba)
+- [ ] Template formatting drift (`ruff format --check`) spans shared hooks/notebooks; need strategy for templated Jinja placeholders prior to strict enforcement (chunk db92c4)

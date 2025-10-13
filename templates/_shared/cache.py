@@ -21,9 +21,7 @@ def _default_root() -> Path:
     return Path.home() / ".cache" / "agentic-canon"
 
 
-CACHE_ROOT = Path(
-    os.environ.get("AGENTIC_CANON_CACHE_DIR", _default_root())
-).expanduser()
+CACHE_ROOT = Path(os.environ.get("AGENTIC_CANON_CACHE_DIR", _default_root())).expanduser()
 TEMPLATE_CACHE_DIR = CACHE_ROOT / "templates"
 INSTALLER_CACHE_ROOT = CACHE_ROOT / "installers"
 

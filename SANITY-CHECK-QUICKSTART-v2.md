@@ -268,13 +268,13 @@ pip install pip-audit pip-licenses
 Run detailed scan:
 
 ```bash
-pip-audit -r requirements.txt
+pip-audit --progress-spinner off -r requirements.txt
 ```
 
 Fix vulnerabilities:
 
 ```bash
-pip-audit -r requirements.txt --fix
+pip-audit --progress-spinner off -r requirements.txt --fix
 ```
 
 ### "Unpinned dependencies"

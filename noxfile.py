@@ -598,3 +598,10 @@ def tests(session: nox.Session) -> None:
     """Execute the pytest suite with xdist parallelism."""
     session.install("-r", "requirements.txt")
     session.run("pytest", "-n", "auto")
+
+
+@nox.session
+def typecheck(session: nox.Session) -> None:
+    """Run static type checks with mypy."""
+    session.install("-r", "requirements.txt")
+    session.run("mypy", "--config-file", "mypy.ini")

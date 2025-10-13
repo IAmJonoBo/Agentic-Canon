@@ -102,10 +102,11 @@ def _parse_go_version(output: str) -> str:
 def _cache_node_modules(project_path: Path, env: dict[str, str]) -> None:
     lockfile = project_path / "package-lock.json"
     key_material: list[bytes]
-    if lockfile.exists():
-        key_material = [lockfile.read_bytes()]
-    else:
-        key_material = [(project_path / "package.json").read_bytes()]
+    package_json = project_path / "package.json"
+    lock_bytes = lockfile.read_bytes() if lockfile.exists() else b""
+    key_material = [package_json.read_bytes()]
+    if lock_bytes:
+        key_material.append(lock_bytes)
 
     def installer(path: Path) -> None:
         _run(["npm", "install", "--no-fund", "--no-audit"], cwd=path, env=env)

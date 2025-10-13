@@ -30,6 +30,7 @@ RENDER_INDEX = RENDER_ROOT / "index.json"
 REPO_ROOT = Path(__file__).parent.resolve()
 TRUNK_SCRIPT = REPO_ROOT / ".dev" / "trunk-with-progress.sh"
 TRUNK_BIN = Path.home() / ".cache" / "trunk" / "bin" / "trunk"
+SYNC_MANIFEST_SCRIPT = REPO_ROOT / ".dev" / "scripts" / "sync-manifest.py"
 
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
@@ -475,8 +476,15 @@ def format_templates(session: nox.Session) -> None:
                     "--all",
                     external=True,
                 )
-                result = session.run("git", "status", "--porcelain", external=True, silent=True)
-                if result.stdout.strip():
+                git_status = session.run(
+                    "git",
+                    "status",
+                    "--porcelain",
+                    external=True,
+                    silent=True,
+                )
+                stdout = getattr(git_status, "stdout", "")
+                if isinstance(stdout, str) and stdout.strip():
                     session.error(f"Formatting produced changes in {project_path}")
 
 

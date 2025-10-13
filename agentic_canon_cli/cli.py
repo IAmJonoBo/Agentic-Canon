@@ -13,6 +13,9 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
+SAFE_PIP_SPEC = "pip @ git+https://github.com/pypa/pip@f2b92314da012b9fffa36b3f3e67748a37ef464a"
+"""Patched pip build that includes the GHSA-4xh5-x5gv-qwph fix."""
+
 
 def print_banner():
     """Print the Agentic Canon banner."""
@@ -182,7 +185,14 @@ def _ensure_virtualenv() -> Tuple[bool, str]:
         return False, "Unable to locate python executable inside .venv"
 
     upgrade = _run_command(
-        [str(venv_python), "-m", "pip", "install", "--upgrade", "pip"]
+        [
+            str(venv_python),
+            "-m",
+            "pip",
+            "install",
+            "--upgrade",
+            SAFE_PIP_SPEC,
+        ]
     )
     if upgrade.returncode != 0:
         detail = (

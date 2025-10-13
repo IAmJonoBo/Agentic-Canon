@@ -9,8 +9,6 @@ jobs:
   e2e-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    env:
-      AGENTIC_CANON_CACHE_DIR: ${{ runner.temp }}/agentic-canon-cache
     steps:
       - uses: actions/checkout@v5
 
@@ -30,10 +28,13 @@ jobs:
         with:
           go-version: "1.25"
 
+      - name: Configure cache directory
+        run: |
+          echo "AGENTIC_CANON_CACHE_DIR=${RUNNER_TEMP:-${TMPDIR:-/tmp}}/agentic-canon-cache" >> "$GITHUB_ENV"
+
       - name: Run template end-to-end tests
         env:
           CI: "true"
-          AGENTIC_CANON_CACHE_DIR: ${{ runner.temp }}/agentic-canon-cache
         run: |
           python -m venv .venv
           source .venv/bin/activate

@@ -18,6 +18,7 @@ TEMP_OUTPUT=$(mktemp)
 SPINNER_PID=""
 CURSOR_HIDDEN=0
 
+# shellcheck disable=SC2329  # cleanup is invoked via trap
 cleanup() {
 	local exit_status=$1
 	if [[ -n ${SPINNER_PID-} ]] && kill -0 "${SPINNER_PID}" 2>/dev/null; then
@@ -39,6 +40,7 @@ supports_color() {
 	[[ -n ${term} && ${term} != "dumb" ]]
 }
 
+# shellcheck disable=SC2310  # allow supports_color to return non-zero without aborting under set -e
 if supports_color; then
 	GREEN='\033[0;32m'
 	YELLOW='\033[1;33m'

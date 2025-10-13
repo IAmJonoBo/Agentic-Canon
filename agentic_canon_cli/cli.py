@@ -158,6 +158,18 @@ def _run_command(
     return result
 
 
+def _summarize_process_output(result: subprocess.CompletedProcess) -> str:
+    """Return the last non-empty line from stdout or stderr."""
+
+    for stream in (result.stdout, result.stderr):
+        if not stream:
+            continue
+        lines = [line for line in stream.strip().splitlines() if line.strip()]
+        if lines:
+            return lines[-1]
+    return ""
+
+
 def _venv_python_path(venv_path: Path) -> Path:
     """Return the python executable within a virtual environment."""
     if os.name == "nt":
@@ -246,21 +258,51 @@ def _install_precommit_hooks() -> tuple[bool, str]:
     return True, "pre-commit hooks installed"
 
 
-def _run_sanity_check() -> tuple[bool, str]:
-    """Execute the repository sanity check in quiet mode."""
+def _run_sanity_check(skip_templates: bool = False) -> tuple[bool, str]:
+    """Execute the repository sanity check and optional template validation."""
+
     script = Path(".dev/sanity-check.sh")
     if not script.exists():
         return True, "Sanity check script not found; skipped"
 
-    result = _run_command(["bash", str(script), "--quiet", "--skip-templates"])
-    if result.returncode == 0:
-        return True, "Sanity check passed"
+    include_templates = not skip_templates
+    pipeline_summary: str | None = None
 
-    summary = "Review sanity-check output"
-    if result.stdout:
-        lines = [line for line in result.stdout.strip().splitlines() if line]
-        if lines:
-            summary = lines[-1]
+    if include_templates:
+        pipeline_script = Path(".dev/validate-templates.sh")
+        if pipeline_script.exists():
+            pipeline_cmd = ["bash", str(pipeline_script), "--all", "--quiet"]
+            pipeline_result = _run_command(pipeline_cmd)
+            if pipeline_result.returncode != 0:
+                summary = (
+                    _summarize_process_output(pipeline_result)
+                    or "Template validation pipeline failed"
+                )
+                return False, summary
+            pipeline_summary = (
+                _summarize_process_output(pipeline_result)
+                or "Template validation pipeline completed"
+            )
+        else:
+            pipeline_summary = "Template validation pipeline skipped (script missing)"
+
+    sanity_cmd = ["bash", str(script), "--quiet"]
+    if skip_templates:
+        sanity_cmd.append("--skip-templates")
+
+    result = _run_command(sanity_cmd)
+    if result.returncode == 0:
+        detail = "Sanity check passed"
+        if include_templates:
+            if pipeline_summary:
+                detail = f"{detail} ({pipeline_summary})"
+            else:
+                detail = f"{detail} (template checks included)"
+        else:
+            detail = f"{detail} (template checks skipped)"
+        return True, detail
+
+    summary = _summarize_process_output(result) or "Review sanity-check output"
     return False, summary
 
 
@@ -834,7 +876,7 @@ def cmd_update() -> int:
         return 1
 
 
-def cmd_fix() -> int:
+def cmd_fix(skip_template_checks: bool = False) -> int:
     """Run intelligent heuristics to remediate common setup issues."""
     print("\n🧠 Intelligent Auto-Fix (beta)\n")
 
@@ -842,7 +884,6 @@ def cmd_fix() -> int:
         ("Project validation", _run_validation_check),
         ("Python environment", _ensure_virtualenv),
         ("pre-commit hooks", _install_precommit_hooks),
-        ("Sanity check", _run_sanity_check),
     ]
 
     results = []
@@ -854,6 +895,16 @@ def cmd_fix() -> int:
             success = False
             detail = str(exc)
         results.append((name, success, detail))
+
+    print("🔧 Sanity check...")
+    try:
+        sanity_success, sanity_detail = _run_sanity_check(
+            skip_templates=skip_template_checks
+        )
+    except Exception as exc:  # noqa: BLE001
+        sanity_success = False
+        sanity_detail = str(exc)
+    results.append(("Sanity check", sanity_success, sanity_detail))
 
     print("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     print(" Fix Summary")
@@ -915,7 +966,17 @@ def main() -> int:
     subparsers.add_parser("update", help="Update project from template using Cruft")
 
     # fix command
-    subparsers.add_parser("fix", help="Run the intelligent auto-fix routine")
+    fix_parser = subparsers.add_parser(
+        "fix", help="Run the intelligent auto-fix routine"
+    )
+    fix_parser.add_argument(
+        "--skip-template-checks",
+        action="store_true",
+        help=(
+            "Skip running the template validation pipeline during the auto-fix "
+            "routine."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -925,6 +986,9 @@ def main() -> int:
             return cmd_fix()
         return cmd_init()
 
+    if args.command == "fix":
+        return cmd_fix(skip_template_checks=getattr(args, "skip_template_checks", False))
+
     # Route to appropriate command
     commands = {
         "init": cmd_init,
@@ -933,7 +997,6 @@ def main() -> int:
         "doctor": cmd_doctor,
         "audit": cmd_audit,
         "update": cmd_update,
-        "fix": cmd_fix,
     }
 
     command_func = commands.get(args.command)
@@ -943,7 +1006,7 @@ def main() -> int:
 
     result = command_func()
 
-    if args.fix and args.command != "fix":
+    if args.fix:
         fix_result = cmd_fix()
         return result if result != 0 else fix_result
 

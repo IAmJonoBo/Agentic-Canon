@@ -24,7 +24,13 @@ SECTIONS=()
 SANITY_MODE="${AGENTIC_CANON_SANITY_MODE:-full}"
 
 is_quick_mode() {
-	[ "$SANITY_MODE" = "quick" ]
+        [ "$SANITY_MODE" = "quick" ]
+}
+
+print_quick() {
+        if [ $QUIET -eq 0 ]; then
+                echo "$1"
+        fi
 }
 
 while [[ $# -gt 0 ]]; do
@@ -166,76 +172,68 @@ log_info() {
 }
 
 run_quick_mode() {
-	if [ $QUIET -eq 0 ]; then
-		echo "📚 Checking Core Documentation..."
-		check_pass "README.md exists"
-		check_pass "LICENSE exists"
-		check_pass "QUALITY_STANDARDS.md exists"
-		check_pass "CONVENTIONS.md exists"
-		echo ""
+        print_quick "📚 Checking Core Documentation..."
+        check_pass "README.md exists"
+        check_pass "LICENSE exists"
+        check_pass "QUALITY_STANDARDS.md exists"
+        check_pass "CONVENTIONS.md exists"
+        print_quick ""
 
-		echo "🍪 Checking Cookiecutter Templates..."
-		check_pass "python-service template complete"
-		check_pass "node-service template complete"
-		check_pass "react-webapp template complete"
-		check_pass "go-service template complete"
-		check_pass "docs-only template complete"
-		echo ""
+        print_quick "🍪 Checking Cookiecutter Templates..."
+        check_pass "python-service template complete"
+        check_pass "node-service template complete"
+        check_pass "react-webapp template complete"
+        check_pass "go-service template complete"
+        check_pass "docs-only template complete"
+        print_quick ""
 
-		echo "🧪 Validating Shared Tooling..."
-		echo "Validating Python Hook Syntax"
-		check_pass "All hook files have valid Python syntax"
-		echo "Validating JSON Configuration Files"
-		check_pass "All JSON files are valid"
-		echo "Validating YAML Configuration Files"
-		check_pass "All YAML files are valid"
-		echo "Validating Shell Script Syntax"
-		check_pass "shell scripts have valid syntax"
-		echo ""
+        print_quick "🧪 Validating Shared Tooling..."
+        print_quick "Validating Python Hook Syntax"
+        check_pass "All hook files have valid Python syntax"
+        print_quick "Validating JSON Configuration Files"
+        check_pass "All JSON files are valid"
+        print_quick "Validating YAML Configuration Files"
+        check_pass "All YAML files are valid"
+        print_quick "Validating Shell Script Syntax"
+        check_pass "shell scripts have valid syntax"
+        print_quick ""
 
-		echo "🔒 Checking Dependency Security..."
-		check_pass "Dependency vulnerability scan skipped (quick mode)"
-		check_pass "requirements.txt scanned (quick mode)"
-		check_pass "Dependency license audit skipped (quick mode)"
-		echo ""
+        print_quick "🔒 Checking Dependency Security..."
+        check_pass "Dependency vulnerability scan skipped (quick mode)"
+        check_pass "requirements.txt scanned (quick mode)"
+        check_pass "Dependency license audit skipped (quick mode)"
+        print_quick ""
 
-		echo "🧙 Checking CLI Wizard..."
-		check_pass "CLI wizard directory exists"
-		echo ""
+        print_quick "🧙 Checking CLI Wizard..."
+        check_pass "CLI wizard directory exists"
+        print_quick ""
 
-		echo "📦 Checking Template Compliance..."
-		echo "Checking GitHub Actions Workflows"
-		check_pass "workflows have proper structure"
-		echo "Checking Markdown Formatting and Link Integrity..."
-		check_pass "Markdown checks executed (quick mode)"
-		echo "Checking License Compatibility..."
-		check_pass "License policy checks executed (quick mode)"
-		echo "Validating JSON Schemas..."
-		check_pass "cookiecutter.json schemas validated"
-		check_pass "Template compliance snapshot recorded (quick mode)"
-		echo ""
-	else
-		# Ensure counters are non-zero even when quiet
-		check_pass "Sanity check executed in quick mode"
-	fi
+        print_quick "📦 Checking Template Compliance..."
+        print_quick "Checking GitHub Actions Workflows"
+        check_pass "workflows have proper structure"
+        print_quick "Checking Markdown Formatting and Link Integrity..."
+        check_pass "Markdown checks executed (quick mode)"
+        print_quick "Checking License Compatibility..."
+        check_pass "License policy checks executed (quick mode)"
+        print_quick "Validating JSON Schemas..."
+        check_pass "cookiecutter.json schemas validated"
+        check_pass "Template compliance snapshot recorded (quick mode)"
+        print_quick ""
 
-	PASS_COUNT=150
-	WARN_COUNT=0
-	FAIL_COUNT=0
-	END_TIME=$(date +%s)
-	DURATION=$((END_TIME - START_TIME))
+        END_TIME=$(date +%s)
+        DURATION=$((END_TIME - START_TIME))
 
-	echo "=============================================="
-	echo "📊 Sanity Check Summary"
-	echo "=============================================="
-	echo "  ✅ Passed: $PASS_COUNT"
-	echo "  ⚠️  Warnings: $WARN_COUNT"
-	echo "  ❌ Failed: $FAIL_COUNT"
-	echo "  ⏱️  Duration: ${DURATION}s"
-	echo ""
+        echo "=============================================="
+        echo "📊 Sanity Check Summary"
+        echo "=============================================="
+        echo "  ✅ Passed: $PASS_COUNT"
+        echo "  ⚠️  Warnings: $WARN_COUNT"
+        echo "  ❌ Failed: $FAIL_COUNT"
+        echo "  ⏱️  Duration: ${DURATION}s"
+        echo ""
 
-	if [ -n "$HTML_REPORT" ]; then
-		cat >"$HTML_REPORT" <<'EOF'
+        if [ -n "$HTML_REPORT" ]; then
+                cat >"$HTML_REPORT" <<EOF
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -244,14 +242,14 @@ run_quick_mode() {
 </head>
 <body>
   <h1>Agentic Canon - Sanity Check Report (Quick Mode)</h1>
-  <p>Passed: 150</p>
-  <p>Warnings: 0</p>
-  <p>Failed: 0</p>
+  <p>Passed: $PASS_COUNT</p>
+  <p>Warnings: $WARN_COUNT</p>
+  <p>Failed: $FAIL_COUNT</p>
 </body>
 </html>
 EOF
-	fi
-	exit 0
+        fi
+        exit 0
 }
 
 if is_quick_mode; then

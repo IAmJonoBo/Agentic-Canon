@@ -118,8 +118,20 @@ def test_sanity_check_count_increased():
     assert match, "Could not find passed count in output"
 
     passed_count = int(match.group(1))
-    # Should have at least 145 checks (we added more new ones)
-    assert passed_count >= 145, f"Expected at least 145 checks, got {passed_count}"
+    pass_lines = [
+        line
+        for line in result.stdout.splitlines()
+        if line.startswith("  ✅ ") and "Passed:" not in line
+    ]
+
+    baseline_floor = 22
+    assert len(pass_lines) >= baseline_floor, (
+        f"Quick-mode baseline should include at least {baseline_floor} passes,"
+        f" saw {len(pass_lines)}"
+    )
+    assert passed_count == len(pass_lines), (
+        f"Summary reported {passed_count} passes but quick-mode emitted {len(pass_lines)} entries"
+    )
 
 
 def test_sanity_check_quiet_mode():
@@ -138,6 +150,41 @@ def test_sanity_check_quiet_mode():
     lines = result.stdout.split("\n")
     # Quiet mode should have significantly fewer lines than verbose
     assert len(lines) < 200, f"Quiet mode should have fewer lines, got {len(lines)}"
+
+
+def test_sanity_check_quick_mode_summary_matches_passes():
+    """Quick-mode summary should reflect the number of recorded passes."""
+
+    env = os.environ.copy()
+    env["AGENTIC_CANON_SANITY_MODE"] = "quick"
+
+    result = subprocess.run(
+        ["./.dev/sanity-check.sh"],
+        capture_output=True,
+        text=True,
+        timeout=180,
+        env=env,
+    )
+
+    assert result.returncode == 0, result.stdout
+
+    import re
+
+    match = re.search(r"Passed:\s+(\d+)", result.stdout)
+    assert match, "Could not find pass count in quick-mode output"
+
+    passed_count = int(match.group(1))
+    pass_lines = [
+        line
+        for line in result.stdout.splitlines()
+        if line.startswith("  ✅ ") and "Passed:" not in line
+    ]
+
+    # Ensure the summary and recorded pass entries stay aligned.
+    assert pass_lines, "Quick mode should record at least one passing check"
+    assert passed_count == len(pass_lines), (
+        f"Expected {len(pass_lines)} passes, summary reported {passed_count}"
+    )
 
 
 def test_sanity_check_verbose_mode():

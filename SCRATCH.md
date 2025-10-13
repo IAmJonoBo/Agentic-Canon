@@ -27,6 +27,7 @@ Solidify template validation so every run performs manifest sync, template rende
 - Added regression tests for `.dev/validate-templates.sh` verifying PYTHONPATH bootstrapping and `--skip-safe-pip` behavior, protecting the new shell flow from regressions.【5cd380†L1-L2】
 - Added a cookiecutter regression to assert rendered Python projects keep Ruff configuration under `[tool.ruff.lint]`, preventing deprecated schema warnings.【F:tests/test_cookiecutters.py†L41-L72】
 - Re-ran `pip-audit` after invoking the safe pip helper; upstream advisory is mitigated locally (chunk aa754c).
+- Quick-mode sanity check now derives its summary from the recorded pass list, and the new regression in `tests/test_sanity_check.py` keeps the quick-mode counter aligned with the scripted checks.
 
 ### 1. Add Unified Validation Session
 

@@ -38,6 +38,7 @@
 - [x] Added regression coverage ensuring `.dev/validate-templates.sh` seeds PYTHONPATH and respects skip flags (`tests/test_validate_templates_script.py`, chunk 5cd380)
 - [x] Added Ruff config regression coverage for the Python template to guard against deprecated settings (chunk e8dedd)
 - [x] Reviewed template standards/docs to extract cookiecutter + boilerplate quality expectations for upcoming CLI alignment (see TEMPLATE_STANDARDS.md)
+- [x] Ensured quick-mode sanity summary stays synchronized with recorded passes and captured regression coverage (`tests/test_sanity_check.py`, pytest chunk cd2c27)
 
 ## Deliverables
 
@@ -75,7 +76,7 @@
 - [ ] Monitor baseline command health; security gate now green after safe pip upgrade (chunk aa754c)
 - [ ] React Storybook 8 upgrade: confirm docs/changelog guidance added for template consumers
 - [ ] Replace temporary SAFE_PIP_SPEC pin once upstream pip publishes a patched release
-- [ ] Quick-mode sanity `PASS_COUNT` (150) must be kept in sync with future script additions
+- [x] Quick-mode sanity summary now derives from recorded passes (guarded by `tests/test_sanity_check.py::test_sanity_check_quick_mode_summary_matches_passes`, pytest chunk cd2c27)
 - [ ] Evaluate adding targeted tests for `.dev/sanity-check.sh` quick-mode output to prevent regressions
 - [ ] `pip-audit` virtualenv bootstrap occasionally hangs; investigate caching/timeout strategy before gating CI
 - [ ] Template formatting drift (`ruff format --check`) spans shared hooks/notebooks; monitor templated placeholders ahead of strict enforcement (chunk 56fb10)

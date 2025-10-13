@@ -42,9 +42,7 @@ def _require_tool(
         return
 
     version_args = version_args or ["--version"]
-    result = subprocess.run(
-        [tool, *version_args], capture_output=True, text=True, check=True
-    )
+    result = subprocess.run([tool, *version_args], capture_output=True, text=True, check=True)
     raw = result.stdout.strip() or result.stderr.strip()
     if parse is not None:
         raw = parse(raw)
@@ -186,9 +184,7 @@ def test_react_webapp_template_end_to_end(tmp_path: Path) -> None:
 @pytest.mark.slow
 def test_go_service_template_end_to_end(tmp_path: Path) -> None:
     """Bake the Go service template and execute go test."""
-    _require_tool(
-        "go", version_args=["version"], min_version="1.21.0", parse=_parse_go_version
-    )
+    _require_tool("go", version_args=["version"], min_version="1.21.0", parse=_parse_go_version)
 
     project_path = _cookiecutter_bake(
         "go-service",

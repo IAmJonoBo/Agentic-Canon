@@ -90,9 +90,30 @@ templates:
         node:
           enabled: false
         pip:
-          enabled: false
+          enabled: true
+          command:
+            - bash
+            - -lc
+            - >-
+              python -m venv .venv &&
+              source .venv/bin/activate &&
+              pip install --upgrade pip setuptools wheel &&
+              pip install -e .[dev]
         go:
           enabled: false
+    quality:
+      type:
+        - name: python-mypy
+          run:
+            - bash
+            - -lc
+            - source .venv/bin/activate && python -m mypy src
+      security:
+        - name: python-pip-audit
+          run:
+            - bash
+            - -lc
+            - source .venv/bin/activate && pip-audit --progress-spinner off .
 
   node-service:
     root: templates/node-service
@@ -158,6 +179,24 @@ templates:
           enabled: false
         go:
           enabled: false
+    quality:
+      type:
+        - name: node-tsc
+          run:
+            - npm
+            - run
+            - typecheck
+          env:
+            CI: "true"
+      security:
+        - name: node-audit
+          run:
+            - npm
+            - audit
+            - --omit=dev
+            - --audit-level=high
+          env:
+            CI: "true"
 
   react-webapp:
     root: templates/react-webapp
@@ -244,6 +283,24 @@ templates:
           enabled: false
         go:
           enabled: false
+    quality:
+      type:
+        - name: react-tsc
+          run:
+            - npm
+            - run
+            - typecheck
+          env:
+            CI: "true"
+      security:
+        - name: react-audit
+          run:
+            - npm
+            - audit
+            - --omit=dev
+            - --audit-level=high
+          env:
+            CI: "true"
 
   go-service:
     root: templates/go-service
@@ -307,6 +364,13 @@ templates:
             - download
           env:
             GOMODCACHE: .cache/go
+    quality:
+      type:
+        - name: go-vet
+          run:
+            - go
+            - vet
+            - ./...
 
   docs-only:
     root: templates/docs-only

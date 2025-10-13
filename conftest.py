@@ -71,9 +71,7 @@ def bake_template(cookies):
     """Bake templates with an in-memory cache to avoid re-rendering."""
 
     def _bake(template: str, extra_context: dict[str, Any]):
-        cache_key = json.dumps(
-            {"template": template, "context": extra_context}, sort_keys=True
-        )
+        cache_key = json.dumps({"template": template, "context": extra_context}, sort_keys=True)
         cached = _BAKE_CACHE.get(cache_key)
         if cached is not None:
             return cached

@@ -4,6 +4,7 @@
 Validates all user inputs before generating the project to ensure
 consistency, security, and standards compliance.
 """
+
 import re
 import sys
 
@@ -30,9 +31,7 @@ def validate_project_slug(slug):
 
 
 def validate_email(email, field_name="email"):
-    if not email or not re.match(
-        r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email
-    ):
+    if not email or not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email):
         print(f"ERROR: {field_name} must be a valid email address")
         print("Examples: user@example.com, dev@company.io")
         sys.exit(1)
@@ -40,15 +39,8 @@ def validate_email(email, field_name="email"):
 
 
 def validate_author_name(name):
-    if (
-        not name
-        or not name.strip()
-        or len(name.strip()) < 2
-        or not re.search(r"[a-zA-Z]", name)
-    ):
-        print(
-            "ERROR: author_name must be a valid name (at least 2 characters with letters)"
-        )
+    if not name or not name.strip() or len(name.strip()) < 2 or not re.search(r"[a-zA-Z]", name):
+        print("ERROR: author_name must be a valid name (at least 2 characters with letters)")
         sys.exit(1)
     print(f"✓ Validated author_name: {name}")
 

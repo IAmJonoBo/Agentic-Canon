@@ -200,3 +200,35 @@ cookiecutter hooks, and CI pipelines fully aligned.
 
   Add `--format` if you want the script to invoke `trunk fmt --all` automatically when it detects
   unformatted files.
+
+- End-to-end template tests cache rendered projects and `node_modules` under
+  `~/.cache/agentic-canon` (override with `AGENTIC_CANON_CACHE_DIR`). Delete that directory if you
+  ever need a completely clean run.
+
+### Nox Sessions
+
+We provide dedicated Nox sessions for each major sanity-check section. Examples:
+
+```bash
+pip install nox             # one-time setup (if not already installed)
+nox -s sanity                  # full run
+nox -s sanity_core             # docs/config checks only
+nox -s sanity_templates        # cookiecutter structure checks
+nox -s sanity_tests            # template/unit test coverage
+nox -s tests                   # pytest -n auto (xdist)
+```
+
+Sections currently supported: `core`, `templates`, `examples`, `dashboards`, `videos`, `cloud`,
+`cli`, and `tests`.
+
+### Make Targets
+
+For quick local orchestration (and simple parallel execution) there is also a lightweight
+`Makefile`:
+
+```bash
+make sanity-all            # run every section sequentially
+make -j4 sanity-all        # run sections in parallel where safe
+make sanity-core           # run a specific section
+make sanity-fast           # core + templates + tests
+```

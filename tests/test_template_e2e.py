@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import contextlib
+import hashlib
+import json
 import os
 import shutil
 import subprocess
@@ -15,6 +18,37 @@ cookiecutter_main = pytest.importorskip(
     reason="cookiecutter is required for template integration tests",
 )
 cookiecutter = cookiecutter_main.cookiecutter
+
+
+CACHE_ROOT = Path(
+    os.environ.get("AGENTIC_CANON_CACHE_DIR", Path.home() / ".cache" / "agentic-canon")
+)
+TEMPLATE_CACHE_DIR = CACHE_ROOT / "templates"
+NODE_CACHE_DIR = CACHE_ROOT / "node_modules"
+
+TEMPLATE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+NODE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
+try:  # pragma: no cover - platform dependent
+    import fcntl
+except ImportError:  # pragma: no cover - Windows fallback
+    fcntl = None
+
+
+@contextlib.contextmanager
+def _file_lock(lock_path: Path):
+    if fcntl is None:
+        yield
+        return
+
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    fd = os.open(lock_path, os.O_CREAT | os.O_RDWR)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        yield
+    finally:
+        fcntl.flock(fd, fcntl.LOCK_UN)
+        os.close(fd)
 
 
 def _run(cmd: list[str], cwd: Path, env: dict[str, str] | None = None) -> None:
@@ -56,14 +90,39 @@ def _cookiecutter_bake(
     extra_context: dict[str, str],
 ) -> Path:
     template_dir = Path(__file__).resolve().parents[1] / "templates" / template_name
-    cookiecutter(
-        str(template_dir),
-        no_input=True,
-        extra_context=extra_context,
-        output_dir=str(tmp_path),
-    )
     slug = extra_context["project_slug"]
-    return tmp_path / slug
+    project_path = tmp_path / slug
+
+    cache_key = hashlib.sha256(
+        json.dumps({"template": template_name, "context": extra_context}, sort_keys=True).encode()
+    ).hexdigest()
+    cache_dir = TEMPLATE_CACHE_DIR / template_name / cache_key
+    lock_file = cache_dir.with_suffix(".lock")
+
+    if cache_dir.exists():
+        shutil.copytree(cache_dir, project_path, dirs_exist_ok=True)
+        return project_path
+
+    cache_dir.parent.mkdir(parents=True, exist_ok=True)
+    with _file_lock(lock_file):
+        if cache_dir.exists():
+            shutil.copytree(cache_dir, project_path, dirs_exist_ok=True)
+            return project_path
+
+        cookiecutter(
+            str(template_dir),
+            no_input=True,
+            extra_context=extra_context,
+            output_dir=str(tmp_path),
+        )
+
+        cache_tmp = cache_dir.with_suffix(".tmp")
+        if cache_tmp.exists():
+            shutil.rmtree(cache_tmp)
+        shutil.copytree(project_path, cache_tmp, dirs_exist_ok=True)
+        os.replace(cache_tmp, cache_dir)
+
+    return project_path
 
 
 def _parse_node_version(output: str) -> str:
@@ -76,6 +135,33 @@ def _parse_go_version(output: str) -> str:
         if token.startswith("go") and len(token) > 2 and token[2].isdigit():
             return token[2:]
     return "0"
+
+
+def _cache_node_modules(project_path: Path, env: dict[str, str]) -> None:
+    lockfile = project_path / "package-lock.json"
+    if lockfile.exists():
+        key_source = lockfile.read_bytes()
+    else:
+        key_source = (project_path / "package.json").read_bytes()
+
+    digest = hashlib.sha256(key_source).hexdigest()
+    cache_dir = NODE_CACHE_DIR / digest
+    lock_file = cache_dir.with_suffix(".lock")
+    node_modules = project_path / "node_modules"
+
+    with _file_lock(lock_file):
+        if cache_dir.exists():
+            if node_modules.exists():
+                shutil.rmtree(node_modules)
+            shutil.copytree(cache_dir, node_modules, dirs_exist_ok=True)
+            return
+
+        _run(["npm", "install", "--no-fund", "--no-audit"], cwd=project_path, env=env)
+        cache_tmp = cache_dir.with_suffix(".tmp")
+        if cache_tmp.exists():
+            shutil.rmtree(cache_tmp)
+        shutil.copytree(node_modules, cache_tmp, dirs_exist_ok=True)
+        os.replace(cache_tmp, cache_dir)
 
 
 @pytest.mark.slow
@@ -104,7 +190,7 @@ def test_node_service_template_end_to_end(tmp_path: Path) -> None:
     env = os.environ.copy()
     env.setdefault("CI", "true")
 
-    _run(["npm", "install", "--no-fund", "--no-audit"], cwd=project_path, env=env)
+    _cache_node_modules(project_path, env)
     _run(
         ["npm", "run", "test", "--", "--run", "--coverage.enabled", "false"],
         cwd=project_path,
@@ -138,7 +224,7 @@ def test_react_webapp_template_end_to_end(tmp_path: Path) -> None:
     env = os.environ.copy()
     env.setdefault("CI", "true")
 
-    _run(["npm", "install", "--no-fund", "--no-audit"], cwd=project_path, env=env)
+    _cache_node_modules(project_path, env)
     _run(["npm", "run", "build"], cwd=project_path, env=env)
     _run(
         ["npm", "run", "test", "--", "--run", "--passWithNoTests"],

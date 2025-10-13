@@ -19,6 +19,7 @@ HTML_REPORT=""
 AUTO_FORMAT=0
 SKIP_TEMPLATES=0
 START_TIME=$(date +%s)
+SECTIONS=()
 
 while [[ $# -gt 0 ]]; do
 	case $1 in
@@ -47,6 +48,21 @@ while [[ $# -gt 0 ]]; do
 		AUTO_FORMAT=1
 		shift
 		;;
+	--section)
+		SECTIONS+=("$2")
+		shift 2
+		;;
+	--sections)
+		IFS=',' read -r -a __sections <<<"$2"
+		for __section in "${__sections[@]}"; do
+			__section_trim=$(echo "$__section" | tr -d ' \t')
+			if [ -n "$__section_trim" ]; then
+				SECTIONS+=("$__section_trim")
+			fi
+		done
+		unset __sections __section __section_trim
+		shift 2
+		;;
 	--help | -h)
 		echo "Usage: $0 [OPTIONS]"
 		echo ""
@@ -56,6 +72,9 @@ while [[ $# -gt 0 ]]; do
 		echo "  --parallel, -p     Enable parallel execution for faster checks"
 		echo "  --skip-templates   Skip template-specific validation checks"
 		echo "  --format           Apply trunk auto-formatting (runs 'trunk fmt --all')"
+		echo "  --section NAME     Run only the specified sanity-check section (can be repeated)"
+		echo "  --sections a,b,c   Comma-separated list of sections to run"
+		echo "     Sections: core, templates, examples, dashboards, videos, cloud, cli, tests"
 		echo "  --html-report FILE Generate HTML report to specified file"
 		echo "  --help, -h         Show this help message"
 		exit 0
@@ -80,6 +99,19 @@ WARN_COUNT=0
 
 # Array to store all check results for HTML report
 declare -a CHECK_RESULTS
+
+should_run() {
+	local section="$1"
+	if [ ${#SECTIONS[@]} -eq 0 ]; then
+		return 0
+	fi
+	for candidate in "${SECTIONS[@]}"; do
+		if [ "$candidate" = "$section" ]; then
+			return 0
+		fi
+	done
+	return 1
+}
 
 # Determine which Python interpreter to use
 if [ -x ".venv/bin/python" ]; then
@@ -124,666 +156,682 @@ log_info() {
 }
 
 # 1. Core Documentation
-echo "📚 Checking Core Documentation..."
-for file in README.md TASKS.md SUMMARY.md V110-V200-SUMMARY.md CHANGELOG.md LICENSE; do
-	if [ -f "$file" ]; then
-		check_pass "$file exists"
-	else
-		check_fail "$file missing"
-	fi
-done
-echo ""
-
-# 1.1. Framework Documentation (Standards Compliance)
-echo "📋 Checking Framework Documentation (Standards Compliance)..."
-framework_docs=(
-	"FRAMEWORK.md"
-	"QUALITY_STANDARDS.md"
-	"CONVENTIONS.md"
-	"CONTRIBUTING.md"
-	"SECURITY.md"
-)
-
-for doc in "${framework_docs[@]}"; do
-	if [ -f "$doc" ]; then
-		check_pass "$doc exists"
-	else
-		check_fail "$doc missing (required by framework standards)"
-	fi
-done
-echo ""
-
-# 1.5. Python Syntax Validation for Hooks
-echo "🐍 Validating Python Hook Syntax..."
-hook_syntax_errors=0
-for hook_file in templates/*/hooks/*.py templates/_shared/*.py; do
-	if [ -f "$hook_file" ]; then
-		if [ $SKIP_TEMPLATES -eq 1 ] && [[ $hook_file == templates/* ]]; then
-			[ $VERBOSE -eq 1 ] && check_warn "Skipping template hook syntax: $(basename "$hook_file")"
-			continue
-		fi
-		if grep -q "{{" "$hook_file"; then
-			[ $VERBOSE -eq 1 ] && check_warn "Skipping templated hook syntax: $(basename "$hook_file")"
-			continue
-		fi
-		if "$PYTHON_BIN" -m py_compile "$hook_file" 2>/dev/null; then
-			check_pass "$(basename $hook_file) syntax valid"
+if should_run "core"; then
+	echo "📚 Checking Core Documentation..."
+	for file in README.md TASKS.md SUMMARY.md V110-V200-SUMMARY.md CHANGELOG.md LICENSE; do
+		if [ -f "$file" ]; then
+			check_pass "$file exists"
 		else
-			check_fail "$(basename $hook_file) has syntax errors"
-			hook_syntax_errors=$((hook_syntax_errors + 1))
+			check_fail "$file missing"
 		fi
-	fi
-done
+	done
+	echo ""
 
-if [ $hook_syntax_errors -eq 0 ]; then
-	check_pass "All hook files have valid Python syntax"
-fi
-echo ""
+	# 1.1. Framework Documentation (Standards Compliance)
+	echo "📋 Checking Framework Documentation (Standards Compliance)..."
+	framework_docs=(
+		"FRAMEWORK.md"
+		"QUALITY_STANDARDS.md"
+		"CONVENTIONS.md"
+		"CONTRIBUTING.md"
+		"SECURITY.md"
+	)
 
-# 1.6. JSON Validation for Configuration Files
-echo "📋 Validating JSON Configuration Files..."
-json_errors=0
-for json_file in templates/*/cookiecutter.json examples/dashboards/*.json; do
-	if [ -f "$json_file" ]; then
-		if [[ $json_file == templates/* ]] && [ $SKIP_TEMPLATES -eq 1 ]; then
-			[ $VERBOSE -eq 1 ] && check_warn "Skipping template JSON validation: $(basename "$json_file")"
-			continue
-		fi
-		if grep -q "{{" "$json_file"; then
-			[ $VERBOSE -eq 1 ] && check_warn "Skipping templated JSON file: $(basename "$json_file")"
-			continue
-		fi
-		if "$PYTHON_BIN" -m json.tool "$json_file" >/dev/null 2>&1; then
-			check_pass "$(basename $json_file) is valid JSON"
+	for doc in "${framework_docs[@]}"; do
+		if [ -f "$doc" ]; then
+			check_pass "$doc exists"
 		else
-			check_fail "$(basename $json_file) has JSON errors"
+			check_fail "$doc missing (required by framework standards)"
+		fi
+	done
+	echo ""
+
+	# 1.5. Python Syntax Validation for Hooks
+	echo "🐍 Validating Python Hook Syntax..."
+	hook_syntax_errors=0
+	for hook_file in templates/*/hooks/*.py templates/_shared/*.py; do
+		if [ -f "$hook_file" ]; then
+			if [ $SKIP_TEMPLATES -eq 1 ] && [[ $hook_file == templates/* ]]; then
+				[ $VERBOSE -eq 1 ] && check_warn "Skipping template hook syntax: $(basename "$hook_file")"
+				continue
+			fi
+			if grep -q "{{" "$hook_file"; then
+				[ $VERBOSE -eq 1 ] && check_warn "Skipping templated hook syntax: $(basename "$hook_file")"
+				continue
+			fi
+			if "$PYTHON_BIN" -m py_compile "$hook_file" 2>/dev/null; then
+				check_pass "$(basename $hook_file) syntax valid"
+			else
+				check_fail "$(basename $hook_file) has syntax errors"
+				hook_syntax_errors=$((hook_syntax_errors + 1))
+			fi
+		fi
+	done
+
+	if [ $hook_syntax_errors -eq 0 ]; then
+		check_pass "All hook files have valid Python syntax"
+	fi
+	echo ""
+
+	# 1.6. JSON Validation for Configuration Files
+	echo "📋 Validating JSON Configuration Files..."
+	json_errors=0
+	for json_file in templates/*/cookiecutter.json examples/dashboards/*.json; do
+		if [ -f "$json_file" ]; then
+			if [[ $json_file == templates/* ]] && [ $SKIP_TEMPLATES -eq 1 ]; then
+				[ $VERBOSE -eq 1 ] && check_warn "Skipping template JSON validation: $(basename "$json_file")"
+				continue
+			fi
+			if grep -q "{{" "$json_file"; then
+				[ $VERBOSE -eq 1 ] && check_warn "Skipping templated JSON file: $(basename "$json_file")"
+				continue
+			fi
+			if "$PYTHON_BIN" -m json.tool "$json_file" >/dev/null 2>&1; then
+				check_pass "$(basename $json_file) is valid JSON"
+			else
+				check_fail "$(basename $json_file) has JSON errors"
+				json_errors=$((json_errors + 1))
+			fi
+		fi
+	done
+
+	# Special handling for control-traceability-matrix.json (has comments)
+	if [ -f "control-traceability-matrix.json" ]; then
+		# Strip comment lines and validate
+		if grep -v '^#' control-traceability-matrix.json | "$PYTHON_BIN" -m json.tool >/dev/null 2>&1; then
+			check_pass "control-traceability-matrix.json is valid JSON (ignoring comments)"
+		else
+			check_fail "control-traceability-matrix.json has JSON errors"
 			json_errors=$((json_errors + 1))
 		fi
 	fi
-done
 
-# Special handling for control-traceability-matrix.json (has comments)
-if [ -f "control-traceability-matrix.json" ]; then
-	# Strip comment lines and validate
-	if grep -v '^#' control-traceability-matrix.json | "$PYTHON_BIN" -m json.tool >/dev/null 2>&1; then
-		check_pass "control-traceability-matrix.json is valid JSON (ignoring comments)"
+	if [ $json_errors -eq 0 ]; then
+		check_pass "All JSON files are valid"
+	fi
+	echo ""
+
+	# 1.6.1. Trunk Linting/Formatting
+	echo "🧹 Running Trunk Linting..."
+	if ! command -v trunk >/dev/null 2>&1; then
+		check_warn "trunk CLI not found; skipping formatting check"
 	else
-		check_fail "control-traceability-matrix.json has JSON errors"
-		json_errors=$((json_errors + 1))
-	fi
-fi
-
-if [ $json_errors -eq 0 ]; then
-	check_pass "All JSON files are valid"
-fi
-echo ""
-
-# 1.6.1. Trunk Linting/Formatting
-echo "🧹 Running Trunk Linting..."
-if ! command -v trunk >/dev/null 2>&1; then
-	check_warn "trunk CLI not found; skipping formatting check"
-else
-	tmp_output=$(mktemp)
-	if [ $AUTO_FORMAT -eq 1 ]; then
-		if trunk fmt --all >"$tmp_output" 2>&1; then
-			check_pass "Trunk auto-formatting applied successfully"
-			[ $VERBOSE -eq 1 ] && cat "$tmp_output"
-		else
-			check_fail "Trunk auto-formatting failed"
-			cat "$tmp_output"
-		fi
-	else
-		if trunk fmt --all --ci >"$tmp_output" 2>&1; then
-			check_pass "Trunk formatting check passed"
-			[ $VERBOSE -eq 1 ] && cat "$tmp_output"
-		else
-			check_fail "Trunk formatting check detected issues (run with --format to auto-fix)"
-			cat "$tmp_output"
-		fi
-	fi
-	rm -f "$tmp_output"
-fi
-echo ""
-
-# 1.7. YAML Validation for Workflow and Configuration Files
-echo "🔧 Validating YAML Configuration Files..."
-yaml_errors=0
-yaml_count=0
-yaml_skipped=0
-for yaml_file in .github/workflows/*.yml examples/*/*.yml examples/*/*.yaml \
-	examples/dashboards/*.yaml; do
-	if [ -f "$yaml_file" ]; then
-		yaml_count=$((yaml_count + 1))
-		# Skip template files with cookiecutter variables
-		if grep -q "{{" "$yaml_file" 2>/dev/null; then
-			yaml_skipped=$((yaml_skipped + 1))
-			continue
-		fi
-		if "$PYTHON_BIN" -c "import yaml; yaml.safe_load(open('$yaml_file'))" >/dev/null 2>&1; then
-			# Only show validation for a sample to avoid cluttering output
-			if [ $yaml_count -le 5 ]; then
-				check_pass "$(basename $yaml_file) is valid YAML"
-			fi
-		else
-			check_fail "$yaml_file has YAML errors"
-			yaml_errors=$((yaml_errors + 1))
-		fi
-	fi
-done
-
-if [ $yaml_errors -eq 0 ]; then
-	validated_count=$((yaml_count - yaml_skipped))
-	check_pass "All $validated_count non-template YAML files are valid ($yaml_skipped template files skipped)"
-fi
-echo ""
-
-# 1.8. Shared Validation Module Check
-echo "🔧 Checking Shared Validation Module..."
-if [ -f "templates/_shared/validation.py" ]; then
-	check_pass "Shared validation module exists"
-	if "$PYTHON_BIN" templates/_shared/validation.py >/dev/null 2>&1; then
-		check_pass "Validation module self-tests pass"
-	else
-		check_warn "Validation module self-tests failed"
-	fi
-else
-	check_warn "Shared validation module not found"
-fi
-echo ""
-
-# 1.9. Shell Script Syntax Validation
-echo "🐚 Validating Shell Script Syntax..."
-shell_syntax_errors=0
-shell_count=0
-for shell_file in *.sh scripts/*.sh; do
-	if [ -f "$shell_file" ]; then
-		shell_count=$((shell_count + 1))
-		if bash -n "$shell_file" 2>/dev/null; then
-			check_pass "$(basename $shell_file) has valid syntax"
-		else
-			check_fail "$(basename $shell_file) has syntax errors"
-			shell_syntax_errors=$((shell_syntax_errors + 1))
-		fi
-
-		# Check if script is executable
-		if [ -x "$shell_file" ]; then
-			check_pass "$(basename $shell_file) is executable"
-		else
-			check_warn "$(basename $shell_file) is not executable (might be intentional)"
-		fi
-	fi
-done
-
-if [ $shell_syntax_errors -eq 0 ] && [ $shell_count -gt 0 ]; then
-	check_pass "All $shell_count shell scripts have valid syntax"
-elif [ $shell_count -eq 0 ]; then
-	check_warn "No shell scripts found in root or scripts/ directory"
-fi
-echo ""
-
-# 1.10. Pre-commit Configuration Validation
-echo "🔒 Validating Pre-commit Configuration..."
-if [ -f ".pre-commit-config.yaml" ]; then
-	check_pass ".pre-commit-config.yaml exists"
-	# Validate it's valid YAML
-	if "$PYTHON_BIN" -c "import yaml; yaml.safe_load(open('.pre-commit-config.yaml'))" >/dev/null 2>&1; then
-		check_pass ".pre-commit-config.yaml is valid YAML"
-	else
-		check_fail ".pre-commit-config.yaml has YAML errors"
-	fi
-
-	# Check if pre-commit is installed and can validate
-	if command -v pre-commit &>/dev/null; then
-		if pre-commit validate-config 2>/dev/null; then
-			check_pass "Pre-commit hooks configuration is valid"
-		else
-			check_warn "Pre-commit config may have issues (non-critical)"
-		fi
-	else
-		check_warn "pre-commit not installed, skipping validation"
-	fi
-else
-	check_warn ".pre-commit-config.yaml not found"
-fi
-echo ""
-
-# 1.11. Requirements Files Validation
-echo "📦 Validating Python Requirements Files..."
-req_errors=0
-for req_file in requirements.txt requirements-dev.txt */requirements*.txt; do
-	if [ -f "$req_file" ]; then
-		# Check if file is not empty
-		if [ -s "$req_file" ]; then
-			# Check for common issues (spaces around ==, invalid package names)
-			if grep -E "^\s+[a-zA-Z]|[a-zA-Z]\s+$" "$req_file" >/dev/null 2>&1; then
-				check_warn "$(basename $req_file) may have formatting issues (leading/trailing spaces)"
+		tmp_output=$(mktemp)
+		if [ $AUTO_FORMAT -eq 1 ]; then
+			if trunk fmt --all >"$tmp_output" 2>&1; then
+				check_pass "Trunk auto-formatting applied successfully"
+				[ $VERBOSE -eq 1 ] && cat "$tmp_output"
 			else
-				check_pass "$(basename $req_file) format looks good"
+				check_fail "Trunk auto-formatting failed"
+				cat "$tmp_output"
 			fi
 		else
-			check_warn "$(basename $req_file) is empty"
+			if trunk fmt --all --ci >"$tmp_output" 2>&1; then
+				check_pass "Trunk formatting check passed"
+				[ $VERBOSE -eq 1 ] && cat "$tmp_output"
+			else
+				check_fail "Trunk formatting check detected issues (run with --format to auto-fix)"
+				cat "$tmp_output"
+			fi
 		fi
+		rm -f "$tmp_output"
 	fi
-done
-echo ""
+	echo ""
 
-# 1.12. Check for Broken Symlinks
-echo "🔗 Checking for Broken Symlinks..."
-broken_symlinks=0
-while IFS= read -r -d '' symlink; do
-	if [ ! -e "$symlink" ]; then
-		check_fail "Broken symlink: $symlink"
-		broken_symlinks=$((broken_symlinks + 1))
+	# 1.7. YAML Validation for Workflow and Configuration Files
+	echo "🔧 Validating YAML Configuration Files..."
+	yaml_errors=0
+	yaml_count=0
+	yaml_skipped=0
+	for yaml_file in .github/workflows/*.yml examples/*/*.yml examples/*/*.yaml \
+		examples/dashboards/*.yaml; do
+		if [ -f "$yaml_file" ]; then
+			yaml_count=$((yaml_count + 1))
+			# Skip template files with cookiecutter variables
+			if grep -q "{{" "$yaml_file" 2>/dev/null; then
+				yaml_skipped=$((yaml_skipped + 1))
+				continue
+			fi
+			if "$PYTHON_BIN" -c "import yaml; yaml.safe_load(open('$yaml_file'))" >/dev/null 2>&1; then
+				# Only show validation for a sample to avoid cluttering output
+				if [ $yaml_count -le 5 ]; then
+					check_pass "$(basename $yaml_file) is valid YAML"
+				fi
+			else
+				check_fail "$yaml_file has YAML errors"
+				yaml_errors=$((yaml_errors + 1))
+			fi
+		fi
+	done
+
+	if [ $yaml_errors -eq 0 ]; then
+		validated_count=$((yaml_count - yaml_skipped))
+		check_pass "All $validated_count non-template YAML files are valid ($yaml_skipped template files skipped)"
 	fi
-done < <(find . -type l -print0 2>/dev/null)
+	echo ""
 
-if [ $broken_symlinks -eq 0 ]; then
-	check_pass "No broken symlinks found"
+	# 1.8. Shared Validation Module Check
+	echo "🔧 Checking Shared Validation Module..."
+	if [ -f "templates/_shared/validation.py" ]; then
+		check_pass "Shared validation module exists"
+		if "$PYTHON_BIN" templates/_shared/validation.py >/dev/null 2>&1; then
+			check_pass "Validation module self-tests pass"
+		else
+			check_warn "Validation module self-tests failed"
+		fi
+	else
+		check_warn "Shared validation module not found"
+	fi
+	echo ""
+
+	# 1.9. Shell Script Syntax Validation
+	echo "🐚 Validating Shell Script Syntax..."
+	shell_syntax_errors=0
+	shell_count=0
+	for shell_file in *.sh scripts/*.sh; do
+		if [ -f "$shell_file" ]; then
+			shell_count=$((shell_count + 1))
+			if bash -n "$shell_file" 2>/dev/null; then
+				check_pass "$(basename $shell_file) has valid syntax"
+			else
+				check_fail "$(basename $shell_file) has syntax errors"
+				shell_syntax_errors=$((shell_syntax_errors + 1))
+			fi
+
+			# Check if script is executable
+			if [ -x "$shell_file" ]; then
+				check_pass "$(basename $shell_file) is executable"
+			else
+				check_warn "$(basename $shell_file) is not executable (might be intentional)"
+			fi
+		fi
+	done
+
+	if [ $shell_syntax_errors -eq 0 ] && [ $shell_count -gt 0 ]; then
+		check_pass "All $shell_count shell scripts have valid syntax"
+	elif [ $shell_count -eq 0 ]; then
+		check_warn "No shell scripts found in root or scripts/ directory"
+	fi
+	echo ""
+
+	# 1.10. Pre-commit Configuration Validation
+	echo "🔒 Validating Pre-commit Configuration..."
+	if [ -f ".pre-commit-config.yaml" ]; then
+		check_pass ".pre-commit-config.yaml exists"
+		# Validate it's valid YAML
+		if "$PYTHON_BIN" -c "import yaml; yaml.safe_load(open('.pre-commit-config.yaml'))" >/dev/null 2>&1; then
+			check_pass ".pre-commit-config.yaml is valid YAML"
+		else
+			check_fail ".pre-commit-config.yaml has YAML errors"
+		fi
+
+		# Check if pre-commit is installed and can validate
+		if command -v pre-commit &>/dev/null; then
+			if pre-commit validate-config 2>/dev/null; then
+				check_pass "Pre-commit hooks configuration is valid"
+			else
+				check_warn "Pre-commit config may have issues (non-critical)"
+			fi
+		else
+			check_warn "pre-commit not installed, skipping validation"
+		fi
+	else
+		check_warn ".pre-commit-config.yaml not found"
+	fi
+	echo ""
+
+	# 1.11. Requirements Files Validation
+	echo "📦 Validating Python Requirements Files..."
+	req_errors=0
+	for req_file in requirements.txt requirements-dev.txt */requirements*.txt; do
+		if [ -f "$req_file" ]; then
+			# Check if file is not empty
+			if [ -s "$req_file" ]; then
+				# Check for common issues (spaces around ==, invalid package names)
+				if grep -E "^\s+[a-zA-Z]|[a-zA-Z]\s+$" "$req_file" >/dev/null 2>&1; then
+					check_warn "$(basename $req_file) may have formatting issues (leading/trailing spaces)"
+				else
+					check_pass "$(basename $req_file) format looks good"
+				fi
+			else
+				check_warn "$(basename $req_file) is empty"
+			fi
+		fi
+	done
+	echo ""
+
+	# 1.12. Check for Broken Symlinks
+	echo "🔗 Checking for Broken Symlinks..."
+	broken_symlinks=0
+	while IFS= read -r -d '' symlink; do
+		if [ ! -e "$symlink" ]; then
+			check_fail "Broken symlink: $symlink"
+			broken_symlinks=$((broken_symlinks + 1))
+		fi
+	done < <(find . -type l -print0 2>/dev/null)
+
+	if [ $broken_symlinks -eq 0 ]; then
+		check_pass "No broken symlinks found"
+	fi
+	echo ""
 fi
-echo ""
 
 # 2. Cookiecutter Templates (The big discovery!)
-if [ $SKIP_TEMPLATES -eq 1 ]; then
-	log_info "🍪 Checking Cookiecutter Templates... (skipped via --skip-templates)"
-	log_info ""
-	log_info "🏗️  Checking Template Structure (Standards Compliance)... (skipped)"
-	log_info ""
-	log_info "📊 Checking QUALITY_STANDARDS.md Compliance... (skipped)"
-	log_info ""
-	log_info "📝 Checking CONVENTIONS.md Compliance... (skipped)"
-	log_info ""
-	log_info "📦 Checking Additional Template Categories... (skipped)"
-	log_info ""
-	log_info "📖 Checking Template Documentation (Standards Compliance)... (skipped)"
-	log_info ""
-else
-	echo "🍪 Checking Cookiecutter Templates..."
-	templates=(
-		"python-service"
-		"node-service"
-		"react-webapp"
-		"go-service"
-		"docs-only"
-	)
+if should_run "templates"; then
+	if [ $SKIP_TEMPLATES -eq 1 ]; then
+		log_info "🍪 Checking Cookiecutter Templates... (skipped via --skip-templates)"
+		log_info ""
+		log_info "🏗️  Checking Template Structure (Standards Compliance)... (skipped)"
+		log_info ""
+		log_info "📊 Checking QUALITY_STANDARDS.md Compliance... (skipped)"
+		log_info ""
+		log_info "📝 Checking CONVENTIONS.md Compliance... (skipped)"
+		log_info ""
+		log_info "📦 Checking Additional Template Categories... (skipped)"
+		log_info ""
+		log_info "📖 Checking Template Documentation (Standards Compliance)... (skipped)"
+		log_info ""
+	else
+		echo "🍪 Checking Cookiecutter Templates..."
+		templates=(
+			"python-service"
+			"node-service"
+			"react-webapp"
+			"go-service"
+			"docs-only"
+		)
 
-	for template in "${templates[@]}"; do
-		if [ -d "templates/$template" ]; then
-			if [ -f "templates/$template/cookiecutter.json" ]; then
-				check_pass "$template template complete"
+		for template in "${templates[@]}"; do
+			if [ -d "templates/$template" ]; then
+				if [ -f "templates/$template/cookiecutter.json" ]; then
+					check_pass "$template template complete"
+				else
+					check_warn "$template directory exists but missing cookiecutter.json"
+				fi
 			else
-				check_warn "$template directory exists but missing cookiecutter.json"
+				check_fail "$template template missing"
 			fi
-		else
-			check_fail "$template template missing"
-		fi
-	done
-	echo ""
+		done
+		echo ""
 
-	# 2.1. Template Structure Standards Compliance
-	echo "🏗️  Checking Template Structure (Standards Compliance)..."
-	for template in "${templates[@]}"; do
-		if [ -d "templates/$template" ]; then
-			# Check for hooks directory
-			if [ -d "templates/$template/hooks" ]; then
-				check_pass "$template has hooks directory"
-			else
-				check_warn "$template missing hooks directory"
+		# 2.1. Template Structure Standards Compliance
+		echo "🏗️  Checking Template Structure (Standards Compliance)..."
+		for template in "${templates[@]}"; do
+			if [ -d "templates/$template" ]; then
+				# Check for hooks directory
+				if [ -d "templates/$template/hooks" ]; then
+					check_pass "$template has hooks directory"
+				else
+					check_warn "$template missing hooks directory"
+				fi
+
+				# Check for template project directory (cookiecutter pattern)
+				template_dirs=$(find "templates/$template" -maxdepth 1 -type d -name "{{cookiecutter.*}}" | wc -l)
+				if [ $template_dirs -gt 0 ]; then
+					check_pass "$template has cookiecutter project structure"
+
+					# For each template, check for essential files in the generated project
+					for proj_dir in templates/$template/{{cookiecutter.*}}/; do
+						if [ -d "$proj_dir" ]; then
+							# Check for .gitignore
+							if [ -f "${proj_dir}.gitignore" ]; then
+								check_pass "$template includes .gitignore"
+							else
+								check_warn "$template missing .gitignore in generated project"
+							fi
+
+							# Check for README.md
+							if [ -f "${proj_dir}README.md" ]; then
+								check_pass "$template includes README.md"
+							else
+								check_fail "$template missing README.md in generated project"
+							fi
+
+							# Check for CI/CD workflows (GitHub Actions)
+							if [ -d "${proj_dir}.github/workflows" ]; then
+								check_pass "$template includes CI/CD workflows"
+							else
+								check_warn "$template missing CI/CD workflows"
+							fi
+
+							break # Only check first match
+						fi
+					done
+				else
+					check_warn "$template missing cookiecutter project structure"
+				fi
 			fi
+		done
+		echo ""
 
-			# Check for template project directory (cookiecutter pattern)
-			template_dirs=$(find "templates/$template" -maxdepth 1 -type d -name "{{cookiecutter.*}}" | wc -l)
-			if [ $template_dirs -gt 0 ]; then
-				check_pass "$template has cookiecutter project structure"
-
-				# For each template, check for essential files in the generated project
+		# 2.2. QUALITY_STANDARDS.md Compliance Checks
+		echo "📊 Checking QUALITY_STANDARDS.md Compliance..."
+		for template in "${templates[@]}"; do
+			if [ -d "templates/$template" ]; then
+				# Find the project directory
 				for proj_dir in templates/$template/{{cookiecutter.*}}/; do
 					if [ -d "$proj_dir" ]; then
-						# Check for .gitignore
-						if [ -f "${proj_dir}.gitignore" ]; then
-							check_pass "$template includes .gitignore"
+						# Security baseline checks
+						if [ -f "${proj_dir}.github/workflows/security.yml" ] || [ -f "${proj_dir}.github/workflows/ci.yml" ]; then
+							check_pass "$template has security scanning configured"
 						else
-							check_warn "$template missing .gitignore in generated project"
+							check_warn "$template should include security scanning workflow"
 						fi
 
-						# Check for README.md
-						if [ -f "${proj_dir}README.md" ]; then
-							check_pass "$template includes README.md"
+						# Linting/formatting configuration checks
+						case "$template" in
+						python-service)
+							if [ -f "${proj_dir}pyproject.toml" ]; then
+								check_pass "$template has Python configuration (pyproject.toml)"
+							fi
+							;;
+						node-service | react-webapp)
+							if [ -f "${proj_dir}package.json" ]; then
+								check_pass "$template has Node.js configuration (package.json)"
+							fi
+							;;
+						go-service)
+							if [ -f "${proj_dir}.golangci.yml" ] || [ -f "${proj_dir}go.mod" ]; then
+								check_pass "$template has Go configuration"
+							fi
+							;;
+						esac
+
+						# Testing framework checks
+						if [ -d "${proj_dir}tests" ] || [ -d "${proj_dir}test" ]; then
+							check_pass "$template has testing directory"
 						else
-							check_fail "$template missing README.md in generated project"
+							check_warn "$template should include testing directory structure"
 						fi
 
-						# Check for CI/CD workflows (GitHub Actions)
-						if [ -d "${proj_dir}.github/workflows" ]; then
-							check_pass "$template includes CI/CD workflows"
+						# Pre-commit hooks check (security best practice)
+						if [ -f "${proj_dir}.pre-commit-config.yaml" ]; then
+							check_pass "$template includes pre-commit hooks"
 						else
-							check_warn "$template missing CI/CD workflows"
+							check_warn "$template should include .pre-commit-config.yaml (QUALITY_STANDARDS.md)"
 						fi
 
-						break # Only check first match
+						break
 					fi
 				done
+			fi
+		done
+		echo ""
+
+		# 2.3. CONVENTIONS.md Compliance Checks
+		echo "📝 Checking CONVENTIONS.md Compliance..."
+		for template in "${templates[@]}"; do
+			if [ -d "templates/$template" ]; then
+				# Check hook files follow Python conventions
+				for hook_file in templates/$template/hooks/*.py; do
+					if [ -f "$hook_file" ]; then
+						# Check for proper Python file structure (has imports, no syntax errors already checked)
+						if head -n 5 "$hook_file" | grep -q "^import\|^from\|^\"\"\""; then
+							# Has imports or docstring - good sign
+							:
+						fi
+					fi
+				done
+
+				# Check cookiecutter.json follows naming conventions
+				if [ -f "templates/$template/cookiecutter.json" ]; then
+					# Verify it has common expected fields
+					if grep -q "project_name\|project_slug" "templates/$template/cookiecutter.json"; then
+						check_pass "$template cookiecutter.json follows naming conventions"
+					fi
+				fi
+			fi
+		done
+
+		# Check if templates follow markdown conventions in READMEs
+		templates_with_good_docs=0
+		for template in "${templates[@]}"; do
+			if [ -f "templates/$template/README.md" ]; then
+				# Check for headers (# style)
+				if grep -q "^# " "templates/$template/README.md"; then
+					templates_with_good_docs=$((templates_with_good_docs + 1))
+				fi
+			fi
+		done
+
+		if [ $templates_with_good_docs -eq ${#templates[@]} ]; then
+			check_pass "All template READMEs follow markdown conventions"
+		fi
+		echo ""
+
+		# 3. Additional Template Categories
+		echo "📦 Checking Additional Template Categories..."
+		additional_templates=(
+			"architecture"
+			"automation"
+			"cicd"
+			"contracts"
+			"observability"
+			"platform"
+			"repository"
+			"security"
+		)
+
+		for template in "${additional_templates[@]}"; do
+			if [ -d "templates/$template" ]; then
+				check_pass "$template template category exists"
 			else
-				check_warn "$template missing cookiecutter project structure"
+				check_warn "$template template category missing"
 			fi
-		fi
-	done
-	echo ""
+		done
+		echo ""
 
-	# 2.2. QUALITY_STANDARDS.md Compliance Checks
-	echo "📊 Checking QUALITY_STANDARDS.md Compliance..."
-	for template in "${templates[@]}"; do
-		if [ -d "templates/$template" ]; then
-			# Find the project directory
-			for proj_dir in templates/$template/{{cookiecutter.*}}/; do
-				if [ -d "$proj_dir" ]; then
-					# Security baseline checks
-					if [ -f "${proj_dir}.github/workflows/security.yml" ] || [ -f "${proj_dir}.github/workflows/ci.yml" ]; then
-						check_pass "$template has security scanning configured"
-					else
-						check_warn "$template should include security scanning workflow"
-					fi
-
-					# Linting/formatting configuration checks
-					case "$template" in
-					python-service)
-						if [ -f "${proj_dir}pyproject.toml" ]; then
-							check_pass "$template has Python configuration (pyproject.toml)"
-						fi
-						;;
-					node-service | react-webapp)
-						if [ -f "${proj_dir}package.json" ]; then
-							check_pass "$template has Node.js configuration (package.json)"
-						fi
-						;;
-					go-service)
-						if [ -f "${proj_dir}.golangci.yml" ] || [ -f "${proj_dir}go.mod" ]; then
-							check_pass "$template has Go configuration"
-						fi
-						;;
-					esac
-
-					# Testing framework checks
-					if [ -d "${proj_dir}tests" ] || [ -d "${proj_dir}test" ]; then
-						check_pass "$template has testing directory"
-					else
-						check_warn "$template should include testing directory structure"
-					fi
-
-					# Pre-commit hooks check (security best practice)
-					if [ -f "${proj_dir}.pre-commit-config.yaml" ]; then
-						check_pass "$template includes pre-commit hooks"
-					else
-						check_warn "$template should include .pre-commit-config.yaml (QUALITY_STANDARDS.md)"
-					fi
-
-					break
-				fi
-			done
-		fi
-	done
-	echo ""
-
-	# 2.3. CONVENTIONS.md Compliance Checks
-	echo "📝 Checking CONVENTIONS.md Compliance..."
-	for template in "${templates[@]}"; do
-		if [ -d "templates/$template" ]; then
-			# Check hook files follow Python conventions
-			for hook_file in templates/$template/hooks/*.py; do
-				if [ -f "$hook_file" ]; then
-					# Check for proper Python file structure (has imports, no syntax errors already checked)
-					if head -n 5 "$hook_file" | grep -q "^import\|^from\|^\"\"\""; then
-						# Has imports or docstring - good sign
-						:
-					fi
-				fi
-			done
-
-			# Check cookiecutter.json follows naming conventions
-			if [ -f "templates/$template/cookiecutter.json" ]; then
-				# Verify it has common expected fields
-				if grep -q "project_name\|project_slug" "templates/$template/cookiecutter.json"; then
-					check_pass "$template cookiecutter.json follows naming conventions"
-				fi
+		# 3.1. Template README Documentation Check
+		echo "📖 Checking Template Documentation (Standards Compliance)..."
+		template_readme_missing=0
+		for template_dir in templates/*/; do
+			template_name=$(basename "$template_dir")
+			if [ -f "${template_dir}README.md" ]; then
+				check_pass "$template_name has README.md"
+			else
+				check_warn "$template_name missing README.md (recommended for standards compliance)"
+				template_readme_missing=$((template_readme_missing + 1))
 			fi
-		fi
-	done
+		done
 
-	# Check if templates follow markdown conventions in READMEs
-	templates_with_good_docs=0
-	for template in "${templates[@]}"; do
-		if [ -f "templates/$template/README.md" ]; then
-			# Check for headers (# style)
-			if grep -q "^# " "templates/$template/README.md"; then
-				templates_with_good_docs=$((templates_with_good_docs + 1))
-			fi
+		if [ $template_readme_missing -eq 0 ]; then
+			check_pass "All templates have README.md documentation"
 		fi
-	done
-
-	if [ $templates_with_good_docs -eq ${#templates[@]} ]; then
-		check_pass "All template READMEs follow markdown conventions"
+		echo ""
 	fi
-	echo ""
-
-	# 3. Additional Template Categories
-	echo "📦 Checking Additional Template Categories..."
-	additional_templates=(
-		"architecture"
-		"automation"
-		"cicd"
-		"contracts"
-		"observability"
-		"platform"
-		"repository"
-		"security"
-	)
-
-	for template in "${additional_templates[@]}"; do
-		if [ -d "templates/$template" ]; then
-			check_pass "$template template category exists"
-		else
-			check_warn "$template template category missing"
-		fi
-	done
-	echo ""
-
-	# 3.1. Template README Documentation Check
-	echo "📖 Checking Template Documentation (Standards Compliance)..."
-	template_readme_missing=0
-	for template_dir in templates/*/; do
-		template_name=$(basename "$template_dir")
-		if [ -f "${template_dir}README.md" ]; then
-			check_pass "$template_name has README.md"
-		else
-			check_warn "$template_name missing README.md (recommended for standards compliance)"
-			template_readme_missing=$((template_readme_missing + 1))
-		fi
-	done
-
-	if [ $template_readme_missing -eq 0 ]; then
-		check_pass "All templates have README.md documentation"
-	fi
-	echo ""
 fi
 
 # 4. Example Projects
-echo "📋 Checking Example Project Documentation..."
-projects=(
-	"fastapi-microservice-README.md"
-	"express-api-README.md"
-	"react-dashboard-README.md"
-	"grpc-service-README.md"
-)
+if should_run "examples"; then
+	echo "📋 Checking Example Project Documentation..."
+	projects=(
+		"fastapi-microservice-README.md"
+		"express-api-README.md"
+		"react-dashboard-README.md"
+		"grpc-service-README.md"
+	)
 
-for project in "${projects[@]}"; do
-	if [ -f "examples/projects/$project" ]; then
-		check_pass "$project exists"
-	else
-		check_fail "$project missing"
-	fi
-done
-echo ""
-
-# 4.1. Example Naming Conventions Check
-echo "📝 Checking Example Naming Conventions (Standards Compliance)..."
-naming_violations=0
-for example_file in examples/*/*README*.md; do
-	if [ -f "$example_file" ]; then
-		# Check if filename follows kebab-case or uses proper README naming
-		basename_file=$(basename "$example_file")
-		if [[ $basename_file =~ ^[a-z0-9]+(-[a-z0-9]+)*-README\.md$ ]] ||
-			[[ $basename_file =~ ^README\.md$ ]]; then
-			# Valid naming
-			:
+	for project in "${projects[@]}"; do
+		if [ -f "examples/projects/$project" ]; then
+			check_pass "$project exists"
 		else
-			check_warn "$(basename $example_file) uses non-standard naming (should be kebab-case)"
-			naming_violations=$((naming_violations + 1))
-		fi
-	fi
-done
-
-if [ $naming_violations -eq 0 ]; then
-	check_pass "All example files follow naming conventions"
-fi
-echo ""
-
-# 5. Dashboard JSON Files (Another discovery!)
-echo "📊 Checking Grafana Dashboard JSON Files..."
-dashboards=(
-	"dora-metrics.json"
-	"space-devex-metrics.json"
-	"quality-metrics.json"
-	"security-metrics.json"
-)
-
-for dashboard in "${dashboards[@]}"; do
-	if [ -f "examples/dashboards/$dashboard" ]; then
-		check_pass "$dashboard exists"
-	else
-		check_fail "$dashboard missing"
-	fi
-done
-echo ""
-
-# 6. Video Tutorial Scripts
-echo "🎥 Checking Video Tutorial Scripts..."
-tutorials=(
-	"01-getting-started.md"
-	"02-creating-services.md"
-	"03-cicd-setup.md"
-	"04-security-gates.md"
-	"05-observability-setup.md"
-	"06-jupyter-book.md"
-)
-
-for tutorial in "${tutorials[@]}"; do
-	if [ -f "examples/video-tutorials/$tutorial" ]; then
-		check_pass "$tutorial exists"
-	else
-		check_fail "$tutorial missing"
-	fi
-done
-echo ""
-
-# 7. Azure Pipelines
-echo "☁️ Checking Azure Pipelines Support..."
-if [ -d "examples/azure-pipelines" ]; then
-	check_pass "Azure Pipelines directory exists"
-	if [ -f "examples/azure-pipelines/README.md" ]; then
-		check_pass "Azure Pipelines README exists"
-	fi
-else
-	check_fail "Azure Pipelines support missing"
-fi
-echo ""
-
-# 8. CLI Wizard
-echo "🧙 Checking CLI Wizard..."
-if [ -d "agentic_canon_cli" ]; then
-	check_pass "CLI wizard directory exists"
-	if [ -f "agentic_canon_cli/__init__.py" ]; then
-		check_pass "CLI wizard package initialized"
-	fi
-else
-	check_fail "CLI wizard missing"
-fi
-echo ""
-
-# 9. Tests
-echo "🧪 Checking Test Infrastructure..."
-if [ -f "tests/test_cookiecutters.py" ]; then
-	check_pass "Template tests exist"
-	# Run tests if pytest is available
-	if command -v pytest &>/dev/null; then
-		echo "  Running template tests..."
-		if pytest tests/test_cookiecutters.py -q 2>&1 | grep -q "passed"; then
-			check_pass "Template tests passing"
-		else
-			check_warn "Template tests may have issues"
-		fi
-	fi
-else
-	check_fail "Template tests missing"
-fi
-echo ""
-
-# 10. Multi-Cloud Examples
-echo "🌐 Checking Multi-Cloud Support..."
-if [ -d "examples/multi-cloud" ]; then
-	check_pass "Multi-cloud directory exists"
-	for cloud in aws azure gcp; do
-		if [ -d "examples/multi-cloud/$cloud" ] || [ -f "examples/multi-cloud/$cloud/README.md" ]; then
-			check_pass "$cloud examples present"
-		else
-			check_warn "$cloud examples missing"
+			check_fail "$project missing"
 		fi
 	done
-else
-	check_warn "Multi-cloud support not yet implemented"
-fi
-echo ""
+	echo ""
 
-# 11. Advanced Features
-echo "🚀 Checking Advanced Features..."
-advanced_features=(
-	"examples/fitness-functions"
-	"examples/ml-insights"
-	"examples/community"
-)
-
-for feature in "${advanced_features[@]}"; do
-	if [ -d "$feature" ]; then
-		check_pass "$(basename $feature) framework exists"
-	else
-		check_warn "$(basename $feature) not yet implemented"
-	fi
-done
-echo ""
-
-# 12. Python Hook Import Validation
-echo "🔍 Checking Python Hook Imports..."
-hook_import_errors=0
-for hook_file in templates/*/hooks/*.py; do
-	if [ -f "$hook_file" ]; then
-		# Skip pre_gen_project.py as it uses sys.exit() by design for validation
-		if [[ "$(basename $hook_file)" == "pre_gen_project.py" ]]; then
-			continue
+	# 4.1. Example Naming Conventions Check
+	echo "📝 Checking Example Naming Conventions (Standards Compliance)..."
+	naming_violations=0
+	for example_file in examples/*/*README*.md; do
+		if [ -f "$example_file" ]; then
+			# Check if filename follows kebab-case or uses proper README naming
+			basename_file=$(basename "$example_file")
+			if [[ $basename_file =~ ^[a-z0-9]+(-[a-z0-9]+)*-README\.md$ ]] ||
+				[[ $basename_file =~ ^README\.md$ ]]; then
+				# Valid naming
+				:
+			else
+				check_warn "$(basename $example_file) uses non-standard naming (should be kebab-case)"
+				naming_violations=$((naming_violations + 1))
+			fi
 		fi
+	done
 
-		# Try to import the module to check for import errors
-		if "$PYTHON_BIN" -c "import sys; sys.path.insert(0, 'templates/_shared'); exec(open('$hook_file').read())" >/dev/null 2>&1; then
-			# Success, but don't spam output
-			:
+	if [ $naming_violations -eq 0 ]; then
+		check_pass "All example files follow naming conventions"
+	fi
+	echo ""
+fi
+
+# 5. Dashboard JSON Files (Another discovery!)
+if should_run "dashboards"; then
+	echo "📊 Checking Grafana Dashboard JSON Files..."
+	dashboards=(
+		"dora-metrics.json"
+		"space-devex-metrics.json"
+		"quality-metrics.json"
+		"security-metrics.json"
+	)
+
+	for dashboard in "${dashboards[@]}"; do
+		if [ -f "examples/dashboards/$dashboard" ]; then
+			check_pass "$dashboard exists"
 		else
-			check_warn "$(basename $hook_file) may have import or runtime issues"
-			hook_import_errors=$((hook_import_errors + 1))
+			check_fail "$dashboard missing"
 		fi
-	fi
-done
-
-if [ $hook_import_errors -eq 0 ]; then
-	check_pass "All hook files can be loaded without import errors"
+	done
+	echo ""
 fi
-echo ""
+
+# 6. Video Tutorial Scripts
+if should_run "videos"; then
+	echo "🎥 Checking Video Tutorial Scripts..."
+	tutorials=(
+		"01-getting-started.md"
+		"02-creating-services.md"
+		"03-cicd-setup.md"
+		"04-security-gates.md"
+		"05-observability-setup.md"
+		"06-jupyter-book.md"
+	)
+
+	for tutorial in "${tutorials[@]}"; do
+		if [ -f "examples/video-tutorials/$tutorial" ]; then
+			check_pass "$tutorial exists"
+		else
+			check_fail "$tutorial missing"
+		fi
+	done
+	echo ""
+fi
+
+# 7. Azure Pipelines
+if should_run "cloud"; then
+	echo "☁️ Checking Azure Pipelines Support..."
+	if [ -d "examples/azure-pipelines" ]; then
+		check_pass "Azure Pipelines directory exists"
+		if [ -f "examples/azure-pipelines/README.md" ]; then
+			check_pass "Azure Pipelines README exists"
+		fi
+	else
+		check_fail "Azure Pipelines support missing"
+	fi
+	echo ""
+fi
+
+# 8. CLI Wizard
+if should_run "cli"; then
+	echo "🧙 Checking CLI Wizard..."
+	if [ -d "agentic_canon_cli" ]; then
+		check_pass "CLI wizard directory exists"
+		if [ -f "agentic_canon_cli/__init__.py" ]; then
+			check_pass "CLI wizard package initialized"
+		fi
+	else
+		check_fail "CLI wizard missing"
+	fi
+	echo ""
+fi
+
+# 9. Tests
+if should_run "tests"; then
+	echo "🧪 Checking Test Infrastructure..."
+	if [ -f "tests/test_cookiecutters.py" ]; then
+		check_pass "Template tests exist"
+		# Run tests if pytest is available
+		if command -v pytest &>/dev/null; then
+			echo "  Running template tests..."
+			if pytest tests/test_cookiecutters.py -q 2>&1 | grep -q "passed"; then
+				check_pass "Template tests passing"
+			else
+				check_warn "Template tests may have issues"
+			fi
+		fi
+	else
+		check_fail "Template tests missing"
+	fi
+	echo ""
+
+	# 10. Multi-Cloud Examples
+	echo "🌐 Checking Multi-Cloud Support..."
+	if [ -d "examples/multi-cloud" ]; then
+		check_pass "Multi-cloud directory exists"
+		for cloud in aws azure gcp; do
+			if [ -d "examples/multi-cloud/$cloud" ] || [ -f "examples/multi-cloud/$cloud/README.md" ]; then
+				check_pass "$cloud examples present"
+			else
+				check_warn "$cloud examples missing"
+			fi
+		done
+	else
+		check_warn "Multi-cloud support not yet implemented"
+	fi
+	echo ""
+
+	# 11. Advanced Features
+	echo "🚀 Checking Advanced Features..."
+	advanced_features=(
+		"examples/fitness-functions"
+		"examples/ml-insights"
+		"examples/community"
+	)
+
+	for feature in "${advanced_features[@]}"; do
+		if [ -d "$feature" ]; then
+			check_pass "$(basename $feature) framework exists"
+		else
+			check_warn "$(basename $feature) not yet implemented"
+		fi
+	done
+	echo ""
+
+	# 12. Python Hook Import Validation
+	echo "🔍 Checking Python Hook Imports..."
+	hook_import_errors=0
+	for hook_file in templates/*/hooks/*.py; do
+		if [ -f "$hook_file" ]; then
+			# Skip pre_gen_project.py as it uses sys.exit() by design for validation
+			if [[ "$(basename $hook_file)" == "pre_gen_project.py" ]]; then
+				continue
+			fi
+
+			# Try to import the module to check for import errors
+			if "$PYTHON_BIN" -c "import sys; sys.path.insert(0, 'templates/_shared'); exec(open('$hook_file').read())" >/dev/null 2>&1; then
+				# Success, but don't spam output
+				:
+			else
+				check_warn "$(basename $hook_file) may have import or runtime issues"
+				hook_import_errors=$((hook_import_errors + 1))
+			fi
+		fi
+	done
+
+	if [ $hook_import_errors -eq 0 ]; then
+		check_pass "All hook files can be loaded without import errors"
+	fi
+	echo ""
+fi
 
 # 13. GitHub Actions Workflow Validation
 echo "⚙️  Checking GitHub Actions Workflows..."

@@ -3,10 +3,11 @@
 import pytest
 
 
-def test_python_cookiecutter_bakes(cookies):
+def test_python_cookiecutter_bakes(bake_template):
     """Test that the Python service template renders successfully."""
-    result = cookies.bake(
-        extra_context={
+    result = bake_template(
+        "templates/python-service",
+        {
             "project_name": "Demo Service",
             "project_slug": "demo-service",
             "pkg_name": "demo_service",
@@ -21,7 +22,6 @@ def test_python_cookiecutter_bakes(cookies):
             "enable_contract_tests": "yes",
             "ci_provider": "github",
         },
-        template="templates/python-service",
     )
 
     assert result.exception is None
@@ -36,10 +36,11 @@ def test_python_cookiecutter_bakes(cookies):
     assert (result.project_path / ".github" / "workflows" / "ci.yml").exists()
 
 
-def test_python_cookiecutter_minimal(cookies):
+def test_python_cookiecutter_minimal(bake_template):
     """Test Python template with minimal options."""
-    result = cookies.bake(
-        extra_context={
+    result = bake_template(
+        "templates/python-service",
+        {
             "project_name": "Minimal Service",
             "project_slug": "minimal-service",
             "pkg_name": "minimal_service",
@@ -49,7 +50,6 @@ def test_python_cookiecutter_minimal(cookies):
             "enable_sbom_signing": "no",
             "enable_contract_tests": "no",
         },
-        template="templates/python-service",
     )
 
     assert result.exception is None
@@ -76,10 +76,11 @@ def test_python_cookiecutter_invalid_slug(cookies):
     assert result.exit_code != 0
 
 
-def test_node_cookiecutter_bakes(cookies):
+def test_node_cookiecutter_bakes(bake_template):
     """Test that the Node.js service template renders successfully."""
-    result = cookies.bake(
-        extra_context={
+    result = bake_template(
+        "templates/node-service",
+        {
             "project_name": "Demo Node Service",
             "project_slug": "demo-node-service",
             "description": "A demo Node.js service",
@@ -91,7 +92,6 @@ def test_node_cookiecutter_bakes(cookies):
             "enable_sbom_signing": "yes",
             "ci_provider": "github",
         },
-        template="templates/node-service",
     )
 
     assert result.exception is None
@@ -106,10 +106,11 @@ def test_node_cookiecutter_bakes(cookies):
     assert (result.project_path / ".github" / "workflows" / "ci.yml").exists()
 
 
-def test_react_cookiecutter_bakes(cookies):
+def test_react_cookiecutter_bakes(bake_template):
     """Test that the React webapp template renders successfully."""
-    result = cookies.bake(
-        extra_context={
+    result = bake_template(
+        "templates/react-webapp",
+        {
             "project_name": "Demo React App",
             "project_slug": "demo-react-app",
             "description": "A demo React application",
@@ -121,7 +122,6 @@ def test_react_cookiecutter_bakes(cookies):
             "enable_accessibility_tests": "yes",
             "ci_provider": "github",
         },
-        template="templates/react-webapp",
     )
 
     assert result.exception is None
@@ -138,17 +138,17 @@ def test_react_cookiecutter_bakes(cookies):
     assert (result.project_path / ".github" / "workflows" / "ci.yml").exists()
 
 
-def test_react_cookiecutter_minimal(cookies):
+def test_react_cookiecutter_minimal(bake_template):
     """Test React template with minimal options."""
-    result = cookies.bake(
-        extra_context={
+    result = bake_template(
+        "templates/react-webapp",
+        {
             "project_name": "Minimal React App",
             "project_slug": "minimal-react-app",
             "include_storybook": "no",
             "include_e2e_tests": "no",
             "enable_accessibility_tests": "no",
         },
-        template="templates/react-webapp",
     )
 
     assert result.exception is None
@@ -159,10 +159,11 @@ def test_react_cookiecutter_minimal(cookies):
     assert not (result.project_path / "playwright.config.ts").exists()
 
 
-def test_go_cookiecutter_bakes(cookies):
+def test_go_cookiecutter_bakes(bake_template):
     """Test that the Go service template renders successfully."""
-    result = cookies.bake(
-        extra_context={
+    result = bake_template(
+        "templates/go-service",
+        {
             "project_name": "Demo Go Service",
             "project_slug": "demo-go-service",
             "module_path": "github.com/test/demo-go-service",
@@ -174,7 +175,6 @@ def test_go_cookiecutter_bakes(cookies):
             "enable_security_gates": "yes",
             "ci_provider": "github",
         },
-        template="templates/go-service",
     )
 
     assert result.exception is None
@@ -191,10 +191,11 @@ def test_go_cookiecutter_bakes(cookies):
     assert (result.project_path / ".github" / "workflows" / "ci.yml").exists()
 
 
-def test_docs_only_cookiecutter_bakes(cookies):
+def test_docs_only_cookiecutter_bakes(bake_template):
     """Test that the docs-only template renders successfully."""
-    result = cookies.bake(
-        extra_context={
+    result = bake_template(
+        "templates/docs-only",
+        {
             "project_name": "Demo Documentation",
             "project_slug": "demo-docs",
             "description": "Demo documentation project",
@@ -203,7 +204,6 @@ def test_docs_only_cookiecutter_bakes(cookies):
             "license": "CC-BY-4.0",
             "ci_provider": "github",
         },
-        template="templates/docs-only",
     )
 
     assert result.exception is None
@@ -341,10 +341,11 @@ def test_docs_only_invalid_description(cookies):
     assert result.exit_code != 0
 
 
-def test_project_management_bakes(cookies):
+def test_project_management_bakes(bake_template):
     """Test that the project management template renders successfully."""
-    result = cookies.bake(
-        extra_context={
+    result = bake_template(
+        "templates/project-management",
+        {
             "project_name": "My Project",
             "project_slug": "my-project",
             "github_org": "my-org",
@@ -361,7 +362,6 @@ def test_project_management_bakes(cookies):
             "auto_close_stale_issues": "yes",
             "stale_days": "60",
         },
-        template="templates/project-management",
     )
 
     assert result.exception is None
@@ -392,10 +392,11 @@ def test_project_management_bakes(cookies):
     assert (result.project_path / ".github" / "PULL_REQUEST_TEMPLATE.md").exists()
 
 
-def test_project_management_minimal(cookies):
+def test_project_management_minimal(bake_template):
     """Test project management template with minimal options."""
-    result = cookies.bake(
-        extra_context={
+    result = bake_template(
+        "templates/project-management",
+        {
             "project_name": "Minimal Project",
             "project_slug": "minimal-project",
             "github_org": "test-org",
@@ -406,7 +407,6 @@ def test_project_management_minimal(cookies):
             "enable_codeowners": "no",
             "auto_close_stale_issues": "no",
         },
-        template="templates/project-management",
     )
 
     assert result.exception is None

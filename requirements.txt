@@ -2,6 +2,7 @@ jupyter==1.1.1
 jupytext==1.17.3
 nbstripout==0.8.1
 pytest==8.4.2
+pytest-xdist==3.6.1
 nbmake==1.5.5
 papermill==2.6.0
 jupyter-book==1.0.4.post1

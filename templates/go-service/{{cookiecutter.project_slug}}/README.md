@@ -10,9 +10,9 @@
 - ✅ golangci-lint for code quality
 - ✅ Makefile for common tasks
 - ✅ GitHub Actions CI/CD
-{% if cookiecutter.enable_security_gates == "yes" %}
+  {% if cookiecutter.enable_security_gates == "yes" %}
 - ✅ Security scanning
-{% endif %}
+  {% endif %}
 
 ## Getting Started
 

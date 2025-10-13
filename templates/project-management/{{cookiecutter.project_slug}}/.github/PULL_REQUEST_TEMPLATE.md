@@ -1,7 +1,9 @@
 ## Description
+
 What does this PR do? Provide a clear and concise description.
 
 ## Type of Change
+
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
@@ -11,18 +13,22 @@ What does this PR do? Provide a clear and concise description.
 - [ ] Security fix
 
 ## Related Issues
+
 Closes #
 Fixes #
 Related to #
 
 ## Testing
+
 Describe the tests you ran and how to reproduce:
+
 - [ ] Unit tests added/updated
 - [ ] Integration tests added/updated
 - [ ] Manual testing performed
 - [ ] All tests passing
 
 ## Checklist
+
 - [ ] My code follows the style guidelines of this project
 - [ ] I have performed a self-review of my code
 - [ ] I have commented my code, particularly in hard-to-understand areas
@@ -33,12 +39,15 @@ Describe the tests you ran and how to reproduce:
 - [ ] Any dependent changes have been merged and published
 
 ## Screenshots (if applicable)
+
 Add screenshots to demonstrate UI changes.
 
 ## Additional Notes
+
 Any additional information for reviewers.
 
 ## Reviewer Checklist
+
 - [ ] Code quality and style
 - [ ] Test coverage
 - [ ] Documentation updated

@@ -45,20 +45,20 @@ agentic-canon init
 
 ### Required Parameters
 
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| `project_name` | Documentation title | "Acme Documentation" |
-| `project_slug` | URL-friendly name | "acme-docs" |
-| `description` | Short description | "Documentation for Acme Project" |
-| `author_name` | Your name | "Jane Doe" |
-| `author_email` | Your email | "jane@example.com" |
+| Parameter      | Description         | Example                          |
+| -------------- | ------------------- | -------------------------------- |
+| `project_name` | Documentation title | "Acme Documentation"             |
+| `project_slug` | URL-friendly name   | "acme-docs"                      |
+| `description`  | Short description   | "Documentation for Acme Project" |
+| `author_name`  | Your name           | "Jane Doe"                       |
+| `author_email` | Your email          | "jane@example.com"               |
 
 ### Optional Parameters
 
-| Parameter | Options | Default | Description |
-|-----------|---------|---------|-------------|
-| `license` | Apache-2.0, MIT, CC-BY-4.0 | CC-BY-4.0 | License type |
-| `ci_provider` | github, gitlab | github | CI/CD platform |
+| Parameter     | Options                    | Default   | Description    |
+| ------------- | -------------------------- | --------- | -------------- |
+| `license`     | Apache-2.0, MIT, CC-BY-4.0 | CC-BY-4.0 | License type   |
+| `ci_provider` | github, gitlab             | github    | CI/CD platform |
 
 ## Generated Project Structure
 
@@ -103,20 +103,23 @@ jupyter-book build docs/
 
 ### index.md - Homepage
 
-```markdown
+````markdown
 # Welcome to Acme Documentation
 
 This is the main landing page for your documentation.
 
 ```{tableofcontents}
+
 ```
+````
 
 ## Quick Links
 
 - {doc}`getting-started` - Get up and running
 - {doc}`user-guide` - Learn how to use the project
 - {doc}`api-reference` - API documentation
-```
+
+````
 
 ### getting-started.md
 
@@ -129,7 +132,7 @@ Quick start guide to get you up and running.
 
 ```bash
 pip install acme
-```
+````
 
 ## Basic Usage
 
@@ -143,7 +146,8 @@ result = acme.do_something()
 ## Next Steps
 
 Continue to the {doc}`user-guide` for more details.
-```
+
+````
 
 ### MyST Markdown Features
 
@@ -154,7 +158,7 @@ Continue to the {doc}`user-guide` for more details.
 
 ```{note}
 This is a note admonition.
-```
+````
 
 ```{warning}
 This is a warning.
@@ -178,7 +182,7 @@ print("This code will execute during build!")
 ## Tables
 
 | Feature | Status |
-|---------|--------|
+| ------- | ------ |
 | Search  | ✅     |
 | PDF     | ✅     |
 | Mobile  | ✅     |
@@ -192,7 +196,8 @@ width: 500px
 ---
 Caption for the figure
 ```
-```
+
+````
 
 ## Configuration
 
@@ -214,7 +219,7 @@ html:
   use_edit_page_button: true
   use_repository_button: true
   use_issues_button: true
-  
+
 # Repository settings
 repository:
   url: https://github.com/example/acme-docs
@@ -233,9 +238,9 @@ sphinx:
     - sphinx.ext.autodoc
     - sphinx.ext.napoleon
     - sphinx_copybutton
-```
+````
 
-### _toc.yml
+### \_toc.yml
 
 ```yaml
 format: jb-book
@@ -271,17 +276,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      
+          python-version: "3.11"
+
       - name: Install dependencies
         run: pip install -r requirements.txt
-      
+
       - name: Build book
         run: jupyter-book build docs/
-      
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -325,7 +330,7 @@ docs/
 
 ### Auto-generated API Docs
 
-```markdown
+````markdown
 # API Reference
 
 ```{eval-rst}
@@ -334,7 +339,9 @@ docs/
    :undoc-members:
    :show-inheritance:
 ```
-```
+````
+
+````
 
 ### Executable Code
 
@@ -350,8 +357,9 @@ y = np.sin(x)
 
 plt.plot(x, y)
 plt.show()
-```
-```
+````
+
+````
 
 ### Custom CSS
 
@@ -364,7 +372,7 @@ plt.show()
 code {
     background-color: #f5f5f5;
 }
-```
+````
 
 ## Standards Compliance
 

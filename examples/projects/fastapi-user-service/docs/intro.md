@@ -26,9 +26,7 @@ print(result)
 
 - Security scanning with CodeQL
 
-
 - SBOM generation
-
 
 ## Notebooks
 

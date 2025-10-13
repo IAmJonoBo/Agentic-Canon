@@ -107,9 +107,11 @@ C4Component
 ### User Interface Layer
 
 #### CLI Wizard
+
 **Responsibility**: Provide interactive command-line interface  
 **Technology**: Python with Click/Typer framework  
 **Key Functions**:
+
 ```python
 def init_command():
     """Main entry point for agentic-canon init."""
@@ -123,11 +125,13 @@ def init_command():
 ```
 
 **Interfaces Exposed**:
+
 - `init()` - Interactive project generation
 - `validate()` - Validate existing project
 - `update()` - Update from template (future)
 
 **Dependencies**:
+
 - Variable Resolver
 - Validation Engine
 - Template Engine
@@ -135,73 +139,81 @@ def init_command():
 ### Core Processing Layer
 
 #### Template Engine
+
 **Responsibility**: Orchestrate the entire generation process  
 **Technology**: Cookiecutter Python library  
 **Key Functions**:
+
 ```python
 def generate_project(template_path, context, output_dir):
     """Main generation orchestration."""
     # 1. Load template
     template = load_template(template_path)
-    
+
     # 2. Resolve variables
     resolved_context = variable_resolver.resolve(context)
-    
+
     # 3. Execute pre-generation hooks
     hook_executor.execute_pre_hooks(resolved_context)
-    
+
     # 4. Generate files
     file_generator.render_template(template, resolved_context, output_dir)
-    
+
     # 5. Execute post-generation hooks
     hook_executor.execute_post_hooks(output_dir, resolved_context)
-    
+
     # 6. Validate output
     validation_engine.validate_generated_project(output_dir)
 ```
 
 **State Management**: Stateless (all state in context dict)
 
-**Error Handling**: 
+**Error Handling**:
+
 - Template not found → User-friendly error
 - Invalid variables → Validation error with guidance
 - Hook failure → Rollback and report
 
 #### Variable Resolver
+
 **Responsibility**: Compute and validate template variables  
 **Technology**: Python with custom logic  
 **Key Functions**:
+
 ```python
 def resolve_variables(raw_context):
     """Resolve all template variables."""
     resolved = {}
-    
+
     # Copy direct values
     for key, value in raw_context.items():
         if not is_computed(value):
             resolved[key] = value
-    
+
     # Compute derived values
     resolved['project_slug'] = slugify(resolved['project_name'])
     resolved['pkg_name'] = pythonize(resolved['project_slug'])
     resolved['current_year'] = datetime.now().year
-    
+
     # Validate all variables
     validation_engine.validate_variables(resolved)
-    
+
     return resolved
 ```
 
 **Variable Types**:
+
 - **Direct**: User-provided values
 - **Computed**: Derived from other variables
 - **Default**: Fallback values
 - **Choice**: Limited set of options
 
 #### Validation Engine
+
 **Responsibility**: Validate inputs and outputs  
 **Technology**: Python with regex and custom validators  
 **Key Functions**:
+
 ```python
 def validate_project_slug(slug):
     """Validate project slug format."""
@@ -231,15 +243,18 @@ def validate_generated_project(project_path):
 ```
 
 **Validation Stages**:
+
 1. **Pre-input**: Validate before prompting (e.g., template exists)
 2. **Input**: Validate each user input
 3. **Pre-generation**: Validate resolved context
 4. **Post-generation**: Validate generated files
 
 #### Hook Executor
+
 **Responsibility**: Execute pre and post-generation hooks  
 **Technology**: Python subprocess execution  
 **Key Functions**:
+
 ```python
 def execute_pre_hooks(context):
     """Execute pre-generation hooks."""
@@ -270,6 +285,7 @@ def execute_post_hooks(project_path, context):
 ```
 
 **Hook Capabilities**:
+
 - Validate inputs (pre-generation)
 - Remove optional files (post-generation)
 - Initialize git repository (post-generation)
@@ -279,9 +295,11 @@ def execute_post_hooks(project_path, context):
 ### Generation Layer
 
 #### File Generator
+
 **Responsibility**: Render template files using Jinja2  
 **Technology**: Jinja2 template engine  
 **Key Functions**:
+
 ```python
 def render_template(template, context, output_dir):
     """Render all template files."""
@@ -289,10 +307,10 @@ def render_template(template, context, output_dir):
         # Skip if file matches ignore patterns
         if should_ignore(template_file):
             continue
-        
+
         # Render file path (also templated)
         output_path = render_path(template_file.path, context)
-        
+
         # Render file content
         if is_binary(template_file):
             # Copy binary files as-is
@@ -304,15 +322,18 @@ def render_template(template, context, output_dir):
 ```
 
 **Special Handling**:
+
 - **Conditional blocks**: `{% if condition %}...{% endif %}`
 - **Raw blocks**: `{% raw %}...{% endraw %}` for GitHub Actions syntax
 - **Whitespace control**: `{%- ... -%}` for clean output
 - **Binary files**: Copied without rendering
 
 #### Git Initializer
+
 **Responsibility**: Initialize Git repository  
 **Technology**: GitPython or subprocess  
 **Key Functions**:
+
 ```python
 def initialize_repository(project_path):
     """Initialize git repository."""
@@ -327,14 +348,17 @@ def initialize_repository(project_path):
 ```
 
 **Configurations**:
+
 - `.gitignore` from template
 - `.gitattributes` for notebook handling
 - Initial commit with all files
 
 #### Metadata Generator
+
 **Responsibility**: Create machine-readable project metadata  
 **Technology**: JSON  
 **Key Functions**:
+
 ```python
 def generate_metadata(context):
     """Generate project metadata."""
@@ -360,7 +384,7 @@ def generate_metadata(context):
             "workflows": list_workflows(context)
         }
     }
-    
+
     write_json(
         context['project_slug'] / 'project-metadata.json',
         metadata
@@ -368,6 +392,7 @@ def generate_metadata(context):
 ```
 
 **Metadata Contents**:
+
 - Project information
 - Capabilities and features
 - Command mappings
@@ -379,6 +404,7 @@ def generate_metadata(context):
 Each template is a self-contained component with consistent structure:
 
 #### Template Structure
+
 ```
 template-name/
 ├── cookiecutter.json          # Variables and defaults
@@ -396,6 +422,7 @@ template-name/
 ```
 
 #### Python Template Components
+
 ```python
 # Core files
 - pyproject.toml              # Python packaging
@@ -412,12 +439,14 @@ template-name/
 #### Shared Components
 
 **Shared Workflows**:
+
 - `ci.yml` - Base CI pipeline template
 - `security.yml` - Security scanning template
 - `deploy.yml` - Deployment template
 - `book-deploy.yml` - Documentation deployment
 
 **Shared Configs**:
+
 - `.editorconfig` - Editor settings
 - `.pre-commit-config.yaml` - Pre-commit hooks
 - `renovate.json` - Dependency updates
@@ -475,12 +504,14 @@ Post-generation:
 ## Component Interactions
 
 ### Synchronous Interactions
+
 - CLI Wizard → Variable Resolver (immediate)
 - Variable Resolver → Validation Engine (immediate)
 - Template Engine → File Generator (immediate)
 - Hook Executor → Subprocess (blocking)
 
 ### Error Propagation
+
 ```
 Component Error → Template Engine → CLI Wizard → User
 ```
@@ -490,28 +521,33 @@ All errors propagate up to CLI for user-friendly display.
 ## Testing Strategy
 
 ### Unit Tests
+
 - Variable Resolver: Test all computed variables
 - Validation Engine: Test all validators
 - File Generator: Test Jinja2 rendering
 - Hook Executor: Test hook execution
 
 ### Integration Tests
+
 - Template Engine: Test full generation pipeline
 - Each Template: Test with pytest-cookies
 
 ### End-to-End Tests
+
 - Generate project → Build → Test → Deploy
 - Validate generated project works correctly
 
 ## Performance Considerations
 
 ### Optimization Points
+
 1. **Template Loading**: Cache parsed templates
 2. **File Generation**: Parallel rendering for independent files
 3. **Hook Execution**: Timeout limits to prevent hangs
 4. **Validation**: Early validation to fail fast
 
 ### Resource Usage
+
 - **Memory**: Minimal (templates loaded on-demand)
 - **Disk I/O**: Sequential file writes
 - **CPU**: Brief spike during rendering
@@ -520,18 +556,21 @@ All errors propagate up to CLI for user-friendly display.
 ## Security Considerations
 
 ### Input Validation
+
 - All user inputs validated before use
 - Path traversal prevention (no `../` in paths)
 - Command injection prevention (no shell=True)
 - Template injection prevention (sandboxed Jinja2)
 
 ### Output Safety
+
 - Generated files written to specified directory only
 - No overwriting of existing files without confirmation
 - Hooks run in isolated subprocess
 - Secrets never logged or stored
 
 ### Code Execution
+
 - Hooks run in sandboxed Python subprocess
 - No arbitrary code execution from user input
 - Template files from trusted repository only
@@ -549,5 +588,5 @@ All errors propagate up to CLI for user-friendly display.
 
 ---
 
-*Last Updated: 2024-01-15*
-*Version: 1.0*
+_Last Updated: 2024-01-15_
+_Version: 1.0_

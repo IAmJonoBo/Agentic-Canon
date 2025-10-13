@@ -81,6 +81,7 @@ cp templates/architecture/adr/template.md docs/adr/ADR-009-your-decision.md
 **Status:** `proposed`
 
 **Activities:**
+
 - Create ADR document with all sections filled
 - Open PR with ADR
 - Tag stakeholders for review
@@ -88,6 +89,7 @@ cp templates/architecture/adr/template.md docs/adr/ADR-009-your-decision.md
 - Gather feedback and update ADR
 
 **Checklist:**
+
 - [ ] All sections completed (no placeholder text)
 - [ ] Alternatives analyzed and documented
 - [ ] Impact assessment complete
@@ -100,6 +102,7 @@ cp templates/architecture/adr/template.md docs/adr/ADR-009-your-decision.md
 **Duration:** Typically 1-2 weeks
 
 **Activities:**
+
 - Stakeholder review
 - Technical review
 - Security review (if applicable)
@@ -107,6 +110,7 @@ cp templates/architecture/adr/template.md docs/adr/ADR-009-your-decision.md
 - Cost analysis
 
 **Review Checklist:**
+
 - [ ] Technical feasibility confirmed
 - [ ] Security implications assessed
 - [ ] Performance impact analyzed
@@ -118,12 +122,14 @@ cp templates/architecture/adr/template.md docs/adr/ADR-009-your-decision.md
 ### 3. Decision Phase
 
 **Activities:**
+
 - Final stakeholder meeting
 - Address any remaining concerns
 - Make go/no-go decision
 - Update ADR status
 
 **Outcomes:**
+
 - **Accepted:** Move to implementation
 - **Rejected:** Close PR, document reasoning
 - **Deferred:** Update ADR, revisit later
@@ -133,6 +139,7 @@ cp templates/architecture/adr/template.md docs/adr/ADR-009-your-decision.md
 **Status:** `accepted`
 
 **Activities:**
+
 - Implement the decision
 - Update relevant documentation
 - Deploy fitness functions
@@ -140,6 +147,7 @@ cp templates/architecture/adr/template.md docs/adr/ADR-009-your-decision.md
 - Communicate changes
 
 **Implementation Checklist:**
+
 - [ ] Code changes completed
 - [ ] Tests passing
 - [ ] Documentation updated
@@ -183,6 +191,7 @@ git push origin update-adr-005
 ### When to Deprecate
 
 An ADR should be deprecated when:
+
 - The decision is no longer recommended
 - Better alternatives exist
 - Technology has evolved
@@ -218,6 +227,7 @@ git commit -m "docs: deprecate ADR-003"
 ### When to Supersede
 
 An ADR should be superseded when:
+
 - A new decision explicitly replaces it
 - The new approach is incompatible with the old one
 - The context has fundamentally changed
@@ -307,6 +317,7 @@ See [ADR-009](../docs/adr/ADR-009-redis-caching.md) for rationale and design.
 **Frequency:** Annually or when triggered
 
 **Triggers:**
+
 - Annual architecture review
 - Major technology changes
 - Performance issues
@@ -314,6 +325,7 @@ See [ADR-009](../docs/adr/ADR-009-redis-caching.md) for rationale and design.
 - Compliance requirements change
 
 **Process:**
+
 1. Review all `accepted` ADRs
 2. Assess if decisions are still valid
 3. Check fitness functions are passing
@@ -323,6 +335,7 @@ See [ADR-009](../docs/adr/ADR-009-redis-caching.md) for rationale and design.
 ### Review Checklist
 
 For each ADR:
+
 - [ ] Is the decision still valid?
 - [ ] Are fitness functions passing?
 - [ ] Have assumptions changed?
@@ -342,6 +355,7 @@ Add to ADR:
 **Reviewer:** John Doe
 **Status:** Still valid
 **Findings:**
+
 - Fitness functions passing
 - Performance within expectations
 - No changes needed

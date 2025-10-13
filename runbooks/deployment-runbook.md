@@ -15,6 +15,7 @@ This runbook provides step-by-step instructions for deploying projects generated
 ## Deployment Strategies
 
 This runbook covers multiple deployment strategies:
+
 1. **Static Documentation** - Jupyter Book to GitHub Pages
 2. **Container Deployment** - Docker to cloud platforms
 3. **Serverless Functions** - AWS Lambda, Azure Functions, Google Cloud Functions
@@ -24,9 +25,11 @@ This runbook covers multiple deployment strategies:
 ## Strategy 1: Static Documentation (Jupyter Book)
 
 ### Purpose
+
 Deploy Jupyter Book documentation to GitHub Pages
 
 ### Duration
+
 15-30 minutes (initial setup)
 
 ### Steps
@@ -34,12 +37,14 @@ Deploy Jupyter Book documentation to GitHub Pages
 #### 1. Enable GitHub Pages
 
 **Actions**:
+
 1. Navigate to repository on GitHub
 2. Go to Settings → Pages
 3. Select Source: "GitHub Actions"
 4. Save configuration
 
 **Commands**:
+
 ```bash
 # Or via GitHub CLI
 gh repo edit --enable-pages --pages-branch gh-pages
@@ -66,17 +71,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      
+          python-version: "3.11"
+
       - name: Install dependencies
         run: pip install -r requirements.txt
-      
+
       - name: Build book
         run: jupyter-book build docs/
-      
+
       - name: Deploy to GitHub Pages
         run: ghp-import -n -p -f docs/_build/html
         env:
@@ -88,6 +93,7 @@ jobs:
 #### 3. Build Locally (Optional)
 
 **Commands**:
+
 ```bash
 # Install dependencies
 pip install -r requirements.txt
@@ -104,6 +110,7 @@ open docs/_build/html/index.html
 #### 4. Trigger Deployment
 
 **Commands**:
+
 ```bash
 # Commit and push changes
 git add .
@@ -119,11 +126,13 @@ gh workflow run book-deploy.yml
 #### 5. Verify Deployment
 
 **Actions**:
+
 1. Wait for workflow to complete (~2-3 minutes)
 2. Visit `https://[username].github.io/[repo-name]/`
 3. Verify documentation is accessible and correct
 
 **Commands**:
+
 ```bash
 # Check deployment status
 gh run list --workflow=book-deploy.yml --limit 1
@@ -148,9 +157,11 @@ gh run view [run-id] --log
 ## Strategy 2: Container Deployment
 
 ### Purpose
+
 Deploy containerized application to cloud platforms
 
 ### Duration
+
 30-60 minutes (initial setup)
 
 ### Steps
@@ -158,6 +169,7 @@ Deploy containerized application to cloud platforms
 #### 1. Create Dockerfile (if not exists)
 
 **Python Example**:
+
 ```dockerfile
 FROM python:3.11-slim
 
@@ -174,6 +186,7 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
 **Node.js Example**:
+
 ```dockerfile
 FROM node:20-alpine
 
@@ -194,6 +207,7 @@ CMD ["node", "dist/index.js"]
 #### 2. Build and Test Locally
 
 **Commands**:
+
 ```bash
 # Build image
 docker build -t my-app:latest .
@@ -210,6 +224,7 @@ curl http://localhost:8000/health
 #### 3. Set Up Container Registry
 
 **GitHub Container Registry**:
+
 ```bash
 # Login
 echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
@@ -222,6 +237,7 @@ docker push ghcr.io/USERNAME/my-app:latest
 ```
 
 **Docker Hub**:
+
 ```bash
 # Login
 docker login
@@ -236,6 +252,7 @@ docker push username/my-app:latest
 #### 4. Deploy to Cloud Platform
 
 **AWS ECS/Fargate**:
+
 ```bash
 # Create task definition
 aws ecs register-task-definition --cli-input-json file://task-definition.json
@@ -250,6 +267,7 @@ aws ecs create-service \
 ```
 
 **Azure Container Instances**:
+
 ```bash
 # Deploy container
 az container create \
@@ -261,6 +279,7 @@ az container create \
 ```
 
 **Google Cloud Run**:
+
 ```bash
 # Deploy
 gcloud run deploy my-app \
@@ -275,6 +294,7 @@ gcloud run deploy my-app \
 #### 5. Configure CI/CD for Automatic Deployment
 
 **GitHub Actions Example**:
+
 ```yaml
 name: Deploy Container
 on:
@@ -286,20 +306,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           push: true
           tags: ghcr.io/${{ github.repository }}:latest
-      
+
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy my-app \
@@ -312,9 +332,11 @@ jobs:
 ## Strategy 3: Serverless Functions
 
 ### Purpose
+
 Deploy serverless functions to cloud providers
 
 ### Duration
+
 20-40 minutes
 
 ### AWS Lambda
@@ -322,6 +344,7 @@ Deploy serverless functions to cloud providers
 #### 1. Package Function
 
 **Python**:
+
 ```bash
 # Install dependencies
 pip install -r requirements.txt -t package/
@@ -334,6 +357,7 @@ zip -g function.zip lambda_function.py
 ```
 
 **Node.js**:
+
 ```bash
 # Install dependencies
 npm ci --production
@@ -345,6 +369,7 @@ zip -r function.zip node_modules/ index.js
 #### 2. Deploy Function
 
 **Commands**:
+
 ```bash
 # Create function
 aws lambda create-function \
@@ -365,6 +390,7 @@ aws lambda update-function-code \
 #### 3. Configure API Gateway
 
 **Commands**:
+
 ```bash
 # Create REST API
 aws apigateway create-rest-api --name my-api
@@ -379,6 +405,7 @@ aws apigateway create-rest-api --name my-api
 ### Azure Functions
 
 **Commands**:
+
 ```bash
 # Initialize function app
 func init my-function-app --python
@@ -396,6 +423,7 @@ func azure functionapp publish my-function-app
 ### Google Cloud Functions
 
 **Commands**:
+
 ```bash
 # Deploy function
 gcloud functions deploy my-function \
@@ -411,14 +439,17 @@ gcloud functions deploy my-function \
 ## Strategy 4: Platform as a Service (PaaS)
 
 ### Purpose
+
 Deploy to managed PaaS platforms
 
 ### Duration
+
 15-30 minutes
 
 ### Heroku
 
 **Commands**:
+
 ```bash
 # Login
 heroku login
@@ -444,6 +475,7 @@ heroku open
 ### Render
 
 **Actions**:
+
 1. Connect GitHub repository
 2. Select branch and build command
 3. Configure environment variables
@@ -454,6 +486,7 @@ heroku open
 ### Railway
 
 **Commands**:
+
 ```bash
 # Login
 railway login
@@ -473,9 +506,11 @@ railway open
 ## Strategy 5: Kubernetes Deployment
 
 ### Purpose
+
 Deploy to Kubernetes clusters
 
 ### Duration
+
 1-2 hours (initial setup)
 
 ### Steps
@@ -483,6 +518,7 @@ Deploy to Kubernetes clusters
 #### 1. Create Kubernetes Manifests
 
 **Deployment**:
+
 ```yaml
 # deployment.yaml
 apiVersion: apps/v1
@@ -500,32 +536,33 @@ spec:
         app: my-app
     spec:
       containers:
-      - name: my-app
-        image: ghcr.io/username/my-app:latest
-        ports:
-        - containerPort: 8000
-        env:
-        - name: ENV
-          value: production
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8000
+        - name: my-app
+          image: ghcr.io/username/my-app:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: ENV
+              value: production
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
 ```
 
 **Service**:
+
 ```yaml
 # service.yaml
 apiVersion: v1
@@ -536,12 +573,13 @@ spec:
   selector:
     app: my-app
   ports:
-  - port: 80
-    targetPort: 8000
+    - port: 80
+      targetPort: 8000
   type: LoadBalancer
 ```
 
 **Ingress**:
+
 ```yaml
 # ingress.yaml
 apiVersion: networking.k8s.io/v1
@@ -552,25 +590,26 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   tls:
-  - hosts:
-    - my-app.example.com
-    secretName: my-app-tls
+    - hosts:
+        - my-app.example.com
+      secretName: my-app-tls
   rules:
-  - host: my-app.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: my-app-service
-            port:
-              number: 80
+    - host: my-app.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-app-service
+                port:
+                  number: 80
 ```
 
 #### 2. Apply Manifests
 
 **Commands**:
+
 ```bash
 # Create namespace
 kubectl create namespace my-app
@@ -591,6 +630,7 @@ kubectl get ingress -n my-app
 #### 3. Set Up GitOps (ArgoCD)
 
 **Commands**:
+
 ```bash
 # Install ArgoCD
 kubectl create namespace argocd
@@ -615,6 +655,7 @@ argocd app create my-app \
 #### 1. Verify Health Checks
 
 **Commands**:
+
 ```bash
 # HTTP health check
 curl https://my-app.example.com/health
@@ -630,6 +671,7 @@ curl https://my-app.example.com/status
 **GitHub Pages**: Check GitHub Actions logs
 **Containers**: Check cloud platform logs
 **Kubernetes**:
+
 ```bash
 kubectl logs -f deployment/my-app -n my-app
 ```
@@ -651,6 +693,7 @@ kubectl logs -f deployment/my-app -n my-app
 #### 5. Document Deployment
 
 Update documentation:
+
 - Deployment URLs
 - Access credentials (secure storage)
 - Rollback procedures
@@ -659,6 +702,7 @@ Update documentation:
 ## Rollback Procedures
 
 ### GitHub Pages
+
 ```bash
 # Revert commit
 git revert HEAD
@@ -666,6 +710,7 @@ git push origin main
 ```
 
 ### Container Deployment
+
 ```bash
 # Roll back to previous version
 docker pull ghcr.io/username/my-app:previous-tag
@@ -673,6 +718,7 @@ docker pull ghcr.io/username/my-app:previous-tag
 ```
 
 ### Kubernetes
+
 ```bash
 # Roll back deployment
 kubectl rollout undo deployment/my-app -n my-app
@@ -682,6 +728,7 @@ kubectl rollout undo deployment/my-app --to-revision=2 -n my-app
 ```
 
 ### Serverless
+
 ```bash
 # AWS Lambda
 aws lambda update-function-code \
@@ -694,6 +741,7 @@ aws lambda update-function-code \
 ### Deployment Fails
 
 **Check**:
+
 - Build logs for errors
 - Configuration and environment variables
 - Network connectivity
@@ -703,6 +751,7 @@ aws lambda update-function-code \
 ### Application Not Accessible
 
 **Check**:
+
 - DNS configuration
 - Firewall rules
 - Load balancer configuration
@@ -712,6 +761,7 @@ aws lambda update-function-code \
 ### Performance Issues
 
 **Check**:
+
 - Resource utilization (CPU, memory)
 - Database connection pool
 - External service latency
@@ -743,4 +793,4 @@ aws lambda update-function-code \
 
 ---
 
-*For deployment issues, consult platform-specific documentation or open a GitHub issue.*
+_For deployment issues, consult platform-specific documentation or open a GitHub issue._

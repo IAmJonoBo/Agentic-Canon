@@ -41,6 +41,7 @@ validate_license(license_id)
 - `print_validation_summary(validations)` - Print validation summary
 
 **Approved Licenses:**
+
 - MIT
 - Apache-2.0
 - BSD-3-Clause

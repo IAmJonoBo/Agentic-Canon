@@ -50,23 +50,23 @@ agentic-canon init
 
 ### Required Parameters
 
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| `project_name` | Human-readable name | "Acme React App" |
-| `project_slug` | URL-friendly name | "acme-react-app" |
-| `description` | Short description | "A production-ready React application" |
-| `author_name` | Your name | "Jane Doe" |
-| `author_email` | Your email | "jane@example.com" |
+| Parameter      | Description         | Example                                |
+| -------------- | ------------------- | -------------------------------------- |
+| `project_name` | Human-readable name | "Acme React App"                       |
+| `project_slug` | URL-friendly name   | "acme-react-app"                       |
+| `description`  | Short description   | "A production-ready React application" |
+| `author_name`  | Your name           | "Jane Doe"                             |
+| `author_email` | Your email          | "jane@example.com"                     |
 
 ### Optional Parameters
 
-| Parameter | Options | Default | Description |
-|-----------|---------|---------|-------------|
-| `license` | Apache-2.0, MIT, Proprietary | Apache-2.0 | License type |
-| `include_storybook` | yes, no | yes | Include Storybook |
-| `include_e2e_tests` | yes, no | yes | Include Playwright E2E |
-| `enable_accessibility_tests` | yes, no | yes | Include a11y tests |
-| `ci_provider` | github, gitlab | github | CI/CD platform |
+| Parameter                    | Options                      | Default    | Description            |
+| ---------------------------- | ---------------------------- | ---------- | ---------------------- |
+| `license`                    | Apache-2.0, MIT, Proprietary | Apache-2.0 | License type           |
+| `include_storybook`          | yes, no                      | yes        | Include Storybook      |
+| `include_e2e_tests`          | yes, no                      | yes        | Include Playwright E2E |
+| `enable_accessibility_tests` | yes, no                      | yes        | Include a11y tests     |
+| `ci_provider`                | github, gitlab               | github     | CI/CD platform         |
 
 ## Generated Project Structure
 
@@ -134,25 +134,22 @@ npm run format
 
 ```tsx
 // src/components/Button.tsx
-import React from 'react';
-import styles from './Button.module.css';
+import React from "react";
+import styles from "./Button.module.css";
 
 interface ButtonProps {
   label: string;
   onClick?: () => void;
-  variant?: 'primary' | 'secondary';
+  variant?: "primary" | "secondary";
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  label, 
-  onClick, 
-  variant = 'primary' 
+export const Button: React.FC<ButtonProps> = ({
+  label,
+  onClick,
+  variant = "primary",
 }) => {
   return (
-    <button 
-      className={styles[variant]} 
-      onClick={onClick}
-    >
+    <button className={styles[variant]} onClick={onClick}>
       {label}
     </button>
   );
@@ -163,13 +160,13 @@ export const Button: React.FC<ButtonProps> = ({
 
 ```tsx
 // src/components/Button.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from './Button';
+import type { Meta, StoryObj } from "@storybook/react";
+import { Button } from "./Button";
 
 const meta: Meta<typeof Button> = {
-  title: 'Components/Button',
+  title: "Components/Button",
   component: Button,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
 };
 
 export default meta;
@@ -177,8 +174,8 @@ type Story = StoryObj<typeof Button>;
 
 export const Primary: Story = {
   args: {
-    label: 'Primary Button',
-    variant: 'primary',
+    label: "Primary Button",
+    variant: "primary",
   },
 };
 ```
@@ -187,23 +184,24 @@ export const Primary: Story = {
 
 ```typescript
 // tests/e2e/smoke.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('homepage loads successfully', async ({ page }) => {
-  await page.goto('/');
+test("homepage loads successfully", async ({ page }) => {
+  await page.goto("/");
   await expect(page).toHaveTitle(/Acme React App/);
 });
 
-test('button click works', async ({ page }) => {
-  await page.goto('/');
+test("button click works", async ({ page }) => {
+  await page.goto("/");
   await page.click('button:has-text("Click me")');
-  await expect(page.locator('.result')).toHaveText('Clicked!');
+  await expect(page.locator(".result")).toHaveText("Clicked!");
 });
 ```
 
 ## CI/CD Workflows
 
 **ci.yml** - Main Pipeline:
+
 - Install and cache dependencies
 - Lint and type check
 - Unit tests with coverage
@@ -211,12 +209,14 @@ test('button click works', async ({ page }) => {
 - Bundle size analysis
 
 **e2e.yml** - E2E Tests:
+
 - Install browsers
 - Run Playwright tests
 - Upload test results
 - Screenshot comparisons
 
 **storybook-pages.yml** - Storybook:
+
 - Build Storybook
 - Deploy to GitHub Pages
 - Accessibility checks
@@ -238,7 +238,7 @@ test('button click works', async ({ page }) => {
 const [count, setCount] = useState(0);
 
 // Use context for shared state
-const ThemeContext = createContext<Theme>('light');
+const ThemeContext = createContext<Theme>("light");
 
 // Consider libraries for complex state
 // - Zustand (lightweight)
@@ -250,7 +250,7 @@ const ThemeContext = createContext<Theme>('light');
 
 ```tsx
 // Code splitting with lazy
-const Dashboard = lazy(() => import('./Dashboard'));
+const Dashboard = lazy(() => import("./Dashboard"));
 
 // Memoization
 const MemoizedComponent = React.memo(MyComponent);

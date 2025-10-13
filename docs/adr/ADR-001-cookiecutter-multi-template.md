@@ -15,6 +15,7 @@ We need a way to provide multiple project templates (Python, Node.js, React, Go,
 5. Extensible for future templates
 
 Several options were considered:
+
 - Custom template generator
 - Yeoman generators
 - Cookiecutter
@@ -94,11 +95,13 @@ templates/
 ### 1. Yeoman Generators
 
 **Pros**:
+
 - Popular in JavaScript ecosystem
 - Interactive prompts
 - Composable generators
 
 **Cons**:
+
 - Requires Node.js
 - More complex to create generators
 - Less suitable for non-JS templates
@@ -106,11 +109,13 @@ templates/
 ### 2. Copier
 
 **Pros**:
+
 - Built-in update mechanism
 - Template versioning
 - Jinja2 templating
 
 **Cons**:
+
 - Less widely adopted
 - Fewer ecosystem tools
 - More complex configuration
@@ -118,10 +123,12 @@ templates/
 ### 3. Custom Generator
 
 **Pros**:
+
 - Complete control
 - Tailored to exact needs
 
 **Cons**:
+
 - Maintenance burden
 - Reinventing the wheel
 - Less community support
@@ -129,10 +136,12 @@ templates/
 ### 4. Manual Repositories
 
 **Pros**:
+
 - Simple
 - Easy to understand
 
 **Cons**:
+
 - No customization during generation
 - Hard to maintain multiple templates
 - No update mechanism

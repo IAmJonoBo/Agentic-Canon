@@ -51,15 +51,16 @@ This document defines the **consistent conventions** used across all Agentic Can
 ### Python Code Style
 
 **PEP 8 Compliance**
+
 ```python
 # Good: Clear, PEP 8 compliant
 def calculate_user_score(user_id: int, include_bonus: bool = False) -> float:
     """Calculate the total score for a user.
-    
+
     Args:
         user_id: The unique identifier for the user
         include_bonus: Whether to include bonus points
-        
+
     Returns:
         The calculated score as a float
     """
@@ -76,12 +77,14 @@ def calcScore(userId,includeBonus=False):
 ```
 
 **Black Formatting**
+
 - Line length: 88 characters
 - Use double quotes for strings
 - Trailing commas in multi-line structures
 - Consistent indentation (4 spaces)
 
 **Import Organization**
+
 ```python
 # Standard library imports
 import os
@@ -99,6 +102,7 @@ from myapp.services import UserService
 ```
 
 **Type Hints**
+
 ```python
 # Always use type hints for function signatures
 def process_data(
@@ -117,6 +121,7 @@ UserMap = dict[UserId, UserData]
 ### TypeScript/JavaScript Code Style
 
 **TypeScript Strict Mode**
+
 ```typescript
 // tsconfig.json
 {
@@ -132,6 +137,7 @@ UserMap = dict[UserId, UserData]
 ```
 
 **Prettier Formatting**
+
 ```typescript
 // Good: Prettier formatted
 export interface UserScore {
@@ -142,7 +148,7 @@ export interface UserScore {
 
 export async function calculateUserScore(
   userId: number,
-  includeBonus: boolean = false
+  includeBonus: boolean = false,
 ): Promise<number> {
   const baseScore = await getBaseScore(userId);
   if (includeBonus) {
@@ -153,15 +159,26 @@ export async function calculateUserScore(
 }
 
 // Bad: Inconsistent formatting
-export interface UserScore{userId:number;score:number;bonusPoints?:number}
-export async function calculateUserScore(userId:number,includeBonus:boolean=false):Promise<number>{
-  const baseScore=await getBaseScore(userId);
-  if(includeBonus){const bonus=await getBonusPoints(userId);return baseScore+bonus;}
+export interface UserScore {
+  userId: number;
+  score: number;
+  bonusPoints?: number;
+}
+export async function calculateUserScore(
+  userId: number,
+  includeBonus: boolean = false,
+): Promise<number> {
+  const baseScore = await getBaseScore(userId);
+  if (includeBonus) {
+    const bonus = await getBonusPoints(userId);
+    return baseScore + bonus;
+  }
   return baseScore;
 }
 ```
 
 **ESLint Configuration**
+
 - Use Airbnb style guide as base
 - Enable TypeScript-specific rules
 - Enforce no `any` types
@@ -171,6 +188,7 @@ export async function calculateUserScore(userId:number,includeBonus:boolean=fals
 ### Go Code Style
 
 **gofmt and goimports**
+
 ```go
 // Good: Properly formatted
 package user
@@ -178,7 +196,7 @@ package user
 import (
     "context"
     "fmt"
-    
+
     "github.com/example/myapp/models"
 )
 
@@ -188,7 +206,7 @@ func CalculateUserScore(ctx context.Context, userID int, includeBonus bool) (flo
     if err != nil {
         return 0, fmt.Errorf("failed to get base score: %w", err)
     }
-    
+
     if includeBonus {
         bonus, err := getBonusPoints(ctx, userID)
         if err != nil {
@@ -196,12 +214,13 @@ func CalculateUserScore(ctx context.Context, userID int, includeBonus bool) (flo
         }
         score += bonus
     }
-    
+
     return score, nil
 }
 ```
 
 **Go Conventions**
+
 - Early returns for error handling
 - Receiver names: 1-2 letters (consistent per type)
 - Interface names: -er suffix (Reader, Writer)
@@ -223,6 +242,7 @@ func CalculateUserScore(ctx context.Context, userID int, includeBonus bool) (flo
 ### File Naming
 
 **General Rules**
+
 - Lowercase with hyphens (kebab-case) for multi-word files
 - Extensions match language (.py, .ts, .go, .md)
 - Descriptive names indicating content
@@ -243,6 +263,7 @@ README.txt      # Wrong extension for markdown
 ```
 
 **Component Files**
+
 ```bash
 # React components (PascalCase for components)
 Button.tsx
@@ -262,6 +283,7 @@ user-service.test.py
 ### Variable Naming
 
 **Python Variables**
+
 ```python
 # Good: snake_case, descriptive
 user_count = 10
@@ -279,6 +301,7 @@ perm = True         # Abbreviation
 ```
 
 **TypeScript Variables**
+
 ```typescript
 // Good: camelCase, descriptive
 const userCount = 10;
@@ -288,15 +311,16 @@ const hasPermission = true;
 
 // Constants: UPPER_SNAKE_CASE
 const MAX_CONNECTIONS = 100;
-const API_BASE_URL = 'https://api.example.com';
+const API_BASE_URL = "https://api.example.com";
 
 // Bad
-const UserCount = 10;      // Should be camelCase
-const max_retry = 3;       // Should be camelCase
-const auth = false;        // Abbreviation
+const UserCount = 10; // Should be camelCase
+const max_retry = 3; // Should be camelCase
+const auth = false; // Abbreviation
 ```
 
 **Go Variables**
+
 ```go
 // Good: camelCase for local, PascalCase for exported
 userCount := 10
@@ -316,6 +340,7 @@ auth := false      // Abbreviation
 ### Function Naming
 
 **Python Functions**
+
 ```python
 # Good: verb_noun, descriptive
 def get_user_by_id(user_id: int) -> User:
@@ -342,6 +367,7 @@ def check(email: str) -> bool:  # Vague verb
 ```
 
 **TypeScript Functions**
+
 ```typescript
 // Good: verbNoun, descriptive
 function getUserById(userId: number): User {
@@ -371,6 +397,7 @@ function calc(scores: number[]): number {  // Abbreviation
 ```
 
 **Go Functions**
+
 ```go
 // Good: VerbNoun (exported), verbNoun (private)
 func GetUserByID(ctx context.Context, userID int) (*User, error) {
@@ -394,6 +421,7 @@ func calc(scores []float64) float64 {  // Abbreviation
 ### Class/Type Naming
 
 **Python Classes**
+
 ```python
 # Good: PascalCase, noun
 class UserService:
@@ -414,6 +442,7 @@ class validateEmail:  # Should be noun, not verb
 ```
 
 **TypeScript Classes/Interfaces**
+
 ```typescript
 // Good: PascalCase
 class UserService {
@@ -438,6 +467,7 @@ interface IUserData {  // No 'I' prefix needed in TypeScript
 ```
 
 **Go Types**
+
 ```go
 // Good: PascalCase for exported, camelCase for private
 type UserService struct {
@@ -457,6 +487,7 @@ type Reader interface {
 ### Boolean Variable Naming
 
 **Use Clear Prefixes**
+
 ```python
 # Good: is_, has_, should_, can_, will_
 is_valid = True
@@ -474,6 +505,7 @@ retry = True        # Unclear type
 ### Collection Naming
 
 **Use Plural Forms**
+
 ```python
 # Good: Plural for collections
 users = [user1, user2, user3]
@@ -493,6 +525,7 @@ user_scores = {user1: 100, user2: 95}  # Unclear structure
 ### Branch Naming
 
 **Branch Name Format**
+
 ```bash
 <type>/<short-description>
 
@@ -522,6 +555,7 @@ temp                      # Unclear purpose
 ### Commit Messages
 
 **Conventional Commits Format**
+
 ```bash
 <type>[optional scope]: <description>
 
@@ -531,6 +565,7 @@ temp                      # Unclear purpose
 ```
 
 **Types**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation only
@@ -543,6 +578,7 @@ temp                      # Unclear purpose
 - `ci`: CI/CD changes
 
 **Examples**
+
 ```bash
 # Good commit messages
 feat(auth): add OAuth2 authentication support
@@ -577,26 +613,31 @@ asdf              # Meaningless
 ```
 
 **Commit Message Best Practices**
+
 - Use imperative mood ("add" not "added")
 - First line <= 72 characters
 - Separate subject from body with blank line
 - Body wraps at 72 characters
 - Reference issues/PRs in footer
-- Explain *what* and *why*, not *how*
+- Explain _what_ and _why_, not _how_
 
 ### Pull Request Conventions
 
 **PR Title Format**
+
 - Follow conventional commit format
 - Clear and descriptive
 - Start with type prefix
 
 **PR Description Template**
+
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
@@ -604,19 +645,23 @@ Brief description of changes
 - [ ] Refactoring
 
 ## Changes Made
+
 - Change 1
 - Change 2
 - Change 3
 
 ## Testing
+
 - [ ] Unit tests added/updated
 - [ ] Integration tests added/updated
 - [ ] Manual testing completed
 
 ## Screenshots (if applicable)
+
 [Add screenshots for UI changes]
 
 ## Checklist
+
 - [ ] Code follows style guide
 - [ ] Tests pass locally
 - [ ] Documentation updated
@@ -624,11 +669,13 @@ Brief description of changes
 - [ ] Breaking changes documented
 
 ## Related Issues
+
 Closes #123
 Related to #456
 ```
 
 **PR Size Guidelines**
+
 - Target: < 400 lines changed
 - Maximum: 800 lines (excluding generated code)
 - Split large changes into multiple PRs
@@ -641,51 +688,66 @@ Related to #456
 ### README Structure
 
 **Standard README Template**
-```markdown
+
+````markdown
 # Project Name
 
 Brief one-line description
 
 ## Overview
+
 Detailed project description (2-3 paragraphs)
 
 ## Features
+
 - Key feature 1
 - Key feature 2
 - Key feature 3
 
 ## Installation
+
 ```bash
 # Installation steps
 ```
+````
 
 ## Quick Start
+
 ```bash
 # Minimal example to get started
 ```
 
 ## Usage
+
 ### Basic Usage
+
 [Examples]
 
 ### Advanced Usage
+
 [Examples]
 
 ## Configuration
+
 [Configuration options]
 
 ## API Documentation
+
 [Link to full API docs]
 
 ## Contributing
+
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
+
 [License information]
 
 ## Support
+
 [How to get help]
-```
+
+````
 
 ### Code Documentation
 
@@ -693,21 +755,21 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 ```python
 def calculate_score(user_id: int, include_bonus: bool = False) -> float:
     """Calculate the total score for a user.
-    
+
     This function retrieves the base score and optionally adds bonus points.
-    
+
     Args:
         user_id: The unique identifier for the user. Must be positive.
         include_bonus: Whether to include bonus points in calculation.
             Defaults to False.
-    
+
     Returns:
         The calculated score as a float. Returns 0.0 if user not found.
-    
+
     Raises:
         ValueError: If user_id is negative or zero.
         DatabaseError: If database connection fails.
-    
+
     Example:
         >>> calculate_score(123)
         85.5
@@ -717,25 +779,26 @@ def calculate_score(user_id: int, include_bonus: bool = False) -> float:
     if user_id <= 0:
         raise ValueError("user_id must be positive")
     ...
-```
+````
 
 **TypeScript JSDoc Format**
-```typescript
+
+````typescript
 /**
  * Calculate the total score for a user.
- * 
+ *
  * Retrieves the base score and optionally adds bonus points.
- * 
+ *
  * @param userId - The unique identifier for the user (must be positive)
  * @param includeBonus - Whether to include bonus points (default: false)
  * @returns The calculated score
  * @throws {Error} If userId is invalid
- * 
+ *
  * @example
  * ```typescript
  * const score = await calculateScore(123);
  * // score = 85.5
- * 
+ *
  * const scoreWithBonus = await calculateScore(123, true);
  * // scoreWithBonus = 100.0
  * ```
@@ -749,11 +812,12 @@ export async function calculateScore(
   }
   ...
 }
-```
+````
 
 ### Architecture Decision Records (ADRs)
 
 **ADR Template**
+
 ```markdown
 # ADR-001: [Title of Decision]
 
@@ -773,35 +837,42 @@ What is the change we're proposing and/or doing?
 ## Consequences
 
 ### Positive
+
 - Benefit 1
 - Benefit 2
 
 ### Negative
+
 - Drawback 1
 - Drawback 2
 
 ### Risks
+
 - Risk 1 (mitigation: ...)
 - Risk 2 (mitigation: ...)
 
 ## Alternatives Considered
 
 ### Alternative 1
+
 - Description
 - Pros/Cons
 - Why not chosen
 
 ### Alternative 2
+
 - Description
 - Pros/Cons
 - Why not chosen
 
 ## References
+
 - [Link 1]
 - [Link 2]
 ```
 
 **ADR File Naming**
+
 ```bash
 docs/adr/
 ├── 001-use-react-for-frontend.md
@@ -817,6 +888,7 @@ docs/adr/
 ### Test File Organization
 
 **Python Test Structure**
+
 ```python
 # tests/test_user_service.py
 """Tests for user service module."""
@@ -828,51 +900,52 @@ from myapp.models import User
 
 class TestUserService:
     """Test suite for UserService class."""
-    
+
     @pytest.fixture
     def user_service(self):
         """Create a UserService instance for testing."""
         return UserService()
-    
+
     @pytest.fixture
     def sample_user(self):
         """Create a sample user for testing."""
         return User(id=1, name="Test User", email="test@example.com")
-    
+
     def test_get_user_by_id_returns_user_when_exists(
         self, user_service, sample_user
     ):
         """Test that get_user_by_id returns user when user exists."""
         # Arrange
         user_id = sample_user.id
-        
+
         # Act
         result = user_service.get_user_by_id(user_id)
-        
+
         # Assert
         assert result is not None
         assert result.id == user_id
-    
+
     def test_get_user_by_id_returns_none_when_not_exists(self, user_service):
         """Test that get_user_by_id returns None when user doesn't exist."""
         # Arrange
         nonexistent_id = 9999
-        
+
         # Act
         result = user_service.get_user_by_id(nonexistent_id)
-        
+
         # Assert
         assert result is None
 ```
 
 **TypeScript Test Structure**
+
 ```typescript
 // tests/userService.test.ts
-import { describe, it, expect, beforeEach } from 'vitest';
-import { UserService } from '../src/services/userService';
-import { User } from '../src/models/user';
+import { describe, it, expect, beforeEach } from "vitest";
+import { UserService } from "../src/services/userService";
+import { User } from "../src/models/user";
 
-describe('UserService', () => {
+describe("UserService", () => {
   let userService: UserService;
   let sampleUser: User;
 
@@ -880,13 +953,13 @@ describe('UserService', () => {
     userService = new UserService();
     sampleUser = {
       id: 1,
-      name: 'Test User',
-      email: 'test@example.com'
+      name: "Test User",
+      email: "test@example.com",
     };
   });
 
-  describe('getUserById', () => {
-    it('should return user when user exists', async () => {
+  describe("getUserById", () => {
+    it("should return user when user exists", async () => {
       // Arrange
       const userId = sampleUser.id;
 
@@ -898,7 +971,7 @@ describe('UserService', () => {
       expect(result?.id).toBe(userId);
     });
 
-    it('should return null when user does not exist', async () => {
+    it("should return null when user does not exist", async () => {
       // Arrange
       const nonexistentId = 9999;
 
@@ -934,6 +1007,7 @@ test_edge_case        # Which edge case?
 ### Test Organization Patterns
 
 **AAA Pattern** (Arrange, Act, Assert)
+
 ```python
 def test_calculate_score_includes_bonus_when_flag_true():
     # Arrange: Set up test data and dependencies
@@ -941,23 +1015,24 @@ def test_calculate_score_includes_bonus_when_flag_true():
     base_score = 80.0
     bonus_points = 20.0
     include_bonus = True
-    
+
     # Act: Execute the function under test
     result = calculate_score(user_id, include_bonus)
-    
+
     # Assert: Verify the expected outcome
     assert result == base_score + bonus_points
 ```
 
 **Given-When-Then Pattern** (BDD style)
+
 ```python
 def test_user_authentication():
     # Given a user with valid credentials
     user = User(email="test@example.com", password="secure123")
-    
+
     # When authenticating with correct password
     is_authenticated = authenticate_user(user.email, "secure123")
-    
+
     # Then authentication succeeds
     assert is_authenticated is True
 ```
@@ -969,6 +1044,7 @@ def test_user_authentication():
 ### Secret Management
 
 **Environment Variables**
+
 ```bash
 # Good: Use environment variables for secrets
 DATABASE_URL=postgresql://user:pass@localhost/db
@@ -982,6 +1058,7 @@ API_KEY = "sk_live_abc123xyz789"  # ❌
 ```
 
 **Secret Naming Convention**
+
 ```bash
 # Format: <SERVICE>_<TYPE>_<ENVIRONMENT>
 
@@ -1000,6 +1077,7 @@ MY_SECRET             # Not descriptive
 ### Authentication Conventions
 
 **Token Storage**
+
 ```typescript
 // Good: Store tokens securely
 // - HttpOnly cookies for web apps
@@ -1007,18 +1085,19 @@ MY_SECRET             # Not descriptive
 // - Never in localStorage for sensitive tokens
 
 // Backend: Set HttpOnly cookie
-response.cookie('auth_token', token, {
+response.cookie("auth_token", token, {
   httpOnly: true,
   secure: true,
-  sameSite: 'strict',
-  maxAge: 3600000 // 1 hour
+  sameSite: "strict",
+  maxAge: 3600000, // 1 hour
 });
 
 // Bad: Storing sensitive tokens in localStorage
-localStorage.setItem('auth_token', token); // ❌ XSS vulnerability
+localStorage.setItem("auth_token", token); // ❌ XSS vulnerability
 ```
 
 **Password Policies**
+
 ```python
 # Good: Strong password requirements
 MIN_PASSWORD_LENGTH = 12
@@ -1034,27 +1113,28 @@ password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt(rounds=12))
 ### Input Validation
 
 **Always Validate External Input**
+
 ```python
 # Good: Validate and sanitize
 def create_user(email: str, name: str, age: int) -> User:
     # Validate email format
     if not is_valid_email(email):
         raise ValueError("Invalid email format")
-    
+
     # Validate name length and characters
     if not (1 <= len(name) <= 100):
         raise ValueError("Name must be 1-100 characters")
     if not name.replace(" ", "").isalnum():
         raise ValueError("Name contains invalid characters")
-    
+
     # Validate age range
     if not (0 <= age <= 150):
         raise ValueError("Age must be between 0 and 150")
-    
+
     # Sanitize inputs
     email = email.strip().lower()
     name = name.strip()
-    
+
     return User(email=email, name=name, age=age)
 
 # Bad: No validation
@@ -1069,6 +1149,7 @@ def create_user(email, name, age):
 ### REST API Conventions
 
 **URL Structure**
+
 ```
 # Resource-based URLs (nouns, not verbs)
 GET    /api/v1/users              # List users
@@ -1089,6 +1170,7 @@ GET /api/v1/user_posts            # ❌ Unclear relationship
 ```
 
 **HTTP Status Codes**
+
 ```
 # Success responses
 200 OK                  # Successful GET, PUT, PATCH
@@ -1109,6 +1191,7 @@ GET /api/v1/user_posts            # ❌ Unclear relationship
 ```
 
 **Request/Response Format**
+
 ```json
 // Good: Consistent JSON structure
 
@@ -1161,6 +1244,7 @@ GET /api/v1/user_posts            # ❌ Unclear relationship
 ### GraphQL Conventions
 
 **Naming Conventions**
+
 ```graphql
 # Good: Descriptive, consistent naming
 
@@ -1175,11 +1259,7 @@ type User {
 
 type Query {
   user(id: ID!): User
-  users(
-    first: Int
-    after: String
-    filter: UserFilter
-  ): UserConnection!
+  users(first: Int, after: String, filter: UserFilter): UserConnection!
   currentUser: User
 }
 
@@ -1191,8 +1271,8 @@ type Mutation {
 
 # Bad: Inconsistent, unclear
 type User {
-  user_id: ID!           # ❌ Use camelCase
-  name: String!          # ❌ Unclear (firstName? fullName?)
+  user_id: ID! # ❌ Use camelCase
+  name: String! # ❌ Unclear (firstName? fullName?)
   email_address: String! # ❌ Use camelCase
 }
 ```
@@ -1204,6 +1284,7 @@ type User {
 ### Table Naming
 
 **General Rules**
+
 ```sql
 -- Good: Plural, snake_case
 CREATE TABLE users (...);
@@ -1220,6 +1301,7 @@ CREATE TABLE userpref (...);     -- Abbreviation
 ### Column Naming
 
 **Consistent Patterns**
+
 ```sql
 -- Good: snake_case, descriptive
 CREATE TABLE users (
@@ -1246,6 +1328,7 @@ CREATE TABLE users (
 ### Foreign Key Naming
 
 **Format**: `<referenced_table_singular>_id`
+
 ```sql
 -- Good
 CREATE TABLE orders (
@@ -1268,6 +1351,7 @@ CREATE TABLE orders (
 ### Index Naming
 
 **Format**: `idx_<table>_<column(s)>`
+
 ```sql
 -- Good
 CREATE INDEX idx_users_email ON users(email);
@@ -1286,6 +1370,7 @@ CREATE INDEX index1 ON users(email);      -- Non-descriptive
 ### Environment Configuration
 
 **Environment Naming**
+
 ```bash
 # Standard environments
 development   # Local development
@@ -1299,6 +1384,7 @@ demo          # Customer demos
 ```
 
 **Configuration File Structure**
+
 ```
 config/
 ├── default.yml          # Default configuration
@@ -1311,6 +1397,7 @@ config/
 ### Feature Flags
 
 **Flag Naming Convention**
+
 ```python
 # Format: <component>_<feature>_<action>
 
@@ -1330,6 +1417,7 @@ user_v2 = True         # Missing context
 ## Project Structure Conventions
 
 ### Python Project Structure
+
 ```
 my-python-project/
 ├── src/
@@ -1353,6 +1441,7 @@ my-python-project/
 ```
 
 ### Node.js Project Structure
+
 ```
 my-node-project/
 ├── src/
@@ -1375,6 +1464,7 @@ my-node-project/
 ```
 
 ### Go Project Structure
+
 ```
 my-go-project/
 ├── cmd/
@@ -1404,6 +1494,7 @@ my-go-project/
 ### Issue/Ticket Conventions
 
 **Issue Title Format**
+
 ```
 [<Type>] Brief description of issue
 
@@ -1428,53 +1519,67 @@ Help needed          # Too vague
 ```
 
 **Issue Description Template**
+
 ```markdown
 ## Description
+
 Clear description of the issue
 
 ## Steps to Reproduce (for bugs)
+
 1. Step 1
 2. Step 2
 3. Step 3
 
 ## Expected Behavior
+
 What should happen
 
 ## Actual Behavior
+
 What actually happens
 
 ## Environment
+
 - OS: [e.g., Ubuntu 22.04]
 - Browser: [e.g., Chrome 120]
 - Version: [e.g., 1.2.3]
 
 ## Additional Context
+
 Any other relevant information
 ```
 
 ### Code Review Conventions
 
 **Review Comments Structure**
+
 ```markdown
 # Blocking issues (must fix before merge)
+
 ❌ **[MUST FIX]** This will cause a security vulnerability
 ⚠️ **[REQUIRED]** Missing error handling for database operations
 
 # Suggestions (nice to have)
+
 💡 **[SUGGESTION]** Consider using a factory pattern here
 📝 **[NITPICK]** Could improve naming clarity
 
 # Questions
+
 ❓ **[QUESTION]** What happens if this value is null?
 
 # Praise
+
 ✅ **[NICE]** Great test coverage!
 👍 **[GOOD]** Clear and readable code
 ```
 
 **Review Response Conventions**
+
 ```markdown
 # Acknowledge and explain
+
 ✅ Fixed in [commit hash]
 🔄 Refactored as suggested
 📝 Added clarifying comment
@@ -1489,6 +1594,7 @@ Any other relevant information
 ### Checklist for New Code
 
 **Before Committing**
+
 - [ ] Code follows style guide for the language
 - [ ] All functions/classes documented
 - [ ] Tests added/updated
@@ -1500,6 +1606,7 @@ Any other relevant information
 - [ ] Logging appropriate
 
 **Before Opening PR**
+
 - [ ] Branch name follows convention
 - [ ] Commit messages follow conventional commits
 - [ ] PR title and description clear
@@ -1510,6 +1617,7 @@ Any other relevant information
 - [ ] Migration plan (if needed)
 
 **During Code Review**
+
 - [ ] Address all blocking comments
 - [ ] Respond to all comments
 - [ ] Update PR if needed
@@ -1530,4 +1638,4 @@ Any other relevant information
 
 ---
 
-*This document is part of the Agentic Canon framework for frontier software excellence.*
+_This document is part of the Agentic Canon framework for frontier software excellence._

@@ -16,6 +16,7 @@ Thank you for considering contributing to {{ PROJECT_NAME }}. This guide will he
 ## Code of Conduct
 
 We are committed to providing a welcoming and inclusive environment. Please:
+
 - Be respectful and constructive
 - Focus on what's best for the community
 - Show empathy towards others
@@ -24,6 +25,7 @@ We are committed to providing a welcoming and inclusive environment. Please:
 ## Getting Started
 
 ### Prerequisites
+
 - Git
 - {{ LANGUAGE }} {{ MIN_VERSION }}+
 - {{ PACKAGE_MANAGER }}
@@ -64,6 +66,7 @@ cd {{ REPO }}
 ### 1. Branch Strategy
 
 We use **trunk-based development**:
+
 - `main` - Production-ready code
 - `develop` - Integration branch (if needed)
 - Feature branches from `main`: `feature/description`
@@ -86,11 +89,13 @@ git checkout -b feature/your-feature-name
 Follow these guidelines:
 
 #### Code Style
+
 - Run linter before committing: `{{ LINT_COMMAND }}`
 - Use formatter: `{{ FORMAT_COMMAND }}`
 - Follow {{ STYLE_GUIDE }}
 
 #### Commit Messages
+
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
@@ -102,6 +107,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation only
@@ -111,6 +117,7 @@ Types:
 - `chore`: Maintenance
 
 Example:
+
 ```
 feat(auth): add OAuth2 authentication
 
@@ -121,6 +128,7 @@ Closes #123
 ```
 
 #### Tests
+
 - Write tests for all new features
 - Maintain minimum {{ COVERAGE_THRESHOLD }}% coverage
 - All tests must pass: `{{ TEST_COMMAND }}`
@@ -131,12 +139,14 @@ Closes #123
 All contributions must meet these standards:
 
 ### Security
+
 - ✅ No secrets in code
 - ✅ SAST scan passes (CodeQL/Semgrep)
 - ✅ Dependency scan clean
 - ✅ No high/critical vulnerabilities
 
 ### Code Quality
+
 - ✅ Linter passes
 - ✅ Code coverage ≥ {{ COVERAGE_THRESHOLD }}%
 - ✅ Mutation score ≥ {{ MUTATION_THRESHOLD }}%
@@ -144,16 +154,19 @@ All contributions must meet these standards:
 - ✅ No code smells introduced
 
 ### Performance
+
 - ✅ Performance budgets met
 - ✅ No regressions in benchmarks
 - ✅ Core Web Vitals maintained (web apps)
 
 ### Accessibility
+
 - ✅ WCAG 2.2 AA compliant
 - ✅ axe-core tests pass
 - ✅ Keyboard navigation works
 
 ### Documentation
+
 - ✅ Public APIs documented
 - ✅ README updated (if needed)
 - ✅ ADR created for significant decisions
@@ -164,6 +177,7 @@ All contributions must meet these standards:
 ### 1. Before Submitting
 
 Run full validation:
+
 ```bash
 # Lint and format
 {{ LINT_COMMAND }}
@@ -201,15 +215,18 @@ Your PR should include:
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Checklist
+
 - [ ] Tests added/updated
 - [ ] Documentation updated
 - [ ] Changelog updated
@@ -218,11 +235,13 @@ Brief description of changes
 - [ ] Code follows style guidelines
 
 ## Testing
+
 How was this tested?
 
 ## Screenshots (if applicable)
 
 ## Related Issues
+
 Closes #
 ```
 
@@ -293,6 +312,7 @@ docs/adr/template.md
 ### Contract Testing
 
 For API changes:
+
 ```bash
 # Run contract tests
 {{ CONTRACT_TEST_COMMAND }}
@@ -346,18 +366,21 @@ Releases are managed by maintainers:
 ## Resources
 
 ### Documentation
+
 - [README](README.md)
 - [Architecture](docs/architecture/)
 - [API Documentation](docs/api/)
 - [Security Policy](SECURITY.md)
 
 ### Tools
+
 - Linter: {{ LINTER }}
 - Formatter: {{ FORMATTER }}
 - Test Framework: {{ TEST_FRAMEWORK }}
 - Build Tool: {{ BUILD_TOOL }}
 
 ### External
+
 - [{{ STYLE_GUIDE }}]({{ STYLE_GUIDE_URL }})
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [Semantic Versioning](https://semver.org/)
@@ -365,6 +388,7 @@ Releases are managed by maintainers:
 ## Recognition
 
 Contributors are recognized in:
+
 - CHANGELOG.md
 - GitHub contributors page
 - Annual contributor report
@@ -377,4 +401,4 @@ By contributing, you agree that your contributions will be licensed under {{ LIC
 
 Thank you for contributing to {{ PROJECT_NAME }}! 🚀
 
-*This guide implements frontier software excellence practices including NIST SSDF, OWASP SAMM, and DORA metrics.*
+_This guide implements frontier software excellence practices including NIST SSDF, OWASP SAMM, and DORA metrics._

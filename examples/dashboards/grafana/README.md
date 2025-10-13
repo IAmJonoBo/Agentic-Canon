@@ -5,6 +5,7 @@ This directory contains Grafana dashboard JSON files for monitoring key metrics 
 ## Available Dashboards
 
 ### DORA Metrics Dashboard
+
 **File**: `dora-metrics.json`
 
 Tracks the four key DORA (DevOps Research and Assessment) metrics:
@@ -30,6 +31,7 @@ Tracks the four key DORA (DevOps Research and Assessment) metrics:
    - Thresholds: < 1 hour (green), < 1 day (yellow), > 1 day (red)
 
 ### SPACE Metrics Dashboard
+
 **File**: `space-metrics.json`
 
 Tracks developer experience and productivity using the SPACE framework:
@@ -58,12 +60,14 @@ curl -X POST \
 These dashboards assume Prometheus as the data source with the following metrics:
 
 **DORA Metrics:**
+
 - `deployments_total` - Counter of deployments
 - `failed_deployments_total` - Counter of failed deployments
 - `lead_time_seconds` - Histogram of lead times
 - `mttr_seconds` - Histogram of recovery times
 
 **SPACE Metrics:**
+
 - `developer_satisfaction_score` - Gauge from surveys (1-5)
 - `pull_requests_merged` - Counter of merged PRs
 - `commits_total` - Counter of commits

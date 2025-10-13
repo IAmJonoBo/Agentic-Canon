@@ -5,6 +5,7 @@ This is a complete example of a production-ready Go gRPC service generated using
 ## Overview
 
 A high-performance gRPC service for managing user profiles with:
+
 - Full CRUD operations
 - Protocol Buffers (protobuf) for efficient serialization
 - Bidirectional streaming support
@@ -158,25 +159,25 @@ option go_package = "github.com/example/grpc-service/api/proto/user/v1";
 service UserService {
   // Create a new user
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
-  
+
   // Get user by ID
   rpc GetUser(GetUserRequest) returns (GetUserResponse);
-  
+
   // Update user
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
-  
+
   // Delete user
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
-  
+
   // List users with pagination
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
-  
+
   // Stream user updates (server streaming)
   rpc StreamUserUpdates(StreamUserUpdatesRequest) returns (stream UserUpdate);
-  
+
   // Batch create users (client streaming)
   rpc BatchCreateUsers(stream CreateUserRequest) returns (BatchCreateUsersResponse);
-  
+
   // Real-time user sync (bidirectional streaming)
   rpc SyncUsers(stream SyncUsersRequest) returns (stream SyncUsersResponse);
 }
@@ -213,7 +214,7 @@ package main
 import (
     "context"
     "log"
-    
+
     "google.golang.org/grpc"
     "google.golang.org/grpc/credentials/insecure"
     pb "github.com/example/grpc-service/api/proto/user/v1"
@@ -226,9 +227,9 @@ func main() {
         log.Fatal(err)
     }
     defer conn.Close()
-    
+
     client := pb.NewUserServiceClient(conn)
-    
+
     // Create user
     resp, err := client.CreateUser(context.Background(), &pb.CreateUserRequest{
         Email:    "user@example.com",
@@ -238,7 +239,7 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-    
+
     log.Printf("Created user: %v", resp.User)
 }
 ```
@@ -568,6 +569,7 @@ The service exposes Prometheus metrics at `/metrics`:
 - **Database metrics**: Connection pool, query duration
 
 Example metrics:
+
 ```
 # HELP grpc_server_handled_total Total number of RPCs completed
 # TYPE grpc_server_handled_total counter
@@ -598,6 +600,7 @@ Structured logging with multiple levels:
 ### Distributed Tracing
 
 OpenTelemetry integration:
+
 - Automatic gRPC instrumentation
 - Database query tracing
 - Custom spans for business logic
@@ -637,12 +640,12 @@ Test individual functions and components:
 func TestCreateUser(t *testing.T) {
     repo := &mockUserRepo{}
     service := NewUserService(repo)
-    
+
     req := &pb.CreateUserRequest{
         Email: "test@example.com",
         Name: "Test User",
     }
-    
+
     resp, err := service.CreateUser(context.Background(), req)
     assert.NoError(t, err)
     assert.NotEmpty(t, resp.User.Id)
@@ -659,11 +662,11 @@ func TestUserServiceIntegration(t *testing.T) {
     // Start test server
     server := startTestServer(t)
     defer server.Stop()
-    
+
     // Create client
     conn := dialServer(t, server.Addr())
     client := pb.NewUserServiceClient(conn)
-    
+
     // Test create user
     resp, err := client.CreateUser(context.Background(), &pb.CreateUserRequest{
         Email: "test@example.com",
@@ -671,7 +674,7 @@ func TestUserServiceIntegration(t *testing.T) {
     })
     require.NoError(t, err)
     assert.NotEmpty(t, resp.User.Id)
-    
+
     // Test get user
     getResp, err := client.GetUser(context.Background(), &pb.GetUserRequest{
         Id: resp.User.Id,
@@ -692,7 +695,7 @@ func BenchmarkCreateUser(b *testing.B) {
         Email: "bench@example.com",
         Name: "Bench User",
     }
-    
+
     b.ResetTimer()
     for i := 0; i < b.N; i++ {
         _, err := service.CreateUser(context.Background(), req)
@@ -750,6 +753,7 @@ ghz --insecure \
 ### Quality Gates
 
 All PRs must pass:
+
 - ✅ golangci-lint with all linters
 - ✅ All tests passing
 - ✅ Code coverage ≥ 80%
@@ -823,6 +827,7 @@ creds := credentials.NewTLS(&tls.Config{
 ### Common Issues
 
 **Port already in use**
+
 ```bash
 # Find process
 lsof -i :9090
@@ -831,6 +836,7 @@ kill -9 <PID>
 ```
 
 **Database connection errors**
+
 ```bash
 # Test connection
 psql -h localhost -U postgres -d grpcdb
@@ -840,6 +846,7 @@ migrate -path migrations -database "postgres://..." version
 ```
 
 **Protobuf compilation errors**
+
 ```bash
 # Reinstall protoc plugins
 make install-proto-deps
@@ -849,6 +856,7 @@ make proto
 ```
 
 **gRPC reflection not working**
+
 ```bash
 # Ensure reflection is registered
 import "google.golang.org/grpc/reflection"
@@ -861,6 +869,7 @@ grpcurl -plaintext localhost:9090 list
 ## Contributing
 
 Contributions welcome! Please:
+
 1. Fork the repository
 2. Create a feature branch
 3. Add tests for new features
@@ -886,6 +895,7 @@ This example is part of Agentic Canon and is licensed under [Apache-2.0](../../L
 ## Support
 
 For questions or issues:
+
 1. Check this README and documentation
 2. Search [existing issues](https://github.com/IAmJonoBo/Agentic-Canon/issues)
 3. Ask in [discussions](https://github.com/IAmJonoBo/Agentic-Canon/discussions)

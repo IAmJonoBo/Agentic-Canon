@@ -7,6 +7,7 @@ Welcome to the documentation for {{cookiecutter.project_name}}.
 ## Contents
 
 ```{tableofcontents}
+
 ```
 
 ## Quick Links

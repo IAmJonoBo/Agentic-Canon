@@ -15,6 +15,7 @@ Modern applications depend on hundreds of third-party libraries and packages. Ma
 5. **Performance**: Newer versions often include performance improvements
 
 Challenges include:
+
 - Keeping dependencies up-to-date without breaking changes
 - Detecting and patching security vulnerabilities quickly
 - Managing transitive dependencies
@@ -23,6 +24,7 @@ Challenges include:
 - Balancing update frequency with stability
 
 Several approaches were considered:
+
 - Manual dependency updates
 - Automated updates without testing
 - Conservative approach (update only on CVE)
@@ -38,21 +40,25 @@ We will implement a **balanced, automated dependency management strategy** using
 ### Core Tools
 
 #### 1. Renovate Bot (Primary)
+
 - **Purpose**: Automated dependency updates
 - **Configuration**: `renovate.json` in repository root
 - **Frequency**: Daily checks, weekly batch updates
 
 #### 2. Dependabot (Secondary)
+
 - **Purpose**: Security vulnerability alerts and PRs
 - **Configuration**: `.github/dependabot.yml`
 - **Frequency**: Daily for security, weekly for everything else
 
 #### 3. Dependency Review Action
+
 - **Purpose**: PR-level dependency vulnerability scanning
 - **Integration**: GitHub Actions workflow
 - **Trigger**: On every pull request
 
 #### 4. Language-Specific Scanners
+
 - **Python**: `pip-audit`, Safety
 - **Node.js**: `npm audit`, Snyk
 - **Go**: `govulncheck`
@@ -61,6 +67,7 @@ We will implement a **balanced, automated dependency management strategy** using
 ### Update Strategy
 
 #### Security Updates (High Priority)
+
 - **Trigger**: CVE published with CVSS ≥ 7.0
 - **Response Time**: Within 24 hours
 - **Process**:
@@ -73,17 +80,20 @@ We will implement a **balanced, automated dependency management strategy** using
 #### Non-Security Updates (Regular Cadence)
 
 **Patch Versions (x.x.X)**:
+
 - **Frequency**: Weekly batch
 - **Auto-merge**: Yes, if tests pass
 - **Risk**: Low (bug fixes only)
 
 **Minor Versions (x.X.0)**:
+
 - **Frequency**: Weekly batch
 - **Auto-merge**: No
 - **Review Required**: Quick review + manual merge
 - **Risk**: Medium (new features, possible behavior changes)
 
 **Major Versions (X.0.0)**:
+
 - **Frequency**: Quarterly review
 - **Auto-merge**: Never
 - **Review Required**: Thorough review + testing
@@ -92,6 +102,7 @@ We will implement a **balanced, automated dependency management strategy** using
 ### Renovate Configuration
 
 **File**: `renovate.json`
+
 ```json
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
@@ -143,6 +154,7 @@ We will implement a **balanced, automated dependency management strategy** using
 ### Dependabot Configuration
 
 **File**: `.github/dependabot.yml`
+
 ```yaml
 version: 2
 updates:
@@ -194,6 +206,7 @@ updates:
 ### Dependency Review Workflow
 
 **File**: `.github/workflows/dependency-review.yml`
+
 ```yaml
 name: Dependency Review
 on: [pull_request]
@@ -220,6 +233,7 @@ jobs:
 ### Lock Files and Version Pinning
 
 #### Python
+
 ```python
 # pyproject.toml - Flexible ranges
 [project]
@@ -234,6 +248,7 @@ uvicorn[standard]==0.24.0
 ```
 
 #### Node.js
+
 ```json
 // package.json - Flexible ranges
 {
@@ -247,6 +262,7 @@ uvicorn[standard]==0.24.0
 ```
 
 #### Go
+
 ```go
 // go.mod - Minimum versions
 module github.com/org/service
@@ -272,6 +288,7 @@ require (
 5. **Security Scans**: No new vulnerabilities introduced
 
 **Post-Update Monitoring**:
+
 - Error rate monitoring (30 minutes)
 - Performance metrics (1 hour)
 - User feedback (24 hours)
@@ -280,12 +297,14 @@ require (
 ### Handling Breaking Changes
 
 #### Assessment Phase
+
 1. Review changelog and breaking changes
 2. Estimate migration effort
 3. Check for available codemods/migration tools
 4. Assess business value of update
 
 #### Migration Phase
+
 1. Create feature branch for update
 2. Update dependency version
 3. Fix breaking changes
@@ -294,6 +313,7 @@ require (
 6. Test thoroughly in staging
 
 #### Rollout Phase
+
 1. Deploy to canary environment (5% traffic)
 2. Monitor for 24 hours
 3. Gradual rollout: 25% → 50% → 100%
@@ -302,16 +322,20 @@ require (
 ### License Compliance
 
 **Allowed Licenses** (permissive):
+
 - MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause
 - ISC, CC0-1.0, Unlicense
 
 **Review Required** (weak copyleft):
+
 - MPL-2.0, EPL-2.0, LGPL-3.0
 
 **Forbidden** (strong copyleft):
+
 - GPL-2.0, GPL-3.0, AGPL-3.0
 
 **Enforcement**:
+
 - Automated license checking in CI
 - PR blocked if forbidden license detected
 - Legal review for uncertain cases
@@ -321,21 +345,25 @@ require (
 #### Severity Levels
 
 **Critical (CVSS 9.0-10.0)**:
+
 - Response: Within 4 hours
 - Process: Emergency patch, immediate deployment
 - Communication: Incident notification
 
 **High (CVSS 7.0-8.9)**:
+
 - Response: Within 24 hours
 - Process: Hotfix PR, expedited review
 - Communication: Team notification
 
 **Medium (CVSS 4.0-6.9)**:
+
 - Response: Within 7 days
 - Process: Regular update cycle
 - Communication: Weekly security report
 
 **Low (CVSS 0.1-3.9)**:
+
 - Response: Within 30 days
 - Process: Batch with other updates
 - Communication: Monthly summary
@@ -343,6 +371,7 @@ require (
 #### False Positive Handling
 
 If vulnerability is not applicable:
+
 1. Document reason (different code path, environment, etc.)
 2. Add suppression with justification
 3. Review suppression quarterly
@@ -351,12 +380,14 @@ If vulnerability is not applicable:
 ### Transitive Dependencies
 
 **Strategy**:
+
 - Monitor transitive dependencies for vulnerabilities
 - Update direct dependencies to pull in patched transitives
 - If direct update unavailable, consider dependency override
 - Document all overrides with reason and expiry date
 
 **Override Example (package.json)**:
+
 ```json
 {
   "overrides": {
@@ -368,6 +399,7 @@ If vulnerability is not applicable:
 ### Metrics and Monitoring
 
 **Key Metrics**:
+
 - Dependency age (time since latest version)
 - Vulnerability count by severity
 - Update lag (time from release to deployment)
@@ -375,12 +407,14 @@ If vulnerability is not applicable:
 - Rollback rate
 
 **Dashboard**:
+
 - Dependency health score per service
 - Open security vulnerabilities
 - Pending updates by priority
 - License compliance status
 
 **Alerts**:
+
 - Critical vulnerability detected
 - Dependency > 6 months outdated
 - Update failed > 3 times

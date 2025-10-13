@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### New Features
+### Added (Unreleased)
 
 - Comprehensive CONTRIBUTING.md with contribution guidelines
 - SECURITY.md with security policy and vulnerability reporting process
@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remote dev environment configs (`.gitpod.yml`, `.gitpod.Dockerfile`, `.devcontainer/devcontainer.json`) + docs (`docs/dev-environments.md`) (Task #133)
 - Semgrep shared ruleset (templates/\_shared/semgrep/) + docs (docs/semgrep-ruleset.md) (Task #134)
 
-### Updates
+### Changed (Unreleased)
 
 - Updated repository structure documentation
 - Enhanced documentation organization

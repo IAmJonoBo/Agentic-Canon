@@ -16,6 +16,7 @@ Modern software development requires comprehensive security scanning to detect v
 6. **Actionability**: Clear, prioritized findings with remediation guidance
 
 Several approaches were considered:
+
 - Single comprehensive tool (e.g., Snyk, Veracode)
 - Open-source only approach
 - Manual security reviews only
@@ -29,16 +30,19 @@ We will implement a **multi-layered security scanning strategy** using specializ
 ### Security Scanning Layers
 
 #### 1. Static Application Security Testing (SAST)
+
 - **Primary**: GitHub CodeQL (semantic analysis)
 - **Secondary**: Semgrep (pattern-based rules)
 - **Rationale**: CodeQL provides deep semantic understanding; Semgrep adds fast pattern-matching and custom rules
 
 #### 2. Secret Scanning
+
 - **Primary**: TruffleHog (entropy-based detection)
 - **Secondary**: Gitleaks (pattern-based detection)
 - **Rationale**: Dual approach catches both high-entropy secrets and known patterns
 
 #### 3. Dependency Scanning
+
 - **Language-Specific Tools**:
   - Python: `pip audit`, CodeQL
   - Node.js: `npm audit`, GitHub Dependency Review
@@ -46,21 +50,25 @@ We will implement a **multi-layered security scanning strategy** using specializ
 - **Rationale**: Native tools understand ecosystem-specific nuances
 
 #### 4. Container Security
+
 - **Primary**: Trivy (comprehensive vulnerability database)
 - **Secondary**: Grype (Anchore's scanner)
 - **Rationale**: Different vulnerability databases provide complementary coverage
 
 #### 5. Infrastructure as Code (IaC)
+
 - **Multi-Tool Approach**: Checkov, tfsec, Terrascan, KICS
 - **Rationale**: Each tool has unique policy sets; combined coverage is comprehensive
 
 #### 6. Supply Chain Security
+
 - **SBOM Generation**: CycloneDX
 - **Artifact Signing**: Sigstore/Cosign
 - **Provenance**: SLSA attestation
 - **Rationale**: Transparency and verification for the software supply chain
 
 #### 7. License Compliance
+
 - **Tools**: pip-licenses, license-checker, go-licenses, FOSSA
 - **Rationale**: Automated license compliance reduces legal risk
 
@@ -104,6 +112,7 @@ All security scans are implemented as GitHub Actions workflows:
 ### Branch Protection
 
 Required status checks before merge:
+
 - `codeql` (SAST)
 - `semgrep` (SAST)
 - `secret-scan` (Secret detection)
@@ -148,6 +157,7 @@ Required status checks before merge:
 ## Compliance Mapping
 
 ### NIST SSDF v1.1
+
 - **PO.3**: Security requirements defined
 - **PS.1**: Secure design practices
 - **PS.2**: Code review
@@ -157,11 +167,13 @@ Required status checks before merge:
 - **RV.1**: Vulnerability identification
 
 ### OWASP SAMM Level 2
+
 - **Security Testing**: Automated security scanning
 - **Security Architecture**: Defense in depth
 - **Secure Build**: Integrity verification
 
 ### SLSA Level 3
+
 - **Build as Code**: Reproducible builds
 - **Provenance**: Build metadata attestation
 - **Isolation**: Build environment integrity
@@ -169,16 +181,19 @@ Required status checks before merge:
 ## Alternatives Considered
 
 ### Single Commercial Tool (e.g., Snyk, Veracode)
+
 - **Pros**: Unified interface, enterprise support
 - **Cons**: Vendor lock-in, cost, limited customization
 - **Rejected**: Cost and flexibility concerns
 
 ### Minimal Scanning
+
 - **Pros**: Fast CI, simple setup
 - **Cons**: Misses many vulnerability types
 - **Rejected**: Insufficient security coverage
 
 ### Manual Security Reviews Only
+
 - **Pros**: Human expertise, context-aware
 - **Cons**: Slow, doesn't scale, inconsistent
 - **Rejected**: Cannot scale to all commits

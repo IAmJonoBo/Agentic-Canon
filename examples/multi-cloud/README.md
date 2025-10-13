@@ -132,6 +132,7 @@ module-name/
 ### 1. Cloud-Agnostic (Recommended for v2.0.0)
 
 Use abstraction layers:
+
 - Pulumi for multi-cloud IaC
 - Kubernetes for container orchestration
 - OpenTelemetry for observability
@@ -140,6 +141,7 @@ Use abstraction layers:
 ### 2. Cloud-Native
 
 Leverage cloud-specific services:
+
 - Better performance
 - More features
 - Easier integration
@@ -148,6 +150,7 @@ Leverage cloud-specific services:
 ### 3. Hybrid
 
 Mix of both approaches:
+
 - Critical paths: Cloud-agnostic
 - Specialized workloads: Cloud-native
 

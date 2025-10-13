@@ -53,6 +53,7 @@ Infrastructure as Code for deploying Agentic Canon projects on AWS.
 Creates a multi-AZ VPC with public and private subnets.
 
 **Resources:**
+
 - VPC
 - Internet Gateway
 - NAT Gateways (one per AZ)
@@ -61,14 +62,15 @@ Creates a multi-AZ VPC with public and private subnets.
 - Security Groups
 
 **Usage:**
+
 ```hcl
 module "vpc" {
   source = "./terraform/vpc"
-  
+
   name               = "agentic-canon-vpc"
   cidr               = "10.0.0.0/16"
   availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
-  
+
   tags = {
     Environment = "production"
     Project     = "agentic-canon"
@@ -81,6 +83,7 @@ module "vpc" {
 Deploys containerized applications on ECS Fargate.
 
 **Resources:**
+
 - ECS Cluster
 - Task Definition
 - ECS Service
@@ -90,26 +93,27 @@ Deploys containerized applications on ECS Fargate.
 - IAM Roles
 
 **Usage:**
+
 ```hcl
 module "ecs_service" {
   source = "./terraform/ecs-fargate"
-  
+
   name           = "my-api-service"
   vpc_id         = module.vpc.vpc_id
   subnet_ids     = module.vpc.private_subnet_ids
   container_image = "myorg/my-api:latest"
   container_port = 8000
-  
+
   cpu    = 256
   memory = 512
-  
+
   desired_count = 2
-  
+
   environment_variables = {
     DATABASE_URL = "postgresql://..."
     LOG_LEVEL    = "info"
   }
-  
+
   secrets = {
     SECRET_KEY = "arn:aws:secretsmanager:..."
   }
@@ -121,6 +125,7 @@ module "ecs_service" {
 Managed PostgreSQL database with multi-AZ deployment.
 
 **Resources:**
+
 - RDS Instance
 - DB Subnet Group
 - Security Groups
@@ -128,21 +133,22 @@ Managed PostgreSQL database with multi-AZ deployment.
 - Automated Backups
 
 **Usage:**
+
 ```hcl
 module "database" {
   source = "./terraform/rds"
-  
+
   name               = "myapp-db"
   engine_version     = "15.3"
   instance_class     = "db.t3.medium"
   allocated_storage  = 100
-  
+
   vpc_id            = module.vpc.vpc_id
   subnet_ids        = module.vpc.private_subnet_ids
-  
+
   multi_az          = true
   backup_retention_period = 7
-  
+
   username = "dbadmin"
   # Password stored in Secrets Manager
 }
@@ -153,26 +159,28 @@ module "database" {
 Serverless functions for event-driven workloads.
 
 **Resources:**
+
 - Lambda Function
 - IAM Roles
 - CloudWatch Logs
 - API Gateway (optional)
 
 **Usage:**
+
 ```hcl
 module "lambda" {
   source = "./terraform/lambda"
-  
+
   function_name = "data-processor"
   handler       = "index.handler"
   runtime       = "python3.11"
-  
+
   source_dir = "../src/lambda"
-  
+
   environment_variables = {
     BUCKET_NAME = module.s3.bucket_name
   }
-  
+
   memory_size = 256
   timeout     = 30
 }
@@ -183,6 +191,7 @@ module "lambda" {
 Object storage for static assets and data.
 
 **Resources:**
+
 - S3 Bucket
 - Bucket Policies
 - Lifecycle Rules
@@ -190,20 +199,21 @@ Object storage for static assets and data.
 - Encryption
 
 **Usage:**
+
 ```hcl
 module "s3" {
   source = "./terraform/s3"
-  
+
   bucket_name = "myapp-assets"
-  
+
   versioning_enabled = true
   encryption_enabled = true
-  
+
   lifecycle_rules = [
     {
       id      = "archive-old-logs"
       enabled = true
-      
+
       transition = {
         days          = 90
         storage_class = "GLACIER"
@@ -218,18 +228,20 @@ module "s3" {
 CloudWatch dashboards, alarms, and log aggregation.
 
 **Resources:**
+
 - CloudWatch Dashboards
 - CloudWatch Alarms
 - SNS Topics
 - Log Groups
 
 **Usage:**
+
 ```hcl
 module "monitoring" {
   source = "./terraform/monitoring"
-  
+
   service_name = "my-api"
-  
+
   alarms = {
     high_cpu = {
       metric_name         = "CPUUtilization"
@@ -237,7 +249,7 @@ module "monitoring" {
       threshold           = 80
       evaluation_periods  = 2
     }
-    
+
     high_error_rate = {
       metric_name         = "5XXError"
       comparison_operator = "GreaterThanThreshold"
@@ -245,7 +257,7 @@ module "monitoring" {
       evaluation_periods  = 1
     }
   }
-  
+
   notification_email = "ops@example.com"
 }
 ```
@@ -262,6 +274,7 @@ terraform apply
 ```
 
 This creates:
+
 - Multi-AZ VPC
 - ECS Fargate cluster with API service
 - RDS PostgreSQL database
@@ -273,11 +286,13 @@ This creates:
 ## Prerequisites
 
 1. **AWS CLI**
+
    ```bash
    aws configure
    ```
 
 2. **Terraform** (>= 1.5.0)
+
    ```bash
    terraform version
    ```
@@ -295,6 +310,7 @@ This creates:
 ### Security
 
 1. **Secrets Management**
+
    ```hcl
    # Use AWS Secrets Manager
    data "aws_secretsmanager_secret_version" "db_password" {
@@ -339,6 +355,7 @@ This creates:
    - ECS tasks distributed
 
 2. **Auto Scaling**
+
    ```hcl
    resource "aws_appautoscaling_target" "ecs" {
      min_capacity = 2
@@ -386,6 +403,7 @@ terraform apply -var-file=prod.tfvars
 ### Dashboards
 
 Import pre-built dashboards:
+
 ```bash
 aws cloudwatch put-dashboard \
   --dashboard-name my-app \
@@ -395,6 +413,7 @@ aws cloudwatch put-dashboard \
 ### Alarms
 
 Critical alarms notify via SNS:
+
 - Service unavailable
 - High error rate
 - Database connection failures
@@ -411,6 +430,7 @@ Critical alarms notify via SNS:
 ### Recovery Procedures
 
 1. **Database Restore**
+
    ```bash
    aws rds restore-db-instance-from-db-snapshot \
      --db-instance-identifier new-instance \
@@ -427,18 +447,19 @@ Critical alarms notify via SNS:
 
 Monthly costs (estimated):
 
-| Service | Configuration | Cost |
-|---------|--------------|------|
-| ECS Fargate | 2 tasks, 0.25 vCPU, 0.5 GB | $15 |
-| RDS PostgreSQL | db.t3.medium, Multi-AZ | $150 |
-| ElastiCache Redis | cache.t3.micro | $25 |
-| NAT Gateway | 3 AZs | $100 |
-| ALB | 1 load balancer | $25 |
-| S3 | 100 GB | $2 |
-| CloudWatch Logs | 10 GB | $5 |
-| **Total** | | **~$322/month** |
+| Service           | Configuration              | Cost            |
+| ----------------- | -------------------------- | --------------- |
+| ECS Fargate       | 2 tasks, 0.25 vCPU, 0.5 GB | $15             |
+| RDS PostgreSQL    | db.t3.medium, Multi-AZ     | $150            |
+| ElastiCache Redis | cache.t3.micro             | $25             |
+| NAT Gateway       | 3 AZs                      | $100            |
+| ALB               | 1 load balancer            | $25             |
+| S3                | 100 GB                     | $2              |
+| CloudWatch Logs   | 10 GB                      | $5              |
+| **Total**         |                            | **~$322/month** |
 
 Use `infracost` for accurate estimates:
+
 ```bash
 infracost breakdown --path .
 ```

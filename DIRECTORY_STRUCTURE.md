@@ -31,22 +31,26 @@ Agentic-Canon/
 Core project documentation files located at repository root for easy discovery:
 
 ### Essential Project Documents
+
 - **`README.md`** - Project overview, quick start, features, installation
 - **`TASKS.md`** - Complete task tracking (v1.0, v1.1.0, v2.0.0)
 - **`CHANGELOG.md`** - Version history and release notes
 - **`LICENSE`** - Apache 2.0 license
 
 ### Contribution & Community
+
 - **`CONTRIBUTING.md`** - Contribution guidelines and workflow
 - **`CODE_OF_CONDUCT.md`** - Community standards and expectations
 - **`CODEOWNERS`** - Code ownership and review assignments
 - **`SECURITY.md`** - Security policy, reporting, and controls
 
 ### Planning & Status Documents
+
 - **`SUMMARY.md`** - Project completion summary and next steps
 - **`V110-V200-SUMMARY.md`** - v1.1.0 to v2.0.0 implementation status
 
 ### Comprehensive Guides
+
 - **`Agentic_Canon.md`** - Unified playbook and implementation blueprint
 - **`BIBLE.md`** - Detailed implementation guide
 - **`Red Team + Software Excellence.md`** - Security and quality playbook
@@ -54,6 +58,7 @@ Core project documentation files located at repository root for easy discovery:
 - **`INSTRUCTIONS.md`** - User instructions and getting started
 
 ### Configuration Files
+
 - **`.gitignore`** - Git ignore rules
 - **`.gitattributes`** - Git attributes (nbstripout filters)
 - **`.pre-commit-config.yaml`** - Pre-commit hooks configuration
@@ -87,6 +92,7 @@ Core project documentation files located at repository root for easy discovery:
 - **`scripts/setup-labels.sh`** - Sets up GitHub issue labels
 
 **Separation of Concerns:**
+
 - **Development Tools (`.dev/`)**: Internal maintenance and upgrade scripts
 - **Distribution Assets (`agentic_canon_cli/`, `templates/`)**: For end users and AI generators
 - **Boilerplates (`templates/`)**: Ready-to-use project templates
@@ -108,6 +114,7 @@ agentic_canon_cli/
 **Purpose:** Provides `agentic-canon` command for interactive project scaffolding
 
 **Features:**
+
 - Interactive template selection
 - Configuration wizard
 - Feature toggles (security, SBOM, Jupyter Book)
@@ -115,6 +122,7 @@ agentic_canon_cli/
 - Post-generation setup automation
 
 **Usage:**
+
 ```bash
 pip install -e .
 agentic-canon init
@@ -134,6 +142,7 @@ binder/
 **Purpose:** Enables running notebooks in cloud via [MyBinder.org](https://mybinder.org)
 
 **Features:**
+
 - Zero-install notebook execution
 - Shareable interactive documentation
 - Automatic environment setup
@@ -168,6 +177,7 @@ docs/
 **Purpose:** Source files for beautiful, interactive documentation built with Jupyter Book
 
 **Key Features:**
+
 - Executable documentation
 - MyST markdown format
 - Synced with Jupytext
@@ -175,6 +185,7 @@ docs/
 - Built-in search and navigation
 
 **Build Commands:**
+
 ```bash
 jupyter-book build docs/
 jupyter-book clean docs/  # Clean build artifacts
@@ -240,20 +251,26 @@ examples/
 ### Examples Categories
 
 #### 1. Azure Pipelines (`azure-pipelines/`)
+
 Multi-stage Azure DevOps pipelines for Python and Node.js services
+
 - Build, test, security scanning, deployment stages
 - Comparison with GitHub Actions
 - Variable configuration examples
 
 #### 2. Community (`community/`)
+
 Framework for community template contributions
+
 - Contribution guidelines
 - Template standards and quality requirements
 - Review process
 - PR templates
 
 #### 3. Dashboards (`dashboards/`)
+
 Production-ready Grafana dashboards and monitoring configs
+
 - **DORA Metrics:** Deployment frequency, lead time, MTTR, change failure rate
 - **SPACE/DevEx:** Developer satisfaction, flow time, cognitive load
 - **Security:** Vulnerability tracking, SBOM coverage, remediation time
@@ -262,14 +279,18 @@ Production-ready Grafana dashboards and monitoring configs
 - **Prometheus Alerts:** 20+ alerting rules
 
 #### 4. Fitness Functions (`fitness-functions/`)
+
 Architecture fitness function framework and examples
+
 - Performance checks (latency, throughput)
 - Architecture validation (dependencies, coupling)
 - Security validation (secrets, attack surface)
 - Quality metrics (complexity, duplication)
 
 #### 5. ML Insights (`ml-insights/`)
+
 Machine learning-powered insights framework
+
 - Anomaly detection (Isolation Forest)
 - Predictive failure analysis (Random Forest)
 - Test flakiness detection
@@ -277,18 +298,24 @@ Machine learning-powered insights framework
 - Docker and Kubernetes deployment
 
 #### 6. Multi-Cloud (`multi-cloud/`)
+
 Cloud deployment examples and patterns
+
 - AWS, Azure, GCP examples
 - Cloud-agnostic patterns
 - Multi-region deployments
 
 #### 7. Projects (`projects/`)
+
 Complete example project implementations
+
 - FastAPI microservice example
 - Additional examples planned
 
 #### 8. Video Tutorials (`video-tutorials/`)
+
 Complete scripts for video tutorial series (60+ minutes total)
+
 - Getting started (complete)
 - Creating services (complete)
 - CI/CD setup (complete)
@@ -314,6 +341,7 @@ notebooks/
 **Purpose:** Source notebooks synced to `docs/notebooks/*.md` via Jupytext
 
 **Key Features:**
+
 - Executable code with outputs
 - Can be run locally or in Binder
 - Tested in CI with nbmake
@@ -336,6 +364,7 @@ runbooks/
 **Purpose:** Step-by-step operational procedures
 
 **Planned Runbooks:**
+
 - Template creation runbook
 - Deployment procedures
 - Incident response runbook
@@ -391,6 +420,7 @@ templates/
 Production-ready templates with complete CI/CD, security, and quality tooling:
 
 #### 1. Python Service (`python-service/`)
+
 - Modern Python packaging (pyproject.toml)
 - Type hints and mypy
 - Black, Ruff, pytest
@@ -399,6 +429,7 @@ Production-ready templates with complete CI/CD, security, and quality tooling:
 - Optional: Jupyter Book docs, SBOM generation
 
 #### 2. Node.js Service (`node-service/`)
+
 - TypeScript configuration
 - ESLint, Prettier
 - Jest testing
@@ -406,18 +437,21 @@ Production-ready templates with complete CI/CD, security, and quality tooling:
 - Security scanning
 
 #### 3. React WebApp (`react-webapp/`)
+
 - Vite + React + TypeScript
 - Playwright E2E testing
 - Storybook component library
 - GitHub Actions CI/CD
 
 #### 4. Go Service (`go-service/`)
+
 - Standard Go project layout
 - golangci-lint
 - Testing and benchmarks
 - GitHub Actions CI/CD
 
 #### 5. Docs-Only (`docs-only/`)
+
 - Jupyter Book setup
 - MyST markdown
 - GitHub Pages deployment
@@ -450,6 +484,7 @@ tests/
 **Purpose:** Automated testing with pytest-cookies
 
 **Test Coverage:**
+
 - Template rendering validation
 - Required file generation
 - Optional feature toggles
@@ -457,6 +492,7 @@ tests/
 - Generated project structure
 
 **Run Tests:**
+
 ```bash
 pytest tests/ -v
 ```
@@ -504,17 +540,17 @@ Need documentation? → docs/
 
 ## 📊 Directory Statistics
 
-| Directory | Files | Purpose | Status |
-|-----------|-------|---------|--------|
-| Root | ~20 | Core documentation | ✅ Complete |
-| agentic_canon_cli | 4 | CLI wizard | ✅ Complete |
-| binder | 1 | Cloud notebooks | ✅ Complete |
-| docs | ~15 | Jupyter Book | ✅ Complete |
-| examples | ~20 | Reference examples | 🚧 ~75% |
-| notebooks | 5 | Source notebooks | ✅ Complete |
-| runbooks | 1 | Procedures | 📋 Planned |
-| templates | ~50+ | Scaffolding | ✅ Complete |
-| tests | 2 | Test suite | ✅ Complete |
+| Directory         | Files | Purpose            | Status      |
+| ----------------- | ----- | ------------------ | ----------- |
+| Root              | ~20   | Core documentation | ✅ Complete |
+| agentic_canon_cli | 4     | CLI wizard         | ✅ Complete |
+| binder            | 1     | Cloud notebooks    | ✅ Complete |
+| docs              | ~15   | Jupyter Book       | ✅ Complete |
+| examples          | ~20   | Reference examples | 🚧 ~75%     |
+| notebooks         | 5     | Source notebooks   | ✅ Complete |
+| runbooks          | 1     | Procedures         | 📋 Planned  |
+| templates         | ~50+  | Scaffolding        | ✅ Complete |
+| tests             | 2     | Test suite         | ✅ Complete |
 
 ---
 

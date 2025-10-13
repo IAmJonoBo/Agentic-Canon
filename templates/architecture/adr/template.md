@@ -1,15 +1,20 @@
 # Architecture Decision Record (ADR) Template
+
 # Implements: Architectural decision documentation best practices
+
 # Format: Markdown with YAML frontmatter for machine readability
 
 ---
+
 # Metadata
+
 number: {{ ADR_NUMBER }}
 title: {{ DECISION_TITLE }}
 date: {{ DATE }}
-status: {{ STATUS }}  # proposed | accepted | deprecated | superseded
-supersedes: []  # List of ADR numbers this supersedes
-superseded_by: null  # ADR number that supersedes this one
+status: {{ STATUS }} # proposed | accepted | deprecated | superseded
+supersedes: [] # List of ADR numbers this supersedes
+superseded_by: null # ADR number that supersedes this one
+
 ---
 
 ## Context
@@ -25,11 +30,11 @@ superseded_by: null  # ADR number that supersedes this one
 
 <!-- Technical, business, or regulatory constraints that limit options -->
 
-- **Technical**: 
-- **Business**: 
-- **Regulatory**: 
-- **Timeline**: 
-- **Resources**: 
+- **Technical**:
+- **Business**:
+- **Regulatory**:
+- **Timeline**:
+- **Resources**:
 
 ### Assumptions
 
@@ -48,59 +53,54 @@ We will {{ DECISION }}.
 
 <!-- Why did we choose this option? -->
 
-1. **Primary Reason**: 
-2. **Supporting Factors**:
-   - 
-   - 
+1. **Primary Reason**:
+2. ## **Supporting Factors**:
+   -
 
 ### Standards Compliance
 
 <!-- How does this align with our standards? -->
 
-- ✅ NIST SSDF: 
-- ✅ OWASP SAMM: 
-- ✅ ISO/IEC 25010: 
-- ✅ Internal standards: 
+- ✅ NIST SSDF:
+- ✅ OWASP SAMM:
+- ✅ ISO/IEC 25010:
+- ✅ Internal standards:
 
 ## Alternatives Considered
 
 ### Option 1: {{ ALTERNATIVE_1 }}
 
 **Pros:**
-- 
-- 
 
-**Cons:**
-- 
-- 
+-
+- **Cons:**
 
-**Trade-offs:**
-- 
+-
+- **Trade-offs:**
 
-**Rejected because:**
+- **Rejected because:**
 
 ### Option 2: {{ ALTERNATIVE_2 }}
 
 **Pros:**
-- 
-- 
 
-**Cons:**
-- 
-- 
+-
+- **Cons:**
 
-**Trade-offs:**
-- 
+-
+- **Trade-offs:**
 
-**Rejected because:**
+- **Rejected because:**
 
 ### Option 3: Do Nothing
 
 **Pros:**
+
 - No immediate cost
 - No disruption
 
 **Cons:**
+
 - Problem persists
 - Technical debt accumulates
 
@@ -110,23 +110,23 @@ We will {{ DECISION }}.
 
 ### Positive
 
-- 
-- 
+-
+-
 
 ### Negative
 
-- 
-- 
+-
+-
 
 ### Neutral
 
-- 
-- 
+-
+-
 
 ### Risks
 
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|------------|
+| Risk         | Impact       | Likelihood       | Mitigation       |
+| ------------ | ------------ | ---------------- | ---------------- |
 | {{ RISK_1 }} | {{ IMPACT }} | {{ LIKELIHOOD }} | {{ MITIGATION }} |
 | {{ RISK_2 }} | {{ IMPACT }} | {{ LIKELIHOOD }} | {{ MITIGATION }} |
 
@@ -134,56 +134,56 @@ We will {{ DECISION }}.
 
 ### Changes Required
 
-1. **Code Changes**:
-   - 
-   - 
+1. ## **Code Changes**:
+   -
 
-2. **Infrastructure Changes**:
-   - 
-   - 
+2. ## **Infrastructure Changes**:
+   -
 
-3. **Process Changes**:
-   - 
-   - 
+3. ## **Process Changes**:
+   -
 
-4. **Documentation Updates**:
-   - 
-   - 
+4. ## **Documentation Updates**:
+   -
 
 ### Migration Path
 
 <!-- How do we get from current state to desired state? -->
 
 **Phase 1**: {{ PHASE_1 }}
-- Duration: 
+
+- Duration:
 - Tasks:
 
 **Phase 2**: {{ PHASE_2 }}
-- Duration: 
+
+- Duration:
 - Tasks:
 
 **Phase 3**: {{ PHASE_3 }}
-- Duration: 
+
+- Duration:
 - Tasks:
 
 ### Rollback Plan
 
 <!-- How can we reverse this decision if needed? -->
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 **Rollback triggers:**
-- 
-- 
+
+-
+-
 
 ### Success Metrics
 
 <!-- How will we measure success? -->
 
-| Metric | Baseline | Target | Timeline |
-|--------|----------|--------|----------|
+| Metric         | Baseline       | Target       | Timeline       |
+| -------------- | -------------- | ------------ | -------------- |
 | {{ METRIC_1 }} | {{ BASELINE }} | {{ TARGET }} | {{ TIMELINE }} |
 | {{ METRIC_2 }} | {{ BASELINE }} | {{ TARGET }} | {{ TIMELINE }} |
 
@@ -193,60 +193,60 @@ We will {{ DECISION }}.
 
 Impact: {{ HIGH/MEDIUM/LOW }}
 
-- **Code Complexity**: 
-- **Team Knowledge**: 
-- **Dependencies**: 
+- **Code Complexity**:
+- **Team Knowledge**:
+- **Dependencies**:
 
 ### Performance
 
 Impact: {{ HIGH/MEDIUM/LOW }}
 
-- **Latency**: 
-- **Throughput**: 
-- **Resource Usage**: 
+- **Latency**:
+- **Throughput**:
+- **Resource Usage**:
 
 ### Security
 
 Impact: {{ HIGH/MEDIUM/LOW }}
 
-- **Attack Surface**: 
-- **Data Protection**: 
-- **Compliance**: 
+- **Attack Surface**:
+- **Data Protection**:
+- **Compliance**:
 
 ### Cost
 
 Impact: {{ HIGH/MEDIUM/LOW }}
 
-- **Implementation**: 
-- **Operational**: 
-- **Opportunity Cost**: 
+- **Implementation**:
+- **Operational**:
+- **Opportunity Cost**:
 
 ### Developer Experience
 
 Impact: {{ HIGH/MEDIUM/LOW }}
 
-- **Learning Curve**: 
-- **Productivity**: 
-- **Tool Friction**: 
+- **Learning Curve**:
+- **Productivity**:
+- **Tool Friction**:
 
 ## Compliance & Standards
 
 ### Standards Mapping
 
-| Standard | Control | How This Addresses It |
-|----------|---------|----------------------|
-| NIST SSDF | {{ CONTROL }} | {{ EXPLANATION }} |
-| OWASP SAMM | {{ CONTROL }} | {{ EXPLANATION }} |
-| ISO/IEC 25010 | {{ QUALITY_ATTRIBUTE }} | {{ EXPLANATION }} |
+| Standard      | Control                 | How This Addresses It |
+| ------------- | ----------------------- | --------------------- |
+| NIST SSDF     | {{ CONTROL }}           | {{ EXPLANATION }}     |
+| OWASP SAMM    | {{ CONTROL }}           | {{ EXPLANATION }}     |
+| ISO/IEC 25010 | {{ QUALITY_ATTRIBUTE }} | {{ EXPLANATION }}     |
 
 ### Evidence
 
 <!-- What evidence supports this decision? -->
 
-- **Research**: 
-- **Prototypes**: 
-- **Benchmarks**: 
-- **References**: 
+- **Research**:
+- **Prototypes**:
+- **Benchmarks**:
+- **References**:
 
 ## Review & Maintenance
 
@@ -258,9 +258,9 @@ Impact: {{ HIGH/MEDIUM/LOW }}
 
 ### Update History
 
-| Date | Author | Change | Version |
-|------|--------|--------|---------|
-| {{ DATE }} | {{ AUTHOR }} | Initial version | 1.0 |
+| Date       | Author       | Change          | Version |
+| ---------- | ------------ | --------------- | ------- |
+| {{ DATE }} | {{ AUTHOR }} | Initial version | 1.0     |
 
 ## Stakeholders
 
@@ -297,11 +297,11 @@ fitness_functions:
   - name: performance_regression
     check: p95_latency < 300ms
     frequency: continuous
-  
+
   - name: complexity_ceiling
     check: cyclomatic_complexity < 10
     frequency: per_commit
-  
+
   - name: dependency_count
     check: direct_dependencies < 50
     frequency: weekly
@@ -343,7 +343,7 @@ cp templates/architecture/adr/template.md docs/adr/NNNN-decision-title.md
 **ADR Lifecycle:**
 
 ```
-proposed → [review] → accepted → [implementation] → 
+proposed → [review] → accepted → [implementation] →
   → [time passes] → deprecated/superseded
 ```
 

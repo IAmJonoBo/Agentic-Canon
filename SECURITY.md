@@ -17,6 +17,7 @@ Instead, report the vulnerability privately to maintain security until a fix is 
 ### 3. What to Include
 
 Please provide:
+
 - Description of the vulnerability
 - Steps to reproduce
 - Potential impact and attack scenarios
@@ -35,18 +36,21 @@ Please provide:
 This project follows industry-leading security practices:
 
 ### Supply Chain Security
+
 - **SLSA Level 3 Target**: Build provenance and signing
 - **SBOM**: Software Bill of Materials for transparency
 - **Signing**: Artifact signing with Sigstore/Cosign (planned)
 - **Verification**: Automated signature verification
 
 ### Development Security
+
 - **SAST**: Static analysis with CodeQL and Semgrep (planned)
 - **Secret Scanning**: Gitleaks and TruffleHog integration (planned)
 - **Dependency Scanning**: Automated vulnerability detection via Dependabot/Renovate
 - **License Scanning**: Compliance checking
 
 ### Repository Security
+
 - **Branch Protection**: Main branch protected with required reviews
 - **Signed Commits**: Recommended for contributors
 - **Access Control**: Principle of least privilege
@@ -55,6 +59,7 @@ This project follows industry-leading security practices:
 ## Compliance
 
 ### Standards Compliance
+
 - ✅ NIST SSDF v1.1 alignment
 - ✅ OWASP SAMM Level 2 practices
 - ✅ OWASP ASVS Level 2 controls
@@ -64,24 +69,28 @@ This project follows industry-leading security practices:
 ### Security Controls
 
 #### Authentication & Authorization
+
 - GitHub authentication for contributors
 - Branch protection rules enforced
 - Code owner requirements for sensitive paths
 - Two-factor authentication recommended
 
 #### Data Protection
+
 - No sensitive data stored in repository
 - Secrets management via GitHub Secrets
 - Environment-specific configurations
 - Privacy by design principles
 
 #### Secure Development
+
 - Mandatory code review for PRs
 - Security-focused code review guidelines
 - Automated dependency updates
 - Vulnerability scanning in CI/CD
 
 #### Supply Chain
+
 - Dependency pinning in templates
 - SBOM generation for releases
 - Provenance attestation (planned)
@@ -89,32 +98,35 @@ This project follows industry-leading security practices:
 
 ## Vulnerability Disclosure Timeline
 
-| Day | Activity |
-|-----|----------|
-| 0 | Report received |
-| 1-2 | Initial triage and acknowledgment |
-| 3-10 | Investigation and impact assessment |
-| 11-30 | Fix development and testing |
+| Day   | Activity                                 |
+| ----- | ---------------------------------------- |
+| 0     | Report received                          |
+| 1-2   | Initial triage and acknowledgment        |
+| 3-10  | Investigation and impact assessment      |
+| 11-30 | Fix development and testing              |
 | 31-45 | Patch release and coordinated disclosure |
-| 46+ | Public disclosure |
+| 46+   | Public disclosure                        |
 
 ## Security Features
 
 ### Implemented Controls
 
 #### Repository Security
+
 - Branch protection on main
 - Required PR reviews
 - Automated dependency updates (Renovate)
 - GitHub security advisories enabled
 
 #### Template Security
+
 - Security-focused CI/CD workflows in templates
 - SAST scanning examples
 - Dependency scanning examples
 - Secret detection examples
 
 #### Documentation Security
+
 - Security best practices documented
 - Threat model considerations
 - Secure coding guidelines
@@ -123,12 +135,14 @@ This project follows industry-leading security practices:
 ### Planned Controls
 
 #### Enhanced Scanning
+
 - CodeQL integration for repository
 - Semgrep rules for pattern matching
 - Container scanning for Docker templates
 - Infrastructure as Code scanning
 
 #### Supply Chain
+
 - SLSA provenance generation
 - Artifact signing with Sigstore
 - SBOM generation automation
@@ -137,12 +151,14 @@ This project follows industry-leading security practices:
 ## Security Updates
 
 ### Patch Management
+
 - **Critical**: Address within 24-48 hours
 - **High**: Address within 7 days
 - **Medium**: Address within 30 days
 - **Low**: Address in next regular release
 
 ### Communication
+
 - Security advisories published on GitHub
 - CHANGELOG.md updated with security fixes
 - GitHub releases include security notes
@@ -151,12 +167,14 @@ This project follows industry-leading security practices:
 ## Security Testing
 
 ### Automated Testing
+
 - Dependency scanning: On every PR and daily
 - Secret detection: On every commit (planned)
 - SAST: On every PR (planned)
 - Template security validation: On template changes
 
 ### Manual Testing
+
 - Security-focused code reviews on all PRs
 - Periodic security audits
 - Threat modeling for significant features
@@ -165,6 +183,7 @@ This project follows industry-leading security practices:
 ## Security Best Practices for Users
 
 ### When Using Templates
+
 1. Review generated code before deployment
 2. Update dependencies regularly
 3. Enable security scanning in CI/CD
@@ -172,6 +191,7 @@ This project follows industry-leading security practices:
 5. Use secrets management properly
 
 ### When Using Notebooks
+
 1. Don't commit sensitive data
 2. Use environment variables for secrets
 3. Review code execution carefully
@@ -179,6 +199,7 @@ This project follows industry-leading security practices:
 5. Use virtual environments
 
 ### When Contributing
+
 1. Never commit secrets or credentials
 2. Use `.gitignore` properly
 3. Review security implications of changes
@@ -188,17 +209,20 @@ This project follows industry-leading security practices:
 ## Security Resources
 
 ### For Contributors
+
 - [Secure Coding Guidelines](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/)
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [CWE Top 25](https://cwe.mitre.org/top25/)
 - [NIST SSDF](https://csrc.nist.gov/Projects/ssdf)
 
 ### For Users
+
 - [Security Best Practices](README.md#security-by-construction)
 - [Red Team + Software Excellence](Red%20Team%20+%20Software%20Excellence.md)
 - [Control Traceability Matrix](control-traceability-matrix.json)
 
 ### Tools
+
 - GitHub Security Features
 - Dependabot
 - Renovate
@@ -210,6 +234,7 @@ This project follows industry-leading security practices:
 We recognize and thank security researchers who responsibly disclose vulnerabilities.
 
 ### Hall of Fame
+
 Contributors who have responsibly disclosed security issues will be acknowledged here (with permission).
 
 ## Security Contact
@@ -228,7 +253,7 @@ This security policy is reviewed quarterly and updated as needed.
 
 ---
 
-*This security policy is part of our commitment to frontier software excellence and follows NIST SSDF, OWASP SAMM, and industry best practices.*
+_This security policy is part of our commitment to frontier software excellence and follows NIST SSDF, OWASP SAMM, and industry best practices._
 
 ---
 

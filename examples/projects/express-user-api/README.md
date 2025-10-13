@@ -12,9 +12,7 @@ A production-ready Express.js API for user management
 
 - ✅ Security scanning (CodeQL, npm audit, secret scanning)
 
-
 - ✅ SBOM generation and signing
-
 
 ## Getting Started
 
@@ -102,12 +100,10 @@ This project uses GitHub Actions for continuous integration:
   - Unit tests with coverage
   - Multi-version Node.js testing (18, 20, 21)
 
-
 - **Security Pipeline**: Runs weekly and on changes
   - Dependency vulnerability scanning (npm audit)
   - Static analysis (CodeQL)
   - Secret scanning (TruffleHog)
-
 
 ## License
 

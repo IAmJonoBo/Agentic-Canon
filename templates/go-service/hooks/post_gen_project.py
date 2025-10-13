@@ -7,6 +7,7 @@ import subprocess
 enable_security = "{{ cookiecutter.enable_security_gates }}"
 root = pathlib.Path(".")
 
+
 def remove_file(*paths):
     """Remove files or directories."""
     for path in paths:
@@ -17,6 +18,7 @@ def remove_file(*paths):
             else:
                 target.unlink()
             print(f"  Removed: {path}")
+
 
 # Remove optional files
 if enable_security == "no":
@@ -30,9 +32,9 @@ try:
 except Exception as e:
     print(f"⚠ Could not initialize: {e}")
 
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("✓ Go service project created successfully!")
-print("="*60)
+print("=" * 60)
 print("\nNext steps:")
 print("  1. cd {{cookiecutter.project_slug}}")
 print("  2. make test")
@@ -41,4 +43,4 @@ print("\nFor development:")
 print("  - make build  # Compile the service")
 print("  - make lint   # Run linters")
 print("  - make test   # Run tests")
-print("="*60)
+print("=" * 60)

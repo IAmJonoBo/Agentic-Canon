@@ -5,6 +5,7 @@
 ## Quick Start (30 seconds)
 
 ### Option 1: New Project
+
 ```bash
 cookiecutter templates/project-management
 # Follow prompts, then:
@@ -12,6 +13,7 @@ cd your-project && git init && gh repo create
 ```
 
 ### Option 2: Existing Project
+
 ```bash
 cd your-project
 agentic-canon repo-init
@@ -22,7 +24,7 @@ git push
 ## What You Get
 
 - ✅ **TODO → Issue**: Write `# TODO: Fix bug` → Auto-creates GitHub Issue
-- ✅ **Tasklist → Issue**: Add `- [ ] Task` to TASKS.md → Auto-creates Issue  
+- ✅ **Tasklist → Issue**: Add `- [ ] Task` to TASKS.md → Auto-creates Issue
 - ✅ **PR Review → Issue**: Say "follow-up" in review → Auto-creates Issue
 - ✅ **Auto-triage**: New issues get smart labels automatically
 - ✅ **Stale cleanup**: Inactive issues auto-close after 60 days
@@ -30,27 +32,34 @@ git push
 ## Usage Patterns
 
 ### Pattern 1: TODO Comments
+
 ```python
 # TODO: Add error handling
 # FIXME: Memory leak in loop
 # TODO: Optimize query performance
 ```
+
 → Each becomes a tracked GitHub Issue with issue URL written back
 
 ### Pattern 2: Task Lists (TASKS.md)
+
 ```markdown
 ## Sprint Tasks
+
 - [ ] Implement authentication
-- [ ] Write unit tests  
+- [ ] Write unit tests
 - [ ] Update documentation
 ```
+
 → Automatically converted to `- [ ] #42 Implement authentication`
 
 ### Pattern 3: PR Follow-ups
+
 ```
 LGTM! Follow-up: we should add comprehensive error handling.
 This can be out of scope for this PR.
 ```
+
 → Creates issue with PR context, assigned to PR author
 
 ## CLI Commands
@@ -68,20 +77,23 @@ agentic-canon audit        # Security & quality audit
 Edit `.github/workflows/*.yml` to customize:
 
 **TODO tracking** (`todos.yml`):
+
 ```yaml
-LABELS: "task, from:todo, priority:medium"  # Add custom labels
+LABELS: "task, from:todo, priority:medium" # Add custom labels
 ```
 
 **Stale period** (`stale.yml`):
+
 ```yaml
-days-before-stale: 30   # Change from 60 to 30
-days-before-close: 14   # Change from 7 to 14
+days-before-stale: 30 # Change from 60 to 30
+days-before-close: 14 # Change from 7 to 14
 ```
 
 **Auto-labels** (`issue-triage.yml`):
+
 ```javascript
-if (text.includes('database')) {
-  labels.push('database');  // Add custom rules
+if (text.includes("database")) {
+  labels.push("database"); // Add custom rules
 }
 ```
 
@@ -104,6 +116,7 @@ After generation:
 ## Common Scenarios
 
 ### Scenario: Quick Task Tracking
+
 ```bash
 # In any code file:
 # TODO: Add input validation
@@ -114,19 +127,24 @@ git push
 ```
 
 ### Scenario: Sprint Planning
+
 ```markdown
 # In TASKS.md:
+
 ## Current Sprint
+
 - [ ] User authentication
 - [ ] API endpoints
 - [ ] Database schema
 
 git add TASKS.md && git commit -m "plan: sprint tasks"
 git push
+
 # → 3 issues created, tracked in TASKS.md
 ```
 
 ### Scenario: PR Review
+
 1. Reviewer adds comment: "Follow-up: add more edge case tests"
 2. Submit review
 3. Issue created automatically, assigned to PR author
@@ -134,16 +152,19 @@ git push
 ## Troubleshooting
 
 **Workflows not running?**
+
 - Check `.github/workflows/` files exist
 - Verify Actions enabled in repo settings
 - Check workflow logs in Actions tab
 
 **Issues not created?**
+
 - Check labels exist in repository
 - Verify GITHUB_TOKEN has write permissions
 - Look for duplicate issues
 
 **TODOs not detected?**
+
 - Use supported formats: `# TODO:`, `// TODO:`, `/* TODO: */`
 - Ensure file is tracked by git
 - Check workflow logs
@@ -166,6 +187,7 @@ git push
 ## Support
 
 For issues or questions:
+
 1. Check workflow logs in Actions tab
 2. Review [PROJECT_MANAGEMENT.md](templates/project-management/{{cookiecutter.project_slug}}/PROJECT_MANAGEMENT.md)
 3. Open an issue with label `question`

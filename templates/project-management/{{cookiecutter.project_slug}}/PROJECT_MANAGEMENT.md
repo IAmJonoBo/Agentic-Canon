@@ -21,17 +21,20 @@ Code Changes → Workflows → GitHub Issues → GitHub Projects
 ## Automated Workflows
 
 {% if cookiecutter.enable_todo_tracking == "yes" -%}
+
 ### 1. TODO Tracking (todos.yml)
 
 **Trigger**: On every push to any branch
 
 **What it does**:
+
 - Scans code for TODO/FIXME comments
 - Creates GitHub Issues for new TODOs
 - Writes issue URL back into the comment
 - Closes issues when TODO is removed
 
 **Supported formats**:
+
 ```python
 # TODO: Description here
 # FIXME: Problem description
@@ -40,23 +43,28 @@ Code Changes → Workflows → GitHub Issues → GitHub Projects
 ```
 
 **Configuration**:
+
 - Labels: `task`, `from:todo`
 - Auto-assign: Commit author
 - Close on removal: Yes
 
 **Example**:
+
 ```python
 # TODO: Add input validation
 # Becomes: # TODO: Add input validation https://github.com/org/repo/issues/123
 ```
+
 {% endif -%}
 
 {% if cookiecutter.enable_tasklist_tracking == "yes" -%}
+
 ### 2. Tasklist Tracking (tasklist-scan.yml)
 
 **Trigger**: On push when markdown files change
 
 **What it does**:
+
 - Scans TASKS.md and other markdown files
 - Finds unchecked checkbox items: `- [ ] Task description`
 - Creates GitHub Issues for new items
@@ -64,6 +72,7 @@ Code Changes → Workflows → GitHub Issues → GitHub Projects
 - Prevents duplicate issues
 
 **Example TASKS.md**:
+
 ```markdown
 ## Sprint Tasks
 
@@ -73,6 +82,7 @@ Code Changes → Workflows → GitHub Issues → GitHub Projects
 ```
 
 After workflow runs:
+
 ```markdown
 ## Sprint Tasks
 
@@ -82,23 +92,27 @@ After workflow runs:
 ```
 
 **Configuration**:
-- Watches: TASKS.md, docs/**/*.md, **/*.md
+
+- Watches: TASKS.md, docs/**/\*.md, **/\*.md
 - Labels: `task`, `from:tasklist`
 - Auto-commits: Yes
-{% endif -%}
+  {% endif -%}
 
 {% if cookiecutter.enable_pr_followups == "yes" -%}
+
 ### 3. PR Review Follow-ups (pr-review-followup.yml)
 
 **Trigger**: When a PR review is submitted
 
 **What it does**:
+
 - Detects follow-up keywords in review comments
 - Creates issue with full context
 - Links back to PR and review
 - Assigns to PR author
 
 **Keywords detected**:
+
 - "follow-up" / "follow up"
 - "out of scope"
 - "TODO:"
@@ -107,6 +121,7 @@ After workflow runs:
 - "next iteration"
 
 **Example review comment**:
+
 ```
 LGTM! The implementation is solid.
 
@@ -115,39 +130,44 @@ This can be out of scope for this PR.
 ```
 
 Creates issue:
+
 ```
 Title: Follow-up from PR #42: Add user authentication
 Body:
   ## Context
   From PR #42 - Add user authentication
-  
+
   ## Review Comment
   [original comment]
-  
+
   ## Reviewer
   @reviewer-username
-  
+
   ## PR Link
   https://github.com/org/repo/pull/42
 ```
 
 **Configuration**:
+
 - Labels: `follow-up`, `from:pr-review`
 - Assignee: PR author
-{% endif -%}
+  {% endif -%}
 
 {% if cookiecutter.enable_issue_triage == "yes" -%}
+
 ### 4. Issue Triage (issue-triage.yml)
 
 **Trigger**: When a new issue is opened
 
 **What it does**:
+
 - Adds `needs-triage` label
 - Analyzes title and body for keywords
 - Adds relevant labels automatically
 - Posts welcome comment with next steps
 
 **Auto-labeling rules**:
+
 - "bug", "error", "fail" → `bug` label
 - "feature", "enhancement", "add" → `enhancement` label
 - "doc", "readme" → `documentation` label
@@ -156,33 +176,38 @@ Body:
 - "question", "how to" → `question` label
 
 **Welcome message includes**:
+
 - Thank you note
 - Contribution guidelines link
 - Code of conduct link
 - Next steps guidance
-{% endif -%}
+  {% endif -%}
 
 {% if cookiecutter.auto_close_stale_issues == "yes" -%}
+
 ### 5. Stale Issue Management (stale.yml)
 
 **Trigger**: Daily at midnight UTC
 
 **What it does**:
+
 - Marks issues inactive for {{ cookiecutter.stale_days }} days as stale
 - Posts warning comment
 - Closes issues 7 days after marking stale
 - Exempts issues with labels: `pinned`, `security`, `critical`
 
 **Configuration**:
+
 - Stale after: {{ cookiecutter.stale_days }} days
 - Close after: 7 days of stale
 - Labels: `stale`
 - Exemptions: `pinned`, `security`, `critical`
-{% endif -%}
+  {% endif -%}
 
 ## GitHub Projects Integration
 
 {% if cookiecutter.enable_projects_board == "yes" -%}
+
 ### Setup
 
 1. Create a new Project in GitHub
@@ -224,6 +249,7 @@ Merge PR → Close Issue → Done
     ↓
 Auto-archive (14 days)
 ```
+
 {% endif -%}
 
 ## Best Practices
@@ -286,18 +312,21 @@ Edit workflow files in `.github/workflows/`:
 ### Troubleshooting
 
 **Workflow not running**:
+
 1. Check `.github/workflows/` files exist
 2. Verify permissions in workflow file
 3. Check Actions tab for errors
 4. Ensure branch protection allows Actions
 
 **Issues not created**:
+
 1. Check workflow logs in Actions tab
 2. Verify GitHub token has write permissions
 3. Check for duplicate issues
 4. Verify label names exist
 
 **Labels not applying**:
+
 1. Create labels manually first (see README.md)
 2. Check label names match workflow config
 3. Verify label colors (optional but helpful)
@@ -310,19 +339,19 @@ Edit workflow files in `.github/workflows/`:
    - Review permission grants in workflow files
 
 2. **Branch Protection**
-{% if cookiecutter.enable_branch_protection == "yes" -%}
+   {% if cookiecutter.enable_branch_protection == "yes" -%}
    - {{ cookiecutter.require_approvals }} required approvals
-{% endif -%}
+     {% endif -%}
    - Status checks must pass
    - Linear history enforced
    - Force pushes disabled
 
 3. **Code Owners**
-{% if cookiecutter.enable_codeowners == "yes" -%}
+   {% if cookiecutter.enable_codeowners == "yes" -%}
    - CODEOWNERS file defines reviewers
    - Automatic assignment on PR
    - Required for sensitive files
-{% endif -%}
+     {% endif -%}
 
 ## Customization
 
@@ -340,11 +369,11 @@ Edit `.github/workflows/issue-triage.yml`:
 
 ```javascript
 // Add custom rules
-if (text.includes('ui') || text.includes('frontend')) {
-  labels.push('frontend');
+if (text.includes("ui") || text.includes("frontend")) {
+  labels.push("frontend");
 }
-if (text.includes('api') || text.includes('backend')) {
-  labels.push('backend');
+if (text.includes("api") || text.includes("backend")) {
+  labels.push("backend");
 }
 ```
 
@@ -355,8 +384,8 @@ Edit `.github/workflows/pr-review-followup.yml`:
 ```javascript
 const followupPatterns = [
   /follow-up/i,
-  /technical debt/i,  // Add custom keyword
-  /future enhancement/i,  // Add another
+  /technical debt/i, // Add custom keyword
+  /future enhancement/i, // Add another
 ];
 ```
 

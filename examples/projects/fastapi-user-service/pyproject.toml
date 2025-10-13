@@ -6,43 +6,38 @@ build-backend = "setuptools.build_meta"
 name = "acme_service"
 version = "0.1.0"
 description = "A Python service with best practices"
-authors = [
-    {name = "Agentic Canon Team", email = "team@agenticcanon.dev"}
-]
-license = {text = "MIT"}
+authors = [{ name = "Agentic Canon Team", email = "team@agenticcanon.dev" }]
+license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.11"
 classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "fastapi>=0.104.0",
-    "uvicorn[standard]>=0.24.0",
-    "pydantic[email]>=2.0",
-    "structlog>=23.0",
-    "python-jose[cryptography]>=3.3.0",
-    "passlib[bcrypt]>=1.7.4",
+  "fastapi>=0.104.0",
+  "uvicorn[standard]>=0.24.0",
+  "pydantic[email]>=2.0",
+  "structlog>=23.0",
+  "python-jose[cryptography]>=3.3.0",
+  "passlib[bcrypt]>=1.7.4",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.4",
-    "pytest-cov>=4.1",
-    "pytest-asyncio>=0.21",
-    "httpx>=0.25.0",
-    "black>=23.0",
-    "ruff>=0.1",
-    "mypy>=1.7",
-    "pre-commit>=3.5",
+  "pytest>=7.4",
+  "pytest-cov>=4.1",
+  "pytest-asyncio>=0.21",
+  "httpx>=0.25.0",
+  "black>=23.0",
+  "ruff>=0.1",
+  "mypy>=1.7",
+  "pre-commit>=3.5",
 ]
-docs = [
-    "jupyter-book>=0.15",
-    "jupytext>=1.14",
-]
+docs = ["jupyter-book>=0.15", "jupytext>=1.14"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -75,10 +70,10 @@ omit = ["*/tests/*", "*/test_*.py"]
 
 [tool.coverage.report]
 exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise AssertionError",
-    "raise NotImplementedError",
-    "if __name__ == .__main__.:",
-    "if TYPE_CHECKING:",
+  "pragma: no cover",
+  "def __repr__",
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
 ]

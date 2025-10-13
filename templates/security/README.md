@@ -75,12 +75,14 @@ Comprehensive container image scanning with multiple tools:
 - **Grype**: Anchore's vulnerability scanner
 
 Features:
+
 - Image vulnerability scanning
 - Filesystem scanning
 - SARIF output for GitHub Security tab integration
 - Configurable severity levels
 
 **Usage:**
+
 ```yaml
 # Add to .github/workflows/
 cp templates/security/container-scanning/trivy-workflow.yml .github/workflows/
@@ -96,6 +98,7 @@ Multi-tool IaC security scanning:
 - **KICS**: Checkmarx's infrastructure scanner
 
 Supports:
+
 - Terraform
 - CloudFormation
 - Kubernetes manifests
@@ -104,6 +107,7 @@ Supports:
 - Azure ARM templates
 
 **Usage:**
+
 ```yaml
 # Add to .github/workflows/
 cp templates/security/iac-scanning/iac-security-workflow.yml .github/workflows/
@@ -119,12 +123,14 @@ Automated license compliance checking:
 - **FOSSA**: Universal license scanning (requires API key)
 
 Features:
+
 - License report generation (JSON, Markdown, CSV)
 - Forbidden license detection
 - License header validation
 - Third-party license collection
 
 **Usage:**
+
 ```yaml
 # Add to .github/workflows/
 cp templates/security/license-compliance/license-check-workflow.yml .github/workflows/
@@ -138,18 +144,21 @@ Supply chain security with Sigstore/Cosign:
 - **SLSA Provenance**: Build provenance attestation
 
 Features:
+
 - Keyless signing with Sigstore
 - Automatic signature verification
 - SLSA Level 3 provenance generation
 - SHA256 checksums
 
 **Usage:**
+
 ```yaml
 # Add to .github/workflows/
 cp templates/security/signing/cosign-workflow.yml .github/workflows/
 ```
 
 **Verification:**
+
 ```bash
 # Verify a signed artifact
 cosign verify-blob \
@@ -167,6 +176,7 @@ Automated performance monitoring and budget enforcement:
 - **Memory budgets**: Memory usage limits
 
 Features:
+
 - Core Web Vitals tracking (LCP, FID, CLS, FCP, TTFB)
 - Bundle size limits enforcement
 - API response time monitoring
@@ -174,6 +184,7 @@ Features:
 - Memory usage monitoring
 
 **Usage:**
+
 ```yaml
 # Add to .github/workflows/
 cp templates/security/performance-budgets/performance-budget-workflow.yml .github/workflows/
@@ -184,6 +195,7 @@ cp templates/security/performance-budgets/size-limit.example.js .size-limit.js
 ```
 
 **Budget Example:**
+
 ```json
 {
   "timings": [
@@ -209,6 +221,7 @@ Comprehensive accessibility testing to ensure WCAG 2.2 compliance:
 - **WAVE**: WebAIM's accessibility checker
 
 Features:
+
 - WCAG 2.2 Level AA/AAA compliance
 - Color contrast validation
 - Keyboard navigation testing
@@ -217,6 +230,7 @@ Features:
 - ARIA attribute verification
 
 **Usage:**
+
 ```yaml
 # Add to .github/workflows/
 cp templates/security/accessibility/accessibility-workflow.yml .github/workflows/
@@ -227,6 +241,7 @@ cp templates/security/accessibility/pa11yci.example.json .pa11yci.json
 ```
 
 **Standards:**
+
 - WCAG 2.2 Level AA (minimum)
 - WCAG 2.2 Level AAA (recommended)
 - Section 508 compliance
@@ -240,11 +255,11 @@ Each service template includes a comprehensive `security.yml` workflow:
 
 ```yaml
 jobs:
-  - codeql          # GitHub CodeQL SAST
-  - semgrep         # Semgrep SAST
-  - secrets         # TruffleHog + Gitleaks
+  - codeql # GitHub CodeQL SAST
+  - semgrep # Semgrep SAST
+  - secrets # TruffleHog + Gitleaks
   - dependency-review
-  - sbom            # CycloneDX SBOM generation
+  - sbom # CycloneDX SBOM generation
 ```
 
 ### Node.js Service
@@ -252,9 +267,9 @@ jobs:
 ```yaml
 jobs:
   - dependency-scan # npm audit
-  - codeql          # JavaScript/TypeScript SAST
-  - semgrep         # JavaScript/TypeScript patterns
-  - secret-scan     # TruffleHog + Gitleaks
+  - codeql # JavaScript/TypeScript SAST
+  - semgrep # JavaScript/TypeScript patterns
+  - secret-scan # TruffleHog + Gitleaks
 ```
 
 ### React WebApp
@@ -262,9 +277,9 @@ jobs:
 ```yaml
 jobs:
   - dependency-scan # npm audit
-  - codeql          # JavaScript/TypeScript SAST
-  - semgrep         # React-specific patterns
-  - secret-scan     # TruffleHog + Gitleaks
+  - codeql # JavaScript/TypeScript SAST
+  - semgrep # React-specific patterns
+  - secret-scan # TruffleHog + Gitleaks
 ```
 
 ### Go Service
@@ -272,9 +287,9 @@ jobs:
 ```yaml
 jobs:
   - dependency-scan # govulncheck
-  - codeql          # Go SAST
-  - semgrep         # Go patterns
-  - secret-scan     # TruffleHog + Gitleaks
+  - codeql # Go SAST
+  - semgrep # Go patterns
+  - secret-scan # TruffleHog + Gitleaks
 ```
 
 ## Security Standards Compliance
@@ -352,6 +367,7 @@ Security scans can be resource-intensive. Optimize with:
 ### Rate Limits
 
 If you hit GitHub API rate limits:
+
 - Use `GITHUB_TOKEN` for authenticated requests
 - Space out scheduled scans
 - Consider GitHub Enterprise for higher limits
@@ -359,6 +375,7 @@ If you hit GitHub API rate limits:
 ### Slow Scans
 
 Optimize scan performance:
+
 - Use `--skip-dirs` to exclude large directories
 - Enable caching for dependencies
 - Run heavyweight scans only on schedule, not on PR

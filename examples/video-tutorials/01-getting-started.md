@@ -15,6 +15,7 @@
 "Welcome to Agentic Canon - the machine-readable, agent-friendly project scaffolding framework. In this tutorial, we'll walk through getting started with Agentic Canon and create your first production-ready project in just a few minutes."
 
 **Key Points to Cover:**
+
 - What is Agentic Canon?
 - Why use it?
 - What you'll learn today
@@ -26,6 +27,7 @@
 **[Screen: Diagram or slides showing architecture]**
 
 "Agentic Canon is a comprehensive scaffolding framework that helps you create production-ready projects with:
+
 - Built-in security best practices
 - Automated testing and CI/CD
 - Observability and monitoring
@@ -33,11 +35,13 @@
 - Standards compliance"
 
 **Show:**
+
 - DORA metrics dashboard
 - Security scanning workflow
 - Quality metrics
 
 **Benefits:**
+
 - Save time on project setup
 - Enforce best practices automatically
 - Meet compliance requirements out-of-the-box
@@ -97,10 +101,8 @@ agentic-canon init
    - Security scanning: Yes
    - SBOM generation: Yes
    - Contract testing: Yes
-   
 4. **CI/CD Provider**
    - GitHub Actions (default)
-   
 5. **License**
    - MIT License
 
@@ -128,6 +130,7 @@ tree -L 2
 **Show and explain:**
 
 1. **Project Structure**
+
    ```
    my-awesome-api/
    ├── src/                  # Source code
@@ -145,9 +148,11 @@ tree -L 2
    - `tests/test_smoke.py` - "Example test"
 
 3. **Pre-commit Hooks**
+
    ```bash
    cat .pre-commit-config.yaml
    ```
+
    - "Automatic code formatting with Black"
    - "Linting with Ruff"
    - "Type checking with mypy"
@@ -175,6 +180,7 @@ pre-commit run --all-files
 ```
 
 **Show:**
+
 - Tests passing
 - 100% coverage
 - Code quality checks passing
@@ -212,6 +218,7 @@ pre-commit run --all-files
 **[Screen: Agentic Canon logo or dashboard]**
 
 "That's it! You now have a production-ready project with:
+
 - ✅ Automated testing
 - ✅ Security scanning
 - ✅ Quality gates
@@ -221,6 +228,7 @@ pre-commit run --all-files
 Visit our GitHub repository for more templates and examples. Happy coding!"
 
 **[Show call-to-action:**
+
 - GitHub: github.com/IAmJonoBo/Agentic-Canon
 - Documentation: Link to Jupyter Book
 - Discord/Community: If available]
@@ -230,6 +238,7 @@ Visit our GitHub repository for more templates and examples. Happy coding!"
 ## Recording Notes
 
 ### B-Roll Suggestions
+
 - Dashboard screenshots
 - Code being written
 - Tests running
@@ -237,6 +246,7 @@ Visit our GitHub repository for more templates and examples. Happy coding!"
 - GitHub Actions workflow visualization
 
 ### Screen Recording Tips
+
 - Use clean terminal with good font size (14-16pt)
 - Clear browser history/bookmarks
 - Disable notifications
@@ -244,6 +254,7 @@ Visit our GitHub repository for more templates and examples. Happy coding!"
 - Record at 1080p minimum
 
 ### Audio Notes
+
 - Use quality microphone
 - Record in quiet environment
 - Speak clearly and at moderate pace
@@ -251,6 +262,7 @@ Visit our GitHub repository for more templates and examples. Happy coding!"
 - Include captions/subtitles
 
 ### Editing Checklist
+
 - [ ] Add intro animation
 - [ ] Add section transitions
 - [ ] Highlight important commands/code
@@ -299,6 +311,7 @@ Example Projects: [Link to examples]
 ## Social Media Snippets
 
 ### Twitter/X (Thread)
+
 ```
 🧵 Just created a production-ready API in under 5 minutes using @AgenticCanon
 
@@ -314,8 +327,9 @@ Watch the full tutorial: [link]
 ```
 
 ### LinkedIn Post
+
 ```
-Spent hours setting up project boilerplate? 
+Spent hours setting up project boilerplate?
 
 Try Agentic Canon - a framework that scaffolds production-ready projects with security, testing, and CI/CD built-in.
 

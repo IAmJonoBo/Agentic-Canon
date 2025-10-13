@@ -7,20 +7,20 @@
 #
 # Usage: ./scripts/setup-labels.sh
 
-set -e  # Exit on error
+set -e # Exit on error
 
 # Check if gh CLI is installed
-if ! command -v gh &> /dev/null; then
-    echo "❌ GitHub CLI (gh) is not installed."
-    echo "Install from: https://cli.github.com/"
-    exit 1
+if ! command -v gh &>/dev/null; then
+	echo "❌ GitHub CLI (gh) is not installed."
+	echo "Install from: https://cli.github.com/"
+	exit 1
 fi
 
 # Check if authenticated
-if ! gh auth status &> /dev/null; then
-    echo "❌ Not authenticated with GitHub CLI."
-    echo "Run: gh auth login"
-    exit 1
+if ! gh auth status &>/dev/null; then
+	echo "❌ Not authenticated with GitHub CLI."
+	echo "Run: gh auth login"
+	exit 1
 fi
 
 echo "🏷️  Setting up GitHub labels for project management automation..."
@@ -28,15 +28,15 @@ echo ""
 
 # Function to create label (silently skip if exists)
 create_label() {
-    local name="$1"
-    local color="$2"
-    local description="$3"
-    
-    if gh label create "$name" --color "$color" --description "$description" 2>/dev/null; then
-        echo "✅ Created: $name"
-    else
-        echo "⏭️  Exists: $name"
-    fi
+	local name="$1"
+	local color="$2"
+	local description="$3"
+
+	if gh label create "$name" --color "$color" --description "$description" 2>/dev/null; then
+		echo "✅ Created: $name"
+	else
+		echo "⏭️  Exists: $name"
+	fi
 }
 
 echo "📌 Creating Issue Type Labels..."

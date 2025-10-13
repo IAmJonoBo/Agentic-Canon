@@ -15,6 +15,7 @@
 ### What You'll Learn (45 seconds)
 
 In this tutorial, you'll learn how to:
+
 - Instrument services with OpenTelemetry
 - Collect metrics, logs, and traces
 - Set up Service Level Objectives (SLOs)
@@ -54,6 +55,7 @@ In this tutorial, you'll learn how to:
 **Show on screen: OpenTelemetry logo and architecture**
 
 "OpenTelemetry is the industry standard for observability. It provides:"
+
 - Vendor-neutral instrumentation
 - Unified API for metrics, logs, and traces
 - Automatic instrumentation for popular frameworks
@@ -119,25 +121,25 @@ async def create_order(order: Order):
     with tracer.start_as_current_span("create_order") as span:
         span.set_attribute("order.id", order.id)
         span.set_attribute("order.total", order.total)
-        
+
         try:
             # Validate order
             with tracer.start_as_current_span("validate_order"):
                 validate_order(order)
-            
+
             # Process payment
             with tracer.start_as_current_span("process_payment") as payment_span:
                 payment_span.set_attribute("payment.method", order.payment_method)
                 result = process_payment(order)
                 payment_span.set_attribute("payment.status", result.status)
-            
+
             # Save to database
             with tracer.start_as_current_span("save_order"):
                 db.save(order)
-            
+
             span.set_status(Status(StatusCode.OK))
             return {"status": "success", "order_id": order.id}
-            
+
         except ValidationError as e:
             span.set_status(Status(StatusCode.ERROR, str(e)))
             span.record_exception(e)
@@ -187,19 +189,19 @@ active_requests = Gauge(
 async def observe_requests(request, call_next):
     method = request.method
     endpoint = request.url.path
-    
+
     active_requests.inc()
-    
+
     with request_duration.labels(method=method, endpoint=endpoint).time():
         response = await call_next(request)
-    
+
     active_requests.dec()
     requests_total.labels(
         method=method,
         endpoint=endpoint,
         status=response.status_code
     ).inc()
-    
+
     return response
 ```
 
@@ -241,22 +243,22 @@ slos:
       success_criteria: "status < 500"
     target: 99.9%
     window: 30d
-    
+
   - name: api_latency
     description: API latency SLO (p95)
     sli:
       metric: http_request_duration_seconds
       percentile: 95
-      threshold: 0.5  # 500ms
+      threshold: 0.5 # 500ms
     target: 99.0%
     window: 30d
-    
+
   - name: api_error_rate
     description: API error rate SLO
     sli:
       metric: http_requests_total
       error_criteria: "status >= 500"
-    target: 0.1%  # Max 0.1% error rate
+    target: 0.1% # Max 0.1% error rate
     window: 7d
 ```
 
@@ -278,6 +280,7 @@ Current Status:
 ```
 
 **Show dashboard:**
+
 - Error budget burn rate
 - Projected exhaustion date
 - Alert thresholds
@@ -303,7 +306,7 @@ processors:
   batch:
     timeout: 10s
     send_batch_size: 1024
-  
+
   memory_limiter:
     check_interval: 1s
     limit_mib: 512
@@ -317,12 +320,12 @@ processors:
 exporters:
   prometheus:
     endpoint: "0.0.0.0:8889"
-  
+
   jaeger:
     endpoint: jaeger:14250
     tls:
       insecure: true
-  
+
   loki:
     endpoint: http://loki:3100/loki/api/v1/push
 
@@ -332,12 +335,12 @@ service:
       receivers: [otlp]
       processors: [memory_limiter, batch, attributes]
       exporters: [jaeger]
-    
+
     metrics:
       receivers: [otlp]
       processors: [memory_limiter, batch]
       exporters: [prometheus]
-    
+
     logs:
       receivers: [otlp]
       processors: [memory_limiter, batch]
@@ -377,6 +380,7 @@ service:
 ### Do's and Don'ts (1 minute)
 
 ✅ **Do:**
+
 - Start with auto-instrumentation
 - Add custom spans for business logic
 - Set meaningful SLOs based on user needs
@@ -385,6 +389,7 @@ service:
 - Correlate logs with traces via trace IDs
 
 ❌ **Don't:**
+
 - Instrument everything (focus on critical paths)
 - Set unrealistic SLOs (99.999% for non-critical services)
 - Alert on every metric deviation
@@ -408,6 +413,7 @@ service:
 ### Recap (30 seconds)
 
 "Today we covered:"
+
 - ✅ The three pillars of observability
 - ✅ Instrumenting services with OpenTelemetry
 - ✅ Tracking metrics that matter (RED method)
@@ -420,6 +426,7 @@ service:
 "In the next tutorial, we'll explore Jupyter Book for creating beautiful, interactive documentation."
 
 **Show on screen:**
+
 - 📚 Full guide: docs/notebooks/04_observability_slos.md
 - 📊 Dashboard templates: examples/dashboards/
 - 🔧 OTel config: examples/dashboards/otel-collector-config.yaml

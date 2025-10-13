@@ -15,6 +15,7 @@
 ### What You'll Learn (30 seconds)
 
 In this tutorial, you'll discover how to:
+
 - Create interactive documentation with Jupyter Book
 - Sync notebooks with Jupytext for version control
 - Build and deploy documentation to GitHub Pages
@@ -30,6 +31,7 @@ In this tutorial, you'll discover how to:
 ### The Documentation Challenge (45 seconds)
 
 "Traditional documentation has problems:"
+
 - 📄 **Outdated** - Code examples drift from reality
 - 📄 **Static** - No interactivity or exploration
 - 📄 **Disconnected** - Documentation separate from code
@@ -42,21 +44,25 @@ In this tutorial, you'll discover how to:
 **Show on screen: Jupyter Book features**
 
 ✅ **Executable Content**
+
 - Run code directly in documentation
 - Verify examples work with every build
 - Show actual outputs, not screenshots
 
 ✅ **Beautiful Presentation**
+
 - Professional book-like appearance
 - Built-in search and navigation
 - Mobile-responsive design
 
 ✅ **Developer-Friendly**
+
 - Write in Markdown or Jupyter notebooks
 - Version control with Git
 - Automated deployment to GitHub Pages
 
 ✅ **Interactive Elements**
+
 - Collapsible code cells
 - Live code execution with Binder
 - Embedded visualizations
@@ -93,7 +99,7 @@ your-project/
 
 ### Configuration (1 minute)
 
-**Show on screen: docs/_config.yml**
+**Show on screen: docs/\_config.yml**
 
 ```yaml
 title: My Project Documentation
@@ -101,19 +107,19 @@ author: Your Name
 logo: _static/logo.png
 
 execute:
-  execute_notebooks: force  # Always execute notebooks
-  timeout: 300              # 5 minute timeout
-  allow_errors: false       # Fail on errors
+  execute_notebooks: force # Always execute notebooks
+  timeout: 300 # 5 minute timeout
+  allow_errors: false # Fail on errors
 
 parse:
   myst_enable_extensions:
-    - colon_fence      # ::: blocks
-    - deflist          # Definition lists
-    - dollarmath       # $...$ math
-    - html_image       # HTML images
-    - linkify          # Auto-link URLs
-    - substitution     # Variable substitution
-    - tasklist         # - [ ] task lists
+    - colon_fence # ::: blocks
+    - deflist # Definition lists
+    - dollarmath # $...$ math
+    - html_image # HTML images
+    - linkify # Auto-link URLs
+    - substitution # Variable substitution
+    - tasklist # - [ ] task lists
 
 sphinx:
   config:
@@ -129,7 +135,7 @@ repository:
   branch: main
 ```
 
-**Show on screen: docs/_toc.yml**
+**Show on screen: docs/\_toc.yml**
 
 ```yaml
 format: jb-book
@@ -217,14 +223,18 @@ This note appears in the margin, great for side comments!
 
 ::::{tab-set}
 :::{tab-item} Python
+
 ```python
 print("Hello from Python")
 ```
+
 :::
 :::{tab-item} JavaScript
+
 ```javascript
-console.log("Hello from JavaScript")
+console.log("Hello from JavaScript");
 ```
+
 :::
 ::::
 ````
@@ -236,6 +246,7 @@ console.log("Hello from JavaScript")
 ### The Problem with Notebooks (30 seconds)
 
 "Jupyter notebooks contain JSON with outputs and metadata, making them:"
+
 - 😕 Difficult to review in PRs
 - 😕 Prone to merge conflicts
 - 😕 Full of noise in git diffs
@@ -307,28 +318,28 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-    
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
-    
-    - name: Build book
-      run: |
-        jupyter-book build docs/
-    
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: docs/_build/html
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build book
+        run: |
+          jupyter-book build docs/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html
 ```
 
 "Every push to main automatically builds and deploys your documentation!"
@@ -345,7 +356,7 @@ jobs:
 
 "Make your documentation interactive with Binder!"
 
-**Show on screen: Add to _config.yml**
+**Show on screen: Add to \_config.yml**
 
 ```yaml
 launch_buttons:
@@ -361,7 +372,7 @@ launch_buttons:
 
 **Show on screen: Cross-reference examples**
 
-````markdown
+```markdown
 ## Installation {#installation}
 
 Install the package...
@@ -373,7 +384,7 @@ Before using the package, make sure you've completed the [installation](#install
 See {doc}`api-reference` for the complete API.
 
 Check {ref}`advanced-usage` for advanced topics.
-````
+```
 
 "Jupyter Book automatically creates navigation between pages and sections."
 
@@ -384,6 +395,7 @@ Check {ref}`advanced-usage` for advanced topics.
 ### Recap (30 seconds)
 
 "Today we covered:"
+
 - ✅ Setting up Jupyter Book for your project
 - ✅ Writing with MyST Markdown
 - ✅ Using Jupytext for version control
@@ -395,8 +407,9 @@ Check {ref}`advanced-usage` for advanced topics.
 "You've now completed the Agentic Canon tutorial series!"
 
 **Show on screen:**
+
 - 📚 Full example: docs/notebooks/05_docs_to_book.md
-- 🔧 Configuration: docs/_config.yml
+- 🔧 Configuration: docs/\_config.yml
 - 📖 Jupyter Book docs: https://jupyterbook.org
 - 💬 Community: Join our GitHub Discussions
 

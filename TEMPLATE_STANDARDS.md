@@ -27,6 +27,7 @@ Templates and examples must meet these standards to ensure quality and usability
 ### 1. Structure and Organization
 
 ✅ **REQUIRED:**
+
 - [ ] `README.md` with clear description and usage instructions
 - [ ] Proper directory structure for the template type
 - [ ] `.gitignore` file to exclude build artifacts and dependencies
@@ -38,6 +39,7 @@ Templates and examples must meet these standards to ensure quality and usability
 ### 2. Syntax and Validation
 
 ✅ **REQUIRED:**
+
 - [ ] Valid Python syntax in all `.py` files (hooks, validation modules)
 - [ ] Valid JSON syntax in `cookiecutter.json` and configuration files
 - [ ] Valid YAML syntax in actual workflow files (not template files with variables)
@@ -51,6 +53,7 @@ Templates and examples must meet these standards to ensure quality and usability
 ### 3. Documentation
 
 ✅ **REQUIRED:**
+
 - [ ] `README.md` in each template directory explaining purpose and usage
 - [ ] Comments in configuration files explaining key settings
 - [ ] Links to relevant standards (NIST SSDF, OWASP, SLSA, etc.)
@@ -62,6 +65,7 @@ Templates and examples must meet these standards to ensure quality and usability
 ### 4. CI/CD and Automation
 
 ✅ **REQUIRED:**
+
 - [ ] CI/CD workflow files (`.github/workflows/ci.yml` or equivalent)
 - [ ] Security scanning workflows (SAST, secret scanning, dependency scanning)
 - [ ] Testing framework setup (pytest, jest, vitest, go test, etc.)
@@ -73,6 +77,7 @@ Templates and examples must meet these standards to ensure quality and usability
 ### 5. Security Baselines
 
 ✅ **REQUIRED:**
+
 - [ ] Security scanning configured (CodeQL, Semgrep, Gitleaks)
 - [ ] Dependency vulnerability scanning (Dependabot, Renovate)
 - [ ] SBOM generation capability
@@ -84,6 +89,7 @@ Templates and examples must meet these standards to ensure quality and usability
 ### 6. Quality Gates
 
 ✅ **REQUIRED:**
+
 - [ ] Linting and formatting configuration (Black, Ruff, ESLint, Prettier, golangci-lint)
 - [ ] Testing framework and examples
 - [ ] Coverage configuration (minimum thresholds)
@@ -100,6 +106,7 @@ Templates and examples are **exempt** from these standards:
 ### 1. Code Coverage Requirements
 
 ⚠️ **EXEMPT:**
+
 - Minimum 80% code coverage
 - Mutation testing score of 40%+
 - 100% branch coverage
@@ -107,6 +114,7 @@ Templates and examples are **exempt** from these standards:
 **Rationale:** Templates contain minimal code and serve as starting points. Users will add business logic and tests. However, templates **should include example tests** to demonstrate testing patterns.
 
 **What IS required:**
+
 - Example test files showing testing patterns
 - Testing framework properly configured
 - Coverage tooling configured with sensible defaults
@@ -114,6 +122,7 @@ Templates and examples are **exempt** from these standards:
 ### 2. Complete Feature Implementation
 
 ⚠️ **EXEMPT:**
+
 - Full business logic implementation
 - Complete error handling for all edge cases
 - Production-ready observability (though examples should be provided)
@@ -123,6 +132,7 @@ Templates and examples are **exempt** from these standards:
 **Rationale:** Templates demonstrate patterns, not complete applications. Users implement features based on their requirements.
 
 **What IS required:**
+
 - Working smoke tests or example tests
 - Basic structure and patterns demonstrated
 - Clear TODO comments where users should add logic
@@ -130,6 +140,7 @@ Templates and examples are **exempt** from these standards:
 ### 3. Performance Requirements
 
 ⚠️ **EXEMPT:**
+
 - Meeting specific P95 latency targets
 - Bundle size budgets for web apps
 - Memory usage constraints
@@ -138,6 +149,7 @@ Templates and examples are **exempt** from these standards:
 **Rationale:** Performance characteristics depend on the actual implementation and usage patterns.
 
 **What IS required:**
+
 - Performance testing framework configured (Lighthouse CI, k6, etc.)
 - Performance budgets defined as examples
 - Monitoring and observability setup
@@ -145,6 +157,7 @@ Templates and examples are **exempt** from these standards:
 ### 4. Comprehensive Documentation
 
 ⚠️ **EXEMPT:**
+
 - Complete API documentation for all endpoints
 - Architecture decision records (ADRs) for all decisions
 - Detailed operational runbooks
@@ -153,6 +166,7 @@ Templates and examples are **exempt** from these standards:
 **Rationale:** Templates provide starting points. Documentation grows with the project.
 
 **What IS required:**
+
 - README with clear usage instructions
 - Comments explaining key configuration
 - Links to relevant standards and best practices
@@ -161,6 +175,7 @@ Templates and examples are **exempt** from these standards:
 ### 5. Deployment Configuration
 
 ⚠️ **EXEMPT:**
+
 - Complete Kubernetes manifests for all environments
 - Production-ready Helm charts
 - Multi-cloud deployment configurations
@@ -169,6 +184,7 @@ Templates and examples are **exempt** from these standards:
 **Rationale:** Deployment requirements vary widely by organization and use case.
 
 **What IS required:**
+
 - Basic deployment examples
 - Docker/container configuration
 - Environment variable documentation
@@ -177,6 +193,7 @@ Templates and examples are **exempt** from these standards:
 ### 6. Advanced Features
 
 ⚠️ **EXEMPT:**
+
 - Machine learning model serving
 - Advanced caching strategies
 - Complex state management
@@ -186,6 +203,7 @@ Templates and examples are **exempt** from these standards:
 **Rationale:** These features are application-specific and beyond the scope of templates.
 
 **What IS required:**
+
 - Framework/library setup for these features if commonly used
 - Examples or links to examples
 - Configuration placeholders
@@ -199,6 +217,7 @@ The `sanity-check.sh` script validates templates against the **REQUIRED** standa
 ### What It Checks
 
 ✅ **Structure:**
+
 - Template directories exist
 - `cookiecutter.json` present
 - Hooks directory present
@@ -206,19 +225,23 @@ The `sanity-check.sh` script validates templates against the **REQUIRED** standa
 - Essential files present (`.gitignore`, `README.md`)
 
 ✅ **Syntax:**
+
 - Python syntax valid in hooks
 - JSON syntax valid in configuration
 - YAML syntax valid (excluding template files)
 
 ✅ **Documentation:**
+
 - `README.md` present in each template directory
 - Framework documentation exists (FRAMEWORK.md, QUALITY_STANDARDS.md, CONVENTIONS.md)
 
 ✅ **CI/CD:**
+
 - Workflow files present in `.github/workflows/`
 - Testing framework configured
 
 ✅ **Standards Exemptions:**
+
 - YAML files with `{{ cookiecutter.* }}` variables are skipped (they're Jinja2 templates)
 - Code coverage thresholds are not enforced (but configuration is checked)
 - Complete feature implementation is not required
@@ -226,6 +249,7 @@ The `sanity-check.sh` script validates templates against the **REQUIRED** standa
 ### What It Does NOT Check
 
 ⚠️ **Not validated:**
+
 - Code coverage percentages
 - Performance metrics
 - Complete feature implementation
@@ -320,19 +344,20 @@ Templates go through this validation process:
 
 Templates support these standards while maintaining practical flexibility:
 
-| Standard | Template Requirement | Exemption Notes |
-|----------|---------------------|-----------------|
-| **NIST SSDF v1.1** | Security scanning configured | Full compliance in generated projects |
-| **OWASP SAMM** | Secure defaults, input validation examples | Complete implementation by users |
-| **SLSA Level 3** | Provenance workflow included | Full implementation in generated projects |
-| **ISO/IEC 25010** | Quality tooling configured | Metrics measured in generated projects |
-| **WCAG 2.2 AA** | Accessibility testing configured (web) | Full compliance in generated projects |
+| Standard           | Template Requirement                       | Exemption Notes                           |
+| ------------------ | ------------------------------------------ | ----------------------------------------- |
+| **NIST SSDF v1.1** | Security scanning configured               | Full compliance in generated projects     |
+| **OWASP SAMM**     | Secure defaults, input validation examples | Complete implementation by users          |
+| **SLSA Level 3**   | Provenance workflow included               | Full implementation in generated projects |
+| **ISO/IEC 25010**  | Quality tooling configured                 | Metrics measured in generated projects    |
+| **WCAG 2.2 AA**    | Accessibility testing configured (web)     | Full compliance in generated projects     |
 
 ---
 
 ## Summary
 
 **Templates MUST have:**
+
 - Clear structure and documentation
 - Valid syntax in all files
 - Security scanning and quality tooling configured
@@ -340,6 +365,7 @@ Templates support these standards while maintaining practical flexibility:
 - CI/CD workflows
 
 **Templates CAN omit:**
+
 - Complete feature implementation
 - Production-level code coverage
 - Comprehensive documentation
@@ -347,6 +373,7 @@ Templates support these standards while maintaining practical flexibility:
 - Full deployment configurations
 
 **Philosophy:** Templates are **foundations**, not **complete buildings**. They should be:
+
 - **Correct** in what they include
 - **Complete** in essential tooling and structure
 - **Customizable** for diverse use cases
@@ -355,4 +382,4 @@ Templates support these standards while maintaining practical flexibility:
 
 ---
 
-*Part of the Agentic Canon Framework - See FRAMEWORK.md, QUALITY_STANDARDS.md, and CONVENTIONS.md for complete standards.*
+_Part of the Agentic Canon Framework - See FRAMEWORK.md, QUALITY_STANDARDS.md, and CONVENTIONS.md for complete standards._

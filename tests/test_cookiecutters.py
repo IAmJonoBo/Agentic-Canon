@@ -21,13 +21,13 @@ def test_python_cookiecutter_bakes(cookies):
             "enable_contract_tests": "yes",
             "ci_provider": "github",
         },
-        template="templates/python-service"
+        template="templates/python-service",
     )
-    
+
     assert result.exception is None
     assert result.exit_code == 0
     assert result.project_path.is_dir()
-    
+
     # Check essential files exist
     assert (result.project_path / "pyproject.toml").exists()
     assert (result.project_path / "README.md").exists()
@@ -49,15 +49,15 @@ def test_python_cookiecutter_minimal(cookies):
             "enable_sbom_signing": "no",
             "enable_contract_tests": "no",
         },
-        template="templates/python-service"
+        template="templates/python-service",
     )
-    
+
     assert result.exception is None
     assert result.exit_code == 0
-    
+
     # Security workflow should not exist when disabled
     assert not (result.project_path / ".github" / "workflows" / "security.yml").exists()
-    
+
     # Docs should not exist when Jupyter Book is disabled
     assert not (result.project_path / "docs" / "_config.yml").exists()
 
@@ -69,9 +69,9 @@ def test_python_cookiecutter_invalid_slug(cookies):
             "project_slug": "Invalid_Slug",  # Underscores not allowed
             "pkg_name": "invalid_service",
         },
-        template="templates/python-service"
+        template="templates/python-service",
     )
-    
+
     # Should fail validation
     assert result.exit_code != 0
 
@@ -91,13 +91,13 @@ def test_node_cookiecutter_bakes(cookies):
             "enable_sbom_signing": "yes",
             "ci_provider": "github",
         },
-        template="templates/node-service"
+        template="templates/node-service",
     )
-    
+
     assert result.exception is None
     assert result.exit_code == 0
     assert result.project_path.is_dir()
-    
+
     # Check essential files exist
     assert (result.project_path / "package.json").exists()
     assert (result.project_path / "tsconfig.json").exists()
@@ -121,13 +121,13 @@ def test_react_cookiecutter_bakes(cookies):
             "enable_accessibility_tests": "yes",
             "ci_provider": "github",
         },
-        template="templates/react-webapp"
+        template="templates/react-webapp",
     )
-    
+
     assert result.exception is None
     assert result.exit_code == 0
     assert result.project_path.is_dir()
-    
+
     # Check essential files exist
     assert (result.project_path / "package.json").exists()
     assert (result.project_path / "vite.config.ts").exists()
@@ -148,12 +148,12 @@ def test_react_cookiecutter_minimal(cookies):
             "include_e2e_tests": "no",
             "enable_accessibility_tests": "no",
         },
-        template="templates/react-webapp"
+        template="templates/react-webapp",
     )
-    
+
     assert result.exception is None
     assert result.exit_code == 0
-    
+
     # Storybook and E2E should not exist when disabled
     assert not (result.project_path / ".storybook").exists()
     assert not (result.project_path / "playwright.config.ts").exists()
@@ -174,13 +174,13 @@ def test_go_cookiecutter_bakes(cookies):
             "enable_security_gates": "yes",
             "ci_provider": "github",
         },
-        template="templates/go-service"
+        template="templates/go-service",
     )
-    
+
     assert result.exception is None
     assert result.exit_code == 0
     assert result.project_path.is_dir()
-    
+
     # Check essential files exist
     assert (result.project_path / "go.mod").exists()
     assert (result.project_path / "Makefile").exists()
@@ -203,13 +203,13 @@ def test_docs_only_cookiecutter_bakes(cookies):
             "license": "CC-BY-4.0",
             "ci_provider": "github",
         },
-        template="templates/docs-only"
+        template="templates/docs-only",
     )
-    
+
     assert result.exception is None
     assert result.exit_code == 0
     assert result.project_path.is_dir()
-    
+
     # Check essential files exist
     assert (result.project_path / "docs" / "_config.yml").exists()
     assert (result.project_path / "docs" / "_toc.yml").exists()
@@ -222,6 +222,7 @@ def test_docs_only_cookiecutter_bakes(cookies):
 # Enhanced Validation Tests
 # ============================================================================
 
+
 def test_python_invalid_email(cookies):
     """Test that invalid email is rejected."""
     result = cookies.bake(
@@ -231,7 +232,7 @@ def test_python_invalid_email(cookies):
             "author_email": "not-an-email",  # Invalid email
             "project_description": "A test service for validation",
         },
-        template="templates/python-service"
+        template="templates/python-service",
     )
     assert result.exit_code != 0
 
@@ -245,7 +246,7 @@ def test_python_invalid_author_name(cookies):
             "author_name": "X",  # Too short
             "project_description": "A test service for validation",
         },
-        template="templates/python-service"
+        template="templates/python-service",
     )
     assert result.exit_code != 0
 
@@ -259,7 +260,7 @@ def test_python_invalid_license(cookies):
             "license": "InvalidLicense",  # Not in approved list
             "project_description": "A test service for validation",
         },
-        template="templates/python-service"
+        template="templates/python-service",
     )
     assert result.exit_code != 0
 
@@ -272,7 +273,7 @@ def test_python_short_description(cookies):
             "pkg_name": "test_service",
             "project_description": "Short",  # Less than 10 characters
         },
-        template="templates/python-service"
+        template="templates/python-service",
     )
     assert result.exit_code != 0
 
@@ -285,7 +286,7 @@ def test_python_reserved_keyword_package_name(cookies):
             "pkg_name": "import",  # Reserved keyword
             "project_description": "A test service for validation",
         },
-        template="templates/python-service"
+        template="templates/python-service",
     )
     assert result.exit_code != 0
 
@@ -298,7 +299,7 @@ def test_node_invalid_email(cookies):
             "author_email": "invalid.email",
             "description": "A test Node.js service",
         },
-        template="templates/node-service"
+        template="templates/node-service",
     )
     assert result.exit_code != 0
 
@@ -310,7 +311,7 @@ def test_react_invalid_slug(cookies):
             "project_slug": "Invalid-App_Name",
             "description": "A test React application",
         },
-        template="templates/react-webapp"
+        template="templates/react-webapp",
     )
     assert result.exit_code != 0
 
@@ -323,7 +324,7 @@ def test_go_invalid_module_path(cookies):
             "module_path": "invalid-path",  # Must have domain/path
             "description": "A test Go service",
         },
-        template="templates/go-service"
+        template="templates/go-service",
     )
     assert result.exit_code != 0
 
@@ -335,7 +336,7 @@ def test_docs_only_invalid_description(cookies):
             "project_slug": "test-docs",
             "description": "Short",  # Too short
         },
-        template="templates/docs-only"
+        template="templates/docs-only",
     )
     assert result.exit_code != 0
 
@@ -360,25 +361,33 @@ def test_project_management_bakes(cookies):
             "auto_close_stale_issues": "yes",
             "stale_days": "60",
         },
-        template="templates/project-management"
+        template="templates/project-management",
     )
-    
+
     assert result.exception is None
     assert result.exit_code == 0
     assert result.project_path.is_dir()
-    
+
     # Check essential files exist
     assert (result.project_path / "README.md").exists()
     assert (result.project_path / "PROJECT_MANAGEMENT.md").exists()
     assert (result.project_path / "TASKS.md").exists()
     assert (result.project_path / ".github" / "workflows" / "todos.yml").exists()
-    assert (result.project_path / ".github" / "workflows" / "tasklist-scan.yml").exists()
-    assert (result.project_path / ".github" / "workflows" / "pr-review-followup.yml").exists()
+    assert (
+        result.project_path / ".github" / "workflows" / "tasklist-scan.yml"
+    ).exists()
+    assert (
+        result.project_path / ".github" / "workflows" / "pr-review-followup.yml"
+    ).exists()
     assert (result.project_path / ".github" / "workflows" / "issue-triage.yml").exists()
     assert (result.project_path / ".github" / "workflows" / "stale.yml").exists()
     assert (result.project_path / ".github" / "CODEOWNERS").exists()
-    assert (result.project_path / ".github" / "ISSUE_TEMPLATE" / "bug_report.md").exists()
-    assert (result.project_path / ".github" / "ISSUE_TEMPLATE" / "feature_request.md").exists()
+    assert (
+        result.project_path / ".github" / "ISSUE_TEMPLATE" / "bug_report.md"
+    ).exists()
+    assert (
+        result.project_path / ".github" / "ISSUE_TEMPLATE" / "feature_request.md"
+    ).exists()
     assert (result.project_path / ".github" / "ISSUE_TEMPLATE" / "task.md").exists()
     assert (result.project_path / ".github" / "PULL_REQUEST_TEMPLATE.md").exists()
 
@@ -397,17 +406,19 @@ def test_project_management_minimal(cookies):
             "enable_codeowners": "no",
             "auto_close_stale_issues": "no",
         },
-        template="templates/project-management"
+        template="templates/project-management",
     )
-    
+
     assert result.exception is None
     assert result.exit_code == 0
     assert result.project_path.is_dir()
-    
+
     # Only todos.yml should have content
-    todos_content = (result.project_path / ".github" / "workflows" / "todos.yml").read_text()
+    todos_content = (
+        result.project_path / ".github" / "workflows" / "todos.yml"
+    ).read_text()
     assert "TODO" in todos_content
-    
+
     # Other workflows should be empty or not generated
     tasklist_file = result.project_path / ".github" / "workflows" / "tasklist-scan.yml"
     if tasklist_file.exists():
@@ -422,7 +433,7 @@ def test_project_management_invalid_slug(cookies):
             "project_slug": "Invalid_Slug",
             "github_org": "test-org",
         },
-        template="templates/project-management"
+        template="templates/project-management",
     )
     assert result.exit_code != 0
 
@@ -434,6 +445,6 @@ def test_project_management_invalid_org(cookies):
             "project_slug": "test-project",
             "github_org": "invalid org name",
         },
-        template="templates/project-management"
+        template="templates/project-management",
     )
     assert result.exit_code != 0

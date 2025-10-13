@@ -9,21 +9,25 @@ The enhanced sanity check script now includes 10 new features for comprehensive 
 ### Basic Commands
 
 **Run with defaults (verbose):**
+
 ```bash
 ./sanity-check.sh
 ```
 
 **Quiet mode (ideal for CI):**
+
 ```bash
 ./sanity-check.sh --quiet
 ```
 
 **Generate HTML report:**
+
 ```bash
 ./sanity-check.sh --html-report report.html
 ```
 
 **Show help:**
+
 ```bash
 ./sanity-check.sh --help
 ```
@@ -56,6 +60,7 @@ The enhanced sanity check script now includes 10 new features for comprehensive 
 - Aligns with NIST SSDF and OWASP standards
 
 **Tools required:**
+
 ```bash
 pip install pip-audit pip-licenses
 ```
@@ -86,6 +91,7 @@ pip install pip-audit pip-licenses
 - Helps identify optimization opportunities
 
 **Example output:**
+
 ```
 ⏱️  Duration: 9s
 ```
@@ -98,6 +104,7 @@ pip install pip-audit pip-licenses
 - Professional appearance for stakeholder sharing
 
 **Example:**
+
 ```bash
 ./sanity-check.sh --html-report /tmp/report.html
 ```
@@ -115,6 +122,7 @@ pre-commit run sanity-check --all-files
 ```
 
 **Configuration in `.pre-commit-config.yaml`:**
+
 ```yaml
 - repo: local
   hooks:
@@ -129,16 +137,19 @@ pre-commit run sanity-check --all-files
 ## Running Tests
 
 **All tests:**
+
 ```bash
 pytest tests/ -v
 ```
 
 **Sanity check tests only:**
+
 ```bash
 pytest tests/test_sanity_check.py -v
 ```
 
 **Quick test run:**
+
 ```bash
 pytest tests/ -q
 ```
@@ -146,10 +157,12 @@ pytest tests/ -q
 ## Understanding Results
 
 ### Exit Codes
+
 - `0` = Success (all critical checks passed, warnings allowed)
 - `1` = Failure (one or more critical checks failed)
 
 ### Status Icons
+
 - ✅ **Green checkmark** = Test passed
 - ⚠️ **Yellow warning** = Non-critical issue (doesn't fail the check)
 - ❌ **Red X** = Critical failure
@@ -245,6 +258,7 @@ done
 ### "Security scanning tools not available"
 
 Install the required tools:
+
 ```bash
 pip install pip-audit pip-licenses
 ```
@@ -252,11 +266,13 @@ pip install pip-audit pip-licenses
 ### "Vulnerabilities found in requirements.txt"
 
 Run detailed scan:
+
 ```bash
 pip-audit -r requirements.txt
 ```
 
 Fix vulnerabilities:
+
 ```bash
 pip-audit -r requirements.txt --fix
 ```
@@ -264,6 +280,7 @@ pip-audit -r requirements.txt --fix
 ### "Unpinned dependencies"
 
 Pin all dependencies to exact versions:
+
 ```bash
 # Use pip-compile or manually edit requirements.txt
 # Change: package>=1.0
@@ -273,6 +290,7 @@ Pin all dependencies to exact versions:
 ### Tests Failing
 
 Update dependencies and clear cache:
+
 ```bash
 pip install -r requirements.txt --upgrade
 pytest --cache-clear

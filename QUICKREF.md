@@ -5,11 +5,11 @@
 
 ## Current Status (Verified 2025-10-12)
 
-| Version | Status | Completion | Notes |
-|---------|--------|------------|-------|
-| **v1.0** | ✅ Complete | 100% | All 5 primary templates + 8 categories |
-| **v1.1.0** | ✅ Nearly Complete | ~98% | Dashboards, examples, scripts done; videos pending |
-| **v2.0.0** | 🚧 In Progress | ~40% | Frameworks built; implementations pending |
+| Version    | Status             | Completion | Notes                                              |
+| ---------- | ------------------ | ---------- | -------------------------------------------------- |
+| **v1.0**   | ✅ Complete        | 100%       | All 5 primary templates + 8 categories             |
+| **v1.1.0** | ✅ Nearly Complete | ~98%       | Dashboards, examples, scripts done; videos pending |
+| **v2.0.0** | 🚧 In Progress     | ~40%       | Frameworks built; implementations pending          |
 
 **Verification:** `.dev/sanity-check.sh` → ✅ 44 passed, ⚠️ 2 warnings, ❌ 0 failures
 
@@ -20,6 +20,7 @@
 ### ✅ Templates (ALL COMPLETE)
 
 **5 Primary Templates:**
+
 - ✅ `python-service` - Python with FastAPI/Flask, pytest, Black, Ruff
 - ✅ `node-service` - TypeScript, Express, Vitest, ESLint
 - ✅ `react-webapp` - React 18, Vite, Playwright, Storybook
@@ -27,6 +28,7 @@
 - ✅ `docs-only` - Jupyter Book, MyST Markdown
 
 **8 Template Categories:**
+
 - ✅ Architecture (ADRs, C4, fitness functions)
 - ✅ Automation (hooks, bots, workflows)
 - ✅ CI/CD (GitHub Actions, GitLab CI, Azure Pipelines)
@@ -41,18 +43,21 @@
 ### ✅ Dashboards (ALL EXIST)
 
 **4 Production-Ready Grafana JSON Files:**
+
 - ✅ `dora-metrics.json` - DORA metrics (deployment frequency, lead time, MTTR, change failure rate)
 - ✅ `space-devex-metrics.json` - Developer experience (satisfaction, performance, flow)
 - ✅ `quality-metrics.json` - Code quality (coverage, duplication, complexity)
 - ✅ `security-metrics.json` - Security posture (vulnerabilities, SBOM coverage)
 
 **Additional Files:**
+
 - ✅ `otel-collector-config.yaml` - OpenTelemetry Collector configuration
 - ✅ `prometheus-alerts.yaml` - Alerting rules
 
 ### ✅ Examples (ALL DOCUMENTED)
 
 **4 Complete Example Project Documentation:**
+
 - ✅ `fastapi-microservice-README.md` - FastAPI with JWT, OpenAPI, metrics
 - ✅ `express-api-README.md` - Express.js with TypeScript, Prisma, Swagger
 - ✅ `react-dashboard-README.md` - React dashboard with Recharts, accessibility
@@ -61,6 +66,7 @@
 ### ✅ Video Tutorials (ALL SCRIPTS READY)
 
 **6 Complete Tutorial Scripts (~65 minutes total):**
+
 - ✅ `01-getting-started.md` (5-7 min)
 - ✅ `02-creating-services.md` (8-10 min)
 - ✅ `03-cicd-setup.md` (10-12 min)
@@ -105,16 +111,19 @@
 ## Quick Commands
 
 ### Verify Project State
+
 ```bash
 .dev/sanity-check.sh
 ```
 
 ### Run Tests
+
 ```bash
 pytest tests/test_cookiecutters.py -v
 ```
 
 ### Generate Projects
+
 ```bash
 # Interactive wizard
 agentic-canon init
@@ -128,6 +137,7 @@ cookiecutter templates/docs-only
 ```
 
 ### Check Documentation
+
 ```bash
 # Single source of truth
 cat TASKS.md
@@ -202,6 +212,7 @@ cat V110-V200-SUMMARY.md
 **Documentation may lag behind reality!**
 
 Always verify with:
+
 - `.dev/sanity-check.sh` for ground truth
 - Actual file existence checks
 - Test results (`pytest -v`)
@@ -216,12 +227,14 @@ Always verify with:
 Documentation was **significantly out of date**:
 
 ❌ **Docs Said:**
+
 - Node, React, Go, Docs templates incomplete
 - Dashboard JSON files missing
 - Example projects incomplete
 - Status: v1.0 incomplete, v1.1.0 in progress
 
 ✅ **Reality:**
+
 - ALL 5 templates complete and tested (8/8 passing)
 - ALL 4 dashboard JSON files exist
 - ALL 4 example docs complete
@@ -244,6 +257,7 @@ Documentation was **significantly out of date**:
 ## Resources
 
 ### Core Documentation
+
 - [TASKS.md](TASKS.md) - Progress tracker (SSOT)
 - [SUMMARY.md](SUMMARY.md) - Executive summary
 - [IMPLEMENTATION.md](IMPLEMENTATION.md) - Technical guide
@@ -251,16 +265,19 @@ Documentation was **significantly out of date**:
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guide
 
 ### Templates
+
 - `templates/` - All Cookiecutter templates
 - `tests/` - Template validation tests
 - `examples/` - Example projects and configs
 
 ### Standards & Compliance
+
 - [Red Team + Software Excellence.md](Red%20Team%20+%20Software%20Excellence.md)
 - [control-traceability-matrix.json](control-traceability-matrix.json)
 - `docs/adr/` - Architecture Decision Records
 
 ### Monitoring & Observability
+
 - `examples/dashboards/` - Grafana dashboards
 - `examples/dashboards/otel-collector-config.yaml`
 - `examples/dashboards/prometheus-alerts.yaml`

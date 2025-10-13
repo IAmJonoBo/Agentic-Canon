@@ -5,6 +5,7 @@ Welcome to the Agentic Canon community! This guide will help you contribute new 
 ## Overview
 
 The Agentic Canon community template system allows developers to:
+
 - Submit new project templates
 - Share best practices
 - Build on existing templates
@@ -82,14 +83,8 @@ Define your template variables:
   "author_email": "your.email@example.com",
   "version": "0.1.0",
   "license": ["MIT", "Apache-2.0", "GPL-3.0", "BSD-3-Clause"],
-  
-  "_copy_without_render": [
-    "*.png",
-    "*.jpg",
-    "*.jpeg",
-    "*.gif",
-    "*.svg"
-  ]
+
+  "_copy_without_render": ["*.png", "*.jpg", "*.jpeg", "*.gif", "*.svg"]
 }
 ```
 
@@ -175,7 +170,7 @@ import shutil
 def remove_optional_files():
     """Remove files based on user choices."""
     use_docker = "{{ cookiecutter.use_docker }}"
-    
+
     if use_docker == "no":
         os.remove("Dockerfile")
         os.remove("docker-compose.yml")
@@ -205,7 +200,7 @@ def install_pre_commit_hooks():
 def show_next_steps():
     """Display next steps to user."""
     project_name = "{{ cookiecutter.project_slug }}"
-    
+
     print("\n" + "="*60)
     print(f"🎉 Successfully created {project_name}!")
     print("="*60)
@@ -241,7 +236,7 @@ def test_template_generation(cookies):
             "author_email": "test@example.com",
         }
     )
-    
+
     assert result.exit_code == 0
     assert result.exception is None
     assert result.project_path.name == "test-project"
@@ -250,7 +245,7 @@ def test_template_generation(cookies):
 def test_required_files_exist(cookies):
     """Test that required files are generated."""
     result = cookies.bake()
-    
+
     required_files = [
         "README.md",
         ".gitignore",
@@ -258,7 +253,7 @@ def test_required_files_exist(cookies):
         "src",
         "tests",
     ]
-    
+
     for file_name in required_files:
         file_path = result.project_path / file_name
         assert file_path.exists(), f"{file_name} should exist"
@@ -266,22 +261,22 @@ def test_required_files_exist(cookies):
 def test_optional_files(cookies):
     """Test conditional file generation."""
     result = cookies.bake(extra_context={"use_docker": "yes"})
-    
+
     assert (result.project_path / "Dockerfile").exists()
     assert (result.project_path / "docker-compose.yml").exists()
-    
+
     result = cookies.bake(extra_context={"use_docker": "no"})
-    
+
     assert not (result.project_path / "Dockerfile").exists()
     assert not (result.project_path / "docker-compose.yml").exists()
 
 def test_generated_project_valid(cookies):
     """Test that generated project is valid."""
     result = cookies.bake()
-    
+
     # For Python projects
     assert (result.project_path / "pyproject.toml").exists()
-    
+
     # Check that tests can run
     # This depends on your project type
 ```
@@ -289,6 +284,7 @@ def test_generated_project_valid(cookies):
 ### 5. Submit Pull Request
 
 1. **Fork the repository**
+
    ```bash
    # Fork on GitHub, then clone
    git clone https://github.com/YOUR-USERNAME/Agentic-Canon.git
@@ -296,20 +292,23 @@ def test_generated_project_valid(cookies):
    ```
 
 2. **Create a branch**
+
    ```bash
    git checkout -b add-your-template-name
    ```
 
 3. **Add your template**
+
    ```bash
    # Add your template files
    git add templates/your-template/
-   
+
    # Commit with descriptive message
    git commit -m "Add [Framework] template for [use case]"
    ```
 
 4. **Push and create PR**
+
    ```bash
    git push origin add-your-template-name
    ```
@@ -348,7 +347,9 @@ Describe how you tested the template:
 \`\`\`bash
 cookiecutter templates/your-template
 cd generated-project
+
 # Commands to verify it works
+
 \`\`\`
 
 ## Screenshots (if applicable)
@@ -465,6 +466,7 @@ Check out these existing templates for inspiration:
 ## Recognition
 
 Contributors will be:
+
 - Listed in CONTRIBUTORS.md
 - Credited in template documentation
 - Featured in release notes

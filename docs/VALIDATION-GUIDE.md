@@ -5,6 +5,7 @@ This guide documents all input validation rules and requirements for Agentic Can
 ## Overview
 
 All templates implement comprehensive input validation to ensure:
+
 - **Security**: Prevent injection attacks and invalid inputs
 - **Consistency**: Uniform naming and structure across projects
 - **Standards Compliance**: Follow industry best practices
@@ -19,6 +20,7 @@ All templates implement comprehensive input validation to ensure:
 **Pattern**: `^[a-z0-9]+(?:-[a-z0-9]+)*$`
 
 **Requirements**:
+
 - Must start with a lowercase letter or digit
 - Can contain lowercase letters, digits, and hyphens
 - Cannot start or end with a hyphen
@@ -26,6 +28,7 @@ All templates implement comprehensive input validation to ensure:
 - Maximum 64 characters
 
 **Valid Examples**:
+
 ```
 my-project
 api-service-v2
@@ -34,6 +37,7 @@ microservice-123
 ```
 
 **Invalid Examples**:
+
 ```
 MyProject         # Uppercase not allowed
 my_project        # Underscores not allowed
@@ -43,6 +47,7 @@ my--project       # Consecutive hyphens not allowed
 ```
 
 **Error Message**:
+
 ```
 ERROR: project_slug must be in kebab-case format
   Requirements:
@@ -58,16 +63,18 @@ ERROR: project_slug must be in kebab-case format
 ### Python Package Name
 
 **Field**: `pkg_name` (Python templates only)  
-**Format**: snake_case  
-**Pattern**: `^[a-z_][a-z0-9_]*$`
+**Format**: snake*case  
+**Pattern**: `^[a-z*][a-z0-9_]\*$`
 
 **Requirements**:
+
 - Must start with a lowercase letter or underscore
 - Can contain lowercase letters, digits, and underscores
 - Must be a valid Python identifier
 - Cannot be a Python reserved keyword
 
 **Python Reserved Keywords**:
+
 ```python
 and, as, assert, break, class, continue, def, del, elif, else, except,
 finally, for, from, global, if, import, in, is, lambda, not, or, pass,
@@ -75,6 +82,7 @@ raise, return, try, while, with, yield, True, False, None
 ```
 
 **Valid Examples**:
+
 ```
 my_package
 api_service
@@ -83,6 +91,7 @@ service_v2
 ```
 
 **Invalid Examples**:
+
 ```
 my-package        # Hyphens not allowed
 123package        # Cannot start with digit
@@ -98,11 +107,13 @@ import            # Reserved keyword
 **Pattern**: `^[a-zA-Z0-9.-]+(?:[./][a-zA-Z0-9._-]+)+$`
 
 **Requirements**:
+
 - Must have at least a domain and path component
 - Uses periods or slashes as separators
 - Follows Go module path conventions
 
 **Valid Examples**:
+
 ```
 github.com/user/project
 example.com/my/module
@@ -110,6 +121,7 @@ gitlab.com/org/team/service
 ```
 
 **Invalid Examples**:
+
 ```
 github.com              # Missing path component
 not-a-url               # Missing domain
@@ -125,11 +137,13 @@ my-local-project        # Not a valid module path
 **Pattern**: `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
 
 **Requirements**:
+
 - Must be a valid email address format
 - Contains @ symbol
 - Has domain with TLD
 
 **Valid Examples**:
+
 ```
 user@example.com
 dev.team@company.io
@@ -137,6 +151,7 @@ john.doe+tag@enterprise.org
 ```
 
 **Invalid Examples**:
+
 ```
 not-an-email            # Missing @
 user@                   # Missing domain
@@ -150,12 +165,14 @@ user@invalid            # Missing TLD
 
 **Field**: `author_name`  
 **Requirements**:
+
 - Cannot be empty
 - Minimum 2 characters
 - Maximum 100 characters
 - Must contain at least one letter
 
 **Valid Examples**:
+
 ```
 John Doe
 Jane Smith
@@ -165,6 +182,7 @@ Dr. Sarah Johnson
 ```
 
 **Invalid Examples**:
+
 ```
 X                       # Too short (1 character)
 123                     # No letters
@@ -180,6 +198,7 @@ X                       # Too short (1 character)
 **Whitelist**: Approved open source licenses
 
 **Approved Licenses**:
+
 - `MIT` - MIT License
 - `Apache-2.0` - Apache License 2.0
 - `BSD-3-Clause` - BSD 3-Clause License
@@ -192,6 +211,7 @@ X                       # Too short (1 character)
 - `CC-BY-4.0` - Creative Commons Attribution 4.0 (docs-only)
 
 **Valid Examples**:
+
 ```
 MIT
 Apache-2.0
@@ -199,6 +219,7 @@ BSD-3-Clause
 ```
 
 **Invalid Examples**:
+
 ```
 MIT License             # Use SPDX identifier, not full name
 Apache 2.0              # Incorrect format
@@ -213,12 +234,14 @@ Proprietary             # Not in approved list
 
 **Field**: `description` or `project_description`  
 **Requirements**:
+
 - Cannot be empty
 - Minimum 10 characters
 - Maximum 500 characters
 - Should be meaningful and descriptive
 
 **Valid Examples**:
+
 ```
 A modern REST API service for user management
 React dashboard for monitoring system metrics
@@ -226,6 +249,7 @@ Documentation for the Acme project API
 ```
 
 **Invalid Examples**:
+
 ```
 Test                    # Too short (less than 10 characters)
 A                       # Way too short
@@ -241,6 +265,7 @@ A                       # Way too short
 **Pattern**: `^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?(?:\+[a-zA-Z0-9.-]+)?$`
 
 **Valid Examples**:
+
 ```
 1.0.0
 2.1.3
@@ -250,6 +275,7 @@ A                       # Way too short
 ```
 
 **Invalid Examples**:
+
 ```
 1.0                     # Missing patch version
 v1.0.0                  # Should not include 'v' prefix
@@ -263,6 +289,7 @@ v1.0.0                  # Should not include 'v' prefix
 ## Error Messages
 
 All validation errors include:
+
 1. **Clear error description** - What went wrong
 2. **Requirements** - What the input should be
 3. **Examples** - Valid formats to follow
@@ -286,6 +313,7 @@ ERROR: project_slug 'My_Project' must be in kebab-case format
 Each template has a `hooks/pre_gen_project.py` file that validates inputs before generation.
 
 **Example**:
+
 ```python
 #!/usr/bin/env python3
 """Pre-generation validation for template."""
@@ -336,12 +364,14 @@ def test_python_invalid_email(cookies):
 ```
 
 **Test Coverage**:
+
 - Valid inputs for all fields
 - Invalid formats (wrong patterns)
 - Edge cases (empty strings, too short/long)
 - Special cases (reserved keywords, etc.)
 
 Run tests:
+
 ```bash
 pytest tests/test_cookiecutters.py -v
 ```
@@ -351,18 +381,22 @@ pytest tests/test_cookiecutters.py -v
 Validation supports multiple compliance frameworks:
 
 ### NIST SSDF v1.1
+
 - **PO.3**: Security requirements defined at project creation
 - Input validation prevents common security issues
 
 ### OWASP SAMM
+
 - **Security by default**: Validated inputs reduce attack surface
 - Consistent naming prevents injection attacks
 
 ### ISO/IEC 25010
+
 - **Functional Suitability**: Inputs meet quality requirements
 - **Reliability**: Validation prevents configuration errors
 
 ### SLSA Level 3
+
 - **Build Integrity**: Validated inputs ensure reproducible builds
 - **Provenance**: Consistent metadata for attestation
 
@@ -371,28 +405,34 @@ Validation supports multiple compliance frameworks:
 ### Common Issues
 
 #### "ERROR: project_slug must be kebab-case"
+
 **Problem**: Using incorrect characters or format  
 **Solution**: Use lowercase letters, digits, and hyphens only
 
 #### "ERROR: pkg_name is a Python reserved keyword"
+
 **Problem**: Package name conflicts with Python keywords  
 **Solution**: Choose a different name (e.g., `my_import` instead of `import`)
 
 #### "ERROR: license is not an approved license"
+
 **Problem**: Using a non-standard or proprietary license  
 **Solution**: Choose from approved SPDX licenses (MIT, Apache-2.0, etc.)
 
 #### "ERROR: description must be at least 10 characters"
+
 **Problem**: Description is too short  
 **Solution**: Provide a meaningful description (at least 10 characters)
 
 #### "ERROR: author_email must be a valid email address"
+
 **Problem**: Email format is incorrect  
 **Solution**: Use format: name@domain.tld
 
 ### Validation Bypass (Not Recommended)
 
 To skip validation for testing:
+
 ```bash
 # Temporarily rename the hook
 mv templates/python-service/hooks/pre_gen_project.py \

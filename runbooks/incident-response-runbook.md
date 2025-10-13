@@ -6,12 +6,12 @@ This runbook provides procedures for responding to production incidents in syste
 
 ## Incident Severity Levels
 
-| Level | Description | Response Time | Examples |
-|-------|-------------|---------------|----------|
-| **SEV1** | Critical - Complete outage | Immediate (< 15 min) | Complete service down, data loss, security breach |
-| **SEV2** | High - Major degradation | 30 minutes | Partial outage, significant performance degradation |
-| **SEV3** | Medium - Minor impact | 2 hours | Limited functionality affected, minor performance issues |
-| **SEV4** | Low - Minimal impact | Next business day | Cosmetic issues, documentation errors |
+| Level    | Description                | Response Time        | Examples                                                 |
+| -------- | -------------------------- | -------------------- | -------------------------------------------------------- |
+| **SEV1** | Critical - Complete outage | Immediate (< 15 min) | Complete service down, data loss, security breach        |
+| **SEV2** | High - Major degradation   | 30 minutes           | Partial outage, significant performance degradation      |
+| **SEV3** | Medium - Minor impact      | 2 hours              | Limited functionality affected, minor performance issues |
+| **SEV4** | Low - Minimal impact       | Next business day    | Cosmetic issues, documentation errors                    |
 
 ## Incident Response Phases
 
@@ -28,6 +28,7 @@ This runbook provides procedures for responding to production incidents in syste
 ### Monitoring and Alerting
 
 **Automated Detection Sources**:
+
 - Prometheus/Grafana alerts
 - OpenTelemetry metrics anomalies
 - Error rate spikes in logs
@@ -35,6 +36,7 @@ This runbook provides procedures for responding to production incidents in syste
 - User reports
 
 **Manual Detection Sources**:
+
 - Customer support tickets
 - Social media mentions
 - Team observations
@@ -47,19 +49,21 @@ This runbook provides procedures for responding to production incidents in syste
 **Steps**:
 
 1. **Acknowledge Alert**
+
    ```bash
    # Acknowledge in PagerDuty/OpsGenie
    # Or silence alert temporarily
    ```
 
 2. **Verify Incident**
+
    ```bash
    # Check service health
    curl https://api.example.com/health
-   
+
    # Check metrics dashboard
    # Open Grafana and check key metrics
-   
+
    # Check recent deployments
    kubectl rollout status deployment/my-app
    ```
@@ -116,6 +120,7 @@ curl https://metrics.example.com/query?query=http_request_duration_seconds
 ### Assess Impact
 
 **Questions to Answer**:
+
 - How many users are affected?
 - Which features/services are impacted?
 - What is the business impact?
@@ -123,8 +128,10 @@ curl https://metrics.example.com/query?query=http_request_duration_seconds
 - Is there a security component?
 
 **Document Impact**:
+
 ```markdown
 ## Impact Assessment
+
 - **Affected Users**: ~1000 (10% of total)
 - **Affected Services**: Authentication, API
 - **Business Impact**: Cannot process orders
@@ -168,23 +175,27 @@ Updates will be provided every 15 minutes.
 
 ### Stakeholder Communication
 
-**SEV1**: 
+**SEV1**:
+
 - Immediate notification to executive team
 - Status page update
 - Social media if customer-facing
 
 **SEV2**:
+
 - Notify product/engineering leadership
 - Status page update
 - Internal communication
 
 **SEV3/SEV4**:
+
 - Team notification only
 - No status page update needed
 
 ### Regular Updates
 
 **Update Frequency**:
+
 - **SEV1**: Every 15 minutes
 - **SEV2**: Every 30 minutes
 - **SEV3**: Every 2 hours
@@ -258,6 +269,7 @@ kubectl exec -it <pod-name> -- curl http://dependency:8080/health
 **Metrics Analysis**:
 
 Check Grafana dashboards for:
+
 - Request rate changes
 - Error rate spikes
 - Latency increases
@@ -379,8 +391,8 @@ kubectl apply -f maintenance-mode.yaml
 
 ```sql
 -- Kill long-running queries
-SELECT pg_terminate_backend(pid) 
-FROM pg_stat_activity 
+SELECT pg_terminate_backend(pid)
+FROM pg_stat_activity
 WHERE state = 'active' AND query_start < NOW() - INTERVAL '5 minutes';
 
 -- Add missing index (if safe)
@@ -409,13 +421,14 @@ kubectl exec -it <pod-name> -- curl -X POST http://localhost:8080/admin/cache/cl
    - Test in staging environment
 
 2. **Deploy Fix**
+
    ```bash
    # Create hotfix branch
    git checkout -b hotfix/incident-20240115
-   
+
    # Make changes, commit
    git commit -m "fix: resolve database query performance issue"
-   
+
    # Deploy via CI/CD or manually
    git push origin hotfix/incident-20240115
    ```
@@ -480,17 +493,19 @@ kubectl logs -f deployment/my-app | grep -i error
 **Actions**:
 
 1. **Update Status Page**
+
    ```markdown
    ✅ **RESOLVED**
-   
+
    The incident has been resolved. All services are operating normally.
    We will continue to monitor the situation.
-   
+
    **Duration**: 45 minutes
    **Root Cause**: Database query performance (details to follow in post-mortem)
    ```
 
 2. **Notify Stakeholders**
+
    ```bash
    slack-cli send --channel incidents \
      --message "✅ INCIDENT RESOLVED: All services restored. Post-mortem to follow."
@@ -511,54 +526,64 @@ kubectl logs -f deployment/my-app | grep -i error
 **Steps**:
 
 1. **Preserve Evidence**
+
    ```bash
    # Save logs
    kubectl logs deployment/my-app -n production --since=2h > incident-logs.txt
-   
+
    # Export metrics
    # Take screenshots of dashboards
-   
+
    # Save traces
    # Export relevant traces from Jaeger/Tempo
    ```
 
 2. **Create Post-Mortem Document**
+
    ```markdown
    # Post-Mortem: API Degradation - 2024-01-15
-   
+
    ## Summary
+
    Brief description of the incident
-   
+
    ## Timeline
+
    - 14:30 UTC: Alert triggered
    - 14:35 UTC: Incident declared (SEV2)
    - 14:45 UTC: Root cause identified
    - 15:00 UTC: Fix deployed
    - 15:15 UTC: Incident resolved
-   
+
    ## Impact
+
    - Duration: 45 minutes
    - Users affected: ~1000 (10%)
    - Requests failed: ~5000
    - Revenue impact: $500 estimated
-   
+
    ## Root Cause
+
    Detailed explanation of what went wrong
-   
+
    ## Resolution
+
    How the issue was resolved
-   
+
    ## What Went Well
+
    - Quick detection via automated alerts
    - Effective communication
    - Fast rollback capability
-   
+
    ## What Could Be Improved
+
    - Better database monitoring
    - More comprehensive testing
    - Improved documentation
-   
+
    ## Action Items
+
    - [ ] Add database query performance monitoring
    - [ ] Implement slow query alerting
    - [ ] Add integration tests for this scenario
@@ -724,4 +749,4 @@ kubectl rollout restart deployment/my-app -n production
 
 ---
 
-*For incident support, contact the on-call engineer via PagerDuty or Slack.*
+_For incident support, contact the on-call engineer via PagerDuty or Slack._

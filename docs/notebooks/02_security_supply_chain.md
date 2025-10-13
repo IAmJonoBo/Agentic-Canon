@@ -14,6 +14,7 @@ kernelspec:
 # 02 Security & Supply Chain
 
 This notebook covers:
+
 - SAST (Static Application Security Testing)
 - Secret scanning
 - SBOM generation and validation

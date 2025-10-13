@@ -44,23 +44,23 @@ agentic-canon init
 
 ### Required Parameters
 
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| `project_name` | Human-readable name | "Acme Go Service" |
-| `project_slug` | URL-friendly name | "acme-go-service" |
-| `module_path` | Go module path | "github.com/example/acme-go-service" |
-| `description` | Short description | "A production-ready Go service" |
-| `author_name` | Your name | "Jane Doe" |
-| `author_email` | Your email | "jane@example.com" |
+| Parameter      | Description         | Example                              |
+| -------------- | ------------------- | ------------------------------------ |
+| `project_name` | Human-readable name | "Acme Go Service"                    |
+| `project_slug` | URL-friendly name   | "acme-go-service"                    |
+| `module_path`  | Go module path      | "github.com/example/acme-go-service" |
+| `description`  | Short description   | "A production-ready Go service"      |
+| `author_name`  | Your name           | "Jane Doe"                           |
+| `author_email` | Your email          | "jane@example.com"                   |
 
 ### Optional Parameters
 
-| Parameter | Options | Default | Description |
-|-----------|---------|---------|-------------|
-| `license` | Apache-2.0, MIT, Proprietary | Apache-2.0 | License type |
-| `go_version` | 1.21, 1.22, 1.23 | 1.22 | Minimum Go version |
-| `enable_security_gates` | yes, no | yes | Enable security scanning |
-| `ci_provider` | github, gitlab | github | CI/CD platform |
+| Parameter               | Options                      | Default    | Description              |
+| ----------------------- | ---------------------------- | ---------- | ------------------------ |
+| `license`               | Apache-2.0, MIT, Proprietary | Apache-2.0 | License type             |
+| `go_version`            | 1.21, 1.22, 1.23             | 1.22       | Minimum Go version       |
+| `enable_security_gates` | yes, no                      | yes        | Enable security scanning |
+| `ci_provider`           | github, gitlab               | github     | CI/CD platform           |
 
 ## Generated Project Structure
 
@@ -184,6 +184,7 @@ func (a *App) Run() error {
 ## CI/CD Workflows
 
 **ci.yml** - Main Pipeline:
+
 - Go installation and caching
 - Module download
 - Unit tests with coverage
@@ -192,6 +193,7 @@ func (a *App) Run() error {
 - Multi-version testing
 
 **go-lint.yml** - Linting:
+
 - golangci-lint with all linters
 - Code formatting check
 - Import organization

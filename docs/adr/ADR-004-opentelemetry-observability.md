@@ -14,6 +14,7 @@ Modern distributed systems require comprehensive observability to understand sys
 4. **Correlation**: Ability to correlate traces, metrics, and logs
 
 Several observability solutions were considered:
+
 - Vendor-specific SDKs (Datadog, New Relic, Dynatrace)
 - OpenTelemetry (vendor-neutral standard)
 - Custom instrumentation
@@ -41,6 +42,7 @@ We will use **OpenTelemetry** as the standard observability framework for all te
 ### Implementation Approach
 
 #### Python Services
+
 ```python
 # OpenTelemetry with automatic instrumentation
 from opentelemetry import trace
@@ -61,11 +63,12 @@ FastAPIInstrumentor.instrument_app(app)
 ```
 
 #### Node.js Services
+
 ```typescript
 // OpenTelemetry with automatic instrumentation
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { NodeSDK } from "@opentelemetry/sdk-node";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc";
+import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 
 const sdk = new NodeSDK({
   traceExporter: new OTLPTraceExporter(),
@@ -75,6 +78,7 @@ sdk.start();
 ```
 
 #### Go Services
+
 ```go
 // OpenTelemetry with manual instrumentation
 import (
@@ -92,6 +96,7 @@ otel.SetTracerProvider(tp)
 ### Collector Configuration
 
 All templates will include OpenTelemetry Collector configuration for:
+
 - Receiving telemetry (OTLP, Jaeger, Zipkin, Prometheus)
 - Processing (batching, filtering, sampling)
 - Exporting to backends (Prometheus, Jaeger, cloud vendors)
@@ -171,21 +176,25 @@ service:
 ## Alternatives Considered
 
 ### Vendor-Specific SDKs
+
 **Pros**: Often more feature-rich, better UI/UX, integrated experience
 **Cons**: Vendor lock-in, switching costs, per-language differences
 **Rejected**: Doesn't align with vendor-neutral, portable approach
 
 ### Custom Instrumentation
+
 **Pros**: Full control, minimal dependencies
 **Cons**: High maintenance, no standardization, reinventing wheel
 **Rejected**: Doesn't scale across multiple templates and languages
 
 ### Cloud Provider Solutions
+
 **Pros**: Deep integration with cloud services, managed
 **Cons**: Cloud lock-in, limited portability
 **Rejected**: Limits multi-cloud support strategy
 
 ### Language-Specific Solutions
+
 **Pros**: Native idioms, optimized per language
 **Cons**: No consistency across templates, harder to correlate
 **Rejected**: Doesn't provide unified observability

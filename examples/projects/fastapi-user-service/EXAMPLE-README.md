@@ -49,6 +49,7 @@ python -m uvicorn acme_service.main:app --reload
 ```
 
 The service will be available at:
+
 - API: http://localhost:8000
 - Interactive API docs (Swagger UI): http://localhost:8000/docs
 - Alternative API docs (ReDoc): http://localhost:8000/redoc
@@ -84,15 +85,16 @@ curl -X POST http://localhost:8000/users \
 ```
 
 Response:
+
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "email": "john.doe@example.com",
-  "full_name": "John Doe",
-  "role": "user",
-  "is_active": true,
-  "created_at": "2024-01-15T10:30:00",
-  "updated_at": "2024-01-15T10:30:00"
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "email": "john.doe@example.com",
+    "full_name": "John Doe",
+    "role": "user",
+    "is_active": true,
+    "created_at": "2024-01-15T10:30:00",
+    "updated_at": "2024-01-15T10:30:00"
 }
 ```
 
@@ -152,24 +154,24 @@ fastapi-user-service/
 ### Key Components
 
 1. **Models** (`models.py`):
-   - `User`: Base user model with validation
-   - `UserCreate`: For creating new users
-   - `UserUpdate`: For updating existing users
-   - `UserInDB`: User model as stored in database
+    - `User`: Base user model with validation
+    - `UserCreate`: For creating new users
+    - `UserUpdate`: For updating existing users
+    - `UserInDB`: User model as stored in database
 
 2. **Database** (`database.py`):
-   - In-memory database for demonstration
-   - Would be replaced with SQLAlchemy/PostgreSQL in production
+    - In-memory database for demonstration
+    - Would be replaced with SQLAlchemy/PostgreSQL in production
 
 3. **Security** (`security.py`):
-   - Password hashing with bcrypt
-   - JWT token creation and validation
-   - Ready for authentication implementation
+    - Password hashing with bcrypt
+    - JWT token creation and validation
+    - Ready for authentication implementation
 
 4. **API** (`main.py`):
-   - FastAPI application with all endpoints
-   - CORS middleware configured
-   - OpenAPI documentation enabled
+    - FastAPI application with all endpoints
+    - CORS middleware configured
+    - OpenAPI documentation enabled
 
 ## Development
 
@@ -228,12 +230,14 @@ Test coverage: **>80%** (enforced in CI)
 Automated workflows included:
 
 ### CI Pipeline (`.github/workflows/ci.yml`)
+
 - ✅ Run tests on Python 3.11 and 3.12
 - ✅ Check code coverage (≥80%)
 - ✅ Run linters (black, ruff, mypy)
 - ✅ Validate pre-commit hooks
 
 ### Security Pipeline (`.github/workflows/security.yml`)
+
 - ✅ CodeQL static analysis
 - ✅ Secret scanning with Gitleaks
 - ✅ Dependency scanning with Dependabot
@@ -250,41 +254,35 @@ Automated workflows included:
 ✅ **Health Checks**: Liveness and readiness endpoints  
 ✅ **API Documentation**: Automatic OpenAPI/Swagger docs  
 ✅ **Testing**: Comprehensive test suite with >80% coverage  
-✅ **CI/CD**: Automated testing and security scanning  
+✅ **CI/CD**: Automated testing and security scanning
 
 ### Production Enhancements Needed
 
 When deploying to production, consider adding:
 
 - [ ] **Real Database**: Replace in-memory DB with PostgreSQL/MySQL
-  - Use SQLAlchemy ORM
-  - Add database migrations with Alembic
-  
+    - Use SQLAlchemy ORM
+    - Add database migrations with Alembic
 - [ ] **Authentication**: Implement JWT-based auth
-  - Add login endpoint
-  - Implement OAuth2 password flow
-  - Add protected endpoints with dependencies
-  
+    - Add login endpoint
+    - Implement OAuth2 password flow
+    - Add protected endpoints with dependencies
 - [ ] **Rate Limiting**: Protect against abuse
-  - Use slowapi or similar
-  
+    - Use slowapi or similar
 - [ ] **Caching**: Improve performance
-  - Redis for session storage
-  - Cache frequently accessed data
-  
+    - Redis for session storage
+    - Cache frequently accessed data
 - [ ] **Monitoring**: Production observability
-  - OpenTelemetry instrumentation
-  - Prometheus metrics
-  - Distributed tracing
-  
+    - OpenTelemetry instrumentation
+    - Prometheus metrics
+    - Distributed tracing
 - [ ] **Configuration**: Environment-based config
-  - Use pydantic-settings
-  - Secrets management (AWS Secrets Manager, HashiCorp Vault)
-  
+    - Use pydantic-settings
+    - Secrets management (AWS Secrets Manager, HashiCorp Vault)
 - [ ] **Deployment**: Container and orchestration
-  - Dockerfile for containerization
-  - Kubernetes manifests
-  - Helm charts
+    - Dockerfile for containerization
+    - Kubernetes manifests
+    - Helm charts
 
 ## Environment Variables
 
@@ -323,30 +321,30 @@ CMD ["uvicorn", "acme_service.main:app", "--host", "0.0.0.0", "--port", "8000"]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fastapi-user-service
+    name: fastapi-user-service
 spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: fastapi-user-service
-  template:
-    metadata:
-      labels:
-        app: fastapi-user-service
-    spec:
-      containers:
-      - name: api
-        image: fastapi-user-service:0.1.0
-        ports:
-        - containerPort: 8000
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8000
+    replicas: 3
+    selector:
+        matchLabels:
+            app: fastapi-user-service
+    template:
+        metadata:
+            labels:
+                app: fastapi-user-service
+        spec:
+            containers:
+                - name: api
+                  image: fastapi-user-service:0.1.0
+                  ports:
+                      - containerPort: 8000
+                  livenessProbe:
+                      httpGet:
+                          path: /health
+                          port: 8000
+                  readinessProbe:
+                      httpGet:
+                          path: /ready
+                          port: 8000
 ```
 
 ## Related Resources

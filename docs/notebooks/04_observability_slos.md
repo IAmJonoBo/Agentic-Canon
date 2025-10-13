@@ -14,6 +14,7 @@ kernelspec:
 # 04 Observability & SLOs
 
 This notebook covers:
+
 - OpenTelemetry instrumentation
 - Traces, metrics, and logs
 - SLI/SLO definitions
@@ -48,6 +49,7 @@ for component, desc in otel_components.items():
 ## The Three Pillars of Observability
 
 ### 1. Traces
+
 Track requests across service boundaries
 
 ```{code-cell} ipython3
@@ -71,6 +73,7 @@ print(trace_example)
 ```
 
 ### 2. Metrics
+
 Quantitative measurements over time
 
 ```{code-cell} ipython3
@@ -93,6 +96,7 @@ print("  - Saturation (CPU, memory, disk)")
 ```
 
 ### 3. Logs
+
 Structured event records
 
 ```{code-cell} ipython3

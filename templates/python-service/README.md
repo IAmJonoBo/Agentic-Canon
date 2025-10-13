@@ -54,25 +54,25 @@ agentic-canon init
 
 ### Required Parameters
 
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| `project_name` | Human-readable project name | "Acme Service" |
-| `project_slug` | URL-friendly name (kebab-case) | "acme-service" |
-| `project_description` | Short description | "A Python service with best practices" |
-| `author_name` | Your name | "Jane Doe" |
-| `author_email` | Your email | "jane@example.com" |
+| Parameter             | Description                    | Example                                |
+| --------------------- | ------------------------------ | -------------------------------------- |
+| `project_name`        | Human-readable project name    | "Acme Service"                         |
+| `project_slug`        | URL-friendly name (kebab-case) | "acme-service"                         |
+| `project_description` | Short description              | "A Python service with best practices" |
+| `author_name`         | Your name                      | "Jane Doe"                             |
+| `author_email`        | Your email                     | "jane@example.com"                     |
 
 ### Optional Parameters
 
-| Parameter | Options | Default | Description |
-|-----------|---------|---------|-------------|
-| `license` | Apache-2.0, MIT, Proprietary | Apache-2.0 | License type |
-| `python_version` | 3.11, 3.12 | 3.11 | Minimum Python version |
-| `include_jupyter_book` | yes, no | yes | Include documentation site |
-| `enable_security_gates` | yes, no | yes | Enable security scanning |
-| `enable_sbom_signing` | yes, no | yes | Enable SBOM + signing |
-| `enable_contract_tests` | yes, no | no | Enable API contract tests |
-| `ci_provider` | github, gitlab | github | CI/CD platform |
+| Parameter               | Options                      | Default    | Description                |
+| ----------------------- | ---------------------------- | ---------- | -------------------------- |
+| `license`               | Apache-2.0, MIT, Proprietary | Apache-2.0 | License type               |
+| `python_version`        | 3.11, 3.12                   | 3.11       | Minimum Python version     |
+| `include_jupyter_book`  | yes, no                      | yes        | Include documentation site |
+| `enable_security_gates` | yes, no                      | yes        | Enable security scanning   |
+| `enable_sbom_signing`   | yes, no                      | yes        | Enable SBOM + signing      |
+| `enable_contract_tests` | yes, no                      | no         | Enable API contract tests  |
+| `ci_provider`           | github, gitlab               | github     | CI/CD platform             |
 
 ## Generated Project Structure
 
@@ -166,6 +166,7 @@ code .
 ### GitHub Actions
 
 **ci.yml** - Main CI/CD Pipeline:
+
 - Lint and format checks
 - Unit tests with coverage
 - Type checking with mypy
@@ -173,6 +174,7 @@ code .
 - Artifact publishing
 
 **security.yml** - Security Scanning:
+
 - CodeQL (SAST)
 - Semgrep (pattern-based)
 - Gitleaks (secrets)
@@ -182,6 +184,7 @@ code .
 - Artifact signing (optional)
 
 **docs.yml** - Documentation:
+
 - Jupyter Book build
 - GitHub Pages deployment
 - Automated on commits to main
@@ -189,6 +192,7 @@ code .
 ### GitLab CI
 
 Similar pipeline with GitLab CI/CD:
+
 - Parallel job execution
 - Docker-in-Docker support
 - GitLab Pages deployment
@@ -351,12 +355,14 @@ EOF
 ### Common Issues
 
 **Import errors:**
+
 ```bash
 # Ensure package is installed in editable mode
 pip install -e .
 ```
 
 **Pre-commit hooks failing:**
+
 ```bash
 # Update hooks
 pre-commit autoupdate
@@ -366,6 +372,7 @@ pre-commit run --all-files
 ```
 
 **Coverage below threshold:**
+
 ```bash
 # Check coverage report
 pytest --cov=src --cov-report=html
@@ -376,6 +383,7 @@ pytest --cov=src --cov-report=term-missing
 ```
 
 **Documentation build fails:**
+
 ```bash
 # Clean and rebuild
 jupyter-book clean docs/
@@ -403,6 +411,7 @@ This template implements:
 ## Contributing
 
 To improve this template:
+
 1. Test with real projects
 2. Report issues or edge cases
 3. Suggest new features

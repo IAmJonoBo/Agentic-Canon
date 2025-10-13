@@ -7,18 +7,21 @@ This runbook provides guidelines for AI agents and automation systems to interac
 ## Agent Capabilities Required
 
 ### Level 1: Basic Agent
+
 - Execute commands via shell
 - Read and parse files (JSON, YAML, Markdown)
 - Make HTTP requests
 - Interpret exit codes and output
 
-### Level 2: Intermediate Agent  
+### Level 2: Intermediate Agent
+
 - Interact with Git and GitHub
 - Parse logs and metrics
 - Make decisions based on conditions
 - Handle errors and retries
 
 ### Level 3: Advanced Agent
+
 - Multi-step reasoning and planning
 - Context awareness across operations
 - Learn from outcomes
@@ -62,10 +65,7 @@ All Agentic Canon projects include machine-readable metadata:
   },
   "ci_cd": {
     "provider": "github",
-    "workflows": [
-      ".github/workflows/ci.yml",
-      ".github/workflows/security.yml"
-    ],
+    "workflows": [".github/workflows/ci.yml", ".github/workflows/security.yml"],
     "required_secrets": ["DEPLOY_TOKEN"],
     "optional_secrets": ["SLACK_WEBHOOK", "CODECOV_TOKEN"]
   },
@@ -157,16 +157,16 @@ graph TD
 def health_check_and_recover():
     """Automated health check and recovery."""
     max_retries = 3
-    
+
     for attempt in range(max_retries):
         health = check_health()
-        
+
         if health["status"] == "healthy":
             log("✓ System healthy")
             return True
-        
+
         log(f"⚠ System unhealthy: {health['reason']}")
-        
+
         # Decision tree
         if was_recent_deployment():
             log("→ Recent deployment detected, rolling back")
@@ -177,9 +177,9 @@ def health_check_and_recover():
         else:
             log("→ Restarting service")
             restart_service()
-        
+
         wait(30)  # Wait for recovery
-    
+
     log("✗ Recovery failed, escalating to human")
     create_incident(severity="SEV2", description="Automated recovery failed")
     return False
@@ -211,28 +211,28 @@ steps:
     run: |
       # Install dependencies based on project type
       ./scripts/install-dependencies.sh
-  
+
   - name: Lint
     run: |
       ./scripts/lint.sh
     continue_on_error: true
-    
+
   - name: Unit Tests
     run: |
       ./scripts/test-unit.sh
-    
+
   - name: Integration Tests
     run: |
       ./scripts/test-integration.sh
-    
+
   - name: Security Scan
     run: |
       ./scripts/security-scan.sh
-    
+
   - name: Generate Report
     run: |
       ./scripts/generate-test-report.sh
-    
+
   - name: Decide
     run: |
       if all_tests_passed; then
@@ -253,7 +253,7 @@ def run_automated_tests(project_path: str) -> dict:
         "failed": [],
         "warnings": []
     }
-    
+
     steps = [
         ("install", "Install dependencies"),
         ("lint", "Linting"),
@@ -261,12 +261,12 @@ def run_automated_tests(project_path: str) -> dict:
         ("integration_test", "Integration tests"),
         ("security_scan", "Security scan")
     ]
-    
+
     for step_id, step_name in steps:
         log(f"→ Running {step_name}...")
-        
+
         result = execute_step(project_path, step_id)
-        
+
         if result["exit_code"] == 0:
             results["passed"].append(step_name)
             log(f"  ✓ {step_name} passed")
@@ -276,14 +276,14 @@ def run_automated_tests(project_path: str) -> dict:
                 "error": result["output"]
             })
             log(f"  ✗ {step_name} failed: {result['output']}")
-            
+
             if step_id in ["unit_test", "security_scan"]:
                 # Critical failures - stop
                 break
-    
+
     # Generate report
     generate_test_report(results)
-    
+
     # Decision
     if len(results["failed"]) == 0:
         approve_deployment()
@@ -321,37 +321,37 @@ def run_automated_tests(project_path: str) -> dict:
 def automated_dependency_updates():
     """Automate dependency updates with testing."""
     updates = check_for_updates()
-    
+
     results = {
         "successful": [],
         "failed": [],
         "skipped": []
     }
-    
+
     for update in updates:
         log(f"→ Processing {update['package']} {update['current']} → {update['latest']}")
-        
+
         # Safety checks
         if update["is_major_version"]:
             log(f"  ⚠ Major version update, requires manual review")
             results["skipped"].append(update)
             continue
-        
+
         if update["has_breaking_changes"]:
             log(f"  ⚠ Breaking changes detected, requires manual review")
             results["skipped"].append(update)
             continue
-        
+
         # Create branch
         branch_name = f"deps/update-{update['package']}-{update['latest']}"
         create_branch(branch_name)
-        
+
         # Update dependency
         update_dependency_file(update)
-        
+
         # Run tests
         test_result = run_tests()
-        
+
         if test_result["passed"]:
             # Create PR
             pr = create_pr(
@@ -371,14 +371,14 @@ def automated_dependency_updates():
                 "reason": test_result["failures"]
             })
             log(f"  ✗ Tests failed, skipping update")
-            
+
             # Cleanup
             delete_branch(branch_name)
-    
+
     # Report
     generate_update_report(results)
     notify_team(results)
-    
+
     return results
 ```
 
@@ -393,7 +393,7 @@ def continuous_security_monitoring():
     """Continuous security monitoring and auto-remediation."""
     while True:
         log("→ Running security scans...")
-        
+
         # 1. Secret scanning
         secrets = scan_for_secrets()
         if secrets:
@@ -401,7 +401,7 @@ def continuous_security_monitoring():
                 alert_security_team(secret)
                 if secret["is_revokable"]:
                     revoke_secret(secret)
-        
+
         # 2. Dependency vulnerabilities
         vulns = scan_dependencies()
         for vuln in vulns:
@@ -412,25 +412,25 @@ def continuous_security_monitoring():
                     apply_security_patch(vuln)
                 else:
                     create_security_issue(vuln)
-        
+
         # 3. Container scanning
         if has_containers():
             container_vulns = scan_containers()
             if container_vulns:
                 rebuild_containers()
-        
+
         # 4. IaC security
         if has_infrastructure_code():
             iac_issues = scan_iac()
             if iac_issues:
                 create_iac_remediation_pr(iac_issues)
-        
+
         # 5. SBOM validation
         sbom = generate_sbom()
         validate_sbom_compliance(sbom)
-        
+
         log("✓ Security scan complete")
-        
+
         # Wait before next scan (e.g., hourly)
         sleep(3600)
 ```
@@ -444,37 +444,37 @@ def continuous_security_monitoring():
 ```python
 def automated_performance_optimization():
     """Identify and optimize performance issues."""
-    
+
     # 1. Collect metrics
     metrics = collect_performance_metrics(duration="24h")
-    
+
     # 2. Analyze patterns
     issues = analyze_metrics(metrics)
-    
+
     optimizations = []
-    
+
     for issue in issues:
         log(f"→ Detected issue: {issue['description']}")
-        
+
         if issue["type"] == "slow_query":
             # Suggest index
             optimization = suggest_database_index(issue)
             optimizations.append(optimization)
-            
+
         elif issue["type"] == "high_memory":
             # Suggest caching
             optimization = suggest_caching_strategy(issue)
             optimizations.append(optimization)
-            
+
         elif issue["type"] == "high_latency":
             # Suggest async processing
             optimization = suggest_async_processing(issue)
             optimizations.append(optimization)
-    
+
     # 3. Create optimization PR
     if optimizations:
         create_optimization_pr(optimizations)
-    
+
     return optimizations
 ```
 
@@ -530,25 +530,25 @@ class EscalationLevel:
 
 def determine_escalation_level(issue: dict) -> EscalationLevel:
     """Determine appropriate escalation level."""
-    
+
     # Immediate escalation
     if issue["severity"] == "CRITICAL":
         return EscalationLevel.IMMEDIATE_ESCALATION
-    
+
     if issue["affects_production"]:
         return EscalationLevel.IMMEDIATE_ESCALATION
-    
+
     # Human review required
     if issue["is_security_related"]:
         return EscalationLevel.HUMAN_REVIEW
-    
+
     if issue["requires_breaking_change"]:
         return EscalationLevel.HUMAN_REVIEW
-    
+
     # Auto with notification
     if issue["severity"] == "HIGH":
         return EscalationLevel.AUTO_WITH_NOTIFY
-    
+
     # Fully automated
     return EscalationLevel.AUTO_HANDLE
 ```
@@ -612,7 +612,7 @@ def determine_escalation_level(issue: dict) -> EscalationLevel:
 ```python
 class AgentRateLimiter:
     """Prevent runaway automation."""
-    
+
     def __init__(self):
         self.action_counts = {}
         self.limits = {
@@ -620,26 +620,26 @@ class AgentRateLimiter:
             "rollback": {"max": 3, "window": 3600},    # 3 per hour
             "scale": {"max": 10, "window": 3600},      # 10 per hour
         }
-    
+
     def can_perform_action(self, action: str) -> bool:
         """Check if action is within rate limits."""
         now = time.time()
-        
+
         if action not in self.action_counts:
             self.action_counts[action] = []
-        
+
         # Remove old actions outside window
         limit = self.limits[action]
         self.action_counts[action] = [
             t for t in self.action_counts[action]
             if now - t < limit["window"]
         ]
-        
+
         # Check if under limit
         if len(self.action_counts[action]) < limit["max"]:
             self.action_counts[action].append(now)
             return True
-        
+
         return False
 ```
 
@@ -648,10 +648,10 @@ class AgentRateLimiter:
 ```python
 def execute_with_safety(action: callable, dry_run: bool = True):
     """Execute action with safety checks."""
-    
+
     # Always log what would happen
     log(f"[{'DRY RUN' if dry_run else 'EXECUTE'}] {action.__name__}")
-    
+
     if dry_run:
         # Simulate action
         log(f"  → Would execute: {action}")
@@ -740,4 +740,4 @@ Structured logging format:
 
 ---
 
-*For agent development support, see CONTRIBUTING.md or open a GitHub discussion.*
+_For agent development support, see CONTRIBUTING.md or open a GitHub discussion._

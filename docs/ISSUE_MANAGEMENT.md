@@ -15,15 +15,18 @@ This guide documents best practices for issue creation, categorization, and spri
 ## Issue Types
 
 ### Bug Report
+
 **Purpose:** Report defects or unexpected behavior
 
 **When to use:**
+
 - Something is broken or not working as expected
 - Error messages or crashes
 - Data corruption or loss
 - Performance degradation
 
 **Key elements:**
+
 - Clear description
 - Steps to reproduce
 - Expected vs actual behavior
@@ -31,14 +34,17 @@ This guide documents best practices for issue creation, categorization, and spri
 - Priority level
 
 ### Feature Request
+
 **Purpose:** Propose new functionality or enhancements
 
 **When to use:**
+
 - Suggesting new features
 - Proposing improvements to existing features
 - User experience enhancements
 
 **Key elements:**
+
 - Problem statement (what pain point?)
 - Proposed solution
 - Alternative solutions considered
@@ -46,9 +52,11 @@ This guide documents best practices for issue creation, categorization, and spri
 - Acceptance criteria
 
 ### Task
+
 **Purpose:** Track concrete work items
 
 **When to use:**
+
 - Implementation work
 - Refactoring
 - Documentation updates
@@ -56,6 +64,7 @@ This guide documents best practices for issue creation, categorization, and spri
 - Technical debt items
 
 **Key elements:**
+
 - Clear description of work
 - Context and motivation
 - Acceptance criteria
@@ -63,15 +72,18 @@ This guide documents best practices for issue creation, categorization, and spri
 - Effort estimate
 
 ### ADR Proposal
+
 **Purpose:** Propose architectural decisions
 
 **When to use:**
+
 - Significant architectural changes
 - Technology choices
 - Design patterns
 - Infrastructure decisions
 
 **Key elements:**
+
 - Decision title and context
 - Problem statement
 - Proposed solution
@@ -92,6 +104,7 @@ All issue templates are in `.github/ISSUE_TEMPLATE/`:
 ### Template Features
 
 All templates include:
+
 - ✅ Priority selection
 - ✅ Component/area categorization
 - ✅ Effort estimation (for tasks)
@@ -157,6 +170,7 @@ The `issue-triage.yml` workflow automatically adds labels based on:
 ### Manual Labeling
 
 Add labels manually for:
+
 - Sprint/milestone assignments
 - Effort estimates (if using labels)
 - Additional categorization
@@ -198,6 +212,7 @@ Sprint Cycle (2 weeks recommended)
 #### 2. Sprint Planning (Day 1)
 
 **Agenda:**
+
 1. Review sprint goal
 2. Review velocity from last sprint
 3. Select issues for sprint
@@ -205,12 +220,14 @@ Sprint Cycle (2 weeks recommended)
 5. Set milestones
 
 **Selection criteria:**
+
 - Priority (high → low)
 - Dependencies (unblocked first)
 - Effort vs. capacity
 - Sprint goal alignment
 
 **Actions:**
+
 ```bash
 # For each selected issue:
 1. Add sprint milestone
@@ -222,12 +239,14 @@ Sprint Cycle (2 weeks recommended)
 #### 3. During Sprint
 
 **Daily:**
+
 - Update issue progress
 - Comment on blockers
 - Link related PRs
 - Update labels
 
 **Mid-sprint (Day 5):**
+
 - Review progress
 - Adjust scope if needed
 - Escalate blockers
@@ -236,6 +255,7 @@ Sprint Cycle (2 weeks recommended)
 #### 4. Sprint Review (Day 10)
 
 **Agenda:**
+
 1. Demo completed work
 2. Review metrics
 3. Update TASKS.md
@@ -243,6 +263,7 @@ Sprint Cycle (2 weeks recommended)
 5. Move incomplete issues to backlog
 
 **Metrics to review:**
+
 - Planned vs. completed
 - Velocity (story points/tasks)
 - Cycle time
@@ -252,6 +273,7 @@ Sprint Cycle (2 weeks recommended)
 #### 5. Retrospective
 
 **Topics:**
+
 - What went well?
 - What could improve?
 - Action items
@@ -322,6 +344,7 @@ Auto-triaged (issue-triage.yml)
 ### 2. Triage
 
 **Maintainer reviews:**
+
 - [ ] Is this a valid issue?
 - [ ] Is the information complete?
 - [ ] What's the priority?
@@ -330,6 +353,7 @@ Auto-triaged (issue-triage.yml)
 - [ ] Assign to milestone?
 
 **Actions:**
+
 - Update labels
 - Add to milestone
 - Request more info (if needed)
@@ -339,6 +363,7 @@ Auto-triaged (issue-triage.yml)
 ### 3. Planning
 
 **Add to sprint:**
+
 - Assign to team member
 - Add to project board
 - Link related issues/ADRs
@@ -348,6 +373,7 @@ Auto-triaged (issue-triage.yml)
 ### 4. Implementation
 
 **Developer actions:**
+
 - Add `in-progress` label
 - Comment on approach
 - Create branch
@@ -357,6 +383,7 @@ Auto-triaged (issue-triage.yml)
 ### 5. Review
 
 **Reviewer actions:**
+
 - Review code/changes
 - Test changes
 - Approve or request changes
@@ -365,6 +392,7 @@ Auto-triaged (issue-triage.yml)
 ### 6. Completion
 
 **Final steps:**
+
 - Merge PR
 - Close issue
 - Update TASKS.md (automated)
@@ -374,6 +402,7 @@ Auto-triaged (issue-triage.yml)
 ### 7. Follow-up
 
 **After sprint:**
+
 - Verify in production
 - Monitor for issues
 - Document learnings
@@ -384,6 +413,7 @@ Auto-triaged (issue-triage.yml)
 ### Workflows
 
 #### 1. Issue Triage (`issue-triage.yml`)
+
 - **Trigger:** Issue opened
 - **Actions:**
   - Add labels based on content
@@ -391,6 +421,7 @@ Auto-triaged (issue-triage.yml)
   - Notify maintainers (if critical)
 
 #### 2. Tasklist Scan (`tasklist-scan.yml`)
+
 - **Trigger:** Push to TASKS.md
 - **Actions:**
   - Create issues for unchecked items
@@ -398,6 +429,7 @@ Auto-triaged (issue-triage.yml)
   - Avoid duplicates
 
 #### 3. Tasks and ADR Sync (`tasks-adr-sync.yml`)
+
 - **Trigger:** Weekly schedule
 - **Actions:**
   - Mark completed issues as checked
@@ -405,6 +437,7 @@ Auto-triaged (issue-triage.yml)
   - Generate reports
 
 #### 4. Stale Issues (`stale.yml`)
+
 - **Trigger:** Daily schedule
 - **Actions:**
   - Mark inactive issues as stale
@@ -412,6 +445,7 @@ Auto-triaged (issue-triage.yml)
   - Exempt pinned/critical
 
 #### 5. PR Review Followup (`pr-review-followup.yml`)
+
 - **Trigger:** PR review submitted
 - **Actions:**
   - Create issues from "Follow-up:" comments
@@ -435,6 +469,7 @@ gh label create "component:templates" --color "c2e0c6"
 ### ✅ Do
 
 **Creating Issues:**
+
 - Use appropriate template
 - Provide clear, complete information
 - Add screenshots/logs when relevant
@@ -443,6 +478,7 @@ gh label create "component:templates" --color "c2e0c6"
 - Set priority honestly
 
 **Managing Issues:**
+
 - Triage new issues within 2 days
 - Update progress regularly
 - Close issues when done
@@ -451,6 +487,7 @@ gh label create "component:templates" --color "c2e0c6"
 - Link PRs to issues
 
 **Sprint Planning:**
+
 - Set realistic sprint goals
 - Balance bug fixes and features
 - Consider dependencies
@@ -460,6 +497,7 @@ gh label create "component:templates" --color "c2e0c6"
 ### ❌ Don't
 
 **Avoid:**
+
 - Creating issues without templates
 - Leaving issues in triage limbo
 - Assigning issues without asking
@@ -471,6 +509,7 @@ gh label create "component:templates" --color "c2e0c6"
 ### Issue Hygiene
 
 **Weekly:**
+
 - [ ] Triage new issues
 - [ ] Update in-progress issues
 - [ ] Check for stale issues
@@ -478,12 +517,14 @@ gh label create "component:templates" --color "c2e0c6"
 - [ ] Review blocked issues
 
 **Monthly:**
+
 - [ ] Review label usage
 - [ ] Clean up old issues
 - [ ] Update templates if needed
 - [ ] Review automation
 
 **Quarterly:**
+
 - [ ] Analyze sprint metrics
 - [ ] Optimize workflows
 - [ ] Update documentation

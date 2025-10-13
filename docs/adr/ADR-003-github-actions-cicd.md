@@ -7,6 +7,7 @@ Accepted
 ## Context
 
 We need a CI/CD platform for:
+
 1. Running tests on notebooks and templates
 2. Building and deploying Jupyter Book documentation
 3. Scheduled notebook execution
@@ -15,6 +16,7 @@ We need a CI/CD platform for:
 6. Artifact generation and signing (future)
 
 Several CI/CD platforms were considered:
+
 - GitHub Actions
 - GitLab CI
 - Azure Pipelines
@@ -23,6 +25,7 @@ Several CI/CD platforms were considered:
 - Travis CI
 
 Requirements:
+
 - Native GitHub integration
 - Free tier for open source
 - YAML configuration
@@ -86,6 +89,7 @@ We will use **GitHub Actions** as the primary CI/CD platform for Agentic Canon, 
 ```
 
 Each workflow is:
+
 - **Focused**: One responsibility per workflow
 - **Testable**: Can be triggered manually
 - **Documented**: Inline comments explain steps
@@ -160,6 +164,7 @@ Each workflow is:
 ### Best Practices Implemented
 
 1. **Caching**: Cache pip dependencies
+
    ```yaml
    - uses: actions/cache@v3
      with:
@@ -168,13 +173,15 @@ Each workflow is:
    ```
 
 2. **Matrix Builds**: Test multiple Python versions
+
    ```yaml
    strategy:
      matrix:
-       python-version: ['3.11', '3.12', '3.13']
+       python-version: ["3.11", "3.12", "3.13"]
    ```
 
 3. **Concurrency**: Prevent duplicate runs
+
    ```yaml
    concurrency:
      group: ${{ github.workflow }}-${{ github.ref }}
@@ -194,12 +201,14 @@ While GitHub Actions is primary, we provide examples for:
 ### Azure Pipelines
 
 Located in `examples/azure-pipelines/`:
+
 - Python service pipeline
 - Node.js service pipeline
 - Documentation on usage
 - Migration guide from GitHub Actions
 
 Benefits:
+
 - Organizations using Azure DevOps
 - Integration with Azure services
 - Enterprise features
@@ -207,6 +216,7 @@ Benefits:
 ### Future Platforms
 
 Planned examples:
+
 - GitLab CI (for GitLab users)
 - CircleCI (for specific use cases)
 - Jenkins (for on-premise)
@@ -216,11 +226,13 @@ Planned examples:
 ### 1. GitLab CI
 
 **Pros**:
+
 - Integrated with GitLab
 - Good feature set
 - Free for open source
 
 **Cons**:
+
 - Requires GitLab account
 - Less relevant for GitHub projects
 - Smaller ecosystem
@@ -228,11 +240,13 @@ Planned examples:
 ### 2. Azure Pipelines
 
 **Pros**:
+
 - Enterprise features
 - Azure integration
 - Free for open source
 
 **Cons**:
+
 - External service
 - Setup complexity
 - Less GitHub integration
@@ -240,11 +254,13 @@ Planned examples:
 ### 3. CircleCI
 
 **Pros**:
+
 - Good performance
 - Nice UI
 - Good caching
 
 **Cons**:
+
 - Cost for private repos
 - External service
 - Setup required
@@ -252,11 +268,13 @@ Planned examples:
 ### 4. Jenkins
 
 **Pros**:
+
 - Self-hosted
 - Very flexible
 - Large ecosystem
 
 **Cons**:
+
 - Maintenance burden
 - Complex setup
 - Resource intensive
@@ -264,10 +282,12 @@ Planned examples:
 ### 5. Travis CI
 
 **Pros**:
+
 - Simple setup
 - Good for open source
 
 **Cons**:
+
 - Pricing changes
 - Less feature-rich
 - Declining popularity
@@ -290,6 +310,7 @@ Planned examples:
 ## Future Enhancements
 
 Planned additions:
+
 - Security scanning workflows (CodeQL, Semgrep)
 - SBOM generation workflows
 - Artifact signing with Sigstore

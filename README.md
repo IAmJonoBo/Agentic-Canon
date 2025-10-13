@@ -280,7 +280,7 @@ See [control-traceability-matrix.json](control-traceability-matrix.json) for com
 
 ## Features
 
-### Security by Construction
+### Security by Construction (Deep Dive)
 
 - 🔒 **Secret Scanning**: Gitleaks/TruffleHog on every commit
 - 🛡️ **SAST/DAST**: CodeQL, Semgrep for code analysis; OWASP ZAP for runtime testing
@@ -599,4 +599,4 @@ This project is inspired by and builds upon:
 **Last Updated:** 2025-10-11  
 **Maintained By:** Jonathan Boardman (@IAmJonoBo)
 
-_Built with ❤️ for developers, platform teams, and AI agents_
+Built with ❤️ for developers, platform teams, and AI agents

@@ -44,6 +44,7 @@ The `templates` section catalogs all Cookiecutter templates:
 ```
 
 **Available Templates:**
+
 - `python-service` - Python/FastAPI microservice
 - `node-service` - Node.js/Express API service
 - `react-webapp` - React web application with Vite and Storybook
@@ -89,6 +90,7 @@ Information about the `agentic-canon` CLI tool and its commands.
 ### Distribution
 
 Methods for accessing and using templates:
+
 - Cookiecutter
 - tiged
 - Git sparse-checkout
@@ -126,6 +128,7 @@ cat catalog.json | jq '.compliance.standards'
 The catalog is designed for programmatic consumption:
 
 **Python Example:**
+
 ```python
 import json
 import requests
@@ -152,26 +155,25 @@ print(f"Features: {', '.join(template['features'])}")
 ```
 
 **JavaScript Example:**
+
 ```javascript
-const fs = require('fs');
+const fs = require("fs");
 
 // Load catalog
-const catalog = JSON.parse(fs.readFileSync('catalog.json', 'utf8'));
+const catalog = JSON.parse(fs.readFileSync("catalog.json", "utf8"));
 
 // Find templates by language
 function findTemplatesByLanguage(language) {
-  return catalog.templates.cookiecutter.filter(
-    t => t.language === language
-  );
+  return catalog.templates.cookiecutter.filter((t) => t.language === language);
 }
 
 // Get Python templates
-const pythonTemplates = findTemplatesByLanguage('python');
+const pythonTemplates = findTemplatesByLanguage("python");
 console.log(`Found ${pythonTemplates.length} Python templates`);
 
 // Get all available workflows
-const workflows = catalog.assets.workflows['github-actions'];
-console.log(`Available workflows: ${workflows.map(w => w.id).join(', ')}`);
+const workflows = catalog.assets.workflows["github-actions"];
+console.log(`Available workflows: ${workflows.map((w) => w.id).join(", ")}`);
 ```
 
 ### For MCP Servers
@@ -205,32 +207,32 @@ The catalog follows a JSON schema for validation. Key fields:
 
 ### Template Object
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | Unique template identifier |
-| `name` | string | Human-readable name |
-| `description` | string | Template description |
-| `path` | string | Path to template in repository |
-| `language` | string | Primary programming language |
-| `framework` | string | Main framework used |
-| `version` | string | Template version |
-| `tags` | array | Tags for discovery |
-| `features` | array | List of features |
-| `requirements` | object | System requirements |
-| `example` | string | Path to example project |
-| `usage` | object | Usage commands for different methods |
-| `documentation` | array | Paths to documentation |
-| `compliance` | object | Standards compliance info |
+| Field           | Type   | Description                          |
+| --------------- | ------ | ------------------------------------ |
+| `id`            | string | Unique template identifier           |
+| `name`          | string | Human-readable name                  |
+| `description`   | string | Template description                 |
+| `path`          | string | Path to template in repository       |
+| `language`      | string | Primary programming language         |
+| `framework`     | string | Main framework used                  |
+| `version`       | string | Template version                     |
+| `tags`          | array  | Tags for discovery                   |
+| `features`      | array  | List of features                     |
+| `requirements`  | object | System requirements                  |
+| `example`       | string | Path to example project              |
+| `usage`         | object | Usage commands for different methods |
+| `documentation` | array  | Paths to documentation               |
+| `compliance`    | object | Standards compliance info            |
 
 ### Asset Object
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | Unique asset identifier |
-| `name` | string | Human-readable name |
-| `description` | string | Asset description |
-| `path` | string | Path to asset in repository |
-| `tags` | array | Tags for discovery |
+| Field         | Type   | Description                 |
+| ------------- | ------ | --------------------------- |
+| `id`          | string | Unique asset identifier     |
+| `name`        | string | Human-readable name         |
+| `description` | string | Asset description           |
+| `path`        | string | Path to asset in repository |
+| `tags`        | array  | Tags for discovery          |
 
 ## Maintenance
 
@@ -282,7 +284,7 @@ def load_catalog():
 def list_templates():
     catalog = load_catalog()
     templates = catalog['templates']['cookiecutter']
-    
+
     print("Available templates:\n")
     for template in templates:
         print(f"  {template['id']}: {template['name']}")
@@ -294,7 +296,7 @@ def get_template_info(template_id):
     catalog = load_catalog()
     templates = catalog['templates']['cookiecutter']
     template = next((t for t in templates if t['id'] == template_id), None)
-    
+
     if template:
         return template
     else:
@@ -306,7 +308,7 @@ def get_template_info(template_id):
 ```javascript
 // Fetch and display catalog
 async function loadCatalog() {
-  const response = await fetch('/catalog.json');
+  const response = await fetch("/catalog.json");
   const catalog = await response.json();
   return catalog;
 }
@@ -314,16 +316,16 @@ async function loadCatalog() {
 async function renderTemplates() {
   const catalog = await loadCatalog();
   const templates = catalog.templates.cookiecutter;
-  
-  const container = document.getElementById('templates');
-  templates.forEach(template => {
-    const card = document.createElement('div');
-    card.className = 'template-card';
+
+  const container = document.getElementById("templates");
+  templates.forEach((template) => {
+    const card = document.createElement("div");
+    card.className = "template-card";
     card.innerHTML = `
       <h3>${template.name}</h3>
       <p>${template.description}</p>
       <div class="tags">
-        ${template.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+        ${template.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}
       </div>
       <button onclick="generateFromTemplate('${template.id}')">
         Use Template

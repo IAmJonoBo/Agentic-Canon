@@ -13,6 +13,7 @@ A Python service with best practices
 - 📋 SBOM generation with CycloneDX
 - ✍️ Artifact signing with Sigstore/Cosign
 - 📚 Documentation with Jupyter Book
+
 ## Quick Start
 
 ### Installation
@@ -65,6 +66,7 @@ jupyter-book build docs
 ```
 
 View locally: Open `docs/_build/html/index.html` in your browser.
+
 ## Project Structure
 
 ```
@@ -103,6 +105,7 @@ Contributions are welcome! Please follow these steps:
 5. Open a Pull Request
 
 Please ensure:
+
 - Tests pass (`pytest`)
 - Code is formatted (`black`, `ruff`)
 - Type checks pass (`mypy`)

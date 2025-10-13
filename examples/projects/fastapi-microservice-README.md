@@ -5,6 +5,7 @@ This is a complete example of a production-ready FastAPI microservice generated 
 ## Overview
 
 A RESTful API service for managing a simple task/todo list with:
+
 - CRUD operations
 - Authentication (JWT)
 - OpenAPI documentation

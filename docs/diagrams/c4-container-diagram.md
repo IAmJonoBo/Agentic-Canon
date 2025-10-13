@@ -117,9 +117,11 @@ C4Container
 ### Agentic Canon System Containers
 
 #### 1. CLI Wizard
+
 **Technology**: Python with Click/Typer framework  
 **Purpose**: Interactive command-line interface for project generation  
 **Key Features**:
+
 - Step-by-step project configuration
 - Template selection wizard
 - Feature toggle interface
@@ -127,6 +129,7 @@ C4Container
 - Git repository initialization
 
 **Interfaces**:
+
 ```python
 # Command: agentic-canon init
 # Inputs: User responses to prompts
@@ -136,9 +139,11 @@ C4Container
 **Data Storage**: None (stateless)
 
 #### 2. Template Library
+
 **Technology**: Cookiecutter templates with Jinja2  
 **Purpose**: Core repository of project templates  
 **Structure**:
+
 ```
 templates/
 ├── python-service/     # FastAPI/Flask services
@@ -149,14 +154,17 @@ templates/
 ```
 
 **Each template includes**:
+
 - `cookiecutter.json` - Variables and defaults
 - `hooks/` - Pre/post generation scripts
 - `{{cookiecutter.project_slug}}/` - Template files
 
 #### 3. Documentation Notebooks
+
 **Technology**: Jupyter notebooks with Jupytext  
 **Purpose**: Executable guides and tutorials  
 **Contents**:
+
 - `01_bootstrap.ipynb` - Repository scaffolding
 - `02_security_supply_chain.ipynb` - Security practices
 - `03_contracts_and_tests.ipynb` - Testing strategies
@@ -166,9 +174,11 @@ templates/
 **Format**: MyST Markdown (version controlled) + Jupyter Notebook (executable)
 
 #### 4. CI/CD Workflows
+
 **Technology**: GitHub Actions YAML  
 **Purpose**: Reusable workflow templates  
 **Categories**:
+
 - Build and test pipelines
 - Security scanning workflows
 - Deployment workflows
@@ -178,9 +188,11 @@ templates/
 **Integration**: Copied into generated projects during template generation
 
 #### 5. Dashboard Templates
+
 **Technology**: Grafana JSON  
 **Purpose**: Pre-configured monitoring dashboards  
 **Dashboard Types**:
+
 - DORA metrics (deployment frequency, lead time, MTTR, change failure rate)
 - SPACE metrics (satisfaction, performance, activity, communication, efficiency)
 - Security metrics (vulnerabilities, scan results, SBOM status)
@@ -189,9 +201,11 @@ templates/
 **Usage**: Imported into Grafana instances
 
 #### 6. Template Tests
+
 **Technology**: pytest with pytest-cookies plugin  
 **Purpose**: Validate template rendering and correctness  
 **Test Coverage**:
+
 - Template renders successfully
 - Required files generated
 - Hooks execute correctly
@@ -203,14 +217,17 @@ templates/
 ### Generated Project Containers
 
 #### 1. Application Code
+
 **Technology**: Language/framework specific  
 **Supported Stacks**:
+
 - **Python**: FastAPI, Flask, Django
 - **Node.js**: Express, Fastify, Nest.js
 - **Go**: Standard library, Gin, Echo
 - **React**: Vite + TypeScript + SWC
 
 **Structure**:
+
 ```
 src/
 ├── main entry point
@@ -222,8 +239,10 @@ src/
 **Dependencies**: Managed via language package manager (pip, npm, go mod)
 
 #### 2. Tests
+
 **Technology**: Language-specific test frameworks  
 **Test Types**:
+
 - **Unit tests**: Individual function/component testing
 - **Integration tests**: API endpoint testing
 - **E2E tests**: Full user flow testing (for webapps)
@@ -232,14 +251,17 @@ src/
 **Coverage Target**: ≥ 80%
 
 **Frameworks**:
+
 - Python: pytest + pytest-cov
 - Node.js: Vitest or Jest
 - Go: go test + testify
 - React: Vitest + Testing Library + Playwright
 
 #### 3. CI/CD
+
 **Technology**: GitHub Actions  
 **Pipeline Stages**:
+
 1. **Build**: Compile/bundle application
 2. **Test**: Run test suite with coverage
 3. **Lint**: Code quality checks
@@ -251,8 +273,10 @@ src/
 **Triggers**: Push, pull request, schedule, manual
 
 #### 4. Security Scanning
+
 **Technology**: Multi-tool approach  
 **Tools**:
+
 - **CodeQL**: Static analysis (SAST)
 - **Gitleaks/TruffleHog**: Secret detection
 - **Trivy**: Container scanning
@@ -263,8 +287,10 @@ src/
 **Frequency**: On push, PR, and weekly schedule
 
 #### 5. Documentation
+
 **Technology**: Jupyter Book  
 **Contents**:
+
 - Getting started guide
 - API documentation
 - Architecture overview
@@ -308,23 +334,26 @@ src/
 ## Technology Stack Summary
 
 ### Core Technologies
-| Container | Primary Tech | Language | Purpose |
-|-----------|--------------|----------|---------|
-| CLI Wizard | Click/Typer | Python | User interaction |
-| Template Library | Cookiecutter | Jinja2 | Code generation |
-| Notebooks | Jupyter | Python | Documentation |
-| Workflows | GitHub Actions | YAML | CI/CD |
-| Tests | pytest-cookies | Python | Validation |
+
+| Container        | Primary Tech   | Language | Purpose          |
+| ---------------- | -------------- | -------- | ---------------- |
+| CLI Wizard       | Click/Typer    | Python   | User interaction |
+| Template Library | Cookiecutter   | Jinja2   | Code generation  |
+| Notebooks        | Jupyter        | Python   | Documentation    |
+| Workflows        | GitHub Actions | YAML     | CI/CD            |
+| Tests            | pytest-cookies | Python   | Validation       |
 
 ### Generated Project Technologies
-| Stack | Language | Framework | Testing | Build |
-|-------|----------|-----------|---------|-------|
-| Python Service | Python 3.11+ | FastAPI | pytest | pip/build |
-| Node Service | TypeScript | Express | Vitest | npm/esbuild |
-| React Webapp | TypeScript | React 18 | Vitest+Playwright | Vite |
-| Go Service | Go 1.22+ | Standard | go test | go build |
+
+| Stack          | Language     | Framework | Testing           | Build       |
+| -------------- | ------------ | --------- | ----------------- | ----------- |
+| Python Service | Python 3.11+ | FastAPI   | pytest            | pip/build   |
+| Node Service   | TypeScript   | Express   | Vitest            | npm/esbuild |
+| React Webapp   | TypeScript   | React 18  | Vitest+Playwright | Vite        |
+| Go Service     | Go 1.22+     | Standard  | go test           | go build    |
 
 ### Security Technologies
+
 - CodeQL (SAST)
 - Gitleaks/TruffleHog (secrets)
 - Trivy/Grype (containers)
@@ -332,6 +361,7 @@ src/
 - CycloneDX (SBOM)
 
 ### Observability Technologies
+
 - OpenTelemetry (instrumentation)
 - Prometheus (metrics)
 - Grafana (visualization)
@@ -341,16 +371,19 @@ src/
 ## Communication Patterns
 
 ### Synchronous
+
 - CLI → Template Library (Python API call)
 - Tests → Template Library (pytest execution)
 - CI/CD → Application Tests (process execution)
 
 ### Asynchronous
+
 - Application → Observability (OTLP protocol)
 - CI/CD → Security Scanning (workflow steps)
 - Documentation → GitHub Pages (deployment)
 
 ### File-based
+
 - Templates → Generated Files (Jinja2 rendering)
 - Dashboards → Grafana (JSON import)
 - Workflows → CI/CD (YAML configuration)
@@ -358,16 +391,19 @@ src/
 ## Deployment Architecture
 
 ### Template System
+
 - **Location**: GitHub repository
 - **Execution**: Local machine or CI runner
 - **Distribution**: Git clone or download
 
 ### Generated Projects
+
 - **Development**: Local machine (Docker Compose optional)
 - **Staging**: Cloud platform (auto-deployed via CI)
 - **Production**: Cloud platform (approved deployments)
 
 **Deployment Targets**:
+
 - Containers (ECS, AKS, GKE, Cloud Run)
 - Serverless (Lambda, Functions, Cloud Functions)
 - PaaS (Heroku, Render, Railway)
@@ -376,12 +412,14 @@ src/
 ## Scaling Considerations
 
 ### Template System
+
 - **Read-heavy**: Templates read frequently, written rarely
 - **Stateless**: No database or persistent storage needed
 - **Caching**: Git repository clones can be cached
 - **Concurrency**: Multiple users can generate simultaneously
 
 ### Generated Projects
+
 - **Application scaling**: Horizontal scaling via container orchestration
 - **Database scaling**: Managed database services with read replicas
 - **Cache scaling**: Redis/Memcached clusters
@@ -390,12 +428,14 @@ src/
 ## Security Boundaries
 
 ### Trust Boundaries
+
 1. **Developer Machine ↔ GitHub**: Git authentication (SSH/HTTPS)
 2. **GitHub Actions ↔ Cloud**: OIDC or secret-based auth
 3. **Application ↔ Database**: Connection strings (secrets)
 4. **Application ↔ External APIs**: API keys (secrets)
 
 ### Secret Management
+
 - **Template System**: No secrets stored
 - **Generated Projects**: Secrets in GitHub Secrets or cloud secret stores
 - **CI/CD**: GITHUB_TOKEN for GitHub API, cloud credentials for deployment
@@ -413,5 +453,5 @@ src/
 
 ---
 
-*Last Updated: 2024-01-15*
-*Version: 1.0*
+_Last Updated: 2024-01-15_
+_Version: 1.0_

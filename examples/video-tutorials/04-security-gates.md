@@ -15,6 +15,7 @@
 ### What You'll Learn (45 seconds)
 
 By the end of this tutorial, you'll be able to:
+
 - Implement SAST (Static Application Security Testing)
 - Set up secret scanning to prevent credential leaks
 - Generate Software Bills of Materials (SBOM)
@@ -32,6 +33,7 @@ By the end of this tutorial, you'll be able to:
 "Security gates are automated checkpoints in your CI/CD pipeline that prevent insecure code from reaching production. Think of them as guardrails that catch issues before they become vulnerabilities."
 
 **Key Security Gates:**
+
 1. **SAST** - Analyzes source code for security vulnerabilities
 2. **Secret Scanning** - Detects hardcoded secrets and credentials
 3. **Dependency Scanning** - Identifies vulnerable dependencies
@@ -79,7 +81,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 6 * * 1'  # Weekly Monday scan
+    - cron: "0 6 * * 1" # Weekly Monday scan
 
 jobs:
   codeql:
@@ -92,23 +94,23 @@ jobs:
 
     strategy:
       matrix:
-        language: ['python', 'javascript']
+        language: ["python", "javascript"]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        queries: security-extended
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
 ```
 
 "CodeQL runs on every PR, push to main, and weekly. It uses semantic analysis to find vulnerabilities like SQL injection, XSS, and path traversal."
@@ -118,6 +120,7 @@ jobs:
 **Show on screen: GitHub Security tab**
 
 "CodeQL findings appear in the Security tab. Each finding includes:"
+
 - Severity level (Critical, High, Medium, Low)
 - Detailed explanation of the vulnerability
 - Example code path showing data flow
@@ -140,10 +143,10 @@ jobs:
 **Show on screen: `.github/workflows/security.yml` (continued)**
 
 ```yaml
-  secrets:
-    name: Secret Scanning
-    runs-on: ubuntu-latest
-    steps:
+secrets:
+  name: Secret Scanning
+  runs-on: ubuntu-latest
+  steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
@@ -157,6 +160,7 @@ jobs:
 ```
 
 "Gitleaks scans your entire repository history for over 140 types of secrets including:"
+
 - AWS credentials
 - GitHub tokens
 - Private keys
@@ -201,13 +205,13 @@ jobs:
   dependency-review:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Dependency Review
-      uses: actions/dependency-review-action@v4
-      with:
-        fail-on-severity: moderate
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
 ```
 
 **Show on screen: `renovate.json`**
@@ -232,6 +236,7 @@ jobs:
 ### Understanding SBOMs (45 seconds)
 
 "An SBOM—Software Bill of Materials—is an inventory of all components in your software. It's essential for:"
+
 - Compliance and auditing
 - Vulnerability tracking
 - Supply chain security
@@ -242,33 +247,53 @@ jobs:
 **Show on screen: SBOM workflow**
 
 ```yaml
-  sbom:
-    name: Generate SBOM
-    runs-on: ubuntu-latest
-    steps:
+sbom:
+  name: Generate SBOM
+  runs-on: ubuntu-latest
+  steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Generate SBOM
-      uses: anchore/sbom-action@v0
+      uses: anchore/sbom-action@v0.20.6
       with:
-        format: cyclonedx-json
-        output-file: sbom.json
-
-    - name: Upload SBOM
-      uses: actions/upload-artifact@v4
-      with:
-        name: sbom
-        path: sbom.json
+        path: .
+        format: spdx-json
+        output-file: sbom.spdx.json
+        artifact-name: sbom-spdx-json
+        upload-artifact: true
+        upload-release-asset: false
 
     - name: Scan SBOM for vulnerabilities
-      uses: anchore/scan-action@v3
+      uses: anchore/scan-action@v7.0.0
       with:
-        sbom: sbom.json
+        sbom: sbom.spdx.json
         fail-build: false
+        severity-cutoff: medium
+        output-format: json
+        output-file: scan-results.json
+        cache-results: true
+
+    - name: Summarise results
+      run: |
+        {
+          echo "Generated SBOM: sbom.spdx.json"
+          echo
+          echo "| Severity | Findings |"
+          echo "| --- | --- |"
+          if [ -f scan-results.json ] && jq -e '.matches | length > 0' scan-results.json >/dev/null 2>&1; then
+            jq -r '.matches[].vulnerability.severity' scan-results.json \
+              | tr '[:lower:]' '[:upper:]' \
+              | sort \
+              | uniq -c \
+              | awk '{printf("| %s | %s |\n", $2, $1)}'
+          else
+            echo "| NONE | 0 |"
+          fi
+        } >> "$GITHUB_STEP_SUMMARY"
 ```
 
-"This generates a CycloneDX SBOM and scans it for known vulnerabilities."
+"This generates an SPDX SBOM, scans it with the latest Grype engine, and writes a severity summary to the job log."
 
 ---
 
@@ -303,6 +328,7 @@ jobs:
 **Show on screen: Security dashboard**
 
 "Agentic Canon includes Grafana dashboards for security metrics:"
+
 - Vulnerability trends over time
 - Mean time to remediate
 - SBOM coverage
@@ -324,12 +350,14 @@ jobs:
 ### Common Pitfalls (45 seconds)
 
 ❌ **Don't:**
+
 - Skip security scans to speed up deployment
 - Ignore low/medium findings indefinitely
 - Hardcode secrets even for development
 - Disable security checks without review
 
 ✅ **Do:**
+
 - Fail builds on critical/high vulnerabilities
 - Review and triage all findings
 - Use environment variables or secret managers
@@ -346,6 +374,7 @@ jobs:
 ### Recap (30 seconds)
 
 "Today we covered:"
+
 - ✅ Setting up SAST with CodeQL
 - ✅ Implementing secret scanning with Gitleaks
 - ✅ Configuring dependency scanning
@@ -357,6 +386,7 @@ jobs:
 "In the next video, we'll explore observability—how to instrument your services with OpenTelemetry and set up SLOs."
 
 **Show on screen:**
+
 - 📚 Read the Security Policy: SECURITY.md
 - 🔗 Example workflows: examples/dashboards/security-metrics.json
 - 📖 Full documentation: docs/notebooks/02_security_supply_chain.md

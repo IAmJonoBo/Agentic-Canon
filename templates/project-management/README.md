@@ -40,23 +40,23 @@ agentic-canon repo-init
 
 ## Template Variables
 
-| Variable | Description | Default | Options |
-|----------|-------------|---------|---------|
-| `project_name` | Project name | My Project | Any string |
-| `project_slug` | Kebab-case slug | my-project | Kebab-case |
-| `github_org` | GitHub org name | my-org | Org/user name |
-| `project_description` | Description | - | Any string |
-| `enable_todo_tracking` | Enable TODO→Issue | yes | yes/no |
-| `enable_tasklist_tracking` | Enable tasklist→Issue | yes | yes/no |
-| `enable_pr_followups` | Enable PR follow-ups | yes | yes/no |
-| `enable_issue_triage` | Enable auto-triage | yes | yes/no |
-| `enable_projects_board` | Setup for Projects | yes | yes/no |
-| `enable_branch_protection` | Show protection setup | yes | yes/no |
-| `enable_codeowners` | Include CODEOWNERS | yes | yes/no |
-| `default_branch` | Default branch name | main | Any branch name |
-| `require_approvals` | Required PR approvals | 2 | Number |
-| `auto_close_stale_issues` | Close stale issues | yes | yes/no |
-| `stale_days` | Days before stale | 60 | Number |
+| Variable                   | Description           | Default    | Options         |
+| -------------------------- | --------------------- | ---------- | --------------- |
+| `project_name`             | Project name          | My Project | Any string      |
+| `project_slug`             | Kebab-case slug       | my-project | Kebab-case      |
+| `github_org`               | GitHub org name       | my-org     | Org/user name   |
+| `project_description`      | Description           | -          | Any string      |
+| `enable_todo_tracking`     | Enable TODO→Issue     | yes        | yes/no          |
+| `enable_tasklist_tracking` | Enable tasklist→Issue | yes        | yes/no          |
+| `enable_pr_followups`      | Enable PR follow-ups  | yes        | yes/no          |
+| `enable_issue_triage`      | Enable auto-triage    | yes        | yes/no          |
+| `enable_projects_board`    | Setup for Projects    | yes        | yes/no          |
+| `enable_branch_protection` | Show protection setup | yes        | yes/no          |
+| `enable_codeowners`        | Include CODEOWNERS    | yes        | yes/no          |
+| `default_branch`           | Default branch name   | main       | Any branch name |
+| `require_approvals`        | Required PR approvals | 2          | Number          |
+| `auto_close_stale_issues`  | Close stale issues    | yes        | yes/no          |
+| `stale_days`               | Days before stale     | 60         | Number          |
 
 ## Generated Structure
 
@@ -87,6 +87,7 @@ my-project/
 Scans code for TODO/FIXME comments and creates GitHub Issues.
 
 **Supported formats**:
+
 ```python
 # TODO: Add error handling
 # FIXME: Fix memory leak
@@ -95,6 +96,7 @@ Scans code for TODO/FIXME comments and creates GitHub Issues.
 ```
 
 **Features**:
+
 - Creates issue with task label
 - Writes issue URL back to code
 - Closes issue when TODO removed
@@ -105,6 +107,7 @@ Scans code for TODO/FIXME comments and creates GitHub Issues.
 Converts markdown checklist items to GitHub Issues.
 
 **Example TASKS.md**:
+
 ```markdown
 ## Sprint 1
 
@@ -114,6 +117,7 @@ Converts markdown checklist items to GitHub Issues.
 ```
 
 **Features**:
+
 - Creates issue for unchecked items
 - Updates markdown with issue link
 - Prevents duplicate issues
@@ -124,6 +128,7 @@ Converts markdown checklist items to GitHub Issues.
 Creates issues from PR review comments mentioning follow-up work.
 
 **Keywords**:
+
 - "follow-up"
 - "out of scope"
 - "TODO:"
@@ -131,6 +136,7 @@ Creates issues from PR review comments mentioning follow-up work.
 - "next iteration"
 
 **Features**:
+
 - Links to PR and review
 - Assigns to PR author
 - Includes full context
@@ -141,12 +147,14 @@ Creates issues from PR review comments mentioning follow-up work.
 Automatically labels and responds to new issues.
 
 **Auto-labeling**:
+
 - Bug keywords → `bug` label
 - Feature keywords → `enhancement` label
 - Security keywords → `security` label
 - Performance keywords → `performance` label
 
 **Features**:
+
 - Adds `needs-triage` label
 - Posts welcome message
 - Links to contribution docs
@@ -157,11 +165,13 @@ Automatically labels and responds to new issues.
 Closes inactive issues after configured period.
 
 **Default behavior**:
+
 - Mark stale after 60 days
 - Close after 7 days of stale
 - Exempts: `pinned`, `security`, `critical`
 
 **Configurable**:
+
 - Adjust stale period
 - Customize messages
 - Add exemptions
@@ -231,7 +241,7 @@ auto_close_stale_issues: no
 Edit `.github/workflows/todos.yml`:
 
 ```yaml
-LABELS: "task, from:todo, priority:medium"  # Add custom labels
+LABELS: "task, from:todo, priority:medium" # Add custom labels
 ```
 
 ### Custom Auto-labeling Rules
@@ -240,8 +250,8 @@ Edit `.github/workflows/issue-triage.yml`:
 
 ```javascript
 // Add your custom rules
-if (text.includes('database') || text.includes('sql')) {
-  labels.push('database');
+if (text.includes("database") || text.includes("sql")) {
+  labels.push("database");
 }
 ```
 
@@ -250,13 +260,14 @@ if (text.includes('database') || text.includes('sql')) {
 Edit `.github/workflows/stale.yml`:
 
 ```yaml
-days-before-stale: 30  # Change from 60 to 30 days
-days-before-close: 14  # Change from 7 to 14 days
+days-before-stale: 30 # Change from 60 to 30 days
+days-before-close: 14 # Change from 7 to 14 days
 ```
 
 ## Post-Generation Steps
 
 1. **Push to GitHub**
+
    ```bash
    git init
    git add .
@@ -267,6 +278,7 @@ days-before-close: 14  # Change from 7 to 14 days
    ```
 
 2. **Create GitHub Labels**
+
    ```bash
    gh label create "task" --color "0e8a16"
    gh label create "from:todo" --color "d4c5f9"
@@ -277,6 +289,7 @@ days-before-close: 14  # Change from 7 to 14 days
    ```
 
 3. **Enable Branch Protection** (if configured)
+
    ```bash
    gh api repos/org/repo/branches/main/protection \
      --method PUT \
@@ -306,6 +319,7 @@ Push and check Actions tab for workflow run.
 ### Test Tasklist Tracking
 
 Add to TASKS.md:
+
 ```markdown
 - [ ] Test tasklist workflow
 - [ ] Verify issue creation
@@ -325,12 +339,14 @@ Push and check for created issues.
 ### Workflows Not Running
 
 **Check**:
+
 - Workflow files exist in `.github/workflows/`
 - Workflows have correct permissions
 - Actions enabled in repo settings
 - No syntax errors in YAML
 
 **Solution**:
+
 ```bash
 # Validate workflow syntax
 gh workflow list
@@ -340,12 +356,14 @@ gh workflow view todos.yml
 ### Issues Not Created
 
 **Check**:
+
 - Labels exist in repository
 - No duplicate issues
 - Workflow logs in Actions tab
 - Token has write permissions
 
 **Solution**:
+
 ```bash
 # Check workflow logs
 gh run list --workflow=todos.yml
@@ -355,11 +373,13 @@ gh run view <run-id>
 ### TODOs Not Detected
 
 **Check**:
+
 - Correct comment syntax
 - File tracked by git
 - Workflow triggered on push
 
 **Solution**:
+
 - Review supported TODO formats
 - Check alstr/todo-to-issue-action docs
 - Verify file in git index
@@ -411,6 +431,7 @@ This template can be combined with:
 - **docs-only**: Add to documentation projects
 
 Example:
+
 ```bash
 # Generate Python service
 cookiecutter templates/python-service
@@ -427,6 +448,7 @@ cp -r my-project/.github/* .github/
 Improvements welcome! See [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
 Suggestions:
+
 - Add more workflow examples
 - Improve auto-labeling logic
 - Add metrics and reporting

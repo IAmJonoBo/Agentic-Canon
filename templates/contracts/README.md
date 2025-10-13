@@ -15,6 +15,7 @@ REST API specifications using OpenAPI 3.1 standard.
 **File:** [`openapi-template.yaml`](openapi/openapi-template.yaml)
 
 **Features:**
+
 - OpenAPI 3.1 specification format
 - Multiple authentication schemes (Bearer JWT, API Key, OAuth2)
 - Comprehensive security definitions
@@ -27,6 +28,7 @@ REST API specifications using OpenAPI 3.1 standard.
 - Content negotiation (JSON, XML)
 
 **Key Sections:**
+
 - **Info**: API metadata, version, contact, license
 - **Servers**: Environment-specific URLs
 - **Security**: Authentication/authorization schemes
@@ -35,6 +37,7 @@ REST API specifications using OpenAPI 3.1 standard.
 - **Tags**: Logical endpoint grouping
 
 **Usage:**
+
 ```bash
 # Copy and customize
 cp templates/contracts/openapi/openapi-template.yaml api/openapi.yaml
@@ -57,6 +60,7 @@ npx @openapitools/openapi-generator-cli generate \
 ```
 
 **Standards Implemented:**
+
 - OpenAPI 3.1 Specification
 - REST API Design Best Practices
 - OWASP API Security Top 10
@@ -70,6 +74,7 @@ Event-driven API specifications using AsyncAPI 3.0 standard.
 **File:** [`asyncapi-template.yaml`](asyncapi/asyncapi-template.yaml)
 
 **Features:**
+
 - AsyncAPI 3.0 specification format
 - CloudEvents specification alignment
 - Multiple protocols (Kafka, AMQP, MQTT, WebSocket)
@@ -81,6 +86,7 @@ Event-driven API specifications using AsyncAPI 3.0 standard.
 - Security schemes (SASL, TLS)
 
 **Key Sections:**
+
 - **Info**: Service metadata and description
 - **Servers**: Message broker configurations
 - **Channels**: Topics/queues and message flow
@@ -89,6 +95,7 @@ Event-driven API specifications using AsyncAPI 3.0 standard.
 - **Security**: Authentication schemes
 
 **Usage:**
+
 ```bash
 # Copy and customize
 cp templates/contracts/asyncapi/asyncapi-template.yaml api/asyncapi.yaml
@@ -108,6 +115,7 @@ npx @asyncapi/cli generate fromTemplate api/asyncapi.yaml @asyncapi/nodejs-templ
 ```
 
 **Standards Implemented:**
+
 - AsyncAPI 3.0 Specification
 - CloudEvents specification
 - OWASP API Security Top 10
@@ -119,6 +127,7 @@ npx @asyncapi/cli generate fromTemplate api/asyncapi.yaml @asyncapi/nodejs-templ
 Automated contract testing to ensure API compliance.
 
 **Planned Features:**
+
 - Pact consumer/provider contracts
 - OpenAPI validation testing
 - Schema validation
@@ -194,22 +203,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Validate OpenAPI spec
         uses: char0n/swagger-editor-validate@v1
         with:
           definition-file: api/openapi.yaml
-      
+
       - name: Generate documentation
         run: |
           npx redoc-cli bundle api/openapi.yaml -o api-docs.html
-      
+
       - name: Upload docs
         uses: actions/upload-artifact@v4
         with:
           name: api-documentation
           path: api-docs.html
-      
+
       - name: Check for breaking changes
         uses: oasdiff/oasdiff-action@v0.0.19
         with:
@@ -231,19 +240,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Validate AsyncAPI spec
         uses: WaleedAshraf/asyncapi-github-action@v0.0.8
         with:
           filepath: api/asyncapi.yaml
-      
+
       - name: Generate documentation
         run: |
           npx @asyncapi/cli generate fromTemplate \
             api/asyncapi.yaml \
             @asyncapi/html-template \
             -o docs/events/
-      
+
       - name: Upload docs
         uses: actions/upload-artifact@v4
         with:
@@ -255,48 +264,48 @@ jobs:
 
 ```javascript
 // tests/contract/user-service.contract.test.js
-const { Pact } = require('@pact-foundation/pact');
-const { UserService } = require('../../src/services/user');
+const { Pact } = require("@pact-foundation/pact");
+const { UserService } = require("../../src/services/user");
 
-describe('User Service Contract', () => {
+describe("User Service Contract", () => {
   const provider = new Pact({
-    consumer: 'web-app',
-    provider: 'user-service',
-    port: 8080
+    consumer: "web-app",
+    provider: "user-service",
+    port: 8080,
   });
 
   beforeAll(() => provider.setup());
   afterEach(() => provider.verify());
   afterAll(() => provider.finalize());
 
-  describe('GET /users/:id', () => {
+  describe("GET /users/:id", () => {
     beforeEach(() => {
       return provider.addInteraction({
-        state: 'user exists',
-        uponReceiving: 'a request for a user',
+        state: "user exists",
+        uponReceiving: "a request for a user",
         withRequest: {
-          method: 'GET',
-          path: '/users/123',
-          headers: { Accept: 'application/json' }
+          method: "GET",
+          path: "/users/123",
+          headers: { Accept: "application/json" },
         },
         willRespondWith: {
           status: 200,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
           body: {
-            id: '123',
-            name: 'John Doe',
-            email: 'john@example.com'
-          }
-        }
+            id: "123",
+            name: "John Doe",
+            email: "john@example.com",
+          },
+        },
       });
     });
 
-    it('returns the user', async () => {
-      const service = new UserService('http://localhost:8080');
-      const user = await service.getUser('123');
-      
-      expect(user.id).toBe('123');
-      expect(user.name).toBe('John Doe');
+    it("returns the user", async () => {
+      const service = new UserService("http://localhost:8080");
+      const user = await service.getUser("123");
+
+      expect(user.id).toBe("123");
+      expect(user.name).toBe("John Doe");
     });
   });
 });
@@ -348,21 +357,25 @@ describe('User Service Contract', () => {
 ### OpenAPI Tools
 
 **Validation:**
+
 - [Swagger CLI](https://github.com/APIDevTools/swagger-cli) - Validate and bundle
 - [Spectral](https://stoplight.io/open-source/spectral) - API linting
 - [openapi-validator](https://github.com/IBM/openapi-validator) - IBM validator
 
 **Documentation:**
+
 - [Redoc](https://github.com/Redocly/redoc) - Beautiful API docs
 - [Swagger UI](https://swagger.io/tools/swagger-ui/) - Interactive docs
 - [Stoplight](https://stoplight.io/) - Design platform
 
 **Code Generation:**
+
 - [OpenAPI Generator](https://openapi-generator.tech/) - Multi-language support
 - [Swagger Codegen](https://swagger.io/tools/swagger-codegen/)
 - [oapi-codegen](https://github.com/deepmap/oapi-codegen) - Go generator
 
 **Testing:**
+
 - [Dredd](https://dredd.org/) - HTTP API testing
 - [Schemathesis](https://schemathesis.readthedocs.io/) - Property-based testing
 - [Postman](https://www.postman.com/) - API testing platform
@@ -370,14 +383,17 @@ describe('User Service Contract', () => {
 ### AsyncAPI Tools
 
 **Validation:**
+
 - [AsyncAPI CLI](https://github.com/asyncapi/cli) - Official CLI tool
 - [AsyncAPI Validator](https://www.asyncapi.com/tools/validator)
 
 **Documentation:**
+
 - [AsyncAPI HTML Template](https://github.com/asyncapi/html-template)
 - [AsyncAPI React Component](https://github.com/asyncapi/asyncapi-react)
 
 **Code Generation:**
+
 - [AsyncAPI Generator](https://github.com/asyncapi/generator) - Template engine
 - Language-specific templates (Node.js, Java, Python, etc.)
 
@@ -408,6 +424,7 @@ These templates help achieve compliance with:
 ## Contributing
 
 To improve these templates:
+
 1. Add real-world API examples
 2. Share contract testing patterns
 3. Contribute language-specific generators

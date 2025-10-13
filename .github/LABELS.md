@@ -7,6 +7,7 @@ This document lists all GitHub labels required for the project management automa
 These labels MUST be created in the repository for the workflows to function correctly:
 
 ### Issue Type Labels
+
 - `bug` (color: `#d73a4a`) - Something isn't working
 - `enhancement` (color: `#a2eeef`) - New feature or request
 - `task` (color: `#0e8a16`) - Work item or task
@@ -18,17 +19,20 @@ These labels MUST be created in the repository for the workflows to function cor
 - `type:task` (color: `#0e8a16`) - Task type classification
 
 ### Workflow Labels
+
 - `from:todo` (color: `#d4c5f9`) - Created from TODO/FIXME comment in code
 - `from:tasklist` (color: `#bfdadc`) - Created from markdown checklist in TASKS.md
 - `from:pr-review` (color: `#fbca04`) - Created from PR review follow-up comment
 - `needs-triage` (color: `#ededed`) - Needs initial review and categorization
 
 ### Priority Labels (Optional but Recommended)
+
 - `priority:high` (color: `#d93f0b`) - High priority item
 - `priority:medium` (color: `#fbca04`) - Medium priority item
 - `priority:low` (color: `#0e8a16`) - Low priority item
 
 ### Status Labels
+
 - `stale` (color: `#cccccc`) - Issue/PR marked as stale due to inactivity
 - `security` (color: `#ee0701`) - Security-related issue
 - `performance` (color: `#1d76db`) - Performance-related issue
@@ -38,6 +42,7 @@ These labels MUST be created in the repository for the workflows to function cor
 - `blocked` (color: `#d93f0b`) - Blocked by another issue or external dependency
 
 ### Component Labels
+
 - `component:templates` (color: `#c2e0c6`) - Related to Cookiecutter templates
 - `component:notebooks` (color: `#c2e0c6`) - Related to Jupyter notebooks
 - `component:docs` (color: `#c2e0c6`) - Related to documentation/Jupyter Book
@@ -48,7 +53,9 @@ These labels MUST be created in the repository for the workflows to function cor
 - `architecture` (color: `#7057ff`) - Architectural decisions and design
 
 ### Exemption Labels
+
 These labels exempt issues/PRs from being marked as stale:
+
 - `pinned` (color: `#0e8a16`) - Pinned, won't be marked stale
 - `security` (color: `#ee0701`) - Security issues never go stale
 - `critical` (color: `#b60205`) - Critical issues never go stale
@@ -134,23 +141,28 @@ You should see all labels listed above.
 ## Workflow Dependencies
 
 ### todos.yml
+
 - Required: `task`, `from:todo`
 - Optional: Any PROJECT field for GitHub Projects integration
 
 ### tasklist-scan.yml
+
 - Required: `task`, `from:tasklist`
 - Will commit changes back to TASKS.md with issue references
 
 ### pr-review-followup.yml
+
 - Required: `from:pr-review`
 - Auto-assigns: PR author
 
 ### issue-triage.yml
+
 - Required: `needs-triage`
 - Optional: `bug`, `enhancement`, `documentation`, `security`, `performance`, `question`
 - Auto-labels based on keyword detection
 
 ### stale.yml
+
 - Required: `stale`
 - Exempts: `pinned`, `security`, `critical`
 
@@ -166,16 +178,19 @@ To customize labels for your needs:
 ## Troubleshooting
 
 ### Workflow fails with "Label does not exist"
+
 - Ensure all required labels are created
 - Check spelling and case sensitivity
 - Run `gh label list` to verify
 
 ### Labels not being applied automatically
+
 - Check workflow logs in Actions tab
 - Verify workflow has `issues: write` permission
 - Ensure GITHUB_TOKEN has proper permissions
 
 ### Duplicate issues being created
+
 - tasklist-scan checks for existing issues by title
 - todos workflow writes issue URL back to code to prevent duplicates
 - If duplicates occur, check that URL insertion is working

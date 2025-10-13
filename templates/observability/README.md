@@ -15,6 +15,7 @@ OpenTelemetry Collector configuration for vendor-neutral telemetry collection.
 **File:** [`collector-config.yaml`](otel/collector-config.yaml)
 
 **Features:**
+
 - Multi-protocol receivers (OTLP gRPC/HTTP, Prometheus)
 - Host metrics collection (CPU, memory, disk, network)
 - Intelligent processing (batching, sampling, filtering)
@@ -24,23 +25,27 @@ OpenTelemetry Collector configuration for vendor-neutral telemetry collection.
 - Memory limits and backpressure handling
 
 **Receivers:**
+
 - **OTLP** - Native OpenTelemetry protocol (gRPC:4317, HTTP:4318)
 - **Prometheus** - Scrape metrics from exporters
 - **Host Metrics** - System-level metrics (CPU, memory, disk, network)
 
 **Processors:**
+
 - **Batch** - Reduce API calls (10s timeout, 1024 batch size)
 - **Memory Limiter** - Prevent OOM (512 MiB limit, 128 MiB spike)
 - **Resource** - Add environment, namespace attributes
 - **Attributes** - Remove PII (email, password, credit card, SSN)
 
 **Exporters:**
+
 - **Logging** - Console output for debugging
 - **Prometheus** - Metrics export (port 8889)
 - **Jaeger** - Distributed tracing
 - **OTLP** - Forward to backend (optional)
 
 **Usage:**
+
 ```bash
 # Copy configuration
 cp templates/observability/otel/collector-config.yaml otel-collector-config.yaml
@@ -62,23 +67,29 @@ kubectl apply -f otel-collector-deployment.yaml
 **Application Integration:**
 
 **Node.js:**
+
 ```javascript
-const { NodeSDK } = require('@opentelemetry/sdk-node');
-const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
+const { NodeSDK } = require("@opentelemetry/sdk-node");
+const {
+  getNodeAutoInstrumentations,
+} = require("@opentelemetry/auto-instrumentations-node");
+const {
+  OTLPTraceExporter,
+} = require("@opentelemetry/exporter-trace-otlp-http");
 
 const sdk = new NodeSDK({
   traceExporter: new OTLPTraceExporter({
-    url: 'http://localhost:4318/v1/traces',
+    url: "http://localhost:4318/v1/traces",
   }),
   instrumentations: [getNodeAutoInstrumentations()],
-  serviceName: 'my-service',
+  serviceName: "my-service",
 });
 
 sdk.start();
 ```
 
 **Python:**
+
 ```python
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
@@ -100,6 +111,7 @@ Service Level Objectives, Indicators, and Error Budget management.
 **File:** [`slo-definition.yaml`](slo/slo-definition.yaml)
 
 **Features:**
+
 - Availability SLO (99.9% uptime)
 - Latency SLO (P95 < 300ms)
 - Error Rate SLO (< 0.1% errors)
@@ -112,29 +124,34 @@ Service Level Objectives, Indicators, and Error Budget management.
 **SLO Components:**
 
 **1. Availability SLO**
+
 - **Target:** 99.9% (43.8 minutes downtime/month)
 - **SLI Query:** Success rate from HTTP requests
 - **Error Budget:** 10% buffer (4.38 minutes)
 - **Burn Rate Alerts:** Critical (1h), High (6h), Medium (24h)
 
 **2. Latency SLO**
+
 - **Target:** P95 < 300ms
 - **SLI Query:** 95th percentile response time
 - **Error Budget:** 5% buffer
 - **Compliance:** ISO/IEC 25010 Performance Efficiency
 
 **3. Error Rate SLO**
+
 - **Target:** < 0.1% error rate
 - **SLI Query:** 5xx errors / total requests
 - **Error Budget:** 10% buffer
 - **Compliance:** ISO/IEC 25010 Reliability
 
 **Error Budget Policy:**
+
 - **100% consumed** → Block deployments, page on-call
 - **75% consumed** → Slow rollouts, increase monitoring
 - **50% consumed** → Alert team, review changes
 
 **Usage:**
+
 ```bash
 # Copy SLO definition
 cp templates/observability/slo/slo-definition.yaml slo-config.yaml
@@ -155,6 +172,7 @@ kubectl apply -f prometheus-slo-rules.yml
 ```
 
 **Prometheus Alerting Rules:**
+
 ```yaml
 groups:
   - name: slo_alerts
@@ -229,19 +247,19 @@ spec:
         app: otel-collector
     spec:
       containers:
-      - name: otel-collector
-        image: otel/opentelemetry-collector:latest
-        ports:
-        - containerPort: 4317  # OTLP gRPC
-        - containerPort: 4318  # OTLP HTTP
-        - containerPort: 8889  # Prometheus metrics
-        volumeMounts:
-        - name: config
-          mountPath: /etc/otel
+        - name: otel-collector
+          image: otel/opentelemetry-collector:latest
+          ports:
+            - containerPort: 4317 # OTLP gRPC
+            - containerPort: 4318 # OTLP HTTP
+            - containerPort: 8889 # Prometheus metrics
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otel
       volumes:
-      - name: config
-        configMap:
-          name: otel-collector-config
+        - name: config
+          configMap:
+            name: otel-collector-config
 ---
 apiVersion: v1
 kind: Service
@@ -251,12 +269,12 @@ spec:
   selector:
     app: otel-collector
   ports:
-  - name: otlp-grpc
-    port: 4317
-  - name: otlp-http
-    port: 4318
-  - name: metrics
-    port: 8889
+    - name: otlp-grpc
+      port: 4317
+    - name: otlp-http
+      port: 4318
+    - name: metrics
+      port: 8889
 ```
 
 ## Best Practices
@@ -304,26 +322,32 @@ spec:
     "panels": [
       {
         "title": "Availability",
-        "targets": [{
-          "expr": "slo:availability:ratio_rate30d * 100"
-        }],
+        "targets": [
+          {
+            "expr": "slo:availability:ratio_rate30d * 100"
+          }
+        ],
         "thresholds": [
-          {"value": 99.9, "color": "green"},
-          {"value": 99.5, "color": "yellow"},
-          {"value": 0, "color": "red"}
+          { "value": 99.9, "color": "green" },
+          { "value": 99.5, "color": "yellow" },
+          { "value": 0, "color": "red" }
         ]
       },
       {
         "title": "Error Budget Remaining",
-        "targets": [{
-          "expr": "slo:error_budget:remaining_percent"
-        }]
+        "targets": [
+          {
+            "expr": "slo:error_budget:remaining_percent"
+          }
+        ]
       },
       {
         "title": "Burn Rate (1h)",
-        "targets": [{
-          "expr": "slo:availability:burn_rate_1h"
-        }]
+        "targets": [
+          {
+            "expr": "slo:availability:burn_rate_1h"
+          }
+        ]
       }
     ]
   }
@@ -346,18 +370,18 @@ spec:
     interval: 1m
     threshold: 5
     metrics:
-    - name: request-success-rate
-      thresholdRange:
-        min: 99
-      interval: 1m
-    - name: request-duration
-      thresholdRange:
-        max: 500
-      interval: 1m
-    - name: error-budget
-      thresholdRange:
-        min: 10  # At least 10% budget remaining
-      interval: 1m
+      - name: request-success-rate
+        thresholdRange:
+          min: 99
+        interval: 1m
+      - name: request-duration
+        thresholdRange:
+          max: 500
+        interval: 1m
+      - name: error-budget
+        thresholdRange:
+          min: 10 # At least 10% budget remaining
+        interval: 1m
 ```
 
 ## Monitoring Stack
@@ -365,20 +389,24 @@ spec:
 ### Recommended Stack
 
 **Metrics:**
+
 - **Prometheus** - Time-series database
 - **Grafana** - Visualization and dashboards
 - **Alertmanager** - Alert routing and silencing
 
 **Traces:**
+
 - **Jaeger** - Distributed tracing backend
 - **Tempo** - Scalable tracing backend (Grafana)
 
 **Logs:**
+
 - **Loki** - Log aggregation (Grafana)
 - **Elasticsearch** - Full-text search
 - **Fluentd/Fluent Bit** - Log forwarding
 
 **All-in-one:**
+
 - **Grafana Cloud** - Managed observability
 - **Datadog** - Commercial platform
 - **New Relic** - Commercial platform
@@ -395,16 +423,19 @@ These templates help achieve compliance with:
 ## Additional Resources
 
 ### OpenTelemetry
+
 - [OpenTelemetry Docs](https://opentelemetry.io/docs/)
 - [Collector Configuration](https://opentelemetry.io/docs/collector/configuration/)
 - [Language SDKs](https://opentelemetry.io/docs/instrumentation/)
 
 ### SLOs/SRE
+
 - [Google SRE Book](https://sre.google/sre-book/table-of-contents/)
 - [Implementing SLOs](https://sre.google/workbook/implementing-slos/)
 - [SLO Generator](https://github.com/google/slo-generator)
 
 ### Related Templates
+
 - [CI/CD Templates](../cicd/README.md) - Performance testing
 - [Security Templates](../security/README.md) - Security metrics
 - [Video Tutorial: Observability](../../examples/video-tutorials/05-observability-setup.md)
@@ -412,6 +443,7 @@ These templates help achieve compliance with:
 ## Contributing
 
 To improve these templates:
+
 1. Share your observability configurations
 2. Add platform-specific examples
 3. Contribute dashboard JSON files

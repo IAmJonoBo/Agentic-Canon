@@ -1,8 +1,9 @@
 """Test FastAPI application endpoints."""
 
 import pytest
-from acme_service.main import app
 from fastapi.testclient import TestClient
+
+from acme_service.main import app
 
 
 @pytest.fixture

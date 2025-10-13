@@ -1,4 +1,5 @@
 {% if cookiecutter.include_jupyter_book == "yes" -%}
+
 # {{ cookiecutter.project_name }}
 
 {{ cookiecutter.project_description }}
@@ -24,12 +25,12 @@ print(result)
 - Formatted with black
 - Linted with ruff
 - Comprehensive test coverage
-{% if cookiecutter.enable_security_gates == "yes" %}
+  {% if cookiecutter.enable_security_gates == "yes" %}
 - Security scanning with CodeQL
-{% endif %}
-{% if cookiecutter.enable_sbom_signing == "yes" %}
+  {% endif %}
+  {% if cookiecutter.enable_sbom_signing == "yes" %}
 - SBOM generation
-{% endif %}
+  {% endif %}
 
 ## Notebooks
 

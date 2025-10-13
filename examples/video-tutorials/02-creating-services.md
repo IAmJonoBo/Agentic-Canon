@@ -27,7 +27,7 @@ ls -la templates/
 # Templates:
 # - python-service/    Production Python API service
 # - node-service/      TypeScript Node.js service
-# - react-webapp/      React + Vite web application  
+# - react-webapp/      React + Vite web application
 # - go-service/        Go microservice
 # - docs-only/         Documentation-only project
 ```
@@ -45,6 +45,7 @@ agentic-canon init
 ```
 
 **Walk through:**
+
 - Template selection with descriptions
 - Project configuration
 - Feature toggles
@@ -68,13 +69,14 @@ cookiecutter gh:IAmJonoBo/Agentic-Canon --directory templates/python-service
 
 # Interactive prompts
 # - project_name
-# - project_slug  
+# - project_slug
 # - author_name
 # - description
 # - features
 ```
 
 **Show:**
+
 - Different prompt types
 - Validation rules
 - Default values
@@ -91,7 +93,7 @@ cookiecutter gh:IAmJonoBo/Agentic-Canon --directory templates/python-service
 ```
 templates/python-service/
 ├── cookiecutter.json       # Template variables
-├── hooks/                  
+├── hooks/
 │   ├── pre_gen_project.py  # Validation
 │   └── post_gen_project.py # Post-generation setup
 └── {{cookiecutter.project_slug}}/
@@ -101,6 +103,7 @@ templates/python-service/
 ```
 
 **Explain:**
+
 - Template variables with Jinja2
 - Conditional file inclusion
 - Pre/post generation hooks
@@ -139,6 +142,7 @@ python -m my_new_service
 "Advanced template features:"
 
 1. **Conditional Features**
+
    ```jinja
    {% if cookiecutter.use_jupyter_book == 'yes' %}
    docs/
@@ -146,6 +150,7 @@ python -m my_new_service
    ```
 
 2. **Dynamic Content**
+
    ```jinja
    # {{cookiecutter.project_name}}
    Author: {{cookiecutter.author_name}}
@@ -194,6 +199,7 @@ cruft update
 ### Conclusion (30 seconds)
 
 "You now know how to:
+
 - Choose the right template
 - Generate projects with CLI or Cookiecutter
 - Customize templates

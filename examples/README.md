@@ -5,6 +5,7 @@ This directory contains example configurations, projects, and resources to demon
 ## Overview
 
 The examples provided here serve as:
+
 - Reference implementations
 - Starting points for new projects
 - Demonstrations of best practices
@@ -13,48 +14,59 @@ The examples provided here serve as:
 ## Directory Structure
 
 ### azure-pipelines/
+
 Azure Pipelines examples for CI/CD.
 
 **Contents**:
+
 - `python-service/` - Azure Pipelines for Python projects
 - `node-service/` - Azure Pipelines for Node.js projects
 - `README.md` - Azure Pipelines documentation
 
 **Use Cases**:
+
 - Organizations using Azure DevOps
 - Multi-cloud CI/CD strategies
 - Azure-specific integrations
 
 ### projects/
+
 Example projects generated from templates.
 
 **Contents**:
+
 - `fastapi-microservice-README.md` - FastAPI microservice example ✅
 - `express-api-README.md` - Express.js API service example ✅
 - `react-dashboard-README.md` - React dashboard webapp example ✅
 - `grpc-service-README.md` - Go gRPC service example ✅
 
 **All Examples Complete** - Each includes:
+
 - Complete project structure and architecture
 - API/endpoint documentation with examples
 - Development, testing, and deployment workflows
 - Security, monitoring, and performance best practices
 
 ### community/
+
 Community-contributed examples and templates.
 
 **Contents**:
+
 - `CONTRIBUTING-TEMPLATES.md` - Guide for contributing templates
 
 **Purpose**:
+
 - Encourage community contributions
 - Share domain-specific examples
 - Showcase different use cases
 
 ### dashboards/
+
 Monitoring and observability dashboards.
 
 **Contents**:
+
 - `dora-metrics.json` - DORA metrics Grafana dashboard
 - `space-devex-metrics.json` - SPACE/DevEx metrics
 - `quality-metrics.json` - Code quality metrics
@@ -65,52 +77,64 @@ Monitoring and observability dashboards.
 - `README.md` - Dashboard documentation
 
 **Use Cases**:
+
 - Implementing DORA metrics tracking
 - Developer experience monitoring
 - Security posture visualization
 - Quality trends analysis
 
 ### fitness-functions/
+
 Architecture fitness function examples.
 
 **Contents**:
+
 - `README.md` - Fitness functions documentation
 
 **Planned**:
+
 - Performance fitness functions
 - Architecture compliance checks
 - Security boundary validation
 - Code quality thresholds
 
 ### ml-insights/
+
 Machine learning-powered insights.
 
 **Contents**:
+
 - `README.md` - ML insights documentation
 
 **Planned**:
+
 - Anomaly detection examples
 - Predictive failure analysis
 - Test flakiness detection
 - Code quality prediction
 
 ### multi-cloud/
+
 Multi-cloud deployment examples.
 
 **Contents**:
+
 - `aws/` - AWS-specific examples
 - `README.md` - Multi-cloud documentation
 
 **Planned**:
+
 - AWS deployment configurations
 - Azure deployment examples
 - GCP deployment examples
 - Cloud-agnostic infrastructure code
 
 ### video-tutorials/
+
 Video tutorial scripts and resources.
 
 **Contents**:
+
 - `01-getting-started.md` - Getting started script (5-7 min)
 - `02-creating-services.md` - Service creation script (8-10 min)
 - `03-cicd-setup.md` - CI/CD setup script (10-12 min)
@@ -122,6 +146,7 @@ Video tutorial scripts and resources.
 **Status**: ✅ All scripts complete (~65 minutes total)
 
 **Planned**:
+
 - Video recordings
 - YouTube channel setup
 - Video links in documentation
@@ -150,6 +175,7 @@ curl -O https://raw.githubusercontent.com/IAmJonoBo/Agentic-Canon/main/examples/
 ### Adaptation
 
 Examples are designed to be:
+
 - **Minimal**: Focus on core functionality
 - **Documented**: Clear comments and README files
 - **Tested**: Verified to work
@@ -217,6 +243,7 @@ When creating examples:
 ## Maintenance
 
 Examples are reviewed:
+
 - Quarterly for accuracy
 - When dependencies update
 - Based on community feedback
@@ -243,6 +270,7 @@ For questions about examples:
 
 Current examples: **27 files across 8 directories**  
 **Recent Additions:**
+
 - ✅ 4 complete example project READMEs (FastAPI, Express, React, Go gRPC) - ~70KB total
 - ✅ 6 complete video tutorial scripts (~65 min total)
 - ✅ 4 Grafana dashboards (DORA, SPACE, Security, Quality)

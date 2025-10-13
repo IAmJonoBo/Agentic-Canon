@@ -85,13 +85,13 @@ cp templates/repository/common/CODEOWNERS .github/
 ## Template Categories
 
 ### CI/CD Pipelines (`cicd/`)
+
 Stack-agnostic CI/CD configurations implementing comprehensive quality gates.
 
 - **GitHub Actions** (`cicd/github-actions/`)
   - Complete workflow with all gates
   - Modular job examples
   - Reusable workflows
-  
 - **GitLab CI** (`cicd/gitlab-ci/`)
   - Pipeline configuration
   - Stage templates
@@ -103,6 +103,7 @@ Stack-agnostic CI/CD configurations implementing comprehensive quality gates.
   - Variable groups
 
 ### Security (`security/`)
+
 Security scanning and supply chain hardening templates.
 
 - **SAST** (`security/sast/`)
@@ -136,6 +137,7 @@ Security scanning and supply chain hardening templates.
   - Verification policies
 
 ### Contracts (`contracts/`)
+
 API contract definitions and testing.
 
 - **OpenAPI** (`contracts/openapi/`)
@@ -154,6 +156,7 @@ API contract definitions and testing.
   - Consumer tests
 
 ### Architecture (`architecture/`)
+
 Architecture documentation and governance.
 
 - **ADR** (`architecture/adr/`)
@@ -173,6 +176,7 @@ Architecture documentation and governance.
   - Dependency rules
 
 ### Platform (`platform/`)
+
 Internal developer platform templates.
 
 - **Backstage** (`platform/backstage/`)
@@ -191,6 +195,7 @@ Internal developer platform templates.
   - Admission controls
 
 ### Observability (`observability/`)
+
 Monitoring, logging, and SLO definitions.
 
 - **OpenTelemetry** (`observability/otel/`)
@@ -209,6 +214,7 @@ Monitoring, logging, and SLO definitions.
   - Log queries
 
 ### Repository (`repository/`)
+
 Repository setup and governance files.
 
 - **GitHub** (`repository/github/`)
@@ -228,6 +234,7 @@ Repository setup and governance files.
   - .gitignore
 
 ### Automation (`automation/`)
+
 Automation hooks and remediation scripts.
 
 - **Hooks** (`automation/hooks/`)
@@ -248,6 +255,7 @@ Automation hooks and remediation scripts.
 ## Quick Start
 
 ### For New Projects
+
 ```bash
 # Copy all essential templates
 cp -r templates/repository/common/* .
@@ -256,6 +264,7 @@ cp -r templates/security/secrets/gitleaks.toml .
 ```
 
 ### For Existing Projects
+
 ```bash
 # Add security scanning
 cp templates/cicd/github-actions/security-scan.yml .github/workflows/
@@ -269,6 +278,7 @@ cp templates/security/sbom/cyclonedx-action.yml .github/workflows/
 ### For New Projects
 
 **Generate a complete project:**
+
 ```bash
 cookiecutter templates/python-service    # Python API service
 cookiecutter templates/node-service      # Node.js/TypeScript service
@@ -278,6 +288,7 @@ cookiecutter templates/docs-only         # Documentation site
 ```
 
 **Or use the interactive CLI:**
+
 ```bash
 agentic-canon init
 ```
@@ -285,6 +296,7 @@ agentic-canon init
 ### For Existing Projects
 
 **Add quality gates:**
+
 ```bash
 # CI/CD pipeline
 cp templates/cicd/github-actions/complete-pipeline.yml .github/workflows/ci.yml
@@ -299,6 +311,7 @@ cp templates/security/signing/cosign-workflow.yml .github/workflows/
 ```
 
 **Add documentation:**
+
 ```bash
 # Repository governance
 cp templates/repository/common/SECURITY.md .
@@ -311,6 +324,7 @@ cp -r templates/architecture/c4/ docs/architecture/
 ```
 
 **Add observability:**
+
 ```bash
 # OpenTelemetry
 cp templates/observability/otel/collector-config.yaml otel-config.yaml
@@ -322,6 +336,7 @@ cp templates/observability/slo/slo-definition.yaml slo-config.yaml
 ### Common Workflows
 
 **Setting up a new Python service:**
+
 ```bash
 cookiecutter templates/python-service
 cd my-service
@@ -331,6 +346,7 @@ pytest
 ```
 
 **Setting up a new React app:**
+
 ```bash
 cookiecutter templates/react-webapp
 cd my-app
@@ -339,6 +355,7 @@ npm run dev
 ```
 
 **Adding security scanning to existing project:**
+
 ```bash
 mkdir -p .github/workflows
 cp templates/cicd/github-actions/security-scan.yml .github/workflows/
@@ -375,17 +392,18 @@ templates/
 
 ## Template Features Matrix
 
-| Template | Testing | Security | Docs | CI/CD | Observability |
-|----------|---------|----------|------|-------|---------------|
-| Python Service | ✅ pytest | ✅ CodeQL | ✅ Jupyter Book | ✅ GH Actions | ✅ OTel |
-| Node Service | ✅ Vitest | ✅ CodeQL | ✅ JSDoc | ✅ GH Actions | ✅ OTel |
-| React WebApp | ✅ Vitest, Playwright | ✅ CodeQL | ✅ Storybook | ✅ GH Actions | ✅ Lighthouse |
-| Go Service | ✅ table-driven | ✅ CodeQL | ✅ godoc | ✅ GH Actions | ✅ OTel |
-| Docs-Only | ✅ link check | N/A | ✅ Jupyter Book | ✅ GH Actions | N/A |
+| Template       | Testing               | Security  | Docs            | CI/CD         | Observability |
+| -------------- | --------------------- | --------- | --------------- | ------------- | ------------- |
+| Python Service | ✅ pytest             | ✅ CodeQL | ✅ Jupyter Book | ✅ GH Actions | ✅ OTel       |
+| Node Service   | ✅ Vitest             | ✅ CodeQL | ✅ JSDoc        | ✅ GH Actions | ✅ OTel       |
+| React WebApp   | ✅ Vitest, Playwright | ✅ CodeQL | ✅ Storybook    | ✅ GH Actions | ✅ Lighthouse |
+| Go Service     | ✅ table-driven       | ✅ CodeQL | ✅ godoc        | ✅ GH Actions | ✅ OTel       |
+| Docs-Only      | ✅ link check         | N/A       | ✅ Jupyter Book | ✅ GH Actions | N/A           |
 
 ## Validation
 
 Each template includes:
+
 - Inline comments explaining configuration
 - Validation commands to verify setup
 - Links to relevant standards/documentation
@@ -394,6 +412,7 @@ Each template includes:
 ## Standards Compliance
 
 All templates implement:
+
 - ✅ NIST SSDF v1.1
 - ✅ OWASP SAMM Level 2
 - ✅ SLSA Level 3
@@ -403,15 +422,17 @@ All templates implement:
 ## Customization Guide
 
 ### Placeholders
+
 Templates use `{{ VARIABLE }}` syntax for customization:
 
 ```yaml
-name: {{ PROJECT_NAME }}
-owner: {{ TEAM_NAME }}
-threshold: {{ COVERAGE_THRESHOLD }}
+name: { { PROJECT_NAME } }
+owner: { { TEAM_NAME } }
+threshold: { { COVERAGE_THRESHOLD } }
 ```
 
 ### Environment Variables
+
 Reference environment-specific values:
 
 ```yaml
@@ -422,6 +443,7 @@ token: ${{ secrets.API_TOKEN }}
 ## Support
 
 For questions or issues:
+
 1. Check BIBLE.md for conceptual guidance
 2. Review template comments
 3. Consult referenced standards
@@ -430,6 +452,7 @@ For questions or issues:
 ## Contributing
 
 To add new templates:
+
 1. Follow existing structure and naming
 2. Include comprehensive comments
 3. Add validation commands
@@ -438,4 +461,4 @@ To add new templates:
 
 ---
 
-*Part of Frontier Software Excellence Copilot*
+_Part of Frontier Software Excellence Copilot_

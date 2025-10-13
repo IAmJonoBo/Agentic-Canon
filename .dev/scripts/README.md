@@ -7,20 +7,24 @@ This directory contains utility scripts for development, automation, and mainten
 ### ADR Management
 
 #### `create-adr.sh`
+
 Interactive script for creating Architecture Decision Records.
 
 **Usage:**
+
 ```bash
 .dev/scripts/create-adr.sh
 ```
 
 **Features:**
+
 - Automatically numbers ADRs sequentially
 - Creates file from template
 - Prompts for metadata (title, status, decision makers)
 - Opens in editor when complete
 
 **Example:**
+
 ```bash
 $ .dev/scripts/create-adr.sh
 
@@ -43,16 +47,19 @@ See [ADR Lifecycle Guide](../../docs/adr/ADR-LIFECYCLE.md) for more details.
 When adding scripts to this directory:
 
 1. **Make executable:**
+
    ```bash
    chmod +x .dev/scripts/your-script.sh
    ```
 
 2. **Add shebang:**
+
    ```bash
    #!/bin/bash
    ```
 
 3. **Include help:**
+
    ```bash
    # Script Name
    # Description of what it does
@@ -75,13 +82,16 @@ When adding scripts to this directory:
 ## Script Conventions
 
 ### Exit Codes
+
 - `0` - Success
 - `1` - General error
 - `2` - Invalid arguments
 - `3` - Missing dependencies
 
 ### Output Formatting
+
 Use colored output for clarity:
+
 ```bash
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -94,6 +104,7 @@ echo -e "${YELLOW}⚠ Warning${NC}"
 ```
 
 ### Error Handling
+
 ```bash
 set -e  # Exit on error
 set -u  # Exit on undefined variable

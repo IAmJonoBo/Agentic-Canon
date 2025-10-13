@@ -120,6 +120,7 @@ The Agentic Canon framework consists of **four interconnected layers**:
 ### Layer 1: Standards Foundation
 
 **Industry Standards Compliance**
+
 - NIST SSDF v1.1: Secure software development framework
 - OWASP SAMM 2.0: Security assurance maturity
 - OWASP ASVS 4.0: Application security verification
@@ -131,12 +132,14 @@ The Agentic Canon framework consists of **four interconnected layers**:
 **Purpose**: Provide a solid foundation aligned with global best practices.
 
 **Documentation**:
+
 - [BIBLE.md](BIBLE.md): Master reference for all standards
 - [control-traceability-matrix.json](control-traceability-matrix.json): Machine-readable mapping
 
 ### Layer 2: Quality Standards
 
 **Comprehensive Quality Requirements**
+
 - Non-negotiable quality gates (build, security, quality, performance, accessibility)
 - Code quality metrics and thresholds
 - Testing standards (unit, integration, E2E, mutation, contract)
@@ -148,11 +151,13 @@ The Agentic Canon framework consists of **four interconnected layers**:
 **Purpose**: Define what "excellent" means with measurable criteria.
 
 **Documentation**:
+
 - [QUALITY_STANDARDS.md](QUALITY_STANDARDS.md): Complete quality requirements
 
 ### Layer 3: Development Conventions
 
 **Consistent Development Practices**
+
 - Code style conventions (Python, TypeScript, Go, etc.)
 - Naming conventions (files, variables, functions, classes)
 - Git conventions (branching, commits, PRs)
@@ -164,6 +169,7 @@ The Agentic Canon framework consists of **four interconnected layers**:
 **Purpose**: Ensure consistency and enable collaboration.
 
 **Documentation**:
+
 - [CONVENTIONS.md](CONVENTIONS.md): Development conventions and best practices
 
 ### Layer 4: Implementation Tools
@@ -173,18 +179,21 @@ The Agentic Canon framework consists of **four interconnected layers**:
 The implementation layer is organized with clear separation of concerns:
 
 **Development Tools (`.dev/`)**
+
 - Internal maintenance and upgrade scripts
 - Repository validation and health checks
 - CI/CD pipeline maintenance
 - Not for end users
 
 **Distribution Assets**
+
 - `agentic_canon_cli/` - CLI wizard for project generation
 - `templates/` - Cookiecutter templates and supporting files
 - `notebooks/` - Executable guides and automation
 - `docs/` - Documentation and reference materials
 
 **Templates include:**
+
 - Cookiecutter templates (Python, Node.js, React, Go, Docs)
 - CI/CD pipelines (GitHub Actions, GitLab CI, Azure Pipelines)
 - Security tooling (SAST, DAST, secret scanning, SBOM)
@@ -195,6 +204,7 @@ The implementation layer is organized with clear separation of concerns:
 **Purpose**: Make frontier practices immediately actionable while maintaining clear boundaries between internal tools and external distribution assets.
 
 **Documentation**:
+
 - [.dev/README.md](.dev/README.md): Development tools documentation
 - [Templates Directory](templates/): All templates and examples
 - [INDEX.md](INDEX.md): Complete catalog of available resources
@@ -239,6 +249,7 @@ The implementation layer is organized with clear separation of concerns:
 The Agentic Canon framework integrates multiple standards in a coherent hierarchy:
 
 **Level 1: Regulatory/Industry Standards** (Must comply)
+
 - NIST SSDF: Software supply chain security
 - OWASP ASVS: Application security baseline
 - SLSA: Build integrity and provenance
@@ -246,12 +257,14 @@ The Agentic Canon framework integrates multiple standards in a coherent hierarch
 - WCAG 2.2 AA: Web accessibility
 
 **Level 2: Framework Standards** (Agentic Canon requirements)
+
 - Quality gates (defined in QUALITY_STANDARDS.md)
 - Development conventions (defined in CONVENTIONS.md)
 - Testing standards (pyramid, mutation, contract)
 - Security practices (SAST, DAST, secrets)
 
 **Level 3: Project Standards** (Project-specific adaptations)
+
 - Project-specific thresholds (may exceed framework minimums)
 - Domain-specific patterns
 - Technology-specific conventions
@@ -289,6 +302,7 @@ See [control-traceability-matrix.json](control-traceability-matrix.json) for com
 Projects using Agentic Canon can claim different conformance levels:
 
 **Level 1: Foundation** (Minimum viable)
+
 - ✅ Version control with branch protection
 - ✅ CI/CD pipeline with basic tests
 - ✅ Secret scanning enabled
@@ -296,6 +310,7 @@ Projects using Agentic Canon can claim different conformance levels:
 - ✅ Basic documentation (README, CONTRIBUTING)
 
 **Level 2: Standard** (Recommended baseline)
+
 - ✅ All Level 1 requirements
 - ✅ 80%+ code coverage enforced
 - ✅ SAST/DAST in CI pipeline
@@ -305,6 +320,7 @@ Projects using Agentic Canon can claim different conformance levels:
 - ✅ ADRs for architecture decisions
 
 **Level 3: Frontier** (Full excellence)
+
 - ✅ All Level 2 requirements
 - ✅ Mutation testing (40%+ score)
 - ✅ Contract testing for APIs
@@ -352,6 +368,7 @@ If a project cannot meet a requirement:
 7. **Communicate**: Share decision with affected teams
 
 **Example**: Code coverage target
+
 - OWASP SAMM Level 2: Recommends "significant coverage" (no specific %)
 - Agentic Canon: Requires 80%+
 - **Resolution**: Use 80% (more specific, measurable, achieves intent)
@@ -359,6 +376,7 @@ If a project cannot meet a requirement:
 ### When to Deviate from Standards
 
 **Valid Reasons**:
+
 - Technical limitations of platform/language
 - Performance requirements that conflict with standard
 - Security requirements that exceed standard
@@ -366,12 +384,14 @@ If a project cannot meet a requirement:
 - Experimental/proof-of-concept work (temporary)
 
 **Invalid Reasons**:
+
 - "Too hard" or "takes too long"
 - "We've always done it differently"
 - Personal preference
 - Lack of understanding
 
 **Process for Deviation**:
+
 1. Create ADR documenting proposed deviation
 2. Include rationale, alternatives considered, risks
 3. Define compensating controls
@@ -400,6 +420,7 @@ Use an ADR to document significant technology decisions.
 ### For New Contributors
 
 **Week 1: Understand the Framework**
+
 - [ ] Read this document (FRAMEWORK.md)
 - [ ] Review [BIBLE.md](BIBLE.md) for standards overview
 - [ ] Read [README.md](README.md) for project overview
@@ -409,6 +430,7 @@ Use an ADR to document significant technology decisions.
 - [ ] Join team communication channels
 
 **Week 2: Set Up Environment**
+
 - [ ] Clone repository and run sanity check
 - [ ] Install development dependencies
 - [ ] Configure pre-commit hooks
@@ -417,6 +439,7 @@ Use an ADR to document significant technology decisions.
 - [ ] Generate a test project from template
 
 **Week 3: Make First Contribution**
+
 - [ ] Find a "good first issue"
 - [ ] Create feature branch following conventions
 - [ ] Make changes following quality standards
@@ -427,6 +450,7 @@ Use an ADR to document significant technology decisions.
 - [ ] Celebrate first merged PR! 🎉
 
 **Week 4: Deep Dive**
+
 - [ ] Choose an area of interest (security, testing, docs, etc.)
 - [ ] Deep dive into relevant standards and tools
 - [ ] Review related templates and examples
@@ -436,6 +460,7 @@ Use an ADR to document significant technology decisions.
 ### For Experienced Developers
 
 **Fast Track** (can be done in 1-2 days):
+
 - [ ] Review [FRAMEWORK.md](FRAMEWORK.md) (this document)
 - [ ] Skim [QUALITY_STANDARDS.md](QUALITY_STANDARDS.md) for quality gates
 - [ ] Skim [CONVENTIONS.md](CONVENTIONS.md) for conventions
@@ -446,6 +471,7 @@ Use an ADR to document significant technology decisions.
 ### For AI Agents
 
 **Initialization Sequence**:
+
 1. Load [BIBLE.md](BIBLE.md) for comprehensive overview
 2. Load [control-traceability-matrix.json](control-traceability-matrix.json) for machine-readable standards
 3. Load [runbooks/agent-runbook.json](runbooks/agent-runbook.json) for automation patterns
@@ -463,6 +489,7 @@ Use an ADR to document significant technology decisions.
 Quality is assured through **multiple layers of automation**:
 
 **Layer 1: Developer Workstation** (Pre-commit)
+
 - Code formatting (Black, Prettier, gofmt)
 - Linting (Ruff, ESLint, golangci-lint)
 - Type checking (mypy, tsc)
@@ -470,6 +497,7 @@ Quality is assured through **multiple layers of automation**:
 - Fast unit tests (< 5 seconds)
 
 **Layer 2: Pull Request** (CI Pipeline)
+
 - Full test suite (unit, integration)
 - Code coverage (must meet 80% threshold)
 - Mutation testing (must meet 40% threshold)
@@ -480,6 +508,7 @@ Quality is assured through **multiple layers of automation**:
 - Quality gates (SonarQube)
 
 **Layer 3: Main Branch** (Post-merge)
+
 - Full test suite again (verify integration)
 - E2E tests (full system tests)
 - DAST (dynamic security testing)
@@ -488,6 +517,7 @@ Quality is assured through **multiple layers of automation**:
 - Artifact signing (SLSA provenance)
 
 **Layer 4: Production** (Continuous)
+
 - Real-user monitoring (RUM)
 - Synthetic monitoring
 - Security scanning (runtime)
@@ -498,17 +528,20 @@ Quality is assured through **multiple layers of automation**:
 ### Quality Reviews
 
 **Daily**:
+
 - Automated quality checks in CI/CD
 - Code review for all PRs
 - Monitor quality metrics dashboard
 
 **Weekly**:
+
 - Review quality metrics trends
 - Review failed quality gate reasons
 - Address recurring issues
 - Team quality retrospective
 
 **Monthly**:
+
 - Comprehensive quality report
 - Security posture review
 - Performance review
@@ -516,12 +549,14 @@ Quality is assured through **multiple layers of automation**:
 - Quality improvement planning
 
 **Quarterly**:
+
 - Deep quality audit
 - Standards compliance review
 - Tooling and process improvements
 - Update quality standards as needed
 
 **Annual**:
+
 - Comprehensive quality retrospective
 - Standards alignment review
 - Major framework updates
@@ -538,11 +573,9 @@ The Agentic Canon framework follows **semantic versioning**:
 - **Major (X.0.0)**: Breaking changes to structure or requirements
   - Example: New required quality gate, changed directory structure
   - Requires migration effort
-  
 - **Minor (x.Y.0)**: New features, enhanced guidance, new templates
   - Example: New language template, additional tools, expanded documentation
   - Backward compatible
-  
 - **Patch (x.y.Z)**: Bug fixes, clarifications, typo corrections
   - Example: Fixed template bug, clarified documentation
   - No migration needed
@@ -552,6 +585,7 @@ The Agentic Canon framework follows **semantic versioning**:
 ### Update Process
 
 **Standards Updates** (QUALITY_STANDARDS.md, CONVENTIONS.md):
+
 1. Propose change with rationale
 2. Review with tech leads and security team
 3. Update documentation
@@ -561,6 +595,7 @@ The Agentic Canon framework follows **semantic versioning**:
 7. Update version number
 
 **Template Updates**:
+
 1. Make changes in template
 2. Test template generation
 3. Verify generated project passes all gates
@@ -569,6 +604,7 @@ The Agentic Canon framework follows **semantic versioning**:
 6. Add to CHANGELOG
 
 **Tool Updates**:
+
 1. Evaluate new tool version
 2. Test in isolated environment
 3. Verify compatibility with existing projects
@@ -579,6 +615,7 @@ The Agentic Canon framework follows **semantic versioning**:
 ### Community Feedback Loop
 
 **We actively seek feedback on**:
+
 - Quality standards: Are they too strict? Too lenient?
 - Conventions: Are they practical? Consistent?
 - Templates: Are they useful? Missing features?
@@ -586,6 +623,7 @@ The Agentic Canon framework follows **semantic versioning**:
 - Tooling: Does it help or hinder?
 
 **Feedback Channels**:
+
 - GitHub Issues: Bug reports, feature requests
 - GitHub Discussions: Questions, ideas, general discussion
 - Pull Requests: Direct contributions
@@ -593,6 +631,7 @@ The Agentic Canon framework follows **semantic versioning**:
 - Annual Survey: Comprehensive feedback collection
 
 **Feedback Incorporation**:
+
 1. Collect feedback from all channels
 2. Categorize and prioritize
 3. Discuss in monthly planning
@@ -607,6 +646,7 @@ The Agentic Canon framework follows **semantic versioning**:
 ### Contribution Philosophy
 
 **We believe**:
+
 - All contributions are valuable (code, docs, ideas, feedback)
 - Diverse perspectives improve the framework
 - Barriers to contribution should be minimized
@@ -616,6 +656,7 @@ The Agentic Canon framework follows **semantic versioning**:
 ### How to Contribute
 
 **Small Contributions** (< 1 hour):
+
 - Fix typos or broken links
 - Improve documentation clarity
 - Add examples or code comments
@@ -623,6 +664,7 @@ The Agentic Canon framework follows **semantic versioning**:
 - Answer questions in discussions
 
 **Medium Contributions** (1-8 hours):
+
 - Fix bugs in templates
 - Add new examples
 - Improve CI/CD workflows
@@ -630,6 +672,7 @@ The Agentic Canon framework follows **semantic versioning**:
 - Give talks about Agentic Canon
 
 **Large Contributions** (> 8 hours):
+
 - Add new language templates
 - Enhance quality tooling
 - Major documentation overhauls
@@ -641,6 +684,7 @@ The Agentic Canon framework follows **semantic versioning**:
 ### Recognition
 
 **We recognize contributors through**:
+
 - CONTRIBUTORS.md listing all contributors
 - Release notes mentioning contributors
 - GitHub contributor badges
@@ -649,6 +693,7 @@ The Agentic Canon framework follows **semantic versioning**:
 - Conference talk opportunities
 
 **Maintainer Path**:
+
 - Consistent high-quality contributions
 - Demonstrated framework understanding
 - Active in code reviews and discussions
@@ -663,6 +708,7 @@ The Agentic Canon framework follows **semantic versioning**:
 ### Decision Authority
 
 **Framework Decisions** (standards, conventions, major changes):
+
 - Proposed by: Any contributor
 - Discussed in: GitHub Discussions
 - Decided by: Maintainers (consensus or majority vote)
@@ -670,6 +716,7 @@ The Agentic Canon framework follows **semantic versioning**:
 - Announced in: GitHub Discussions + README
 
 **Template Decisions** (new templates, template changes):
+
 - Proposed by: Any contributor
 - Reviewed by: Template maintainers
 - Tested by: CI/CD + manual review
@@ -677,6 +724,7 @@ The Agentic Canon framework follows **semantic versioning**:
 - Documented in: Template README + CHANGELOG
 
 **Tool Decisions** (CI/CD, linters, security tools):
+
 - Proposed by: Any contributor
 - Evaluated by: Tool assessment criteria
 - Tested by: Pilot projects
@@ -686,6 +734,7 @@ The Agentic Canon framework follows **semantic versioning**:
 ### Maintainer Responsibilities
 
 **Framework Maintainers**:
+
 - Review and merge PRs
 - Triage issues and discussions
 - Update documentation
@@ -699,6 +748,7 @@ The Agentic Canon framework follows **semantic versioning**:
 ### Conflict Resolution
 
 **Process**:
+
 1. Discuss issue in GitHub Discussions
 2. Present all perspectives and evidence
 3. Seek consensus through discussion
@@ -709,6 +759,7 @@ The Agentic Canon framework follows **semantic versioning**:
 
 **Escalation**:
 If conflict cannot be resolved at maintainer level:
+
 - Bring to project sponsor (repository owner)
 - Present all perspectives and attempts at resolution
 - Sponsor makes final decision
@@ -720,27 +771,28 @@ If conflict cannot be resolved at maintainer level:
 
 ### Core Framework Documents
 
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| [FRAMEWORK.md](FRAMEWORK.md) | This document - unified framework guide | All users and contributors |
-| [QUALITY_STANDARDS.md](QUALITY_STANDARDS.md) | Comprehensive quality requirements | Developers, QA, reviewers |
-| [CONVENTIONS.md](CONVENTIONS.md) | Development conventions and best practices | Developers, reviewers |
-| [BIBLE.md](BIBLE.md) | Master reference for all standards | All audiences |
-| [README.md](README.md) | Project overview and quick start | New users |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute | Contributors |
+| Document                                     | Purpose                                    | Audience                   |
+| -------------------------------------------- | ------------------------------------------ | -------------------------- |
+| [FRAMEWORK.md](FRAMEWORK.md)                 | This document - unified framework guide    | All users and contributors |
+| [QUALITY_STANDARDS.md](QUALITY_STANDARDS.md) | Comprehensive quality requirements         | Developers, QA, reviewers  |
+| [CONVENTIONS.md](CONVENTIONS.md)             | Development conventions and best practices | Developers, reviewers      |
+| [BIBLE.md](BIBLE.md)                         | Master reference for all standards         | All audiences              |
+| [README.md](README.md)                       | Project overview and quick start           | New users                  |
+| [CONTRIBUTING.md](CONTRIBUTING.md)           | How to contribute                          | Contributors               |
 
 ### Supporting Documents
 
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| [INDEX.md](INDEX.md) | Complete catalog of resources | All audiences |
-| [TASKS.md](TASKS.md) | Implementation progress tracker | Maintainers, contributors |
-| [control-traceability-matrix.json](control-traceability-matrix.json) | Machine-readable standards mapping | AI agents, auditors |
-| [CHANGELOG.md](CHANGELOG.md) | Version history and changes | All audiences |
+| Document                                                             | Purpose                            | Audience                  |
+| -------------------------------------------------------------------- | ---------------------------------- | ------------------------- |
+| [INDEX.md](INDEX.md)                                                 | Complete catalog of resources      | All audiences             |
+| [TASKS.md](TASKS.md)                                                 | Implementation progress tracker    | Maintainers, contributors |
+| [control-traceability-matrix.json](control-traceability-matrix.json) | Machine-readable standards mapping | AI agents, auditors       |
+| [CHANGELOG.md](CHANGELOG.md)                                         | Version history and changes        | All audiences             |
 
 ### Getting Started Guides
 
 **For New Projects**:
+
 1. Read [FRAMEWORK.md](FRAMEWORK.md) (this document)
 2. Choose a template from [templates/](templates/)
 3. Generate project: `cookiecutter templates/<template-name>`
@@ -748,6 +800,7 @@ If conflict cannot be resolved at maintainer level:
 5. Start building with confidence!
 
 **For Existing Projects**:
+
 1. Read [FRAMEWORK.md](FRAMEWORK.md) (this document)
 2. Review [QUALITY_STANDARDS.md](QUALITY_STANDARDS.md) for quality gates
 3. Assess current conformance level
@@ -756,6 +809,7 @@ If conflict cannot be resolved at maintainer level:
 6. Document deviations in ADRs
 
 **For Contributors**:
+
 1. Read [FRAMEWORK.md](FRAMEWORK.md) (this document)
 2. Read [CONTRIBUTING.md](CONTRIBUTING.md)
 3. Review [CONVENTIONS.md](CONVENTIONS.md)
@@ -777,6 +831,7 @@ The Agentic Canon framework provides a comprehensive, practical path to frontier
 We enable teams to build secure, high-quality, performant, accessible software **consistently** and **efficiently**.
 
 **Remember**:
+
 - Quality is non-negotiable
 - Automation enforces standards
 - Evidence over opinion
@@ -802,4 +857,4 @@ We enable teams to build secure, high-quality, performant, accessible software *
 
 ---
 
-*This document is part of the Agentic Canon framework for frontier software excellence.*
+_This document is part of the Agentic Canon framework for frontier software excellence._

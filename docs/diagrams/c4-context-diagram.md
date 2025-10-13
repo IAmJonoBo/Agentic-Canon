@@ -67,16 +67,17 @@ C4Context
 
 ### People
 
-| Actor | Role | Interaction |
-|-------|------|-------------|
-| **Developer** | Creates new projects using templates | Uses CLI to generate projects, customizes based on needs |
-| **Platform Engineer** | Maintains template library | Creates new templates, updates existing ones, ensures best practices |
-| **Security Analyst** | Ensures compliance | Reviews security policies, monitors dashboards, validates SLSA compliance |
-| **AI Agent** | Automates project management | Generates projects, runs tests, deploys, monitors health |
+| Actor                 | Role                                 | Interaction                                                               |
+| --------------------- | ------------------------------------ | ------------------------------------------------------------------------- |
+| **Developer**         | Creates new projects using templates | Uses CLI to generate projects, customizes based on needs                  |
+| **Platform Engineer** | Maintains template library           | Creates new templates, updates existing ones, ensures best practices      |
+| **Security Analyst**  | Ensures compliance                   | Reviews security policies, monitors dashboards, validates SLSA compliance |
+| **AI Agent**          | Automates project management         | Generates projects, runs tests, deploys, monitors health                  |
 
 ### Core System
 
 **Template System**: The heart of Agentic Canon
+
 - Provides Cookiecutter templates for multiple technology stacks
 - Python, Node.js, Go, React, documentation-only templates
 - Includes CI/CD workflows, security scanning, observability setup
@@ -84,13 +85,13 @@ C4Context
 
 ### External Systems
 
-| System | Purpose | Integration |
-|--------|---------|-------------|
-| **GitHub** | Source control and CI/CD | Git repository hosting, GitHub Actions workflows, security features |
-| **Cloud Providers** | Deployment targets | AWS, Azure, GCP services for hosting applications |
-| **Security Tools** | Security scanning and compliance | CodeQL (SAST), Snyk (dependencies), Sigstore (signing), TruffleHog (secrets) |
-| **Observability Platform** | Monitoring and alerting | Grafana dashboards, Prometheus metrics, OpenTelemetry tracing |
-| **Artifact Registry** | Package and container storage | GitHub Container Registry, npm, PyPI, Docker Hub |
+| System                     | Purpose                          | Integration                                                                  |
+| -------------------------- | -------------------------------- | ---------------------------------------------------------------------------- |
+| **GitHub**                 | Source control and CI/CD         | Git repository hosting, GitHub Actions workflows, security features          |
+| **Cloud Providers**        | Deployment targets               | AWS, Azure, GCP services for hosting applications                            |
+| **Security Tools**         | Security scanning and compliance | CodeQL (SAST), Snyk (dependencies), Sigstore (signing), TruffleHog (secrets) |
+| **Observability Platform** | Monitoring and alerting          | Grafana dashboards, Prometheus metrics, OpenTelemetry tracing                |
+| **Artifact Registry**      | Package and container storage    | GitHub Container Registry, npm, PyPI, Docker Hub                             |
 
 ## Key Interactions
 
@@ -142,17 +143,20 @@ AI Agent → Template System → GitHub → Security Tools → Observability
 ## Technology Choices
 
 ### Core Technologies
+
 - **Cookiecutter**: Template engine (Python-based, language-agnostic)
 - **Jinja2**: Template syntax
 - **Jupytext**: Notebook version control
 - **Jupyter Book**: Documentation publishing
 
 ### CI/CD
+
 - **GitHub Actions**: Primary CI/CD platform
 - **Azure Pipelines**: Secondary CI/CD option
 - **pytest-cookies**: Template testing
 
 ### Security
+
 - **CodeQL**: Static analysis
 - **Gitleaks/TruffleHog**: Secret scanning
 - **Sigstore/Cosign**: Artifact signing
@@ -160,6 +164,7 @@ AI Agent → Template System → GitHub → Security Tools → Observability
 - **SLSA**: Supply chain security framework
 
 ### Observability
+
 - **OpenTelemetry**: Telemetry collection
 - **Prometheus**: Metrics storage and alerting
 - **Grafana**: Visualization and dashboards
@@ -168,6 +173,7 @@ AI Agent → Template System → GitHub → Security Tools → Observability
 ## Standards Compliance
 
 The system is designed to comply with:
+
 - **NIST SSDF v1.1**: Secure Software Development Framework
 - **OWASP SAMM**: Software Assurance Maturity Model
 - **SLSA Level 3**: Supply-chain Levels for Software Artifacts
@@ -179,6 +185,7 @@ The system is designed to comply with:
 ## Boundaries and Constraints
 
 ### In Scope
+
 - ✅ Project template generation
 - ✅ CI/CD workflow setup
 - ✅ Security scanning integration
@@ -187,6 +194,7 @@ The system is designed to comply with:
 - ✅ Documentation generation
 
 ### Out of Scope
+
 - ❌ Application business logic
 - ❌ Cloud infrastructure provisioning (user responsibility)
 - ❌ Database schema design
@@ -203,6 +211,7 @@ The system is designed to comply with:
 ## Deployment Context
 
 ### Generated Projects Run On
+
 - **Containers**: Docker images on cloud platforms
 - **Serverless**: AWS Lambda, Azure Functions, Google Cloud Functions
 - **Kubernetes**: EKS, AKS, GKE
@@ -210,6 +219,7 @@ The system is designed to comply with:
 - **Static Hosting**: GitHub Pages, Netlify, Vercel (for docs)
 
 ### Template System Lives In
+
 - **GitHub Repository**: Source of truth for templates
 - **Local Machine**: Where developers run template generation
 - **CI/CD Runners**: Where automated generation occurs
@@ -217,18 +227,21 @@ The system is designed to comply with:
 ## Success Metrics
 
 ### Usage Metrics
+
 - Number of projects generated
 - Template adoption rate per stack
 - Time to first deployment
 - Template update frequency
 
 ### Quality Metrics
+
 - Generated project test pass rate
 - Security scan pass rate
 - SLSA compliance level
 - OpenSSF Scorecard score
 
 ### Developer Experience
+
 - Setup time (target: < 5 minutes)
 - Documentation clarity rating
 - Issue resolution time
@@ -248,5 +261,5 @@ The system is designed to comply with:
 
 ---
 
-*Last Updated: 2024-01-15*
-*Version: 1.0*
+_Last Updated: 2024-01-15_
+_Version: 1.0_

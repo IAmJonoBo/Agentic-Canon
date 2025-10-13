@@ -65,6 +65,7 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for details.
 ## Format
 
 Runbooks can be in:
+
 - **Markdown** (`.md`) - Human-readable
 - **JSON** (`.json`) - Machine-readable for automation
 - **YAML** (`.yml`) - Structured and readable
@@ -77,15 +78,18 @@ Runbooks can be in:
 # Runbook: [Task Name]
 
 ## Purpose
+
 What this runbook accomplishes
 
 ## Prerequisites
+
 - Thing 1
 - Thing 2
 
 ## Steps
 
 ### 1. First Step
+
 Details and commands
 ```
 

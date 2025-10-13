@@ -26,29 +26,39 @@ jobs:
           fetch-depth: 0
 
       - name: Generate SBOM with Syft
-        id: syft
-        uses: anchore/syft-action@v0.16.0
+        uses: anchore/sbom-action@v0.20.6
         with:
           path: ${{ env.TARGET }}
           format: spdx-json
           output-file: sbom.spdx.json
-
-      - name: Upload SBOM artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom-spdx-json
-          path: sbom.spdx.json
+          artifact-name: sbom-spdx-json
+          upload-release-assets: false
 
       - name: Scan SBOM with Grype
-        id: grype
-        uses: anchore/grype-action@v0.19.0
+        uses: anchore/scan-action@v7.0.0
         with:
           sbom: sbom.spdx.json
           fail-build: false
           severity-cutoff: medium
+          output-format: json
+          output-file: scan-results.json
+          cache-db: true
 
       - name: Summarise results
+        shell: bash
         run: |
-          echo "Generated SBOM: sbom.spdx.json" >> $GITHUB_STEP_SUMMARY
-          echo "Grype findings (medium+):" >> $GITHUB_STEP_SUMMARY
-          echo '${{ steps.grype.outputs.vulnerabilities }}' >> $GITHUB_STEP_SUMMARY
+          {
+            echo "Generated SBOM: sbom.spdx.json"
+            echo
+            echo "| Severity | Findings |"
+            echo "| --- | --- |"
+            if [ -f scan-results.json ] && jq -e '.matches | length > 0' scan-results.json >/dev/null 2>&1; then
+              jq -r '.matches[].vulnerability.severity' scan-results.json \
+                | tr '[:lower:]' '[:upper:]' \
+                | sort \
+                | uniq -c \
+                | awk '{printf("| %s | %s |\n", $2, $1)}'
+            else
+              echo "| NONE | 0 |"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

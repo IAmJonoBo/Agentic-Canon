@@ -19,6 +19,7 @@ The Agentic Canon project uses an automated system to ensure that tasks, issues,
 **Purpose:** Converts unchecked items in TASKS.md to GitHub Issues with full context.
 
 **Triggers:**
+
 - On push when markdown files change (TASKS.md, docs/\*\*/\*.md)
 
 **What it does:**
@@ -42,18 +43,23 @@ The Agentic Canon project uses an automated system to ensure that tasks, issues,
 **Example:**
 
 Before (in TASKS.md):
+
 ```markdown
 ### Security Enhancements
+
 - [ ] Implement SBOM generation for all builds (ADR-005)
 ```
 
 After:
+
 ```markdown
 ### Security Enhancements
+
 - [ ] #456 Implement SBOM generation for all builds (ADR-005)
 ```
 
 And a new issue #456 is created with:
+
 - Title: "Implement SBOM generation for all builds (ADR-005)"
 - Body includes: section context, ADR link to ADR-005, source line number
 - Labels: `task`, `from:tasklist`, `component:security`, `priority:medium`
@@ -64,6 +70,7 @@ And a new issue #456 is created with:
 **Purpose:** Bidirectional sync between TASKS.md and Issues, plus ADR link management.
 
 **Triggers:**
+
 - Weekly schedule (Monday at 6 AM UTC)
 - Manual workflow dispatch
 
@@ -105,6 +112,7 @@ And a new issue #456 is created with:
 #### Part 4: Generate Sync Report
 
 Reports on:
+
 - TASKS.md completion percentage
 - Open vs closed tasks
 - ADR status breakdown (proposed, accepted, deprecated, superseded)
@@ -205,21 +213,28 @@ Automatically applied labels include:
 To get the best automatic metadata extraction:
 
 1. **Reference ADRs explicitly:**
+
    ```markdown
    - [ ] Implement feature X (ADR-005, ADR-008)
    ```
 
 2. **Use clear section headers:**
+
    ```markdown
    ## Version 2.0 - High Priority Features
+
    ### Security Enhancements
+
    - [ ] Task description
    ```
 
 3. **Add context in surrounding text:**
+
    ```markdown
    ### Security Enhancements
+
    These tasks implement ADR-005 (SLSA compliance).
+
    - [ ] Generate SBOM for builds
    - [ ] Sign release artifacts
    ```
@@ -234,6 +249,7 @@ To get the best automatic metadata extraction:
 To ensure proper sync:
 
 1. **Use the ADR template** with required metadata:
+
    ```markdown
    number: 009
    status: proposed
@@ -249,6 +265,7 @@ To ensure proper sync:
 ### Managing Issues
 
 1. **Use closing keywords** in commits/PRs:
+
    ```
    Fixes #123
    Closes #456
@@ -290,10 +307,10 @@ To adjust behavior:
 # Change schedule
 on:
   schedule:
-    - cron: '0 9 * * 1'  # Monday at 9 AM instead of 6 AM
+    - cron: "0 9 * * 1" # Monday at 9 AM instead of 6 AM
 
 # Adjust issue creation
-labels: ['adr', 'documentation', 'automated', 'your-label']
+labels: ["adr", "documentation", "automated", "your-label"]
 ```
 
 ## Troubleshooting

@@ -5,6 +5,7 @@ This is a complete example of a production-ready Express.js API service generate
 ## Overview
 
 A RESTful API service for managing a blog platform with:
+
 - CRUD operations for posts and comments
 - Authentication (JWT)
 - OpenAPI documentation (via Swagger)
@@ -314,6 +315,7 @@ The application uses a layered configuration approach:
 3. **Runtime configuration** - Can be modified via environment
 
 Key configurations:
+
 - Server settings (port, host, API prefix)
 - Database connection
 - JWT settings (secret, expiration)
@@ -361,18 +363,21 @@ kubectl logs -f deployment/express-api -n express-api
 ### Cloud Platforms
 
 #### AWS (ECS/Fargate)
+
 - Use provided Dockerfile
 - Configure ALB with health checks
 - Set environment variables via Parameter Store/Secrets Manager
 - Configure CloudWatch for logs and metrics
 
 #### Azure (Container Apps)
+
 - Deploy using Azure CLI or Azure Portal
 - Configure ingress and scaling rules
 - Use Azure Key Vault for secrets
 - Enable Application Insights
 
 #### Google Cloud (Cloud Run)
+
 - Deploy using `gcloud run deploy`
 - Configure environment variables
 - Enable Cloud Trace and Cloud Logging
@@ -408,6 +413,7 @@ Structured logging using Winston:
 ### Distributed Tracing
 
 OpenTelemetry integration for distributed tracing:
+
 - Automatic HTTP instrumentation
 - Database query tracing
 - Custom spans for business logic
@@ -431,15 +437,16 @@ curl http://localhost:3000/health
 ### Unit Tests
 
 Test individual functions and services in isolation:
+
 ```typescript
-describe('PostService', () => {
-  it('should create a post', async () => {
+describe("PostService", () => {
+  it("should create a post", async () => {
     const post = await postService.create({
-      title: 'Test Post',
-      content: 'Test content',
-      authorId: 'user-123'
+      title: "Test Post",
+      content: "Test content",
+      authorId: "user-123",
     });
-    expect(post.title).toBe('Test Post');
+    expect(post.title).toBe("Test Post");
   });
 });
 ```
@@ -447,17 +454,18 @@ describe('PostService', () => {
 ### Integration Tests
 
 Test API endpoints with database:
+
 ```typescript
-describe('POST /api/posts', () => {
-  it('should create a post with authentication', async () => {
+describe("POST /api/posts", () => {
+  it("should create a post with authentication", async () => {
     const token = await getAuthToken();
     const response = await request(app)
-      .post('/api/posts')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'Test', content: 'Content' })
+      .post("/api/posts")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ title: "Test", content: "Content" })
       .expect(201);
-    
-    expect(response.body.title).toBe('Test');
+
+    expect(response.body.title).toBe("Test");
   });
 });
 ```
@@ -465,9 +473,10 @@ describe('POST /api/posts', () => {
 ### E2E Tests
 
 Test complete user workflows:
+
 ```typescript
-describe('Blog workflow', () => {
-  it('should allow user to register, create post, and comment', async () => {
+describe("Blog workflow", () => {
+  it("should allow user to register, create post, and comment", async () => {
     // Register
     const user = await register();
     // Login
@@ -485,6 +494,7 @@ describe('Blog workflow', () => {
 ### Test Coverage
 
 Target coverage metrics:
+
 - **Statements**: ≥ 80%
 - **Branches**: ≥ 75%
 - **Functions**: ≥ 80%
@@ -519,6 +529,7 @@ The project includes comprehensive CI/CD pipelines:
 ### Quality Gates
 
 All PRs must pass:
+
 - ✅ All tests passing
 - ✅ Code coverage ≥ 80%
 - ✅ No linting errors
@@ -591,6 +602,7 @@ k6 run load-tests/api-test.js
 ### Common Issues
 
 **Port already in use**
+
 ```bash
 # Find process using port 3000
 lsof -i :3000
@@ -599,6 +611,7 @@ kill -9 <PID>
 ```
 
 **Database connection errors**
+
 ```bash
 # Verify PostgreSQL is running
 pg_isready
@@ -611,6 +624,7 @@ npx prisma db execute --stdin <<< "SELECT 1"
 ```
 
 **Test failures**
+
 ```bash
 # Clear test database
 npm run test:db:reset
@@ -623,6 +637,7 @@ node --inspect-brk node_modules/.bin/vitest
 ```
 
 **TypeScript errors**
+
 ```bash
 # Clear cache
 rm -rf node_modules dist
@@ -635,6 +650,7 @@ npx prisma generate
 ## Contributing
 
 Contributions are welcome! Please follow:
+
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes with tests
@@ -659,6 +675,7 @@ This example is part of Agentic Canon and is licensed under [Apache-2.0](../../L
 ## Support
 
 For questions or issues:
+
 1. Check this README and project documentation
 2. Search [existing issues](https://github.com/IAmJonoBo/Agentic-Canon/issues)
 3. Ask in [discussions](https://github.com/IAmJonoBo/Agentic-Canon/discussions)

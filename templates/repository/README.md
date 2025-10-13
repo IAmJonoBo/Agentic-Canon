@@ -13,6 +13,7 @@ These templates provide standardized repository files that ensure consistent gov
 Essential repository files for all projects.
 
 **Files:**
+
 - [`SECURITY.md`](common/SECURITY.md) - Security policy and vulnerability reporting
 - [`CONTRIBUTING.md`](common/CONTRIBUTING.md) - Contribution guidelines and development process
 - [`CODEOWNERS`](common/CODEOWNERS) - Code ownership and review requirements
@@ -46,6 +47,7 @@ Comprehensive security policy template.
    - Incident response
 
 **Usage:**
+
 ```bash
 # Copy to repository root
 cp templates/repository/common/SECURITY.md .
@@ -60,6 +62,7 @@ git commit -m "docs: add security policy"
 ```
 
 **Key Features:**
+
 - GitHub Security Advisories integration
 - Clear reporting process
 - Standards compliance documentation
@@ -99,6 +102,7 @@ Detailed contribution guidelines.
    - Merge criteria
 
 **Usage:**
+
 ```bash
 # Copy to repository root
 cp templates/repository/common/CONTRIBUTING.md .
@@ -117,6 +121,7 @@ git commit -m "docs: add contribution guidelines"
 ```
 
 **Commit Convention:**
+
 ```
 <type>[optional scope]: <description>
 
@@ -132,12 +137,14 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 Code ownership and automatic review assignment.
 
 **Features:**
+
 - Path-based ownership rules
 - Team-based assignments
 - Required reviewers for specific paths
 - Escalation paths
 
 **Format:**
+
 ```
 # Global owners
 * @org/team-leads
@@ -167,6 +174,7 @@ Dockerfile @org/platform-team
 ```
 
 **Usage:**
+
 ```bash
 # Copy to repository root
 cp templates/repository/common/CODEOWNERS .github/CODEOWNERS
@@ -183,6 +191,7 @@ git commit -m "chore: add code owners"
 ```
 
 **Best Practices:**
+
 - Start general, get more specific
 - Use teams instead of individuals
 - Document ownership rationale
@@ -229,9 +238,9 @@ about: Report a bug
 A clear description of the bug.
 
 ## Steps to Reproduce
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## Expected Behavior
 
@@ -419,17 +428,20 @@ These templates help achieve compliance with:
 ## Additional Resources
 
 ### GitHub Documentation
+
 - [Community Profile](https://docs.github.com/en/communities)
 - [Code Owners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)
 - [Branch Protection](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
 - [Security Advisories](https://docs.github.com/en/code-security/security-advisories)
 
 ### Best Practices
+
 - [Open Source Guides](https://opensource.guide/)
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [Semantic Versioning](https://semver.org/)
 
 ### Related Templates
+
 - [CI/CD Templates](../cicd/README.md) - Automated checks
 - [Security Templates](../security/README.md) - Security scanning
 - [Automation Templates](../automation/README.md) - Pre-commit hooks
@@ -437,6 +449,7 @@ These templates help achieve compliance with:
 ## Contributing
 
 To improve these templates:
+
 1. Share your repository configurations
 2. Add language-specific examples
 3. Contribute issue/PR templates

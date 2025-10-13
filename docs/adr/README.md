@@ -30,8 +30,9 @@ Each ADR follows this structure:
 **Total ADRs:** 8 (all accepted)
 
 ### Status Summary
+
 - ✅ Accepted: 8
-- 🔄 Proposed: 0  
+- 🔄 Proposed: 0
 - ⚠️ Deprecated: 0
 - 🔀 Superseded: 0
 
@@ -75,7 +76,7 @@ cp templates/architecture/adr/template.md docs/adr/ADR-NNN-your-decision.md
 ### Using GitHub Issue Template
 
 1. Go to repository issues
-2. Click "New Issue" 
+2. Click "New Issue"
 3. Select "Architecture Decision Record (ADR) Proposal"
 4. Fill in the template and submit
 5. After approval, convert to ADR document
@@ -124,7 +125,7 @@ For complete details on how ADRs are automatically linked to tasks and issues, s
 When making significant architectural decisions:
 
 1. **Propose**: Create ADR or use issue template
-2. **Discuss**: Open PR and gather stakeholder feedback  
+2. **Discuss**: Open PR and gather stakeholder feedback
 3. **Review**: Hold review meeting if needed
 4. **Accept**: Update status when approved
 5. **Implement**: Execute the decision

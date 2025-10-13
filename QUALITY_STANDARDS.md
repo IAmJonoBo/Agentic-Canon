@@ -54,56 +54,61 @@ This document defines the **frontier-grade quality standards** for all software 
 All code changes must pass these gates before merge:
 
 ### Build Gate
+
 ```yaml
 build:
-  - compiles: true                    # Code must compile/transpile without errors
-  - unit_tests: green                 # All unit tests must pass
-  - coverage: ">= 80%"                # Minimum code coverage threshold
-  - mutation_score: ">= 40%"          # Minimum mutation testing score
-  - build_time: "<= baseline * 1.1"   # Build time cannot increase >10%
+  - compiles: true # Code must compile/transpile without errors
+  - unit_tests: green # All unit tests must pass
+  - coverage: ">= 80%" # Minimum code coverage threshold
+  - mutation_score: ">= 40%" # Minimum mutation testing score
+  - build_time: "<= baseline * 1.1" # Build time cannot increase >10%
 ```
 
 ### Security Gate
+
 ```yaml
 security:
-  - secrets_scan: clean               # No secrets in code (Gitleaks)
-  - sast_critical: 0                  # Zero critical SAST findings
-  - sast_high: "<= 5"                 # Max 5 high-severity findings (with plan)
-  - sbom_generated: true              # SBOM must be generated
-  - provenance_signed: true           # Provenance must be signed (releases)
-  - dependencies_current: true        # No critical CVEs in dependencies
-  - license_compliance: true          # All dependencies have approved licenses
+  - secrets_scan: clean # No secrets in code (Gitleaks)
+  - sast_critical: 0 # Zero critical SAST findings
+  - sast_high: "<= 5" # Max 5 high-severity findings (with plan)
+  - sbom_generated: true # SBOM must be generated
+  - provenance_signed: true # Provenance must be signed (releases)
+  - dependencies_current: true # No critical CVEs in dependencies
+  - license_compliance: true # All dependencies have approved licenses
 ```
 
 ### Quality Gate
+
 ```yaml
 quality:
-  - code_smells: 0                    # Zero new code smells (SonarQube)
-  - duplicates: "<= 3%"               # Max 3% code duplication
-  - complexity: "<= 15"               # Max cyclomatic complexity per function
-  - maintainability: ">= B"           # Minimum maintainability rating
-  - technical_debt: "<= 5%"           # Technical debt ratio
-  - sonar_quality_gate: passed        # Overall quality gate passes
+  - code_smells: 0 # Zero new code smells (SonarQube)
+  - duplicates: "<= 3%" # Max 3% code duplication
+  - complexity: "<= 15" # Max cyclomatic complexity per function
+  - maintainability: ">= B" # Minimum maintainability rating
+  - technical_debt: "<= 5%" # Technical debt ratio
+  - sonar_quality_gate: passed # Overall quality gate passes
 ```
 
 ### Performance Gate
+
 ```yaml
 performance:
-  - core_web_vitals: within_budget    # LCP, FID, CLS within thresholds
-  - bundle_size: "<= budget"          # Bundle size within budget
-  - p95_latency: "<= threshold"       # 95th percentile latency target
+  - core_web_vitals: within_budget # LCP, FID, CLS within thresholds
+  - bundle_size: "<= budget" # Bundle size within budget
+  - p95_latency: "<= threshold" # 95th percentile latency target
   - memory_usage: "<= baseline * 1.2" # Memory usage cannot increase >20%
-  - error_rate: "<= 0.1%"             # Max 0.1% error rate
+  - error_rate: "<= 0.1%" # Max 0.1% error rate
 ```
 
 ### Accessibility Gate
+
 ```yaml
 accessibility:
-  - wcag_aa_violations: 0             # Zero WCAG 2.2 AA violations
-  - axe_core_critical: 0              # Zero critical axe-core findings
-  - keyboard_navigation: complete     # Full keyboard navigation support
-  - screen_reader: tested             # Screen reader compatibility verified
-  - color_contrast: ">= 4.5:1"        # Minimum contrast ratio
+  - wcag_aa_violations: 0 # Zero WCAG 2.2 AA violations
+  - axe_core_critical: 0 # Zero critical axe-core findings
+  - keyboard_navigation: complete # Full keyboard navigation support
+  - screen_reader: tested # Screen reader compatibility verified
+  - color_contrast: ">= 4.5:1" # Minimum contrast ratio
 ```
 
 ---
@@ -113,6 +118,7 @@ accessibility:
 ### 1. Code Style & Formatting
 
 **Python**
+
 - **Style Guide**: PEP 8 strict compliance
 - **Formatter**: Black (line length: 88)
 - **Linter**: Ruff (all default rules enabled)
@@ -121,6 +127,7 @@ accessibility:
 - **Docstrings**: Google-style for all public APIs
 
 **TypeScript/JavaScript**
+
 - **Style Guide**: Airbnb JavaScript Style Guide
 - **Formatter**: Prettier (2 spaces, single quotes, semicolons)
 - **Linter**: ESLint with strict configuration
@@ -128,6 +135,7 @@ accessibility:
 - **Import Sorting**: ESLint plugin for import organization
 
 **Go**
+
 - **Formatter**: gofmt and goimports
 - **Linter**: golangci-lint with all recommended linters
 - **Style Guide**: Effective Go principles
@@ -136,12 +144,14 @@ accessibility:
 ### 2. Code Structure & Organization
 
 **File Organization**
+
 - Maximum file length: 500 lines (excluding tests)
 - Maximum function length: 50 lines
 - Maximum function parameters: 5 (use objects/structs for more)
 - One class/component per file (with exceptions for tightly coupled items)
 
 **Naming Conventions** (see CONVENTIONS.md for details)
+
 - Clear, descriptive names (no abbreviations except domain-standard)
 - Boolean variables: prefix with `is`, `has`, `should`, `can`
 - Functions: verb + noun (e.g., `getUserById`, `validateEmail`)
@@ -149,6 +159,7 @@ accessibility:
 - Constants: UPPER_SNAKE_CASE
 
 **Modularity Requirements**
+
 - High cohesion: Related functionality grouped together
 - Low coupling: Minimal dependencies between modules
 - Single Responsibility Principle: Each module/class/function has one reason to change
@@ -158,21 +169,25 @@ accessibility:
 ### 3. Complexity Metrics
 
 **Cyclomatic Complexity**
+
 - Maximum per function: 15
 - Target: < 10 for most functions
 - Action: Refactor functions exceeding threshold
 
 **Cognitive Complexity**
+
 - Maximum per function: 15
 - Target: < 10 for most functions
 - Focus on understandability and maintainability
 
 **Nesting Depth**
+
 - Maximum: 4 levels
 - Prefer early returns and guard clauses
 - Extract nested logic to separate functions
 
 **Code Duplication**
+
 - Maximum: 3% across codebase
 - No copy-paste code blocks > 5 lines
 - Extract common logic to shared functions/modules
@@ -180,6 +195,7 @@ accessibility:
 ### 4. Error Handling
 
 **Required Practices**
+
 - All errors must be handled explicitly (no silent failures)
 - Use typed errors/exceptions (custom error types for domain errors)
 - Provide context in error messages (what, why, how to fix)
@@ -187,6 +203,7 @@ accessibility:
 - Never catch and ignore errors without justification (document why)
 
 **Error Message Quality**
+
 - Include relevant context (user ID, resource ID, etc.)
 - Suggest remediation steps when possible
 - No sensitive data in error messages (sanitize)
@@ -195,6 +212,7 @@ accessibility:
 ### 5. Comments & Documentation
 
 **When to Comment**
+
 - Complex algorithms: Explain the approach and reasoning
 - Non-obvious code: Clarify intent when code alone is unclear
 - API boundaries: Document all public interfaces
@@ -202,6 +220,7 @@ accessibility:
 - Security considerations: Highlight security-critical sections
 
 **When NOT to Comment**
+
 - Obvious code: Let the code speak for itself
 - Redundant information: Don't repeat what the code says
 - Outdated comments: Remove or update stale comments
@@ -214,6 +233,7 @@ accessibility:
 ### 1. Testing Pyramid
 
 **Unit Tests** (70% of tests)
+
 - Test individual functions/methods in isolation
 - Fast execution (< 1ms per test typically)
 - No external dependencies (use mocks/stubs)
@@ -221,6 +241,7 @@ accessibility:
 - Focus: Logic correctness and edge cases
 
 **Integration Tests** (20% of tests)
+
 - Test component interactions
 - May use real dependencies (databases, APIs)
 - Slower execution (< 100ms per test)
@@ -228,6 +249,7 @@ accessibility:
 - Focus: Component collaboration and data flow
 
 **End-to-End Tests** (10% of tests)
+
 - Test complete user workflows
 - Use real system configuration
 - Slowest execution (seconds per test)
@@ -237,6 +259,7 @@ accessibility:
 ### 2. Test Quality Requirements
 
 **Test Structure**
+
 - Follow AAA pattern: Arrange, Act, Assert
 - One assertion per test (or closely related assertions)
 - Clear test names: `test_<function>_<scenario>_<expected_result>`
@@ -244,12 +267,14 @@ accessibility:
 - Deterministic tests: Same input always produces same output
 
 **Test Coverage Metrics**
+
 - Line coverage: ≥ 80%
 - Branch coverage: ≥ 75%
 - Function coverage: 100% of public APIs
 - Mutation score: ≥ 40% (target: 60%)
 
 **Test Data Management**
+
 - Use factories/builders for test data creation
 - Avoid magic numbers: Use named constants
 - Minimize test data: Only include relevant fields
@@ -258,13 +283,15 @@ accessibility:
 ### 3. Mutation Testing
 
 **Requirements**
+
 - Minimum mutation score: 40%
 - Target mutation score: 60%
 - Run on all critical business logic
 - Review surviving mutants and improve tests
 
 **Mutation Operators** (check these)
-- Arithmetic operators (+, -, *, /)
+
+- Arithmetic operators (+, -, \*, /)
 - Relational operators (<, >, <=, >=, ==, !=)
 - Logical operators (&&, ||, !)
 - Boundary values (off-by-one errors)
@@ -273,6 +300,7 @@ accessibility:
 ### 4. Contract Testing
 
 **API Contract Tests**
+
 - Use Pact for HTTP API contracts
 - Consumer-driven contracts for all service boundaries
 - Run contract tests on every commit
@@ -280,6 +308,7 @@ accessibility:
 - Verify provider compatibility
 
 **Event Contract Tests**
+
 - Use AsyncAPI for event schemas
 - Validate all event producers and consumers
 - Schema versioning strategy enforced
@@ -288,12 +317,14 @@ accessibility:
 ### 5. Property-Based Testing
 
 **When to Use**
+
 - Complex algorithms with many input combinations
 - Functions with invariants (properties that always hold)
 - Parsers and data transformations
 - Stateful systems with state machines
 
 **Requirements**
+
 - Use hypothesis (Python), fast-check (JS), or similar
 - Define clear properties to test
 - Run with sufficient iterations (≥ 100)
@@ -302,17 +333,20 @@ accessibility:
 ### 6. Performance Testing
 
 **Load Testing**
+
 - Baseline performance established
 - Test at expected peak load + 50%
 - Monitor key metrics (latency, throughput, error rate)
 - No degradation > 10% from baseline
 
 **Stress Testing**
+
 - Test beyond normal capacity
 - Verify graceful degradation
 - Test recovery after stress
 
 **Benchmarking**
+
 - Benchmark critical paths
 - Track performance over time
 - Prevent performance regressions in CI
@@ -324,6 +358,7 @@ accessibility:
 ### 1. Secure Code Practices
 
 **Input Validation**
+
 - Validate all external inputs (user input, API requests, file uploads)
 - Use allow-lists, not deny-lists
 - Sanitize inputs for context (HTML, SQL, shell)
@@ -331,6 +366,7 @@ accessibility:
 - Reject invalid input (fail closed)
 
 **Authentication & Authorization**
+
 - Use industry-standard protocols (OAuth 2.0, OpenID Connect)
 - Never roll your own crypto
 - Store passwords with bcrypt/Argon2 (never plain text)
@@ -339,6 +375,7 @@ accessibility:
 - Verify authorization on every request
 
 **Data Protection**
+
 - Encrypt sensitive data at rest (AES-256)
 - Encrypt data in transit (TLS 1.3)
 - Never log sensitive data (passwords, tokens, PII)
@@ -346,6 +383,7 @@ accessibility:
 - Use secure random number generation
 
 **Common Vulnerabilities Prevention**
+
 - SQL Injection: Use parameterized queries only
 - XSS: Escape all user input in output
 - CSRF: Use CSRF tokens on state-changing operations
@@ -356,6 +394,7 @@ accessibility:
 ### 2. Dependency Security
 
 **Dependency Management**
+
 - Pin all dependency versions (use lock files)
 - Review dependencies before adding (security, maintenance, size)
 - Minimize dependencies (only add when justified)
@@ -363,6 +402,7 @@ accessibility:
 - Remove unused dependencies
 
 **Vulnerability Scanning**
+
 - Scan dependencies daily for CVEs
 - Critical CVEs: Fix within 24 hours
 - High CVEs: Fix within 7 days
@@ -370,6 +410,7 @@ accessibility:
 - Low CVEs: Fix within 90 days or accept risk
 
 **Supply Chain Security**
+
 - Generate SBOM for all builds (CycloneDX or SPDX)
 - Verify package signatures when available
 - Use trusted package registries
@@ -379,24 +420,28 @@ accessibility:
 ### 3. Security Testing
 
 **SAST (Static Application Security Testing)**
+
 - Run on every commit
 - Zero critical findings required for merge
 - Tools: CodeQL, Semgrep, or equivalent
 - Cover OWASP Top 10 and CWE Top 25
 
 **DAST (Dynamic Application Security Testing)**
+
 - Run on staging/pre-production environments
 - Cover all authenticated and unauthenticated flows
 - Test for OWASP Top 10 vulnerabilities
 - Tools: OWASP ZAP, Burp Suite, or equivalent
 
 **Secret Scanning**
+
 - Run on every commit (Gitleaks)
 - Block commits containing secrets
 - Scan commit history for secrets
 - Rotate secrets immediately if exposed
 
 **Penetration Testing**
+
 - Annual third-party penetration tests
 - Address all findings within SLA
 - Retest after remediation
@@ -408,6 +453,7 @@ accessibility:
 ### 1. Prompt Engineering Quality
 
 **Prompt Design**
+
 - Clear, specific instructions
 - Structured format for consistency
 - Include relevant context and constraints
@@ -416,6 +462,7 @@ accessibility:
 - Version control all prompts
 
 **Prompt Testing**
+
 - Test with diverse inputs (edge cases, adversarial)
 - Validate output quality and format
 - Measure consistency across runs
@@ -423,6 +470,7 @@ accessibility:
 - Monitor prompt performance in production
 
 **Prompt Security**
+
 - Validate all user input to prompts
 - Prevent prompt injection attacks
 - Sanitize LLM outputs before use
@@ -432,6 +480,7 @@ accessibility:
 ### 2. RAG (Retrieval-Augmented Generation) Quality
 
 **Data Quality**
+
 - Clean, accurate source data
 - Regular data updates and validation
 - Remove PII unless required
@@ -439,6 +488,7 @@ accessibility:
 - Document data lineage
 
 **Retrieval Quality**
+
 - Relevance metrics (MRR, NDCG)
 - Recall threshold: ≥ 90%
 - Precision threshold: ≥ 80%
@@ -446,6 +496,7 @@ accessibility:
 - A/B test retrieval strategies
 
 **Generation Quality**
+
 - Factual accuracy verification
 - Citation/source attribution
 - Hallucination detection
@@ -455,6 +506,7 @@ accessibility:
 ### 3. Model Governance
 
 **Model Selection & Deployment**
+
 - Document model selection rationale
 - Evaluate multiple models for task
 - Monitor model performance metrics
@@ -462,6 +514,7 @@ accessibility:
 - Version all model configurations
 
 **Model Monitoring**
+
 - Track inference latency (p50, p95, p99)
 - Monitor error rates and types
 - Detect model drift
@@ -469,6 +522,7 @@ accessibility:
 - Alert on anomalies
 
 **Bias & Fairness**
+
 - Test for bias across demographics
 - Monitor fairness metrics
 - Regular bias audits
@@ -476,6 +530,7 @@ accessibility:
 - Implement bias mitigation strategies
 
 **LLM-Specific Security (OWASP LLM Top 10)**
+
 - Prevent prompt injection (LLM01)
 - Control data leakage (LLM02)
 - Validate training data (LLM03)
@@ -494,6 +549,7 @@ accessibility:
 ### 1. Domain Modeling
 
 **Model Design**
+
 - Use domain-driven design principles
 - Clear bounded contexts
 - Ubiquitous language throughout
@@ -501,6 +557,7 @@ accessibility:
 - Explicit business rules in code
 
 **Model Validation**
+
 - Validate all business invariants
 - Use value objects for validated data
 - Fail fast on invalid state
@@ -510,12 +567,14 @@ accessibility:
 ### 2. Business Rule Implementation
 
 **Rule Clarity**
+
 - One rule per function/method where possible
 - Clear naming that reflects business language
 - Document complex rules with examples
 - Separate rules from infrastructure code
 
 **Rule Testing**
+
 - Test each rule independently
 - Test rule combinations
 - Test edge cases and boundaries
@@ -523,6 +582,7 @@ accessibility:
 - Property-based testing for complex rules
 
 **Rule Traceability**
+
 - Map code to business requirements
 - Document rule sources (policy, regulation, etc.)
 - Version business rules
@@ -531,6 +591,7 @@ accessibility:
 ### 3. Data Validation & Transformation
 
 **Validation Standards**
+
 - Validate at system boundaries
 - Use schema validation (JSON Schema, OpenAPI)
 - Explicit validation rules
@@ -538,6 +599,7 @@ accessibility:
 - Validation as documentation
 
 **Transformation Standards**
+
 - Pure functions where possible
 - Explicit input/output types
 - Lossless transformations (preserve information)
@@ -547,6 +609,7 @@ accessibility:
 ### 4. State Management
 
 **State Design**
+
 - Minimize mutable state
 - Explicit state transitions
 - Use state machines for complex flows
@@ -554,6 +617,7 @@ accessibility:
 - Clear state ownership
 
 **State Testing**
+
 - Test all state transitions
 - Test invalid transitions
 - Test state persistence and recovery
@@ -567,6 +631,7 @@ accessibility:
 ### 1. Workflow Patterns
 
 **Workflow Design**
+
 - Clear, linear flows where possible
 - Explicit error handling paths
 - Idempotent operations
@@ -574,6 +639,7 @@ accessibility:
 - Timeout and retry policies
 
 **Supported Patterns**
+
 - Saga pattern for distributed transactions
 - Event-driven choreography
 - Workflow orchestration (Temporal, Argo)
@@ -581,6 +647,7 @@ accessibility:
 - Bulkhead for resource isolation
 
 **Pattern Implementation**
+
 - Document pattern choice and rationale
 - Implement standard patterns consistently
 - Test failure scenarios thoroughly
@@ -589,12 +656,14 @@ accessibility:
 ### 2. Distributed System Quality
 
 **Consistency**
+
 - Define consistency requirements (strong, eventual)
 - Implement appropriate consistency models
 - Test for distributed edge cases
 - Handle split-brain scenarios
 
 **Reliability**
+
 - Design for failure (assume failures will happen)
 - Implement retries with exponential backoff
 - Set appropriate timeouts
@@ -602,6 +671,7 @@ accessibility:
 - Implement graceful degradation
 
 **Observability**
+
 - Distributed tracing for all requests
 - Correlation IDs across services
 - Structured logging with context
@@ -611,6 +681,7 @@ accessibility:
 ### 3. Event-Driven Architecture
 
 **Event Design**
+
 - Immutable events
 - Schema versioning strategy
 - Event sourcing where appropriate
@@ -618,6 +689,7 @@ accessibility:
 - Include event metadata (timestamp, source, etc.)
 
 **Event Processing**
+
 - At-least-once or exactly-once semantics
 - Idempotent event handlers
 - Dead letter queues for failures
@@ -625,6 +697,7 @@ accessibility:
 - Event ordering guarantees where required
 
 **Event Testing**
+
 - Test event handlers in isolation
 - Test event ordering scenarios
 - Test duplicate event handling
@@ -634,12 +707,14 @@ accessibility:
 ### 4. Resilience Patterns
 
 **Timeout Management**
+
 - Set timeouts on all external calls
 - Use appropriate timeout values (profile actual latency)
 - Cascade timeouts properly (parent > child)
 - Test timeout scenarios
 
 **Retry Logic**
+
 - Exponential backoff with jitter
 - Maximum retry attempts
 - Only retry transient failures
@@ -647,6 +722,7 @@ accessibility:
 - Circuit breaker to stop excessive retries
 
 **Fallback Strategies**
+
 - Define fallback behavior for all critical paths
 - Cache for read operations
 - Stale data better than no data (where appropriate)
@@ -660,6 +736,7 @@ accessibility:
 ### 1. Code Documentation
 
 **Inline Documentation**
+
 - Document all public APIs (functions, classes, modules)
 - Include parameter descriptions and types
 - Document return values and exceptions
@@ -667,6 +744,7 @@ accessibility:
 - Keep documentation synchronized with code
 
 **Documentation Standards by Language**
+
 - Python: Google-style or NumPy-style docstrings
 - TypeScript/JavaScript: JSDoc comments
 - Go: godoc comments
@@ -675,6 +753,7 @@ accessibility:
 ### 2. Architecture Documentation
 
 **Architecture Decision Records (ADRs)**
+
 - Use ADR template in `docs/adr/`
 - Required for all significant decisions
 - Include: Context, Decision, Consequences, Alternatives
@@ -682,6 +761,7 @@ accessibility:
 - Keep ADRs up to date
 
 **Diagrams**
+
 - Use C4 model (Context, Container, Component, Code)
 - Include system context diagrams
 - Component diagrams for major subsystems
@@ -689,6 +769,7 @@ accessibility:
 - Keep diagrams as code (PlantUML, Mermaid)
 
 **API Documentation**
+
 - OpenAPI 3.x for REST APIs
 - GraphQL schema documentation
 - gRPC proto documentation
@@ -698,6 +779,7 @@ accessibility:
 ### 3. User Documentation
 
 **README Requirements**
+
 - Clear project description
 - Quick start guide (5 minutes or less)
 - Installation instructions
@@ -707,6 +789,7 @@ accessibility:
 - License information
 
 **User Guides**
+
 - Task-oriented documentation
 - Step-by-step instructions
 - Screenshots and examples
@@ -714,6 +797,7 @@ accessibility:
 - FAQ for common questions
 
 **Runbooks**
+
 - Operational procedures
 - Incident response playbooks
 - Deployment procedures
@@ -723,6 +807,7 @@ accessibility:
 ### 4. Documentation Testing
 
 **Doc Validation**
+
 - Test all code examples (include in CI)
 - Verify all links (no broken links)
 - Test installation instructions
@@ -730,6 +815,7 @@ accessibility:
 - Review for clarity and completeness
 
 **Doc Maintenance**
+
 - Update docs with code changes
 - Review docs quarterly
 - Deprecation notices for old versions
@@ -742,6 +828,7 @@ accessibility:
 ### 1. Application Performance
 
 **Response Time Targets**
+
 - API endpoints: p95 < 200ms, p99 < 500ms
 - Database queries: p95 < 50ms, p99 < 100ms
 - Page load time: LCP < 2.5s
@@ -749,12 +836,14 @@ accessibility:
 - First contentful paint: FCP < 1.8s
 
 **Throughput Targets**
+
 - Define throughput requirements per endpoint
 - Load test at peak + 50% capacity
 - Ensure linear scaling or document limits
 - Monitor throughput in production
 
 **Resource Usage**
+
 - Memory: No memory leaks (stable over time)
 - CPU: < 70% average utilization at peak
 - Disk I/O: Monitor and optimize hot paths
@@ -763,17 +852,20 @@ accessibility:
 ### 2. Frontend Performance
 
 **Core Web Vitals** (WCAG/ISO 9241-210 aligned)
+
 - Largest Contentful Paint (LCP): < 2.5s
 - First Input Delay (FID): < 100ms
 - Cumulative Layout Shift (CLS): < 0.1
 
 **Bundle Size Budgets**
+
 - Initial bundle: < 170 KB (compressed)
 - Total JavaScript: < 500 KB (compressed)
 - Critical CSS: < 14 KB (inline)
 - Images: WebP/AVIF with lazy loading
 
 **Optimization Techniques**
+
 - Code splitting by route
 - Tree shaking unused code
 - Lazy loading non-critical resources
@@ -783,6 +875,7 @@ accessibility:
 ### 3. Database Performance
 
 **Query Performance**
+
 - All queries profiled and optimized
 - Indexes on foreign keys and query columns
 - No N+1 query problems
@@ -790,6 +883,7 @@ accessibility:
 - Monitor slow query log
 
 **Data Growth Strategy**
+
 - Archival strategy for old data
 - Partitioning for large tables
 - Caching strategy for hot data
@@ -798,12 +892,14 @@ accessibility:
 ### 4. Performance Testing
 
 **Load Testing**
+
 - Test at expected peak load + 50%
 - Sustained load tests (30+ minutes)
 - Identify bottlenecks and address
 - Establish performance baselines
 
 **Performance Monitoring**
+
 - Real user monitoring (RUM)
 - Synthetic monitoring for critical paths
 - Performance budgets enforced in CI
@@ -816,6 +912,7 @@ accessibility:
 ### 1. WCAG 2.2 AA Compliance
 
 **Perceivable** (Principle 1)
+
 - Text alternatives for non-text content
 - Captions and alternatives for multimedia
 - Adaptable content (multiple presentations)
@@ -823,6 +920,7 @@ accessibility:
 - Color contrast: ≥ 4.5:1 for normal text, ≥ 3:1 for large text
 
 **Operable** (Principle 2)
+
 - Full keyboard accessibility (no keyboard traps)
 - Sufficient time for users to read and interact
 - No content causing seizures (flashing < 3 per second)
@@ -830,12 +928,14 @@ accessibility:
 - Multiple input methods supported
 
 **Understandable** (Principle 3)
+
 - Readable text (language declared, definitions provided)
 - Predictable behavior (consistent navigation and identification)
 - Input assistance (error prevention, correction, suggestions)
 - Clear instructions and labels
 
 **Robust** (Principle 4)
+
 - Valid HTML/ARIA
 - Compatible with assistive technologies
 - Semantic HTML elements
@@ -845,12 +945,14 @@ accessibility:
 ### 2. Accessibility Testing
 
 **Automated Testing**
+
 - axe-core in CI pipeline (zero critical issues)
 - Lighthouse accessibility score ≥ 95
 - Pa11y or similar for continuous monitoring
 - Test with browser accessibility tools
 
 **Manual Testing**
+
 - Keyboard-only navigation testing
 - Screen reader testing (NVDA, JAWS, VoiceOver)
 - Zoom to 200% (content still accessible)
@@ -858,6 +960,7 @@ accessibility:
 - Test with assistive technologies
 
 **User Testing**
+
 - Include users with disabilities in testing
 - Test with diverse assistive technologies
 - Gather feedback and iterate
@@ -866,6 +969,7 @@ accessibility:
 ### 3. Accessible Development Practices
 
 **HTML Practices**
+
 - Semantic HTML elements (nav, main, article, etc.)
 - Proper heading hierarchy (h1 → h2 → h3)
 - Form labels properly associated
@@ -873,6 +977,7 @@ accessibility:
 - Link text descriptive and meaningful
 
 **ARIA Practices**
+
 - Use ARIA only when needed (HTML first)
 - ARIA roles, states, properties correctly applied
 - Live regions for dynamic content
@@ -880,6 +985,7 @@ accessibility:
 - Aria-labels for icon buttons
 
 **Keyboard Practices**
+
 - All interactive elements keyboard accessible
 - Visible focus indicators
 - Logical tab order
@@ -893,12 +999,14 @@ accessibility:
 ### 1. Code Review Requirements
 
 **Review Scope**
+
 - All code changes require review (no direct commits to main)
 - Minimum 1 approval required for merge
 - 2+ approvals for critical/security changes
 - Architecture changes require tech lead approval
 
 **Reviewer Responsibilities**
+
 - Verify functionality and correctness
 - Check for security vulnerabilities
 - Ensure code quality and maintainability
@@ -907,6 +1015,7 @@ accessibility:
 - Check standards compliance
 
 **Review Checklist** (see CONVENTIONS.md for full list)
+
 - [ ] Code follows style guide
 - [ ] Tests added/updated for changes
 - [ ] Documentation updated
@@ -920,6 +1029,7 @@ accessibility:
 ### 2. Pull Request Standards
 
 **PR Description**
+
 - Clear title (conventional commits format)
 - Description of changes and rationale
 - Link to related issues/tickets
@@ -928,12 +1038,14 @@ accessibility:
 - Breaking changes highlighted
 
 **PR Size**
+
 - Target: < 400 lines changed
 - Maximum: 800 lines (excluding generated code)
 - Large PRs split into smaller logical chunks
 - Exceptions require justification
 
 **PR Lifecycle**
+
 - Draft PRs for early feedback
 - CI must pass before review
 - Address all review comments
@@ -943,18 +1055,21 @@ accessibility:
 ### 3. Approval Workflows
 
 **Standard Changes**
+
 - 1 approving review from code owner
 - All CI checks passing
 - No outstanding review comments
 - Up to date with target branch
 
 **Security-Sensitive Changes**
+
 - 2 approving reviews required
 - Security team review required
 - Security testing completed
 - Deployment plan documented
 
 **Infrastructure/Platform Changes**
+
 - Platform team review required
 - Impact assessment completed
 - Rollback plan documented
@@ -967,6 +1082,7 @@ accessibility:
 ### 1. Quality Metrics Tracking
 
 **Code Quality Metrics**
+
 - Code coverage trend (target: ↑)
 - Code smells trend (target: ↓)
 - Technical debt ratio (target: < 5%)
@@ -974,6 +1090,7 @@ accessibility:
 - Duplication percentage (target: < 3%)
 
 **Defect Metrics**
+
 - Defect escape rate (target: < 5%)
 - Mean time to detection (target: ↓)
 - Mean time to resolution (target: ↓)
@@ -981,6 +1098,7 @@ accessibility:
 - Critical defects in production (target: 0)
 
 **Process Metrics**
+
 - Build success rate (target: > 95%)
 - PR cycle time (target: < 2 days)
 - Code review turnaround (target: < 4 hours)
@@ -990,6 +1108,7 @@ accessibility:
 ### 2. Quality Reviews
 
 **Monthly Quality Reviews**
+
 - Review quality metrics trends
 - Identify quality improvement opportunities
 - Address recurring issues
@@ -997,6 +1116,7 @@ accessibility:
 - Share learnings across teams
 
 **Quarterly Quality Audits**
+
 - Deep dive on code quality
 - Security posture assessment
 - Performance review
@@ -1004,6 +1124,7 @@ accessibility:
 - Documentation review
 
 **Annual Quality Retrospectives**
+
 - Review year's quality improvements
 - Set quality goals for next year
 - Update quality standards
@@ -1012,6 +1133,7 @@ accessibility:
 ### 3. Learning & Improvement
 
 **Post-Incident Reviews**
+
 - Blameless post-mortems for all incidents
 - Identify root causes
 - Document action items
@@ -1019,12 +1141,14 @@ accessibility:
 - Share learnings widely
 
 **Quality Training**
+
 - Onboarding: Quality standards overview
 - Ongoing: Quarterly quality workshops
 - Specialized: Security, performance, accessibility training
 - Tool training: SAST, testing frameworks, etc.
 
 **Knowledge Sharing**
+
 - Quality champions in each team
 - Regular tech talks on quality
 - Internal blog/wiki for quality practices
@@ -1037,6 +1161,7 @@ accessibility:
 ### 1. Automated Enforcement
 
 **Pre-commit Hooks**
+
 - Code formatting (Black, Prettier, gofmt)
 - Linting (Ruff, ESLint, golangci-lint)
 - Secret scanning (Gitleaks)
@@ -1044,12 +1169,14 @@ accessibility:
 - Unit test execution (fast tests only)
 
 **CI Pipeline Enforcement**
+
 - All quality gates automated
 - Block merge on gate failures
 - No manual override without approval
 - Audit all quality gate bypasses
 
 **Continuous Monitoring**
+
 - SonarQube quality gate tracking
 - Security vulnerability scanning
 - Performance monitoring and alerting
@@ -1058,12 +1185,14 @@ accessibility:
 ### 2. Tooling Stack
 
 **Code Quality Tools**
+
 - SonarQube/SonarCloud: Code quality and security
 - Black/Prettier: Code formatting
 - Ruff/ESLint: Linting
 - mypy/TypeScript: Type checking
 
 **Testing Tools**
+
 - pytest/Jest/testing-library: Unit/integration testing
 - pytest-cov/Istanbul: Code coverage
 - mutmut/Stryker: Mutation testing
@@ -1071,6 +1200,7 @@ accessibility:
 - Pact: Contract testing
 
 **Security Tools**
+
 - Gitleaks: Secret scanning
 - CodeQL/Semgrep: SAST
 - Trivy/Snyk: Dependency scanning
@@ -1078,12 +1208,14 @@ accessibility:
 - Cosign: Artifact signing
 
 **Performance Tools**
+
 - Lighthouse: Web performance
 - k6/Locust: Load testing
 - OpenTelemetry: Observability
 - Prometheus/Grafana: Monitoring
 
 **Accessibility Tools**
+
 - axe-core: Automated accessibility testing
 - Pa11y: Continuous accessibility monitoring
 - WAVE: Browser-based testing
@@ -1092,6 +1224,7 @@ accessibility:
 ### 3. Quality Dashboard
 
 **Real-time Dashboard**
+
 - Current quality gate status
 - Code coverage trends
 - Security vulnerability status
@@ -1099,6 +1232,7 @@ accessibility:
 - Accessibility compliance
 
 **Reporting**
+
 - Weekly quality reports
 - Monthly quality metrics review
 - Quarterly quality audits
@@ -1109,6 +1243,7 @@ accessibility:
 ## Appendix: Standards Mapping
 
 ### NIST SSDF v1.1 Mapping
+
 - **PO.1**: Define security requirements → Security Quality Standards
 - **PO.3**: Security requirements → Security Gate
 - **PS.1**: Secure design → Code Quality Standards
@@ -1122,6 +1257,7 @@ accessibility:
 - **RV.1**: Vulnerability response → Continuous Improvement
 
 ### OWASP SAMM 2.0 Mapping
+
 - **Governance**: Quality reviews, metrics tracking
 - **Design**: Domain modeling, architecture documentation
 - **Implementation**: Code quality, secure coding
@@ -1129,6 +1265,7 @@ accessibility:
 - **Operations**: Continuous monitoring, incident response
 
 ### ISO/IEC 25010 Mapping
+
 - **Functional Suitability**: Business logic quality, testing
 - **Performance Efficiency**: Performance quality standards
 - **Compatibility**: Contract testing, API standards
@@ -1139,6 +1276,7 @@ accessibility:
 - **Portability**: Dependency management, configuration
 
 ### SLSA Level 3 Mapping
+
 - **Source**: Version control, code review
 - **Build**: Reproducible builds, SBOM generation
 - **Provenance**: Signed artifacts, build attestation
@@ -1158,4 +1296,4 @@ accessibility:
 
 ---
 
-*This document is part of the Agentic Canon framework for frontier software excellence.*
+_This document is part of the Agentic Canon framework for frontier software excellence._

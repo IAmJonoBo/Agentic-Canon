@@ -62,7 +62,7 @@ class MetricAnomalyDetector:
     """
     Detect anomalies in metric time series using Isolation Forest.
     """
-    
+
     def __init__(self, contamination: float = 0.1):
         """
         Args:
@@ -73,35 +73,35 @@ class MetricAnomalyDetector:
             random_state=42
         )
         self.is_fitted = False
-    
+
     def fit(self, metrics: List[float]):
         """
         Train the anomaly detector on historical metrics.
-        
+
         Args:
             metrics: List of metric values
         """
         X = np.array(metrics).reshape(-1, 1)
         self.model.fit(X)
         self.is_fitted = True
-    
+
     def detect(self, value: float) -> Tuple[bool, float]:
         """
         Detect if a value is anomalous.
-        
+
         Args:
             value: Metric value to check
-            
+
         Returns:
             Tuple of (is_anomaly, anomaly_score)
         """
         if not self.is_fitted:
             raise ValueError("Model must be fitted before detection")
-        
+
         X = np.array([[value]])
         prediction = self.model.predict(X)[0]
         score = self.model.score_samples(X)[0]
-        
+
         is_anomaly = prediction == -1
         return is_anomaly, abs(score)
 
@@ -127,18 +127,18 @@ from prometheus_api_client import PrometheusConnect
 
 class PrometheusAnomalyMonitor:
     """Monitor Prometheus metrics for anomalies."""
-    
+
     def __init__(self, prometheus_url: str):
         self.prom = PrometheusConnect(url=prometheus_url)
         self.detectors = {}
-        
+
         # Prometheus metric for anomalies
         self.anomaly_gauge = Gauge(
             'ml_anomaly_score',
             'ML anomaly detection score',
             ['metric_name']
         )
-    
+
     def monitor_metric(
         self,
         metric_name: str,
@@ -147,7 +147,7 @@ class PrometheusAnomalyMonitor:
     ):
         """
         Monitor a Prometheus metric for anomalies.
-        
+
         Args:
             metric_name: Name of the metric
             query: PromQL query
@@ -160,26 +160,26 @@ class PrometheusAnomalyMonitor:
             end_time="now",
             step="5m"
         )
-        
+
         values = [float(point[1]) for point in historical_data[0]['values']]
-        
+
         # Train detector
         if metric_name not in self.detectors:
             self.detectors[metric_name] = MetricAnomalyDetector()
-        
+
         self.detectors[metric_name].fit(values)
-        
+
         # Check latest value
         latest_value = float(historical_data[0]['values'][-1][1])
         is_anomaly, score = self.detectors[metric_name].detect(latest_value)
-        
+
         # Update Prometheus
         self.anomaly_gauge.labels(metric_name=metric_name).set(score)
-        
+
         if is_anomaly:
             print(f"🚨 Anomaly in {metric_name}: {latest_value} (score: {score:.2f})")
             return True
-        
+
         return False
 ```
 
@@ -197,7 +197,7 @@ class DeploymentFailurePredictor:
     """
     Predict deployment failures based on historical data.
     """
-    
+
     def __init__(self):
         self.model = RandomForestClassifier(
             n_estimators=100,
@@ -213,11 +213,11 @@ class DeploymentFailurePredictor:
             'pr_review_time',       # Review time in hours
             'num_dependencies_changed', # Dependency changes
         ]
-    
+
     def prepare_features(self, deployment_data: dict) -> pd.DataFrame:
         """Extract features from deployment data."""
         features = {
-            'change_size': deployment_data.get('lines_added', 0) + 
+            'change_size': deployment_data.get('lines_added', 0) +
                           deployment_data.get('lines_removed', 0),
             'num_files_changed': deployment_data.get('files_changed', 0),
             'test_coverage': deployment_data.get('test_coverage', 0),
@@ -228,44 +228,44 @@ class DeploymentFailurePredictor:
             'num_dependencies_changed': deployment_data.get('dep_changes', 0),
         }
         return pd.DataFrame([features])
-    
+
     def train(self, historical_deployments: List[dict]):
         """
         Train model on historical deployment data.
-        
+
         Args:
             historical_deployments: List of dicts with deployment info and outcome
         """
         X = []
         y = []
-        
+
         for deployment in historical_deployments:
             features = self.prepare_features(deployment)
             X.append(features.values[0])
             y.append(1 if deployment.get('failed', False) else 0)
-        
+
         X = np.array(X)
         y = np.array(y)
-        
+
         self.model.fit(X, y)
-        
+
         # Print feature importances
         importances = self.model.feature_importances_
         for name, importance in zip(self.feature_names, importances):
             print(f"  {name}: {importance:.3f}")
-    
+
     def predict_failure_risk(self, deployment_data: dict) -> Tuple[float, str]:
         """
         Predict failure risk for a deployment.
-        
+
         Returns:
             Tuple of (risk_score, risk_level)
         """
         features = self.prepare_features(deployment_data)
-        
+
         # Get probability of failure
         proba = self.model.predict_proba(features)[0][1]
-        
+
         # Categorize risk
         if proba < 0.2:
             risk_level = "LOW"
@@ -275,7 +275,7 @@ class DeploymentFailurePredictor:
             risk_level = "HIGH"
         else:
             risk_level = "CRITICAL"
-        
+
         return proba, risk_level
 
 # Example usage
@@ -324,7 +324,7 @@ class FlakyTestDetector:
     """
     Detect flaky tests based on historical test results.
     """
-    
+
     def __init__(self, window_size: int = 100):
         """
         Args:
@@ -332,95 +332,95 @@ class FlakyTestDetector:
         """
         self.window_size = window_size
         self.test_history = defaultdict(list)  # test_name -> [pass/fail]
-    
+
     def record_result(self, test_name: str, passed: bool):
         """Record a test result."""
         self.test_history[test_name].append(passed)
-        
+
         # Keep only recent results
         if len(self.test_history[test_name]) > self.window_size:
             self.test_history[test_name].pop(0)
-    
+
     def calculate_flakiness_score(self, test_name: str) -> float:
         """
         Calculate flakiness score for a test.
-        
+
         Score is based on:
         - Frequency of failures
         - Pattern of failures (alternating vs consecutive)
         - Recent trend
-        
+
         Returns:
             Score from 0 (stable) to 1 (very flaky)
         """
         if test_name not in self.test_history:
             return 0.0
-        
+
         results = self.test_history[test_name]
         if len(results) < 10:  # Not enough data
             return 0.0
-        
+
         # Calculate metrics
         failure_rate = 1 - sum(results) / len(results)
-        
+
         # Count transitions (pass->fail or fail->pass)
         transitions = sum(
             1 for i in range(len(results)-1)
             if results[i] != results[i+1]
         )
         transition_rate = transitions / (len(results) - 1)
-        
+
         # Recent trend (last 10 runs)
         recent_failure_rate = 1 - sum(results[-10:]) / 10
-        
+
         # Flakiness score
         # Perfect tests: failure_rate=0, transition_rate=0
         # Flaky tests: 0<failure_rate<1, high transition_rate
         # Consistently failing: failure_rate=1, transition_rate=0
-        
+
         if failure_rate == 0 or failure_rate == 1:
             # Consistently passing or failing - not flaky
             return 0.0
-        
+
         # Weight different factors
         score = (
             0.4 * failure_rate +           # Some failures
             0.4 * transition_rate +        # Alternating results
             0.2 * recent_failure_rate      # Recent behavior
         )
-        
+
         return min(score, 1.0)
-    
+
     def get_flaky_tests(self, threshold: float = 0.5) -> List[Dict]:
         """
         Get list of flaky tests above threshold.
-        
+
         Returns:
             List of dicts with test info and scores
         """
         flaky_tests = []
-        
+
         for test_name in self.test_history:
             score = self.calculate_flakiness_score(test_name)
-            
+
             if score >= threshold:
                 flaky_tests.append({
                     'name': test_name,
                     'flakiness_score': score,
                     'total_runs': len(self.test_history[test_name]),
-                    'pass_rate': sum(self.test_history[test_name]) / 
+                    'pass_rate': sum(self.test_history[test_name]) /
                                 len(self.test_history[test_name])
                 })
-        
+
         # Sort by flakiness score
         flaky_tests.sort(key=lambda x: x['flakiness_score'], reverse=True)
-        
+
         return flaky_tests
-    
+
     def quarantine_test(self, test_name: str) -> str:
         """
         Generate pytest mark to quarantine flaky test.
-        
+
         Returns:
             Pytest marker string
         """
@@ -431,13 +431,13 @@ class FlakyTestDetector:
 def pytest_collection_modifyitems(config, items):
     """Automatically skip flaky tests."""
     detector = FlakyTestDetector()
-    
+
     # Load historical results
     # ... load from database or file
-    
+
     flaky_tests = detector.get_flaky_tests(threshold=0.7)
     flaky_test_names = {test['name'] for test in flaky_tests}
-    
+
     for item in items:
         if item.nodeid in flaky_test_names:
             item.add_marker(
@@ -459,11 +459,11 @@ class CodeQualityPredictor:
     """
     Predict code quality issues from PR diffs.
     """
-    
+
     def __init__(self):
         self.vectorizer = TfidfVectorizer(max_features=1000)
         self.model = GradientBoostingClassifier()
-    
+
     def extract_features(self, diff: str) -> dict:
         """Extract features from code diff."""
         return {
@@ -476,32 +476,32 @@ class CodeQualityPredictor:
             'has_error_handling': bool(re.search(r'try:|catch|except', diff)),
             'has_tests': bool(re.search(r'test_|def test', diff)),
         }
-    
+
     def predict_quality_issues(self, diff: str) -> List[str]:
         """
         Predict potential quality issues in code.
-        
+
         Returns:
             List of predicted issues
         """
         features = self.extract_features(diff)
         issues = []
-        
+
         if features['lines_added'] > 500:
             issues.append("Large changeset - consider breaking into smaller PRs")
-        
+
         if features['has_todos']:
             issues.append("Contains TODO/FIXME comments")
-        
+
         if features['has_long_lines']:
             issues.append("Contains lines longer than 120 characters")
-        
+
         if features['num_functions'] > 0 and not features['has_tests']:
             issues.append("New functions added without tests")
-        
+
         if not features['has_error_handling'] and features['lines_added'] > 50:
             issues.append("No error handling detected in significant changes")
-        
+
         return issues
 ```
 
@@ -542,22 +542,22 @@ spec:
         app: ml-insights
     spec:
       containers:
-      - name: ml-insights
-        image: your-registry/ml-insights:latest
-        ports:
-        - containerPort: 8080
-        env:
-        - name: PROMETHEUS_URL
-          value: "http://prometheus:9090"
-        - name: MODEL_PATH
-          value: "/models"
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
+        - name: ml-insights
+          image: your-registry/ml-insights:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PROMETHEUS_URL
+              value: "http://prometheus:9090"
+            - name: MODEL_PATH
+              value: "/models"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
 ```
 
 ## Configuration
@@ -571,14 +571,14 @@ anomaly_detection:
     - name: api_latency
       query: "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))"
       threshold: 0.8
-    
+
     - name: error_rate
-      query: "rate(http_requests_total{status=~\"5..\"}[5m])"
+      query: 'rate(http_requests_total{status=~"5.."}[5m])'
       threshold: 0.9
 
 failure_prediction:
   enabled: true
-  risk_threshold: 0.7  # Block deployments above this risk
+  risk_threshold: 0.7 # Block deployments above this risk
   retrain_interval_hours: 24
 
 flaky_tests:

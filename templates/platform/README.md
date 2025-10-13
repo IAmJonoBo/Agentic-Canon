@@ -15,6 +15,7 @@ Backstage Software Templates for standardized service creation.
 **File:** [`service-template.yaml`](backstage/service-template.yaml)
 
 **Features:**
+
 - Self-service service creation
 - Golden path enforcement
 - Compliance by default
@@ -29,11 +30,13 @@ Backstage Software Templates for standardized service creation.
 - SLO definitions
 
 **Service Tiers:**
+
 - **Tier-0**: Business-critical services (99.99% SLO, 24/7 on-call)
 - **Tier-1**: Important services (99.9% SLO, business hours support)
 - **Tier-2**: Standard services (99.5% SLO, best effort support)
 
 **Usage:**
+
 ```bash
 # Add to Backstage catalog
 # Place in your Backstage app repository
@@ -77,6 +80,7 @@ spec:
    - Default branch
 
 **Generated Components:**
+
 - Git repository with branch protection
 - README with standards badge
 - CI/CD pipeline (GitHub Actions or GitLab CI)
@@ -116,6 +120,7 @@ OPA (Open Policy Agent) policies for Kubernetes admission control.
 **Usage:**
 
 **Install OPA Gatekeeper:**
+
 ```bash
 # Install Gatekeeper
 kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yaml
@@ -125,6 +130,7 @@ kubectl get pods -n gatekeeper-system
 ```
 
 **Deploy Policy:**
+
 ```bash
 # Create constraint template
 kubectl apply -f opa-k8s-constraint-template.yaml
@@ -138,6 +144,7 @@ kubectl apply -f test-pod.yaml
 ```
 
 **Example Constraint:**
+
 ```yaml
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: K8sPolicyCheck
@@ -153,6 +160,7 @@ spec:
 ```
 
 **Policy Testing:**
+
 ```bash
 # Test policy locally
 opa test opa-k8s-policy.rego
@@ -170,6 +178,7 @@ GitOps configurations for ArgoCD and Flux (planned).
 **Status:** Templates planned for future release
 
 **Planned Features:**
+
 - ArgoCD application templates
 - Flux Kustomization templates
 - Multi-environment configurations
@@ -308,7 +317,7 @@ steps:
     name: Publish to GitHub
     action: publish:github
     input:
-      allowedHosts: ['github.com']
+      allowedHosts: ["github.com"]
       description: ${{ parameters.description }}
       repoUrl: ${{ parameters.repoUrl }}
       repoVisibility: ${{ parameters.repoVisibility }}
@@ -318,7 +327,7 @@ steps:
     action: catalog:register
     input:
       repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
-      catalogInfoPath: '/catalog-info.yaml'
+      catalogInfoPath: "/catalog-info.yaml"
 ```
 
 ### OPA + Kubernetes
@@ -330,17 +339,17 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: gatekeeper-validating-webhook-configuration
 webhooks:
-- name: validation.gatekeeper.sh
-  rules:
-  - operations: ["CREATE", "UPDATE"]
-    apiGroups: ["*"]
-    apiVersions: ["*"]
-    resources: ["*"]
-  clientConfig:
-    service:
-      name: gatekeeper-webhook-service
-      namespace: gatekeeper-system
-      path: "/v1/admit"
+  - name: validation.gatekeeper.sh
+    rules:
+      - operations: ["CREATE", "UPDATE"]
+        apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["*"]
+    clientConfig:
+      service:
+        name: gatekeeper-webhook-service
+        namespace: gatekeeper-system
+        path: "/v1/admit"
 ```
 
 ### Progressive Delivery
@@ -365,24 +374,27 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true
 ```
 
 ## Tools and Integrations
 
 ### Platform Tools
+
 - **Backstage** - Developer portal and service catalog
 - **Port** - Internal developer portal
 - **Clutch** - Extensibility platform
 - **Kratix** - Platform as a Product framework
 
 ### Policy Tools
+
 - **OPA** - Open Policy Agent
 - **Kyverno** - Kubernetes native policy engine
 - **Admission Controllers** - Kubernetes admission control
 - **Policy Reporter** - Policy violation reporting
 
 ### GitOps Tools
+
 - **ArgoCD** - Declarative GitOps
 - **Flux** - Progressive delivery
 - **Helm** - Package management
@@ -393,18 +405,21 @@ spec:
 ### Key Metrics
 
 **Developer Experience:**
+
 - Time to first commit
 - Service creation success rate
 - Developer satisfaction (DORA)
 - Support ticket volume
 
 **Platform Reliability:**
+
 - Platform uptime
 - Policy enforcement rate
 - GitOps sync success rate
 - Template generation failures
 
 **Security & Compliance:**
+
 - Policy violation rate
 - Non-compliant services
 - Security scan coverage
@@ -423,20 +438,24 @@ These templates help achieve compliance with:
 ## Additional Resources
 
 ### Backstage
+
 - [Backstage Docs](https://backstage.io/docs/)
 - [Software Templates](https://backstage.io/docs/features/software-templates/)
 - [Scaffolder Actions](https://backstage.io/docs/features/software-templates/builtin-actions)
 
 ### OPA
+
 - [OPA Documentation](https://www.openpolicyagent.org/docs/)
 - [Gatekeeper](https://open-policy-agent.github.io/gatekeeper/)
 - [Policy Library](https://github.com/open-policy-agent/gatekeeper-library)
 
 ### Platform Engineering
+
 - [Team Topologies](https://teamtopologies.com/)
 - [Platform Engineering Maturity Model](https://tag-app-delivery.cncf.io/whitepapers/platform-eng-maturity-model/)
 
 ### Related Templates
+
 - [CI/CD Templates](../cicd/README.md) - Pipeline templates
 - [Security Templates](../security/README.md) - Security scanning
 - [Observability Templates](../observability/README.md) - Monitoring setup
@@ -444,6 +463,7 @@ These templates help achieve compliance with:
 ## Contributing
 
 To improve these templates:
+
 1. Share your platform configurations
 2. Add service catalog examples
 3. Contribute policy patterns

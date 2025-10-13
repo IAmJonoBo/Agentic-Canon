@@ -5,6 +5,7 @@ This is a complete example of a production-ready React dashboard web application
 ## Overview
 
 A modern dashboard application for analytics and data visualization with:
+
 - Multiple dashboard views
 - Real-time data updates
 - Interactive charts and graphs
@@ -160,6 +161,7 @@ react-dashboard/
 ### Dashboard Overview
 
 The main dashboard displays:
+
 - **Key metrics**: Revenue, users, conversion rate, active sessions
 - **Trend charts**: Line charts showing metrics over time
 - **Data tables**: Recent transactions, user activity
@@ -169,6 +171,7 @@ The main dashboard displays:
 ### Authentication
 
 Secure user authentication with:
+
 - Login/logout functionality
 - Registration with validation
 - JWT token management
@@ -179,6 +182,7 @@ Secure user authentication with:
 ### Data Visualization
 
 Rich charting capabilities:
+
 - **Line Charts**: Time-series data, trends
 - **Bar Charts**: Comparisons, categorical data
 - **Pie Charts**: Proportions, distributions
@@ -189,6 +193,7 @@ Rich charting capabilities:
 ### State Management
 
 Efficient state handling:
+
 - **Zustand stores**: Lightweight, no boilerplate
 - **TanStack Query**: Server state, caching, background updates
 - **Local state**: Component-level state with hooks
@@ -197,6 +202,7 @@ Efficient state handling:
 ### Theming
 
 Dark and light mode support:
+
 - Toggle between themes
 - Persistent theme selection
 - Tailwind CSS dark mode
@@ -302,6 +308,7 @@ VITE_ENVIRONMENT=development
 ### Vite Configuration
 
 Key Vite settings in `vite.config.ts`:
+
 - Build optimization
 - Plugin configuration (React, PWA)
 - Development server proxy
@@ -311,6 +318,7 @@ Key Vite settings in `vite.config.ts`:
 ### Tailwind Configuration
 
 Customizations in `tailwind.config.js`:
+
 - Custom color palette
 - Extended spacing scale
 - Custom breakpoints
@@ -320,6 +328,7 @@ Customizations in `tailwind.config.js`:
 ### TypeScript Configuration
 
 Type checking settings:
+
 - Strict mode enabled
 - Path aliases
 - JSX configuration
@@ -339,6 +348,7 @@ npm run build
 ```
 
 **Supported platforms:**
+
 - Vercel
 - Netlify
 - GitHub Pages
@@ -434,9 +444,9 @@ import { Dashboard } from './Dashboard';
 describe('Dashboard', () => {
   it('displays metrics after loading', async () => {
     render(<Dashboard />);
-    
+
     expect(screen.getByText('Loading...')).toBeInTheDocument();
-    
+
     await waitFor(() => {
       expect(screen.getByText('Total Revenue')).toBeInTheDocument();
     });
@@ -449,18 +459,18 @@ describe('Dashboard', () => {
 Test user workflows with Playwright:
 
 ```typescript
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('user can login and view dashboard', async ({ page }) => {
-  await page.goto('/');
-  
+test("user can login and view dashboard", async ({ page }) => {
+  await page.goto("/");
+
   // Login
-  await page.fill('[name="email"]', 'user@example.com');
-  await page.fill('[name="password"]', 'password123');
+  await page.fill('[name="email"]', "user@example.com");
+  await page.fill('[name="password"]', "password123");
   await page.click('button[type="submit"]');
-  
+
   // Verify dashboard loads
-  await expect(page.locator('h1')).toContainText('Dashboard');
+  await expect(page.locator("h1")).toContainText("Dashboard");
   await expect(page.locator('[data-testid="metric-card"]')).toBeVisible();
 });
 ```
@@ -468,6 +478,7 @@ test('user can login and view dashboard', async ({ page }) => {
 ### Visual Regression
 
 Storybook provides visual testing:
+
 - Chromatic integration
 - Snapshot testing
 - Cross-browser testing
@@ -504,6 +515,7 @@ Storybook provides visual testing:
 ### Quality Gates
 
 All PRs must pass:
+
 - ✅ Linting (ESLint, Prettier)
 - ✅ Type checking (TypeScript)
 - ✅ Unit tests (≥80% coverage)
@@ -527,6 +539,7 @@ All PRs must pass:
 ### Bundle Size
 
 Target bundle sizes:
+
 - **Initial JS**: < 200KB gzipped
 - **Initial CSS**: < 50KB gzipped
 - **Lazy chunks**: < 100KB each
@@ -536,6 +549,7 @@ Target bundle sizes:
 ### Performance Metrics
 
 Core Web Vitals targets:
+
 - **LCP** (Largest Contentful Paint): < 2.5s
 - **FID** (First Input Delay): < 100ms
 - **CLS** (Cumulative Layout Shift): < 0.1
@@ -546,17 +560,17 @@ Core Web Vitals targets:
 
 ```typescript
 // Web Vitals reporting
-import { getCLS, getFID, getLCP } from 'web-vitals';
+import { getCLS, getFID, getLCP } from "web-vitals";
 
 getCLS(console.log);
 getFID(console.log);
 getLCP(console.log);
 
 // Custom performance marks
-performance.mark('data-fetch-start');
+performance.mark("data-fetch-start");
 // ... fetch data
-performance.mark('data-fetch-end');
-performance.measure('data-fetch', 'data-fetch-start', 'data-fetch-end');
+performance.mark("data-fetch-end");
+performance.measure("data-fetch", "data-fetch-start", "data-fetch-end");
 ```
 
 ## Accessibility
@@ -618,6 +632,7 @@ lighthouse http://localhost:5173 --view
 ### Common Issues
 
 **Build errors**
+
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules dist .vite
@@ -626,6 +641,7 @@ npm run build
 ```
 
 **TypeScript errors**
+
 ```bash
 # Regenerate types
 npm run typecheck
@@ -635,6 +651,7 @@ npm ls typescript
 ```
 
 **Test failures**
+
 ```bash
 # Update snapshots
 npm test -- -u
@@ -647,6 +664,7 @@ npm test -- --inspect-brk
 ```
 
 **Playwright issues**
+
 ```bash
 # Reinstall browsers
 npx playwright install
@@ -659,6 +677,7 @@ npx playwright test --debug auth.spec.ts
 ```
 
 **Storybook not loading**
+
 ```bash
 # Clear cache
 rm -rf node_modules/.cache
@@ -670,6 +689,7 @@ npm run build-storybook
 ## Contributing
 
 Contributions welcome! Please:
+
 1. Fork the repository
 2. Create a feature branch
 3. Add tests for new features
@@ -697,6 +717,7 @@ This example is part of Agentic Canon and is licensed under [Apache-2.0](../../L
 ## Support
 
 For questions or issues:
+
 1. Check this README and documentation
 2. Search [existing issues](https://github.com/IAmJonoBo/Agentic-Canon/issues)
 3. Ask in [discussions](https://github.com/IAmJonoBo/Agentic-Canon/discussions)
@@ -705,6 +726,7 @@ For questions or issues:
 ## Roadmap
 
 Future enhancements:
+
 - [ ] Progressive Web App (PWA) support
 - [ ] Offline mode with service workers
 - [ ] Real-time collaborative features

@@ -13,6 +13,7 @@ include_a11y = "{{ cookiecutter.enable_accessibility_tests }}"
 
 root = pathlib.Path(".")
 
+
 def remove_file(*paths):
     """Remove files or directories."""
     for path in paths:
@@ -24,9 +25,14 @@ def remove_file(*paths):
                 target.unlink()
             print(f"  Removed: {path}")
 
+
 # Remove optional files based on configuration
 if include_storybook == "no":
-    remove_file(".storybook", "src/components/Button.stories.tsx", ".github/workflows/storybook-pages.yml")
+    remove_file(
+        ".storybook",
+        "src/components/Button.stories.tsx",
+        ".github/workflows/storybook-pages.yml",
+    )
 
 if include_e2e == "no":
     remove_file("tests/e2e", "playwright.config.ts")
@@ -41,9 +47,9 @@ try:
 except Exception as e:
     print(f"⚠ Could not initialize git: {e}")
 
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("✓ React webapp project created successfully!")
-print("="*60)
+print("=" * 60)
 print("\nNext steps:")
 print("  1. cd {{cookiecutter.project_slug}}")
 print("  2. npm install")
@@ -56,4 +62,4 @@ if include_e2e == "yes":
     print("  - npm run test:e2e (End-to-end tests)")
 print("\nFor CI/CD:")
 print("  - Push to GitHub to trigger workflows")
-print("="*60)
+print("=" * 60)

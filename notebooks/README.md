@@ -5,6 +5,7 @@ This directory contains executable Jupyter notebooks that serve as interactive g
 ## Overview
 
 The notebooks in this directory provide hands-on, executable documentation for:
+
 - Bootstrapping new projects
 - Implementing security and supply chain best practices
 - Setting up contracts and testing
@@ -14,9 +15,11 @@ The notebooks in this directory provide hands-on, executable documentation for:
 ## Available Notebooks
 
 ### 01_bootstrap.ipynb
+
 **Repository Scaffolding & Quality Gates**
 
 Demonstrates how to:
+
 - Scaffold a new repository using Cookiecutter templates
 - Enable quality gates (linting, testing, security)
 - Generate SBOM (Software Bill of Materials)
@@ -25,9 +28,11 @@ Demonstrates how to:
 **Topics**: Cookiecutter, Quality Gates, SBOM, Signing
 
 ### 02_security_supply_chain.ipynb
+
 **Security & Supply Chain Best Practices**
 
 Covers:
+
 - SAST (Static Application Security Testing)
 - Secret scanning
 - SBOM generation and management
@@ -37,9 +42,11 @@ Covers:
 **Topics**: SAST, Secrets, SBOM, Provenance, SLSA
 
 ### 03_contracts_and_tests.ipynb
+
 **OpenAPI/AsyncAPI & Testing Strategies**
 
 Includes:
+
 - API contract definition with OpenAPI
 - Event contract definition with AsyncAPI
 - Contract testing
@@ -49,9 +56,11 @@ Includes:
 **Topics**: OpenAPI, AsyncAPI, Contract Testing, Mutation Testing
 
 ### 04_observability_slos.ipynb
+
 **OpenTelemetry & SLO Implementation**
 
 Demonstrates:
+
 - OpenTelemetry instrumentation
 - Traces, metrics, and logs
 - SLO (Service Level Objective) definition
@@ -61,9 +70,11 @@ Demonstrates:
 **Topics**: OpenTelemetry, Observability, SLOs, Error Budgets
 
 ### 05_docs_to_book.ipynb
+
 **Jupyter Book & Documentation Publishing**
 
 Shows:
+
 - Jupytext for notebook version control
 - MyST Markdown features
 - Jupyter Book configuration
@@ -183,6 +194,7 @@ pytest --nbmake notebooks/01_bootstrap.ipynb
 ### CI Testing
 
 Notebooks are automatically tested on:
+
 - Every pull request
 - Every push to main
 - Scheduled runs (weekly)

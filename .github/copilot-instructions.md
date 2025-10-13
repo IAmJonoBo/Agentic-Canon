@@ -70,19 +70,20 @@ All code and templates must comply with:
 - **Configuration**: Use `pyproject.toml` for project configuration (not setup.py)
 
 Example:
+
 ```python
 from typing import Optional
 
 def process_data(input_data: str, timeout: Optional[int] = None) -> dict[str, str]:
     """Process input data and return structured results.
-    
+
     Args:
         input_data: Raw input string to process
         timeout: Optional timeout in seconds
-        
+
     Returns:
         Dictionary containing processed results
-        
+
     Raises:
         ValueError: If input_data is empty
     """
@@ -100,6 +101,7 @@ def process_data(input_data: str, timeout: Optional[int] = None) -> dict[str, st
 - **Configuration**: Use modern tooling (Vite, esbuild)
 
 Example:
+
 ```typescript
 interface ProcessOptions {
   timeout?: number;
@@ -108,10 +110,10 @@ interface ProcessOptions {
 
 export async function processData(
   inputData: string,
-  options: ProcessOptions = {}
+  options: ProcessOptions = {},
 ): Promise<Record<string, string>> {
   if (!inputData) {
-    throw new Error('inputData cannot be empty');
+    throw new Error("inputData cannot be empty");
   }
   return { result: inputData.trim() };
 }
@@ -143,6 +145,7 @@ export async function processData(
 - Structure: Mirror source structure in `tests/` directory
 
 Example:
+
 ```python
 import pytest
 from myapp import process_data
@@ -310,6 +313,7 @@ Follow **Conventional Commits** specification:
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation only
@@ -321,6 +325,7 @@ Types:
 - `perf`: Performance improvements
 
 Examples:
+
 ```
 feat(templates): add Rust service template
 
@@ -346,24 +351,28 @@ Fixes #456
 All contributions must pass these gates:
 
 ### Build
+
 - ✅ Code compiles/transpiles without errors
 - ✅ Unit tests pass (green)
 - ✅ Code coverage ≥ 80%
 - ✅ Mutation score ≥ 40% (where applicable)
 
 ### Security
+
 - ✅ No secrets in commits (Gitleaks)
 - ✅ SAST critical issues = 0
 - ✅ SBOM generated
 - ✅ Provenance signed (for releases)
 
 ### Quality
+
 - ✅ Code smells = 0 (SonarQube/equivalent)
 - ✅ Code duplication ≤ 3%
 - ✅ All linting rules pass
 - ✅ Type checking passes (Python: mypy, TypeScript: tsc)
 
 ### Performance
+
 - ✅ Core Web Vitals within budget (web apps)
 - ✅ P95 latency ≤ threshold (services)
 

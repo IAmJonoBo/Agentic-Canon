@@ -15,6 +15,7 @@ Software supply chain attacks have increased dramatically, with high-profile inc
 5. **Verification**: Ability to verify artifacts before use
 
 Multiple supply chain security frameworks exist:
+
 - SLSA (Supply-chain Levels for Software Artifacts)
 - NIST SSDF (Secure Software Development Framework)
 - OpenSSF Scorecard
@@ -42,21 +43,25 @@ We will implement **SLSA (Supply-chain Levels for Software Artifacts)** as our p
 ### SLSA Levels Overview
 
 #### SLSA Level 0 (Baseline)
+
 - No guarantees
 - Manual or ad-hoc build process
 
 #### SLSA Level 1 (Build Process Exists)
+
 - ✅ Automated build process
 - ✅ Provenance generated (unsigned)
 - Basic documentation
 
 #### SLSA Level 2 (Build Service)
+
 - ✅ Hosted build service (GitHub Actions)
 - ✅ Signed provenance
 - ✅ Build service generates attestation
 - ✅ Tamper-resistant build logs
 
 #### SLSA Level 3 (Hardened Build Platform)
+
 - ✅ Isolated build environment
 - ✅ Ephemeral environments
 - ✅ Hermetic builds (no network access)
@@ -64,6 +69,7 @@ We will implement **SLSA (Supply-chain Levels for Software Artifacts)** as our p
 - ✅ Two-person review
 
 #### SLSA Level 4 (Future)
+
 - Two-person review enforced
 - Hermetic builds with maximum security
 - (Not implemented in initial templates)
@@ -109,6 +115,7 @@ predicate:
 #### 2. SBOM Generation (CycloneDX)
 
 All builds generate Software Bill of Materials:
+
 - Lists all dependencies with versions
 - Identifies licenses
 - Tracks vulnerability status
@@ -150,7 +157,7 @@ on:
     types: [created]
 
 permissions:
-  id-token: write  # Required for OIDC
+  id-token: write # Required for OIDC
   contents: write
   attestations: write
 
@@ -159,20 +166,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Build artifact
         run: |
           # Build process
           make build
-      
+
       - name: Generate SBOM
         run: cyclonedx-py -o sbom.json
-      
+
       - name: Generate provenance
         uses: actions/attest-build-provenance@v1
         with:
           subject-path: dist/*
-      
+
       - name: Sign artifacts
         run: |
           cosign sign-blob --bundle=sig.bundle dist/artifact.tar.gz
@@ -224,6 +231,7 @@ jobs:
 ## Implementation Per Template
 
 ### Python Service
+
 - ✅ SLSA Level 2 available via template option
 - ✅ Provenance generation with GitHub attestations
 - ✅ SBOM with CycloneDX
@@ -231,6 +239,7 @@ jobs:
 - ✅ Dependency verification with pip-audit
 
 ### Node.js Service
+
 - ✅ SLSA Level 2 available via template option
 - ✅ Provenance generation
 - ✅ SBOM with CycloneDX
@@ -238,6 +247,7 @@ jobs:
 - ✅ Sigstore signing
 
 ### Go Service
+
 - ✅ SLSA Level 2 available
 - ✅ Provenance generation
 - ✅ SBOM with CycloneDX
@@ -245,6 +255,7 @@ jobs:
 - ✅ Sigstore signing
 
 ### React WebApp
+
 - ✅ SLSA Level 2 for build artifacts
 - ✅ Provenance for deployable bundles
 - ✅ SBOM for dependencies
@@ -253,6 +264,7 @@ jobs:
 ## Verification Workflow
 
 ### Artifact Producer (Our Templates)
+
 1. Build artifact in isolated environment
 2. Generate SBOM listing all dependencies
 3. Create provenance attestation
@@ -260,6 +272,7 @@ jobs:
 5. Publish artifact with attestations
 
 ### Artifact Consumer (Downstream Users)
+
 1. Download artifact and attestations
 2. Verify signature with Sigstore
 3. Verify provenance (builder, materials, process)
@@ -270,21 +283,25 @@ jobs:
 ## Alternatives Considered
 
 ### Manual Documentation
+
 **Pros**: Simple, no tooling required
 **Cons**: Not verifiable, not machine-readable, error-prone
 **Rejected**: Doesn't provide cryptographic guarantees
 
 ### Vendor-Specific Solutions
+
 **Pros**: Integrated with specific platforms
 **Cons**: Vendor lock-in, not standardized
 **Rejected**: Doesn't align with open standards approach
 
 ### Custom Attestation
+
 **Pros**: Full control, tailored to needs
 **Cons**: Not interoperable, no ecosystem support
 **Rejected**: Reinventing wheel, no community adoption
 
 ### NIST SSDF Only
+
 **Pros**: Comprehensive security framework
 **Cons**: More about process than technical implementation
 **Rejected**: SLSA complements SSDF with technical specifics
@@ -311,13 +328,13 @@ jobs:
 
 ### SLSA → Other Standards
 
-| SLSA Requirement | NIST SSDF | OWASP SAMM | OpenSSF |
-|-----------------|-----------|------------|---------|
-| Automated build | PO.3.1 | B-SB-1 | CI/CD |
-| Build service | PO.3.2 | B-SB-2 | Scorecard |
-| Provenance | PO.3.3 | B-SB-3 | Sigstore |
-| Isolated builds | PO.5.1 | I-SD-1 | - |
-| Signed attestation | PO.3.3 | V-ST-2 | Sigstore |
+| SLSA Requirement   | NIST SSDF | OWASP SAMM | OpenSSF   |
+| ------------------ | --------- | ---------- | --------- |
+| Automated build    | PO.3.1    | B-SB-1     | CI/CD     |
+| Build service      | PO.3.2    | B-SB-2     | Scorecard |
+| Provenance         | PO.3.3    | B-SB-3     | Sigstore  |
+| Isolated builds    | PO.5.1    | I-SD-1     | -         |
+| Signed attestation | PO.3.3    | V-ST-2     | Sigstore  |
 
 ## Implementation Status
 
@@ -336,18 +353,21 @@ jobs:
 ## Roadmap
 
 ### Phase 1 (Current) - SLSA Level 2
+
 - Automated builds with GitHub Actions
 - Signed provenance attestations
 - SBOM generation
 - Sigstore keyless signing
 
 ### Phase 2 (Near-term) - SLSA Level 3
+
 - Hermetic builds (no network access during build)
 - Reproducible builds
 - Two-person review enforcement
 - Enhanced isolation
 
 ### Phase 3 (Future) - Advanced Features
+
 - SLSA Level 4 exploration
 - Policy enforcement with OPA
 - Automated verification gates

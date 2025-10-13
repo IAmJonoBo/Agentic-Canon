@@ -5,14 +5,18 @@ This directory contains Grafana dashboard JSON templates for monitoring software
 ## Available Dashboards
 
 ### 1. DORA Metrics Dashboard (`dora-metrics.json`)
+
 Track the four key DevOps Research and Assessment (DORA) metrics:
+
 - **Deployment Frequency**: How often you deploy to production
 - **Lead Time for Changes**: Time from commit to production
 - **Mean Time to Recovery (MTTR)**: Time to restore service after incident
 - **Change Failure Rate**: Percentage of deployments causing failures
 
 ### 2. SPACE/DevEx Metrics Dashboard (`space-devex-metrics.json`)
+
 Developer experience and productivity metrics:
+
 - **Satisfaction**: Developer satisfaction scores
 - **Performance**: Code review time, build time, test execution time
 - **Activity**: Commits, PRs, code reviews
@@ -20,7 +24,9 @@ Developer experience and productivity metrics:
 - **Efficiency & Flow**: Flow time, blocked time, context switches
 
 ### 3. Security Metrics Dashboard (`security-metrics.json`)
+
 Security posture and vulnerability tracking:
+
 - SAST findings over time
 - Secret scanning results
 - Dependency vulnerabilities
@@ -28,7 +34,9 @@ Security posture and vulnerability tracking:
 - Time to remediation
 
 ### 4. Quality Metrics Dashboard (`quality-metrics.json`)
+
 Code quality and testing metrics:
+
 - Test coverage trends
 - Mutation test scores
 - Code duplication
@@ -70,24 +78,28 @@ Update the datasource UID in each dashboard JSON:
 ### DORA Metrics
 
 **Deployment Frequency:**
+
 ```promql
 # Count deployments per day
 sum(increase(deployments_total[24h]))
 ```
 
 **Lead Time:**
+
 ```promql
 # Average time from commit to deploy
 histogram_quantile(0.5, rate(lead_time_seconds_bucket[1h]))
 ```
 
 **MTTR:**
+
 ```promql
 # Average time to recover from incidents
 avg(incident_resolution_time_seconds) by (severity)
 ```
 
 **Change Failure Rate:**
+
 ```promql
 # Percentage of failed deployments
 sum(failed_deployments_total) / sum(deployments_total) * 100
@@ -96,18 +108,21 @@ sum(failed_deployments_total) / sum(deployments_total) * 100
 ### SPACE Metrics
 
 **Build Time:**
+
 ```promql
 # Average build duration
 avg(build_duration_seconds) by (project)
 ```
 
 **PR Review Time:**
+
 ```promql
 # Time from PR open to merge
 histogram_quantile(0.95, rate(pr_review_duration_seconds_bucket[1h]))
 ```
 
 **Flow Time:**
+
 ```promql
 # Time from start to done
 avg(issue_flow_time_seconds) by (team)
@@ -213,6 +228,7 @@ Each dashboard supports variables for filtering:
 ### Adding Custom Metrics
 
 1. Add metric queries in dashboard JSON:
+
 ```json
 {
   "targets": [
@@ -232,10 +248,11 @@ Each dashboard supports variables for filtering:
 ### Changing Data Source
 
 Update the datasource configuration:
+
 ```json
 {
   "datasource": {
-    "type": "prometheus",  // or "loki", "elasticsearch", etc.
+    "type": "prometheus", // or "loki", "elasticsearch", etc.
     "uid": "YOUR_UID"
   }
 }
@@ -253,24 +270,28 @@ Update the datasource configuration:
 ## DORA Performance Levels
 
 ### Elite Performers
+
 - Deployment Frequency: On-demand (multiple per day)
 - Lead Time: Less than one day
 - MTTR: Less than one hour
 - Change Failure Rate: 0-15%
 
 ### High Performers
+
 - Deployment Frequency: Between once per day and once per week
 - Lead Time: Between one day and one week
 - MTTR: Less than one day
 - Change Failure Rate: 0-15%
 
 ### Medium Performers
+
 - Deployment Frequency: Between once per week and once per month
 - Lead Time: Between one week and one month
 - MTTR: Between one day and one week
 - Change Failure Rate: 0-15%
 
 ### Low Performers
+
 - Deployment Frequency: Fewer than once per month
 - Lead Time: More than one month
 - MTTR: More than one week

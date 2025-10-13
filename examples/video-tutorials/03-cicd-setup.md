@@ -62,29 +62,30 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.11', '3.12']
-    
+        python-version: ["3.11", "3.12"]
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      
+
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-      
+
       - name: Run tests
         run: |
           pytest --cov --cov-report=xml
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
 ```
 
 **Explain:**
+
 - Trigger conditions
 - Matrix testing strategy
 - Checkout and setup steps
@@ -106,18 +107,19 @@ jobs:
 jobs:
   codeql:
     # Static code analysis
-    
+
   gitleaks:
     # Secret scanning
-    
+
   dependency-review:
     # Check for vulnerable dependencies
-    
+
   sbom:
     # Generate Software Bill of Materials
 ```
 
 **Demo:**
+
 - CodeQL security findings
 - Gitleaks secret detection
 - Dependency vulnerability report
@@ -134,18 +136,21 @@ jobs:
 "Common customizations:"
 
 1. **Add new test steps**
+
    ```yaml
    - name: Run integration tests
      run: pytest tests/integration/
    ```
 
 2. **Change Python versions**
+
    ```yaml
    matrix:
-     python-version: ['3.10', '3.11', '3.12']
+     python-version: ["3.10", "3.11", "3.12"]
    ```
 
 3. **Add deployment**
+
    ```yaml
    deploy:
      needs: test
@@ -177,6 +182,7 @@ jobs:
 ```
 
 **Show:**
+
 - Adding secrets in GitHub UI
 - Using secrets in workflows
 - Secret scope (repo vs org)
@@ -196,6 +202,7 @@ jobs:
 - Re-run failed jobs
 
 **Demo:**
+
 - Successful run
 - Failed run with logs
 - Artifact download
@@ -214,6 +221,7 @@ cp examples/azure-pipelines/python-service-pipeline.yml azure-pipelines.yml
 ```
 
 **Show:**
+
 - Azure pipeline structure
 - Differences from GitHub Actions
 - Setup in Azure DevOps
@@ -223,11 +231,13 @@ cp examples/azure-pipelines/python-service-pipeline.yml azure-pipelines.yml
 ### Best Practices (1 minute)
 
 1. **Always test locally first**
+
    ```bash
    act  # Test GitHub Actions locally
    ```
 
 2. **Use caching for dependencies**
+
    ```yaml
    - uses: actions/cache@v3
      with:
@@ -235,6 +245,7 @@ cp examples/azure-pipelines/python-service-pipeline.yml azure-pipelines.yml
    ```
 
 3. **Fail fast for quick feedback**
+
    ```yaml
    strategy:
      fail-fast: true
@@ -272,6 +283,7 @@ Common problems and solutions:
 ### Conclusion (30 seconds)
 
 "You now know how to:
+
 - Understand CI/CD pipeline structure
 - Customize workflows
 - Set up secrets

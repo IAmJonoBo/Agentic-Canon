@@ -12,6 +12,7 @@ enable_sbom = "{{ cookiecutter.enable_sbom_signing }}"
 
 root = pathlib.Path(".")
 
+
 def remove_file(*paths):
     """Remove files or directories."""
     for path in paths:
@@ -22,6 +23,7 @@ def remove_file(*paths):
             else:
                 target.unlink()
             print(f"  Removed: {path}")
+
 
 # Remove optional files based on configuration
 if enable_security == "no":
@@ -38,9 +40,9 @@ try:
 except Exception as e:
     print(f"⚠ Could not initialize git: {e}")
 
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("✓ Node.js service project created successfully!")
-print("="*60)
+print("=" * 60)
 print("\nNext steps:")
 print("  1. cd {{cookiecutter.project_slug}}")
 print("  2. npm install")
@@ -49,4 +51,4 @@ print("  4. npm run dev")
 print("\nFor CI/CD:")
 print("  - Push to GitHub to trigger workflows")
 print("  - Review .github/workflows/ for pipeline configuration")
-print("="*60)
+print("=" * 60)

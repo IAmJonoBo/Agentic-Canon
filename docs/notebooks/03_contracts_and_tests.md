@@ -14,6 +14,7 @@ kernelspec:
 # 03 Contracts & Tests
 
 This notebook demonstrates:
+
 - OpenAPI/Swagger specification generation
 - AsyncAPI for event-driven architectures
 - Contract testing with Pact

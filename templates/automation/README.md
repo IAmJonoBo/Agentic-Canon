@@ -15,6 +15,7 @@ Pre-commit and pre-push hooks that enforce quality gates before code enters the 
 **File:** [`pre-commit`](hooks/pre-commit)
 
 **Features:**
+
 - Secret scanning (Gitleaks)
 - Linting enforcement
 - Code formatting validation
@@ -25,6 +26,7 @@ Pre-commit and pre-push hooks that enforce quality gates before code enters the 
 - Colored output for clear feedback
 
 **Installation:**
+
 ```bash
 # Copy to your project
 cp templates/automation/hooks/pre-commit .git/hooks/pre-commit
@@ -37,11 +39,13 @@ pre-commit install
 ```
 
 **Requirements:**
+
 - Git 2.9+
 - Gitleaks (optional but recommended)
 - Node.js (for npm projects)
 
 **Customization:**
+
 ```bash
 # Edit the hook file to add/remove checks
 vim .git/hooks/pre-commit
@@ -52,6 +56,7 @@ vim .git/hooks/pre-commit
 ```
 
 **Bypass (use sparingly):**
+
 ```bash
 # Skip pre-commit hooks (NOT recommended)
 git commit --no-verify -m "emergency hotfix"
@@ -64,6 +69,7 @@ Automated dependency management and maintenance bot configurations.
 **File:** [`renovate.json`](bots/renovate.json)
 
 **Features:**
+
 - Automated dependency updates
 - Security vulnerability alerts (OSV, GitHub)
 - Smart automerge for patches
@@ -76,6 +82,7 @@ Automated dependency management and maintenance bot configurations.
 - PR rate limiting (5 concurrent, 2/hour)
 
 **Setup:**
+
 ```bash
 # Copy to project root
 cp templates/automation/bots/renovate.json .
@@ -92,28 +99,33 @@ sed -i 's/{{ TEAM_NAME }}/your-team/g' renovate.json
 **Configuration Highlights:**
 
 **Security-First:**
+
 - Immediate updates for security patches
 - Auto-merge enabled for patch versions
 - Vulnerability alerts with labels
 - OSV database integration
 
 **Smart Scheduling:**
+
 - Weekly schedule (Monday before 6am UTC)
 - Minimizes disruption
 - Batched updates
 
 **Update Strategy:**
+
 - Patches: Auto-merge after tests pass
 - Minor: Group and auto-merge (3-day stabilization)
 - Major: Manual review required (7-day stabilization)
 - DevDependencies: More permissive auto-merge
 
 **Rate Limiting:**
+
 - Max 5 concurrent PRs
 - Max 2 PRs per hour
 - Prevents PR spam
 
 **Validation:**
+
 ```bash
 # Validate configuration
 npx renovate-config-validator
@@ -130,6 +142,7 @@ npx renovate --schedule="" --require-config=ignored
 Automated remediation scripts for common issues.
 
 **Planned Features:**
+
 - Automatic dependency updates
 - Linting auto-fixes
 - Test quarantine for flaky tests
@@ -173,17 +186,17 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
-        args: ['--maxkb=5000']
+        args: ["--maxkb=5000"]
       - id: check-merge-conflict
       - id: check-json
       - id: pretty-format-json
-        args: ['--autofix']
-  
+        args: ["--autofix"]
+
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.2
     hooks:
       - id: gitleaks
-  
+
   - repo: local
     hooks:
       - id: lint
@@ -191,7 +204,7 @@ repos:
         entry: npm run lint
         language: system
         pass_filenames: false
-      
+
       - id: test
         name: Run tests
         entry: npm test
@@ -231,13 +244,12 @@ Enable Renovate Dashboard to track all dependency updates:
 
 ```json
 {
-  "extends": [
-    ":dependencyDashboard"
-  ]
+  "extends": [":dependencyDashboard"]
 }
 ```
 
 Creates a GitHub Issue with:
+
 - Pending updates
 - Ignored dependencies
 - Rate-limited PRs
@@ -249,8 +261,7 @@ Creates a GitHub Issue with:
 # Require pre-commit checks to pass
 # Settings → Branches → Branch protection rules
 
-Required status checks:
-  ✅ pre-commit
+Required status checks: ✅ pre-commit
   ✅ lint
   ✅ test
   ✅ security-scan
@@ -288,6 +299,7 @@ Required status checks:
 ### Pre-commit Hook Issues
 
 **Hook not running:**
+
 ```bash
 # Check if hook is installed
 ls -la .git/hooks/pre-commit
@@ -300,6 +312,7 @@ chmod +x .git/hooks/pre-commit
 ```
 
 **Hook failing:**
+
 ```bash
 # Run verbose
 bash -x .git/hooks/pre-commit
@@ -315,6 +328,7 @@ git commit --no-verify
 ### Renovate Issues
 
 **No PRs created:**
+
 ```bash
 # Check Renovate logs in GitHub
 # Settings → Installed GitHub Apps → Renovate → Configure
@@ -327,15 +341,17 @@ npx renovate-config-validator
 ```
 
 **Too many PRs:**
+
 ```json
 // Adjust rate limits in renovate.json
 {
-  "prConcurrentLimit": 3,  // Reduce from 5
-  "prHourlyLimit": 1       // Reduce from 2
+  "prConcurrentLimit": 3, // Reduce from 5
+  "prHourlyLimit": 1 // Reduce from 2
 }
 ```
 
 **Auto-merge not working:**
+
 ```bash
 # Ensure branch protection allows auto-merge
 # Settings → Branches → Enable "Allow auto-merge"
@@ -362,16 +378,19 @@ These templates help achieve compliance with:
 ## Additional Resources
 
 ### Pre-commit
+
 - [Pre-commit Framework](https://pre-commit.com/)
 - [Pre-commit Hooks](https://github.com/pre-commit/pre-commit-hooks)
 - [Gitleaks](https://github.com/gitleaks/gitleaks)
 
 ### Renovate
+
 - [Renovate Documentation](https://docs.renovatebot.com/)
 - [Renovate Configuration Options](https://docs.renovatebot.com/configuration-options/)
 - [Merge Confidence](https://docs.renovatebot.com/merge-confidence/)
 
 ### Related Templates
+
 - [Security Templates](../security/README.md) - Secret scanning, SBOM
 - [CI/CD Templates](../cicd/README.md) - Pipeline integration
 - [Repository Templates](../repository/README.md) - Branch protection
@@ -379,6 +398,7 @@ These templates help achieve compliance with:
 ## Contributing
 
 To improve these templates:
+
 1. Test with real projects
 2. Share your configurations
 3. Report issues or edge cases

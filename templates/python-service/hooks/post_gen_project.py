@@ -3,13 +3,14 @@ import shutil
 import subprocess
 
 cc = {
-  "book": "{{ cookiecutter.include_jupyter_book }}",
-  "sec": "{{ cookiecutter.enable_security_gates }}",
-  "sbom": "{{ cookiecutter.enable_sbom_signing }}",
-  "contract": "{{ cookiecutter.enable_contract_tests }}"
+    "book": "{{ cookiecutter.include_jupyter_book }}",
+    "sec": "{{ cookiecutter.enable_security_gates }}",
+    "sbom": "{{ cookiecutter.enable_sbom_signing }}",
+    "contract": "{{ cookiecutter.enable_contract_tests }}",
 }
 
 root = pathlib.Path(".")
+
 
 def rm(*paths):
     """Remove files or directories if they exist."""
@@ -21,6 +22,7 @@ def rm(*paths):
             else:
                 q.unlink()
             print(f"✓ Removed: {p}")
+
 
 # Remove optional components based on cookiecutter choices
 if cc["book"] == "no":
@@ -46,7 +48,7 @@ if result.returncode == 0:
 else:
     print("⚠ Failed to initialize git repository")
 
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("Next steps:")
 print("  1. cd {{ cookiecutter.project_slug }}")
 print("  2. python -m venv venv")
@@ -55,4 +57,4 @@ print("  4. pip install -e .[dev]")
 print("  5. pre-commit install")
 print("  6. git add . && git commit -m 'Initial commit'")
 print("  7. Create GitHub repo and push")
-print("="*60)
+print("=" * 60)

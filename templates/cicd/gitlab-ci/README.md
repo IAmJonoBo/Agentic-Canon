@@ -9,6 +9,7 @@ This directory contains production-ready GitLab CI/CD pipeline configurations im
 ## File
 
 **[.gitlab-ci.yml](.gitlab-ci.yml)** - Complete CI/CD pipeline with:
+
 - Parallel job execution
 - Multi-stage pipeline (lint, build, test, security, quality, package, deploy)
 - Docker-in-Docker support
@@ -21,22 +22,26 @@ This directory contains production-ready GitLab CI/CD pipeline configurations im
 ## Pipeline Stages
 
 ### 1. Lint (lint)
+
 - Code linting
 - Format checking
 - Fast feedback (runs in parallel)
 
 ### 2. Build (build)
+
 - Dependency installation
 - Application build
 - Artifact generation
 
 ### 3. Test (test)
+
 - Unit tests with coverage
 - Integration tests
 - Mutation testing (optional)
 - E2E tests (optional)
 
 ### 4. Security (security)
+
 - SAST scanning
 - Secret detection
 - Dependency scanning
@@ -44,16 +49,19 @@ This directory contains production-ready GitLab CI/CD pipeline configurations im
 - License compliance
 
 ### 5. Quality (quality)
+
 - Code quality analysis
 - Coverage reporting
 - Technical debt tracking
 
 ### 6. Package (package)
+
 - Docker image build
 - Multi-arch support
 - Registry push
 
 ### 7. Deploy (deploy)
+
 - Environment-specific deployment
 - Review apps for merge requests
 - Production deployment (manual)
@@ -81,15 +89,16 @@ git push origin main
 ```yaml
 variables:
   PROJECT_NAME: "my-project"
-  COVERAGE_THRESHOLD: 80        # Minimum code coverage %
-  MUTATION_THRESHOLD: 40        # Minimum mutation score
-  DOCKER_DRIVER: overlay2       # Docker driver
-  DOCKER_TLS_CERTDIR: "/certs"  # Docker TLS configuration
+  COVERAGE_THRESHOLD: 80 # Minimum code coverage %
+  MUTATION_THRESHOLD: 40 # Minimum mutation score
+  DOCKER_DRIVER: overlay2 # Docker driver
+  DOCKER_TLS_CERTDIR: "/certs" # Docker TLS configuration
 ```
 
 ### CI/CD Settings
 
 Configure in GitLab UI:
+
 - **Settings → CI/CD → Variables**
   - `DOCKER_REGISTRY_USER`
   - `DOCKER_REGISTRY_PASSWORD`
@@ -98,6 +107,7 @@ Configure in GitLab UI:
 ### Runners
 
 Works with:
+
 - **Shared runners** - GitLab.com free tier
 - **Specific runners** - Self-hosted
 - **Docker executor** - Recommended
@@ -132,9 +142,9 @@ artifacts:
 
 ```yaml
 rules:
-  - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'  # Run on MRs
-  - if: '$CI_COMMIT_BRANCH == "main"'                   # Run on main
-  - when: manual                                        # Manual trigger
+  - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run on MRs
+  - if: '$CI_COMMIT_BRANCH == "main"' # Run on main
+  - when: manual # Manual trigger
 ```
 
 ### Review Apps
@@ -256,7 +266,7 @@ dependency-scanning:
 test:
   parallel:
     matrix:
-      - NODE_VERSION: ['18', '20', '22']
+      - NODE_VERSION: ["18", "20", "22"]
   script:
     - docker run --rm node:${NODE_VERSION} npm test
 ```
@@ -293,6 +303,7 @@ run-generated:
 ### Pipeline Metrics
 
 Track in GitLab Analytics:
+
 - Pipeline success rate
 - Average duration
 - Job failure rates
@@ -316,31 +327,35 @@ metrics:
 ### Common Issues
 
 **Cache not working:**
+
 ```yaml
 # Ensure cache key is consistent
 cache:
   key: ${CI_COMMIT_REF_SLUG}
-  policy: pull-push  # Default behavior
+  policy: pull-push # Default behavior
 ```
 
 **Jobs timing out:**
+
 ```yaml
 # Increase timeout
 job-name:
-  timeout: 2h  # Default is 1h
+  timeout: 2h # Default is 1h
 ```
 
 **Artifacts too large:**
+
 ```yaml
 # Compress or exclude files
 artifacts:
   paths:
-    - dist/*.min.js  # Only minified
+    - dist/*.min.js # Only minified
   exclude:
-    - dist/**/*.map  # Exclude source maps
+    - dist/**/*.map # Exclude source maps
 ```
 
 **Docker connection issues:**
+
 ```yaml
 # Use proper Docker configuration
 services:
@@ -352,15 +367,15 @@ variables:
 
 ## Comparison with GitHub Actions
 
-| Feature | GitLab CI | GitHub Actions |
-|---------|-----------|----------------|
-| Configuration | `.gitlab-ci.yml` | `.github/workflows/*.yml` |
-| Runners | Shared/Specific | GitHub-hosted/Self-hosted |
-| Caching | Built-in | actions/cache |
-| Artifacts | Native | actions/upload-artifact |
-| Environments | First-class | environments |
-| Review Apps | Built-in | Manual setup |
-| Cost (Free Tier) | 400 min/month | 2000 min/month |
+| Feature          | GitLab CI        | GitHub Actions            |
+| ---------------- | ---------------- | ------------------------- |
+| Configuration    | `.gitlab-ci.yml` | `.github/workflows/*.yml` |
+| Runners          | Shared/Specific  | GitHub-hosted/Self-hosted |
+| Caching          | Built-in         | actions/cache             |
+| Artifacts        | Native           | actions/upload-artifact   |
+| Environments     | First-class      | environments              |
+| Review Apps      | Built-in         | Manual setup              |
+| Cost (Free Tier) | 400 min/month    | 2000 min/month            |
 
 ## Related Resources
 
@@ -372,6 +387,7 @@ variables:
 ## Contributing
 
 To improve this template:
+
 1. Test with real projects
 2. Add language-specific examples
 3. Share optimization tips

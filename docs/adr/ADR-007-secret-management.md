@@ -14,6 +14,7 @@ Applications require secrets (API keys, passwords, tokens, certificates) to func
 4. **Production Incidents**: Revoked or rotated secrets causing outages
 
 We need a comprehensive secret management strategy that:
+
 - Prevents secrets from entering version control
 - Detects leaked secrets quickly
 - Provides secure secret storage and access
@@ -22,6 +23,7 @@ We need a comprehensive secret management strategy that:
 - Enables secret rotation without downtime
 
 Several approaches were considered:
+
 - Environment variables only
 - Encrypted secrets in repository
 - External secret management services
@@ -39,11 +41,13 @@ We will implement a **multi-layered secret management approach** with prevention
 **Goal**: Stop secrets before they enter version control
 
 **Tools**:
+
 - Pre-commit hooks with Gitleaks
 - IDE integrations (GitHub Copilot, GitGuardian)
 - Developer training and guidelines
 
 **Configuration** (`.pre-commit-config.yaml`):
+
 ```yaml
 repos:
   - repo: https://github.com/gitleaks/gitleaks
@@ -53,6 +57,7 @@ repos:
 ```
 
 **Guidelines**:
+
 - Never hardcode secrets in source code
 - Use placeholder values in example configs
 - Document required secrets in README
@@ -63,11 +68,13 @@ repos:
 **Goal**: Detect secrets that bypass pre-commit hooks
 
 **Tools**:
+
 - **TruffleHog**: Entropy-based secret detection
 - **Gitleaks**: Pattern-based secret detection
 - **GitHub Secret Scanning**: Native GitHub feature
 
 **Workflow** (`.github/workflows/security.yml`):
+
 ```yaml
 secret-scan:
   runs-on: ubuntu-latest
@@ -75,19 +82,20 @@ secret-scan:
     - uses: actions/checkout@v5
       with:
         fetch-depth: 0
-    
+
     - name: TruffleHog Secret Scan
       uses: trufflesecurity/trufflehog@main
       with:
         path: ./
         base: ${{ github.event.repository.default_branch }}
         head: HEAD
-    
+
     - name: Run Gitleaks
       uses: gitleaks/gitleaks-action@v2
 ```
 
 **Response Process**:
+
 1. **Immediate**: Block PR merge if secrets detected
 2. **Notify**: Alert security team and committer
 3. **Revoke**: Immediately rotate compromised secrets
@@ -101,16 +109,19 @@ secret-scan:
 **Per Environment**:
 
 #### Development
+
 - **Local**: `.env` files (gitignored)
 - **Team**: Encrypted 1Password/LastPass vaults
 - **Fallback**: Dummy/mock values for development
 
 #### CI/CD
+
 - **GitHub Actions**: Repository/Environment secrets
 - **Azure Pipelines**: Variable groups
 - **GitLab CI**: CI/CD variables
 
 #### Production
+
 - **Cloud-Native**:
   - AWS: Secrets Manager, Parameter Store
   - Azure: Key Vault
@@ -121,6 +132,7 @@ secret-scan:
 ### Secret Access Patterns
 
 #### Application Runtime
+
 ```python
 # ✅ Correct: Load from environment
 import os
@@ -131,6 +143,7 @@ api_key = "sk_live_abc123"
 ```
 
 #### GitHub Actions
+
 ```yaml
 # ✅ Correct: Use secrets context
 - name: Deploy
@@ -143,6 +156,7 @@ api_key = "sk_live_abc123"
 ```
 
 #### Docker
+
 ```dockerfile
 # ✅ Correct: Build-time ARG, runtime ENV
 ARG BUILD_SECRET
@@ -156,26 +170,31 @@ ENV API_KEY=sk_live_abc123
 ### Secret Types and Handling
 
 #### API Keys
+
 - Store in secret manager
 - Rotate quarterly or on compromise
 - Use scoped/limited permissions
 
 #### Database Passwords
+
 - Store in secret manager
 - Rotate monthly via automation
 - Use connection pooling to minimize exposure
 
 #### TLS Certificates
+
 - Store private keys in secret manager
 - Automate renewal (Let's Encrypt, cert-manager)
 - Never commit to repository
 
 #### SSH Keys
+
 - Use ephemeral keys when possible
 - Store in secret manager if persistent
 - Rotate after team changes
 
 #### JWT Signing Keys
+
 - Store in secret manager
 - Use asymmetric keys (RS256, ES256)
 - Rotate signing keys regularly
@@ -183,12 +202,14 @@ ENV API_KEY=sk_live_abc123
 ### Secret Rotation Strategy
 
 **Automated Rotation**:
+
 - Database credentials: Monthly
 - API keys: Quarterly
 - Certificates: 90 days (automated)
 - SSH keys: On personnel changes
 
 **Rotation Process**:
+
 1. Generate new secret
 2. Deploy new secret to all environments
 3. Update applications to use new secret
@@ -197,6 +218,7 @@ ENV API_KEY=sk_live_abc123
 6. Confirm no breakage
 
 **Zero-Downtime Rotation**:
+
 - Support multiple valid secrets simultaneously
 - Phase out old secret gradually
 - Monitor for usage of old secret
@@ -204,17 +226,20 @@ ENV API_KEY=sk_live_abc123
 ### Compliance and Auditing
 
 **Audit Trail**:
+
 - Who accessed which secrets when
 - Secret creation and rotation events
 - Failed access attempts
 
 **Compliance Requirements**:
+
 - **SOC 2**: Encrypt secrets at rest and in transit
 - **PCI DSS**: Rotate secrets, restrict access
 - **HIPAA**: Audit all secret access
 - **GDPR**: Document data encryption keys
 
 **Monitoring**:
+
 - Alert on unusual secret access patterns
 - Track secret age and rotation status
 - Monitor failed authentication attempts
@@ -277,6 +302,7 @@ ENV API_KEY=sk_live_abc123
 ## Example Configurations
 
 ### .env.example Template
+
 ```bash
 # API Keys
 API_KEY=your_api_key_here
@@ -292,6 +318,7 @@ SENDGRID_API_KEY=SG....
 ```
 
 ### Gitleaks Configuration (.gitleaksrc)
+
 ```toml
 [extend]
 useDefault = true
@@ -304,6 +331,7 @@ keywords = ["api_key", "apikey"]
 ```
 
 ### GitHub Actions Secret Usage
+
 ```yaml
 jobs:
   deploy:
@@ -311,14 +339,14 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v5
-      
+
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      
+
       - name: Deploy
         run: |
           ./deploy.sh

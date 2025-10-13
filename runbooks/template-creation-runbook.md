@@ -83,18 +83,19 @@ Create `cookiecutter.json` with all template variables:
   "author_email": "you@example.com",
   "license": ["MIT", "Apache-2.0", "BSD-3-Clause", "GPL-3.0", "CC-BY-4.0"],
   "version": "0.1.0",
-  
+
   "_comment_features": "Optional features (yes/no)",
   "enable_security_gates": ["yes", "no"],
   "enable_sbom_signing": ["yes", "no"],
   "ci_provider": ["github", "gitlab", "azure", "none"],
-  
+
   "_comment_tech": "Technology-specific variables",
   "language_version": "1.0"
 }
 ```
 
 **Best Practices**:
+
 - Use computed defaults where possible (e.g., `project_slug`)
 - Provide sensible default values
 - Group related variables with comments
@@ -138,13 +139,13 @@ def main():
     """Run all validations."""
     project_slug = '{{ cookiecutter.project_slug }}'
     author_email = '{{ cookiecutter.author_email }}'
-    
+
     if not validate_project_slug(project_slug):
         sys.exit(1)
-    
+
     if not validate_author_email(author_email):
         sys.exit(1)
-    
+
     print(f"✓ Validation passed for: {project_slug}")
 
 
@@ -192,6 +193,7 @@ pkg_name = "{{ cookiecutter.project_slug.replace('-', '_') }}"
 ```
 
 **Best Practices**:
+
 - Follow language-specific conventions
 - Include comprehensive examples
 - Add inline comments explaining configurations
@@ -216,7 +218,7 @@ import subprocess
 def remove_optional_files():
     """Remove files for disabled features."""
     enable_security = '{{ cookiecutter.enable_security_gates }}'
-    
+
     if enable_security != 'yes':
         files_to_remove = [
             '.github/workflows/security.yml',
@@ -253,7 +255,7 @@ def install_dependencies():
 def print_next_steps():
     """Display next steps for user."""
     project_slug = '{{ cookiecutter.project_slug }}'
-    
+
     print("\n" + "="*60)
     print(f"✓ Project '{project_slug}' created successfully!")
     print("="*60)
@@ -301,12 +303,12 @@ def test_my_template_bakes(cookies):
         },
         template="templates/my-template"
     )
-    
+
     # Verify successful generation
     assert result.exception is None
     assert result.exit_code == 0
     assert result.project_path.is_dir()
-    
+
     # Verify essential files exist
     assert (result.project_path / "README.md").exists()
     assert (result.project_path / "src").exists()
@@ -324,10 +326,10 @@ def test_my_template_minimal(cookies):
         },
         template="templates/my-template"
     )
-    
+
     assert result.exception is None
     assert result.exit_code == 0
-    
+
     # Security files should not exist
     assert not (result.project_path / ".github" / "workflows" / "security.yml").exists()
 
@@ -340,7 +342,7 @@ def test_my_template_invalid_slug(cookies):
         },
         template="templates/my-template"
     )
-    
+
     # Should fail validation
     assert result.exit_code != 0
 ```
@@ -378,6 +380,7 @@ cd <generated-project>
 ```
 
 **Validation Checklist**:
+
 - [ ] Template generates without errors
 - [ ] All files are created correctly
 - [ ] Variables are substituted properly
@@ -393,7 +396,7 @@ cd <generated-project>
 
 **Create** `templates/my-template/README.md`:
 
-```markdown
+````markdown
 # My Template
 
 Description of what this template generates.
@@ -409,14 +412,15 @@ Description of what this template generates.
 ```bash
 cookiecutter templates/my-template
 ```
+````
 
 ## Template Variables
 
-| Variable | Description | Default | Options |
-|----------|-------------|---------|---------|
-| project_name | Project name | My Project | Any string |
-| project_slug | URL-friendly name | (computed) | lowercase-kebab-case |
-| license | License type | MIT | MIT, Apache-2.0, etc. |
+| Variable     | Description       | Default    | Options               |
+| ------------ | ----------------- | ---------- | --------------------- |
+| project_name | Project name      | My Project | Any string            |
+| project_slug | URL-friendly name | (computed) | lowercase-kebab-case  |
+| license      | License type      | MIT        | MIT, Apache-2.0, etc. |
 
 ## Generated Project Structure
 
@@ -431,7 +435,9 @@ project-name/
 ## Optional Features
 
 ### Security Gates
+
 Enable with `enable_security_gates: yes`
+
 - CodeQL analysis
 - Secret scanning
 - Dependency review
@@ -439,6 +445,7 @@ Enable with `enable_security_gates: yes`
 ## Next Steps
 
 After generation:
+
 1. Review README.md
 2. Install dependencies
 3. Run tests
@@ -447,7 +454,8 @@ After generation:
 ## Examples
 
 See `examples/my-template/` for complete example projects.
-```
+
+````
 
 **Validation**: Documentation is clear and complete
 
@@ -500,7 +508,7 @@ git push origin feat/add-my-template
 gh pr create \
   --title "feat: add my-template for [technology]" \
   --body "Adds new Cookiecutter template for [technology]..."
-```
+````
 
 **Validation**: PR created, CI passes
 
@@ -510,7 +518,8 @@ gh pr create \
 
 **Symptom**: `cookiecutter` command errors
 **Cause**: Invalid JSON or Jinja2 syntax
-**Solution**: 
+**Solution**:
+
 ```bash
 # Validate JSON
 python -m json.tool templates/my-template/cookiecutter.json
@@ -524,6 +533,7 @@ cookiecutter templates/my-template --no-input
 **Symptom**: pytest fails with template errors
 **Cause**: Missing files or incorrect paths
 **Solution**:
+
 ```bash
 # Run with verbose output
 pytest tests/test_cookiecutters.py::test_my_template_bakes -vv
@@ -537,6 +547,7 @@ ls -la /tmp/pytest-of-*/pytest-*/test_my_template_bakes*/
 **Symptom**: Workflow files have syntax errors
 **Cause**: Jinja2 conflicts with `${{ }}` syntax
 **Solution**: Use `{% raw %}` blocks:
+
 ```yaml
 {% raw %}
 env:
@@ -549,6 +560,7 @@ env:
 **Symptom**: Pre or post hooks error
 **Cause**: Python syntax or logic errors
 **Solution**:
+
 ```bash
 # Test hook manually
 cd templates/my-template/hooks
@@ -600,4 +612,4 @@ rm -rf /tmp/pytest-of-*
 
 ---
 
-*For questions or issues, open a GitHub issue or discussion.*
+_For questions or issues, open a GitHub issue or discussion._

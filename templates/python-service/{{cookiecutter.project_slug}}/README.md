@@ -9,16 +9,16 @@
 - ✅ Testing with pytest and coverage
 - 🔍 Code quality with black, ruff, and mypy
 - 🔒 Pre-commit hooks for consistent code style
-{% if cookiecutter.enable_security_gates == "yes" -%}
+  {% if cookiecutter.enable_security_gates == "yes" -%}
 - 🛡️ Security scanning with CodeQL and Gitleaks
-{% endif -%}
-{% if cookiecutter.enable_sbom_signing == "yes" -%}
+  {% endif -%}
+  {% if cookiecutter.enable_sbom_signing == "yes" -%}
 - 📋 SBOM generation with CycloneDX
 - ✍️ Artifact signing with Sigstore/Cosign
-{% endif -%}
-{% if cookiecutter.include_jupyter_book == "yes" -%}
+  {% endif -%}
+  {% if cookiecutter.include_jupyter_book == "yes" -%}
 - 📚 Documentation with Jupyter Book
-{% endif -%}
+  {% endif -%}
 
 ## Quick Start
 
@@ -64,6 +64,7 @@ mypy src
 ```
 
 {% if cookiecutter.include_jupyter_book == "yes" -%}
+
 ### Documentation
 
 Build the documentation:
@@ -115,6 +116,7 @@ Contributions are welcome! Please follow these steps:
 5. Open a Pull Request
 
 Please ensure:
+
 - Tests pass (`pytest`)
 - Code is formatted (`black`, `ruff`)
 - Type checks pass (`mypy`)

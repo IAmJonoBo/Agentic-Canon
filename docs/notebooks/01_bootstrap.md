@@ -14,6 +14,7 @@ kernelspec:
 # 01 Bootstrap: Repository Scaffolding & Quality Gates
 
 This notebook demonstrates how to:
+
 - Scaffold a new repository with best practices
 - Enable quality gates (linting, testing, security)
 - Generate SBOM (Software Bill of Materials)

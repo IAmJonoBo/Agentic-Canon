@@ -22,27 +22,27 @@ import statistics
 def check_api_latency(endpoint: str, threshold_ms: int = 200) -> bool:
     """
     Verify API response time is below threshold.
-    
+
     Args:
         endpoint: API endpoint to test
         threshold_ms: Maximum acceptable latency in milliseconds
-        
+
     Returns:
         True if latency is acceptable, False otherwise
     """
     latencies = []
-    
+
     # Make 10 requests
     for _ in range(10):
         response = requests.get(endpoint)
         latencies.append(response.elapsed.total_seconds() * 1000)
-    
+
     p95_latency = statistics.quantiles(latencies, n=20)[18]  # 95th percentile
-    
+
     if p95_latency > threshold_ms:
         print(f"❌ FAIL: P95 latency {p95_latency:.2f}ms exceeds threshold {threshold_ms}ms")
         return False
-    
+
     print(f"✅ PASS: P95 latency {p95_latency:.2f}ms is within threshold")
     return True
 
@@ -51,15 +51,15 @@ def check_database_query_time(query: str, threshold_ms: int = 100) -> bool:
     """Check database query execution time."""
     import time
     from db import execute_query
-    
+
     start = time.time()
     execute_query(query)
     duration_ms = (time.time() - start) * 1000
-    
+
     if duration_ms > threshold_ms:
         print(f"❌ FAIL: Query took {duration_ms:.2f}ms (threshold: {threshold_ms}ms)")
         return False
-    
+
     print(f"✅ PASS: Query completed in {duration_ms:.2f}ms")
     return True
 ```
@@ -74,29 +74,29 @@ import requests
 def check_minimum_throughput(endpoint: str, min_rps: int = 100) -> bool:
     """
     Verify system can handle minimum requests per second.
-    
+
     Args:
         endpoint: API endpoint to test
         min_rps: Minimum required requests per second
     """
     duration_seconds = 10
-    
+
     def make_request():
         return requests.get(endpoint)
-    
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
         futures = []
         for _ in range(min_rps * duration_seconds):
             futures.append(executor.submit(make_request))
-        
+
         successful = sum(1 for f in futures if f.result().status_code == 200)
-    
+
     actual_rps = successful / duration_seconds
-    
+
     if actual_rps < min_rps:
         print(f"❌ FAIL: Throughput {actual_rps:.1f} RPS below minimum {min_rps} RPS")
         return False
-    
+
     print(f"✅ PASS: Throughput {actual_rps:.1f} RPS meets requirement")
     return True
 ```
@@ -116,21 +116,21 @@ from pathlib import Path
 def check_no_cyclic_dependencies(src_dir: str) -> bool:
     """
     Detect cyclic dependencies between modules.
-    
+
     Returns:
         True if no cycles found, False otherwise
     """
     from collections import defaultdict
-    
+
     dependencies = defaultdict(set)
-    
+
     # Build dependency graph
     for py_file in Path(src_dir).rglob("*.py"):
         module = str(py_file.relative_to(src_dir)).replace("/", ".")[:-3]
-        
+
         with open(py_file) as f:
             tree = ast.parse(f.read())
-            
+
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
@@ -139,12 +139,12 @@ def check_no_cyclic_dependencies(src_dir: str) -> bool:
             elif isinstance(node, ast.ImportFrom):
                 if node.module and node.module.startswith(src_dir.split("/")[-1]):
                     dependencies[module].add(node.module)
-    
+
     # Check for cycles using DFS
     def has_cycle(node, visited, rec_stack):
         visited.add(node)
         rec_stack.add(node)
-        
+
         for neighbor in dependencies.get(node, []):
             if neighbor not in visited:
                 if has_cycle(neighbor, visited, rec_stack):
@@ -152,16 +152,16 @@ def check_no_cyclic_dependencies(src_dir: str) -> bool:
             elif neighbor in rec_stack:
                 print(f"❌ FAIL: Cyclic dependency detected: {node} -> {neighbor}")
                 return True
-        
+
         rec_stack.remove(node)
         return False
-    
+
     visited = set()
     for node in dependencies:
         if node not in visited:
             if has_cycle(node, visited, set()):
                 return False
-    
+
     print("✅ PASS: No cyclic dependencies found")
     return True
 
@@ -169,7 +169,7 @@ def check_no_cyclic_dependencies(src_dir: str) -> bool:
 def check_layer_dependencies(src_dir: str) -> bool:
     """
     Verify that layers only depend on lower layers.
-    
+
     Architecture layers (top to bottom):
     - presentation (API/UI)
     - application (use cases)
@@ -178,35 +178,35 @@ def check_layer_dependencies(src_dir: str) -> bool:
     """
     layer_order = ["presentation", "application", "domain", "infrastructure"]
     violations = []
-    
+
     for py_file in Path(src_dir).rglob("*.py"):
         file_layer = None
         for layer in layer_order:
             if layer in str(py_file):
                 file_layer = layer
                 break
-        
+
         if not file_layer:
             continue
-        
+
         with open(py_file) as f:
             content = f.read()
-        
+
         file_layer_idx = layer_order.index(file_layer)
-        
+
         # Check imports
         for idx, layer in enumerate(layer_order):
             if idx < file_layer_idx and layer in content:
                 violations.append(
                     f"{py_file}: {file_layer} layer depends on {layer} layer"
                 )
-    
+
     if violations:
         print("❌ FAIL: Layer dependency violations:")
         for v in violations:
             print(f"  - {v}")
         return False
-    
+
     print("✅ PASS: Layer dependencies are correct")
     return True
 ```
@@ -221,31 +221,31 @@ from pathlib import Path
 def check_coupling_metrics(src_dir: str, max_coupling: int = 5) -> bool:
     """
     Check afferent and efferent coupling for modules.
-    
+
     Args:
         src_dir: Source directory to analyze
         max_coupling: Maximum acceptable coupling value
     """
     violations = []
-    
+
     for py_file in Path(src_dir).rglob("*.py"):
         with open(py_file) as f:
             content = f.read()
-        
+
         # Count imports (efferent coupling)
         import_count = content.count("import ") + content.count("from ")
-        
+
         if import_count > max_coupling:
             violations.append(
                 f"{py_file}: {import_count} imports (max: {max_coupling})"
             )
-    
+
     if violations:
         print(f"❌ FAIL: High coupling detected:")
         for v in violations:
             print(f"  - {v}")
         return False
-    
+
     print(f"✅ PASS: All modules have coupling <= {max_coupling}")
     return True
 ```
@@ -269,23 +269,23 @@ def check_no_hardcoded_secrets(src_dir: str) -> bool:
         (r'secret\s*=\s*["\'].*["\']', "hardcoded secret"),
         (r'token\s*=\s*["\'].*["\']', "hardcoded token"),
     ]
-    
+
     violations = []
-    
+
     for py_file in Path(src_dir).rglob("*.py"):
         with open(py_file) as f:
             content = f.read()
-        
+
         for pattern, description in patterns:
             if re.search(pattern, content, re.IGNORECASE):
                 violations.append(f"{py_file}: {description}")
-    
+
     if violations:
         print("❌ FAIL: Potential secrets found:")
         for v in violations:
             print(f"  - {v}")
         return False
-    
+
     print("✅ PASS: No hardcoded secrets detected")
     return True
 
@@ -295,11 +295,11 @@ def check_attack_surface(endpoints: list, max_public_endpoints: int = 10) -> boo
     Monitor API attack surface by counting public endpoints.
     """
     public_endpoints = [e for e in endpoints if not e.get("requires_auth")]
-    
+
     if len(public_endpoints) > max_public_endpoints:
         print(f"❌ FAIL: {len(public_endpoints)} public endpoints (max: {max_public_endpoints})")
         return False
-    
+
     print(f"✅ PASS: {len(public_endpoints)} public endpoints within limit")
     return True
 ```
@@ -319,26 +319,26 @@ def check_cyclomatic_complexity(src_dir: str, max_complexity: int = 10) -> bool:
     Check that functions don't exceed complexity threshold.
     """
     violations = []
-    
+
     for py_file in Path(src_dir).rglob("*.py"):
         with open(py_file) as f:
             content = f.read()
-        
+
         complexity = radon_cc.cc_visit(content)
-        
+
         for item in complexity:
             if item.complexity > max_complexity:
                 violations.append(
                     f"{py_file}:{item.lineno} {item.name}: "
                     f"complexity {item.complexity} (max: {max_complexity})"
                 )
-    
+
     if violations:
         print("❌ FAIL: High complexity detected:")
         for v in violations:
             print(f"  - {v}")
         return False
-    
+
     print(f"✅ PASS: All functions have complexity <= {max_complexity}")
     return True
 
@@ -350,11 +350,11 @@ def check_code_duplication(src_dir: str, max_duplication: float = 5.0) -> bool:
     # This would integrate with tools like PMD CPD or similar
     # For now, simplified check
     duplication_percent = 3.2  # Would come from actual analysis
-    
+
     if duplication_percent > max_duplication:
         print(f"❌ FAIL: Code duplication {duplication_percent}% exceeds {max_duplication}%")
         return False
-    
+
     print(f"✅ PASS: Code duplication {duplication_percent}% is acceptable")
     return True
 
@@ -364,19 +364,19 @@ def check_technical_debt(src_dir: str, max_debt_minutes: int = 1000) -> bool:
     Check total technical debt doesn't exceed threshold.
     """
     total_debt = 0
-    
+
     for py_file in Path(src_dir).rglob("*.py"):
         with open(py_file) as f:
             content = f.read()
-        
+
         # Count TODO, FIXME, HACK comments
         todos = content.count("# TODO") + content.count("# FIXME") + content.count("# HACK")
         total_debt += todos * 30  # Estimate 30 minutes per TODO
-    
+
     if total_debt > max_debt_minutes:
         print(f"❌ FAIL: Technical debt {total_debt} minutes exceeds {max_debt_minutes}")
         return False
-    
+
     print(f"✅ PASS: Technical debt {total_debt} minutes is manageable")
     return True
 ```
@@ -394,37 +394,37 @@ on: [push, pull_request]
 jobs:
   fitness-checks:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      
+          python-version: "3.11"
+
       - name: Install dependencies
         run: |
           pip install -r fitness-requirements.txt
-      
+
       - name: Run Performance Checks
         run: |
           python -m fitness_functions.performance.latency_check
           python -m fitness_functions.performance.throughput_check
-      
+
       - name: Run Architecture Checks
         run: |
           python -m fitness_functions.architecture.dependency_check
           python -m fitness_functions.architecture.coupling_check
-      
+
       - name: Run Security Checks
         run: |
           python -m fitness_functions.security.security_check
-      
+
       - name: Run Quality Checks
         run: |
           python -m fitness_functions.quality.quality_check
-      
+
       - name: Fail on violations
         if: failure()
         run: |

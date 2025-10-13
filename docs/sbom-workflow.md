@@ -34,8 +34,8 @@ GitHub UI → Actions → “Security • SBOM Scan” → Run workflow
 
 ### Outputs
 
-- `sbom.spdx.json` uploaded as an artifact.
-- Grype summary written to the job summary (medium severity and above).
+- `sbom.spdx.json` uploaded as an artifact directly by `anchore/sbom-action@v0.20.6`.
+- Severity counts (medium and above) written to the job summary by parsing the `anchore/scan-action@v7.0.0` JSON report.
 
 ## Local Reuse
 

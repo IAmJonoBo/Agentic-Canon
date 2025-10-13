@@ -17,33 +17,33 @@ TEMPLATE="${REPO_ROOT}/templates/architecture/adr/template.md"
 
 # Check if template exists
 if [ ! -f "$TEMPLATE" ]; then
-    echo -e "${RED}Error: ADR template not found at $TEMPLATE${NC}"
-    exit 1
+	echo -e "${RED}Error: ADR template not found at $TEMPLATE${NC}"
+	exit 1
 fi
 
 # Function to get next ADR number
 get_next_adr_number() {
-    local max_num=0
-    for file in "$ADR_DIR"/ADR-[0-9]*.md; do
-        if [ -f "$file" ]; then
-            filename=$(basename "$file")
-            # Only process files matching ADR-NNN-*.md pattern
-            if [[ "$filename" =~ ^ADR-([0-9]{3})-.*\.md$ ]]; then
-                num="${BASH_REMATCH[1]}"
-                # Remove leading zeros for comparison
-                num=$((10#$num))
-                if [ "$num" -gt "$max_num" ]; then
-                    max_num=$num
-                fi
-            fi
-        fi
-    done
-    printf "%03d" $((max_num + 1))
+	local max_num=0
+	for file in "$ADR_DIR"/ADR-[0-9]*.md; do
+		if [ -f "$file" ]; then
+			filename=$(basename "$file")
+			# Only process files matching ADR-NNN-*.md pattern
+			if [[ $filename =~ ^ADR-([0-9]{3})-.*\.md$ ]]; then
+				num="${BASH_REMATCH[1]}"
+				# Remove leading zeros for comparison
+				num=$((10#$num))
+				if [ "$num" -gt "$max_num" ]; then
+					max_num=$num
+				fi
+			fi
+		fi
+	done
+	printf "%03d" $((max_num + 1))
 }
 
 # Function to slugify title
 slugify() {
-    echo "$1" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//'
+	echo "$1" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//'
 }
 
 # Main script
@@ -58,8 +58,8 @@ echo -e "\nEnter ADR title (e.g., 'Use PostgreSQL for primary database'):"
 read -r TITLE
 
 if [ -z "$TITLE" ]; then
-    echo -e "${RED}Error: Title cannot be empty${NC}"
-    exit 1
+	echo -e "${RED}Error: Title cannot be empty${NC}"
+	exit 1
 fi
 
 # Create slug
@@ -76,10 +76,10 @@ echo "4) superseded"
 read -r STATUS_CHOICE
 
 case $STATUS_CHOICE in
-    2) STATUS="accepted" ;;
-    3) STATUS="deprecated" ;;
-    4) STATUS="superseded" ;;
-    *) STATUS="proposed" ;;
+2) STATUS="accepted" ;;
+3) STATUS="deprecated" ;;
+4) STATUS="superseded" ;;
+*) STATUS="proposed" ;;
 esac
 
 # Get current date
@@ -106,8 +106,8 @@ sed -i "s/{{ STATUS }}/${STATUS}/g" "$FILEPATH"
 
 # Add decision makers if provided
 if [ -n "$DECISION_MAKERS" ]; then
-    # This is a simple replacement - manual editing may be needed
-    sed -i "s/- {{ NAME }} - {{ ROLE }}/${DECISION_MAKERS}/g" "$FILEPATH"
+	# This is a simple replacement - manual editing may be needed
+	sed -i "s/- {{ NAME }} - {{ ROLE }}/${DECISION_MAKERS}/g" "$FILEPATH"
 fi
 
 echo -e "${GREEN}✓ ADR created successfully!${NC}"
@@ -122,14 +122,14 @@ echo -e "Open the ADR now? (y/n)"
 read -r OPEN
 
 if [ "$OPEN" = "y" ] || [ "$OPEN" = "Y" ]; then
-    if command -v code &> /dev/null; then
-        code "$FILEPATH"
-    elif command -v vim &> /dev/null; then
-        vim "$FILEPATH"
-    else
-        echo "No editor found. Opening with default..."
-        ${EDITOR:-nano} "$FILEPATH"
-    fi
+	if command -v code &>/dev/null; then
+		code "$FILEPATH"
+	elif command -v vim &>/dev/null; then
+		vim "$FILEPATH"
+	else
+		echo "No editor found. Opening with default..."
+		${EDITOR:-nano} "$FILEPATH"
+	fi
 fi
 
 echo -e "\n${GREEN}Don't forget to update docs/adr/README.md!${NC}"

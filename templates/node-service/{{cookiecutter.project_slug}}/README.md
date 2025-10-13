@@ -9,12 +9,12 @@
 - ✅ Vitest for testing with coverage
 - ✅ ESLint + Prettier for code quality
 - ✅ GitHub Actions CI/CD
-{% if cookiecutter.enable_security_gates == "yes" %}
+  {% if cookiecutter.enable_security_gates == "yes" %}
 - ✅ Security scanning (CodeQL, npm audit, secret scanning)
-{% endif %}
-{% if cookiecutter.enable_sbom_signing == "yes" %}
+  {% endif %}
+  {% if cookiecutter.enable_sbom_signing == "yes" %}
 - ✅ SBOM generation and signing
-{% endif %}
+  {% endif %}
 
 ## Getting Started
 
@@ -103,11 +103,12 @@ This project uses GitHub Actions for continuous integration:
   - Multi-version Node.js testing (18, 20, 21)
 
 {% if cookiecutter.enable_security_gates == "yes" %}
+
 - **Security Pipeline**: Runs weekly and on changes
   - Dependency vulnerability scanning (npm audit)
   - Static analysis (CodeQL)
   - Secret scanning (TruffleHog)
-{% endif %}
+    {% endif %}
 
 ## License
 

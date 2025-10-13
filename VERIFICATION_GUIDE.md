@@ -17,6 +17,7 @@ Run the label setup script to create all required labels:
 ```
 
 **Expected output**:
+
 ```
 🏷️  Setting up GitHub labels for project management automation...
 
@@ -30,6 +31,7 @@ Run the label setup script to create all required labels:
 ```
 
 **Verify**:
+
 ```bash
 gh label list
 ```
@@ -79,6 +81,7 @@ cat test_automation.py
 ```
 
 Should show:
+
 ```python
 # TODO: Test the automation system https://github.com/owner/repo/issues/123
 ```
@@ -124,6 +127,7 @@ grep "Test tasklist automation" TASKS.md
 ```
 
 Should show:
+
 ```markdown
 - [ ] #124 Test tasklist automation
 - [ ] #125 Another test task
@@ -283,11 +287,13 @@ gh run list --status failure
 ### Workflows Not Running
 
 **Check**:
+
 1. GitHub Actions enabled in repo settings
 2. Workflows exist in `.github/workflows/`
 3. Branch protection not blocking actions
 
 **Fix**:
+
 ```bash
 # Re-push to trigger
 git commit --allow-empty -m "trigger: workflows"
@@ -297,11 +303,13 @@ git push
 ### Labels Not Working
 
 **Check**:
+
 ```bash
 gh label list | grep "from:todo"
 ```
 
 **Fix**:
+
 ```bash
 ./.dev/scripts/setup-labels.sh
 ```
@@ -309,12 +317,14 @@ gh label list | grep "from:todo"
 ### Issues Not Created
 
 **Check workflow logs**:
+
 ```bash
 gh run list --workflow=todos.yml
 gh run view <run-id> --log
 ```
 
 **Common issues**:
+
 - Token permissions (needs `issues: write`)
 - Labels don't exist
 - Duplicate issues (check by title)
@@ -322,6 +332,7 @@ gh run view <run-id> --log
 ### URLs Not Written Back
 
 **Check**:
+
 - Workflow has `contents: write` permission
 - No conflicts in git
 - File is tracked by git

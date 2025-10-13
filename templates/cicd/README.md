@@ -31,6 +31,7 @@ Complete CI/CD workflows for GitHub Actions with all quality gates.
 13. **Deploy** - Environment-specific deployment
 
 **Features:**
+
 - Comprehensive quality gates
 - Security-first approach (SAST, secrets, dependencies)
 - SLSA Level 3 build provenance
@@ -41,6 +42,7 @@ Complete CI/CD workflows for GitHub Actions with all quality gates.
 - Deployment strategies (blue-green, canary)
 
 **Usage:**
+
 ```bash
 # Copy to your project
 cp templates/cicd/github-actions/complete-pipeline.yml .github/workflows/ci.yml
@@ -56,6 +58,7 @@ git push
 ```
 
 **Customization:**
+
 - Adjust `COVERAGE_THRESHOLD` for your project (default: 80%)
 - Set `MUTATION_THRESHOLD` for mutation testing (default: 40%)
 - Configure `SONAR_ORGANIZATION` if using SonarCloud
@@ -78,6 +81,7 @@ GitLab CI/CD pipelines with parallel job execution and caching.
 6. **Deploy** - Environment deployment
 
 **Features:**
+
 - Parallel job execution
 - Docker-in-Docker support
 - GitLab Container Registry integration
@@ -87,6 +91,7 @@ GitLab CI/CD pipelines with parallel job execution and caching.
 - Environment-specific variables
 
 **Usage:**
+
 ```bash
 # Copy to project root
 cp templates/cicd/gitlab-ci/.gitlab-ci.yml .
@@ -101,6 +106,7 @@ git push
 ```
 
 **Variables:**
+
 ```yaml
 variables:
   NODE_VERSION: "20"
@@ -116,6 +122,7 @@ Azure DevOps pipeline templates (planned).
 **Status:** Templates planned for future release
 
 **Planned Features:**
+
 - Multi-stage YAML pipelines
 - Template libraries
 - Azure DevOps integration
@@ -173,10 +180,10 @@ git push origin main
 ### Branch Protection with Required Checks
 
 **GitHub:**
+
 ```yaml
 # Settings → Branches → Branch protection rules
-Required status checks:
-  ✅ lint
+Required status checks: ✅ lint
   ✅ build
   ✅ security / codeql
   ✅ security / secrets
@@ -185,6 +192,7 @@ Required status checks:
 ```
 
 **GitLab:**
+
 ```yaml
 # Settings → Repository → Protected branches
 Allowed to merge: Maintainers
@@ -300,12 +308,14 @@ test:
 ## Tools and Integrations
 
 ### Code Quality
+
 - **SonarQube/SonarCloud** - Code quality and security
 - **Codecov** - Coverage reporting
 - **CodeClimate** - Maintainability metrics
 - **Stryker** - Mutation testing
 
 ### Security
+
 - **CodeQL** - Semantic code analysis
 - **Semgrep** - Pattern-based scanning
 - **Snyk** - Dependency vulnerabilities
@@ -313,6 +323,7 @@ test:
 - **Gitleaks** - Secret detection
 
 ### Testing
+
 - **Jest/Vitest** - Unit testing
 - **Playwright/Cypress** - E2E testing
 - **K6/Artillery** - Load testing
@@ -320,6 +331,7 @@ test:
 - **Pa11y/axe** - Accessibility testing
 
 ### Deployment
+
 - **Docker** - Containerization
 - **Kubernetes** - Orchestration
 - **Helm** - Package management
@@ -359,14 +371,16 @@ dashboards:
 ### Common Issues
 
 **Build Timeout:**
+
 ```yaml
 # Increase timeout
 jobs:
   build:
-    timeout-minutes: 30  # Default is 360
+    timeout-minutes: 30 # Default is 360
 ```
 
 **Cache Not Working:**
+
 ```yaml
 # Verify cache key is correct
 - uses: actions/cache@v4
@@ -376,6 +390,7 @@ jobs:
 ```
 
 **Secrets Not Available:**
+
 ```bash
 # Check secret is set in repository settings
 # Verify secret name matches exactly (case-sensitive)
@@ -383,6 +398,7 @@ jobs:
 ```
 
 **Flaky Tests:**
+
 ```yaml
 # Run tests with retry
 - run: npm test -- --retries=2
@@ -408,16 +424,19 @@ These templates help achieve compliance with:
 ## Additional Resources
 
 ### Documentation
+
 - [GitHub Actions Docs](https://docs.github.com/en/actions)
 - [GitLab CI/CD Docs](https://docs.gitlab.com/ee/ci/)
 - [Azure Pipelines Docs](https://learn.microsoft.com/en-us/azure/devops/pipelines/)
 
 ### Best Practices
+
 - [GitHub Actions Best Practices](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions)
 - [GitLab CI/CD Best Practices](https://docs.gitlab.com/ee/ci/pipelines/pipeline_efficiency.html)
 - [Continuous Delivery](https://continuousdelivery.com/)
 
 ### Related Templates
+
 - [Security Templates](../security/README.md) - Security scanning
 - [Contracts Templates](../contracts/README.md) - API contract testing
 - [Video Tutorial: CI/CD Setup](../../examples/video-tutorials/03-cicd-setup.md)
@@ -425,6 +444,7 @@ These templates help achieve compliance with:
 ## Contributing
 
 To improve these templates:
+
 1. Share your production pipeline configurations
 2. Add platform-specific examples
 3. Document common patterns

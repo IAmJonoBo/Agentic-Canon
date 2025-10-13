@@ -22,7 +22,7 @@ This is a **working example** of a user management RESTful API built with Expres
 
 ### Prerequisites
 
-- Node.js 20+ 
+- Node.js 20+
 - npm or yarn
 
 ### Installation
@@ -93,6 +93,7 @@ curl -X POST http://localhost:3000/users \
 ```
 
 Response:
+
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -180,7 +181,7 @@ Input validation using Zod schemas:
 
 ```typescript
 const createUserSchema = z.object({
-  email: z.string().email('Invalid email format'),
+  email: z.string().email("Invalid email format"),
   fullName: z.string().min(1).max(100),
   password: z.string().min(8),
   role: z.nativeEnum(UserRole).default(UserRole.USER),
@@ -192,8 +193,8 @@ const createUserSchema = z.object({
 JSON-structured logging with Winston:
 
 ```typescript
-logger.info('User created', { userId: user.id, email: user.email });
-logger.error('Error creating user', { error });
+logger.info("User created", { userId: user.id, email: user.email });
+logger.error("Error creating user", { error });
 ```
 
 ### Security
@@ -223,17 +224,15 @@ Test coverage: **>80%** (enforced in CI)
 ### Test Examples
 
 ```typescript
-it('should create a new user', async () => {
-  const response = await request(app)
-    .post('/users')
-    .send({
-      email: 'test@example.com',
-      fullName: 'Test User',
-      password: 'securepass123'
-    });
+it("should create a new user", async () => {
+  const response = await request(app).post("/users").send({
+    email: "test@example.com",
+    fullName: "Test User",
+    password: "securepass123",
+  });
 
   expect(response.status).toBe(201);
-  expect(response.body.email).toBe('test@example.com');
+  expect(response.body.email).toBe("test@example.com");
 });
 ```
 
@@ -242,6 +241,7 @@ it('should create a new user', async () => {
 Automated workflows included:
 
 ### CI Pipeline (`.github/workflows/ci.yml`)
+
 - ✅ Run tests on Node.js 20 and 22
 - ✅ Check code coverage (≥80%)
 - ✅ Run linter (ESLint)
@@ -249,6 +249,7 @@ Automated workflows included:
 - ✅ Format check (Prettier)
 
 ### Security Pipeline (`.github/workflows/security.yml`)
+
 - ✅ CodeQL static analysis
 - ✅ Secret scanning with Gitleaks
 - ✅ Dependency scanning with npm audit
@@ -307,21 +308,21 @@ spec:
         app: express-user-api
     spec:
       containers:
-      - name: api
-        image: express-user-api:0.1.0
-        ports:
-        - containerPort: 3000
-        env:
-        - name: NODE_ENV
-          value: production
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 3000
+        - name: api
+          image: express-user-api:0.1.0
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: production
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
 ```
 
 ## Production Enhancements
@@ -331,27 +332,21 @@ When deploying to production, consider adding:
 - [ ] **Real Database**: Replace in-memory DB with PostgreSQL/MongoDB
   - Use Prisma or TypeORM
   - Add database migrations
-  
 - [ ] **Authentication**: Implement JWT-based auth
   - Add login/logout endpoints
   - Protect routes with middleware
-  
 - [ ] **Rate Limiting**: Protect against abuse
   - Use express-rate-limit
-  
 - [ ] **Caching**: Improve performance
   - Redis for session storage
   - Cache frequently accessed data
-  
 - [ ] **API Documentation**: Auto-generate docs
   - Use Swagger/OpenAPI
   - Add @types/swagger-ui-express
-  
 - [ ] **Monitoring**: Production observability
   - OpenTelemetry instrumentation
   - Prometheus metrics
   - Distributed tracing
-  
 - [ ] **Password Hashing**: Use bcrypt
   - Replace simplified hashing
   - Add salt rounds configuration
@@ -364,11 +359,11 @@ In-memory database for demonstration. In production, use:
 
 ```typescript
 // Example with Prisma
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const user = await prisma.user.create({
-  data: { email, fullName, hashedPassword }
+  data: { email, fullName, hashedPassword },
 });
 ```
 

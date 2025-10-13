@@ -7,15 +7,15 @@
 - ✅ React 18 with TypeScript
 - ✅ Vite for fast development and optimized builds
 - ✅ Vitest for unit testing
-{% if cookiecutter.include_storybook == "yes" %}
+  {% if cookiecutter.include_storybook == "yes" %}
 - ✅ Storybook for component development
-{% endif %}
-{% if cookiecutter.include_e2e_tests == "yes" %}
+  {% endif %}
+  {% if cookiecutter.include_e2e_tests == "yes" %}
 - ✅ Playwright for E2E testing
-{% endif %}
-{% if cookiecutter.enable_accessibility_tests == "yes" %}
+  {% endif %}
+  {% if cookiecutter.enable_accessibility_tests == "yes" %}
 - ✅ Accessibility testing with axe
-{% endif %}
+  {% endif %}
 - ✅ ESLint + Prettier for code quality
 - ✅ GitHub Actions CI/CD
 
@@ -63,6 +63,7 @@ npm run test:e2e:ui
 ```
 
 {% if cookiecutter.include_storybook == "yes" %}
+
 ### Storybook
 
 ```bash
@@ -72,6 +73,7 @@ npm run storybook
 # Build Storybook
 npm run build-storybook
 ```
+
 {% endif %}
 
 ### Code Quality
@@ -119,14 +121,14 @@ This project uses GitHub Actions:
   - Format checking
   - Unit tests
   - Production build
-{% if cookiecutter.include_e2e_tests == "yes" %}
+    {% if cookiecutter.include_e2e_tests == "yes" %}
 - **E2E Tests**: Runs on every push and PR
   - Cross-browser testing (Chrome, Firefox, Safari)
   - Visual regression testing
-{% endif %}
-{% if cookiecutter.include_storybook == "yes" %}
+    {% endif %}
+    {% if cookiecutter.include_storybook == "yes" %}
 - **Storybook**: Deploys to GitHub Pages on main branch
-{% endif %}
+  {% endif %}
 
 ## License
 

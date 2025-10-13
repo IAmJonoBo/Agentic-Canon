@@ -16,6 +16,7 @@ Thank you for considering contributing to Agentic Canon. This guide will help yo
 ## Code of Conduct
 
 We are committed to providing a welcoming and inclusive environment. Please:
+
 - Be respectful and constructive
 - Focus on what's best for the community
 - Show empathy towards others
@@ -26,6 +27,7 @@ For details, see our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 ## Getting Started
 
 ### Prerequisites
+
 - Git
 - Python 3.11+
 - pip or conda for Python package management
@@ -67,10 +69,11 @@ Before contributing, understand the current project state:
    - [.github/LABELS.md](.github/LABELS.md) - Label taxonomy and usage
 
 3. **Verify Current State:**
+
    ```bash
    # Run comprehensive sanity check
    .dev/sanity-check.sh
-   
+
    # Current status (2025-10-12):
    # ✅ 44 checks passed
    # ⚠️ 2 warnings (Azure/GCP multi-cloud pending)
@@ -78,15 +81,17 @@ Before contributing, understand the current project state:
    ```
 
 4. **Test Templates:**
+
    ```bash
    # Run template tests
    pytest tests/test_cookiecutters.py -v
-   
+
    # Generate a test project
    cookiecutter templates/python-service
    ```
 
 **⚠️ Important:** Documentation may lag behind implementation. Always:
+
 - Run `.dev/sanity-check.sh` to verify ground truth
 - Check actual file existence, not just documentation
 - Run tests to confirm functionality
@@ -117,6 +122,7 @@ Agentic-Canon/
 ### 1. Branch Strategy
 
 We use **trunk-based development**:
+
 - `main` - Production-ready code
 - Feature branches from `main`: `feature/description` or `fix/description`
 - All PRs merge back to `main`
@@ -137,12 +143,14 @@ git checkout -b feature/your-feature-name
 Follow these guidelines:
 
 #### Code Style
+
 - For Python: Follow PEP 8 guidelines
 - For JavaScript/TypeScript: Follow standard.js or the project's ESLint config
 - For Markdown: Use consistent formatting
 - Run formatters before committing
 
 #### Commit Messages
+
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
@@ -154,6 +162,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation only
@@ -163,6 +172,7 @@ Types:
 - `chore`: Maintenance
 
 Example:
+
 ```
 feat(templates): add Rust service template
 
@@ -175,6 +185,7 @@ Closes #123
 ```
 
 #### Tests
+
 - Write tests for new features when applicable
 - Ensure all existing tests pass
 - For templates: Use pytest-cookies to test template rendering
@@ -193,6 +204,7 @@ All contributions must meet the Agentic Canon quality standards. See our compreh
 All contributions should meet these standards:
 
 #### For Code Changes
+
 - ✅ Tests added/updated (80%+ coverage)
 - ✅ Linting passes
 - ✅ Type hints included (Python/TypeScript)
@@ -200,6 +212,7 @@ All contributions should meet these standards:
 - ✅ Documentation updated
 
 ### Documentation
+
 - ✅ Public APIs and functions documented
 - ✅ README updated if needed
 - ✅ ADR created for significant architectural decisions (see [ADR Lifecycle](docs/adr/ADR-LIFECYCLE.md))
@@ -218,10 +231,11 @@ For **significant architectural decisions**, create an ADR:
    - API design choices
 
 2. **Create the ADR:**
+
    ```bash
    # Use the automated script
    .dev/scripts/create-adr.sh
-   
+
    # Or manually
    cp templates/architecture/adr/template.md docs/adr/ADR-009-your-decision.md
    ```
@@ -245,12 +259,14 @@ Use the appropriate issue template:
 - **ADR Proposal** - For architectural decisions
 
 See [Issue Management Guide](docs/ISSUE_MANAGEMENT.md) for best practices on:
+
 - Creating well-formed issues
 - Labeling and categorization
 - Sprint planning
 - Tracking progress
 
 ### Code Quality
+
 - ✅ Code follows project conventions (see [CONVENTIONS.md](CONVENTIONS.md))
 - ✅ No obvious code smells
 - ✅ Appropriate error handling
@@ -258,18 +274,21 @@ See [Issue Management Guide](docs/ISSUE_MANAGEMENT.md) for best practices on:
 - ✅ Type hints/annotations included (Python/TypeScript)
 
 ### Testing
+
 - ✅ Tests added/updated for changes
 - ✅ Code coverage maintained (≥80%)
 - ✅ All tests pass locally
 - ✅ No flaky tests introduced
 
 ### Security
+
 - ✅ No secrets in code
 - ✅ Input validation where appropriate
 - ✅ Dependencies reviewed and approved
 - ✅ Security best practices followed
 
 ### Templates
+
 - ✅ Template renders successfully with pytest-cookies
 - ✅ Generated project structure is valid
 - ✅ CI/CD workflows included
@@ -281,6 +300,7 @@ See [Issue Management Guide](docs/ISSUE_MANAGEMENT.md) for best practices on:
 ### 1. Before Submitting
 
 Run validation:
+
 ```bash
 # Format code (if applicable)
 # For Python:
@@ -320,9 +340,11 @@ git push origin feature/your-feature-name
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Documentation update
@@ -330,6 +352,7 @@ Brief description of changes
 - [ ] Breaking change
 
 ## Checklist
+
 - [ ] Tests added/updated (if applicable)
 - [ ] Documentation updated
 - [ ] Changelog updated (for user-facing changes)
@@ -338,9 +361,11 @@ Brief description of changes
 - [ ] Code follows style guidelines
 
 ## Testing
+
 How was this tested?
 
 ## Related Issues
+
 Closes #
 ```
 
@@ -421,18 +446,21 @@ cp docs/adr/template.md docs/adr/NNN-decision-title.md
 ## Resources
 
 ### Documentation
+
 - [README](README.md) - Project overview
 - [TASKS.md](TASKS.md) - Implementation tracking
 - [Agentic_Canon.md](Agentic_Canon.md) - Complete playbook
 - [INSTRUCTIONS.md](INSTRUCTIONS.md) - Technical implementation details
 
 ### Tools
+
 - Cookiecutter - Template generation
 - Jupytext - Notebook version control
 - Jupyter Book - Documentation publishing
 - pytest-cookies - Template testing
 
 ### External
+
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [Semantic Versioning](https://semver.org/)
 - [Trunk Based Development](https://trunkbaseddevelopment.com/)
@@ -440,6 +468,7 @@ cp docs/adr/template.md docs/adr/NNN-decision-title.md
 ## Recognition
 
 Contributors are recognized in:
+
 - CHANGELOG.md for significant contributions
 - GitHub contributors page
 - Project documentation
@@ -452,4 +481,4 @@ By contributing, you agree that your contributions will be licensed under the Ap
 
 Thank you for contributing to Agentic Canon! 🚀
 
-*This project implements frontier software excellence practices including NIST SSDF, OWASP SAMM, SLSA, and other industry best practices.*
+_This project implements frontier software excellence practices including NIST SSDF, OWASP SAMM, SLSA, and other industry best practices._

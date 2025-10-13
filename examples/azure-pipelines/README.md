@@ -5,6 +5,7 @@ This directory contains Azure DevOps Pipeline configurations for various project
 ## Available Templates
 
 ### Python Service
+
 - **File**: `python-service/azure-pipelines.yml`
 - **Features**:
   - Multi-version Python testing (3.11, 3.12)
@@ -13,6 +14,7 @@ This directory contains Azure DevOps Pipeline configurations for various project
   - Code quality checks (Ruff, Black, mypy)
 
 ### Node.js Service
+
 - **File**: `node-service/azure-pipelines.yml`
 - **Features**:
   - Multi-version Node.js testing (18, 20, 21)
@@ -31,6 +33,7 @@ This directory contains Azure DevOps Pipeline configurations for various project
 ## Common Configuration
 
 All pipelines follow these standards:
+
 - Trigger on `main` branch
 - Run on pull requests
 - Multi-stage pipelines (Build, Security, Quality)
@@ -40,6 +43,7 @@ All pipelines follow these standards:
 ## Integration with Agentic Canon
 
 These pipelines align with the quality gates and security standards defined in the Agentic Canon playbook:
+
 - Coverage thresholds ≥ 80%
 - Security scanning (SAST, dependency checks)
 - Code quality enforcement

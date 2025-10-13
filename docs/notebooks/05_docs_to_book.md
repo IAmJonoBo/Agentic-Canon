@@ -14,6 +14,7 @@ kernelspec:
 # 05 Documentation with Jupyter Book
 
 This notebook demonstrates:
+
 - Jupytext synchronization
 - Jupyter Book build process
 - Documentation best practices

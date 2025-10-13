@@ -15,6 +15,7 @@ Architecture Decision Records (ADRs) document significant architectural decision
 **File:** [`template.md`](adr/template.md)
 
 **Features:**
+
 - Structured decision documentation
 - Context and rationale capture
 - Alternatives analysis
@@ -25,6 +26,7 @@ Architecture Decision Records (ADRs) document significant architectural decision
 - Review and maintenance schedule
 
 **Usage:**
+
 ```bash
 # Create a new ADR
 cp templates/architecture/adr/template.md docs/adr/0001-use-postgresql.md
@@ -36,6 +38,7 @@ git commit -m "docs: ADR-0001 - Use PostgreSQL for primary database"
 ```
 
 **Best Practices:**
+
 - Number ADRs sequentially (0001, 0002, etc.)
 - Keep titles concise and action-oriented
 - Update status as decisions evolve
@@ -47,10 +50,12 @@ git commit -m "docs: ADR-0001 - Use PostgreSQL for primary database"
 C4 (Context, Container, Component, Code) diagrams provide hierarchical system visualization using PlantUML.
 
 **Files:**
+
 - [`c4-context.puml`](c4/c4-context.puml) - Level 1: System context and external interactions
 - [`c4-container.puml`](c4/c4-container.puml) - Level 2: Containers and their relationships
 
 **Features:**
+
 - Standards-based visualization (C4 model)
 - PlantUML format (text-based, version control friendly)
 - Multiple abstraction levels
@@ -58,6 +63,7 @@ C4 (Context, Container, Component, Code) diagrams provide hierarchical system vi
 - Technology stack documentation
 
 **Usage:**
+
 ```bash
 # Copy and customize for your system
 cp templates/architecture/c4/c4-context.puml docs/architecture/system-context.puml
@@ -71,12 +77,14 @@ plantuml docs/architecture/*.puml
 ```
 
 **Rendering Options:**
+
 - PlantUML CLI: `plantuml *.puml`
 - VS Code extension: PlantUML
 - Online: https://www.plantuml.com/plantuml
 - CI/CD: Generate in GitHub Actions
 
 **Best Practices:**
+
 - Start with context diagram (Level 1)
 - Add container diagram (Level 2) for implementation details
 - Use component diagrams (Level 3) for complex containers
@@ -112,6 +120,7 @@ Automated architectural governance checks that run in CI/CD pipelines.
    - Test coverage requirements
 
 **Usage:**
+
 ```bash
 # Copy to your project
 cp templates/architecture/fitness-functions/fitness-functions.js scripts/
@@ -131,6 +140,7 @@ node scripts/fitness-functions.js
 ```
 
 **CI/CD Integration:**
+
 ```yaml
 # .github/workflows/fitness-functions.yml
 name: Fitness Functions
@@ -147,6 +157,7 @@ jobs:
 ```
 
 **Best Practices:**
+
 - Run fitness functions on every commit
 - Fail CI/CD if fitness functions fail
 - Review and adjust thresholds quarterly
@@ -205,14 +216,14 @@ jobs:
       - uses: actions/setup-node@v4
       - run: npm ci
       - run: node scripts/fitness-functions.js
-      
+
   c4-diagrams:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: cloudbees/plantuml-github-action@master
         with:
-          args: 'docs/architecture/*.puml'
+          args: "docs/architecture/*.puml"
       - uses: actions/upload-artifact@v4
         with:
           name: diagrams
@@ -246,16 +257,19 @@ These templates help achieve compliance with:
 ## Additional Resources
 
 ### ADR Resources
+
 - [ADR GitHub Organization](https://adr.github.io/)
 - [Architecture Decision Records in Action](https://www.thoughtworks.com/radar/techniques/lightweight-architecture-decision-records)
 - [ADR Tools](https://github.com/npryce/adr-tools)
 
 ### C4 Model Resources
+
 - [C4 Model Website](https://c4model.com/)
 - [PlantUML for C4](https://github.com/plantuml-stdlib/C4-PlantUML)
 - [Structurizr](https://structurizr.com/) - Advanced C4 tooling
 
 ### Fitness Functions Resources
+
 - [Building Evolutionary Architectures](https://www.thoughtworks.com/books/building-evolutionary-architectures)
 - [Fitness Function Driven Development](https://www.thoughtworks.com/insights/blog/fitness-function-driven-development)
 
@@ -288,6 +302,7 @@ These templates help achieve compliance with:
 ## Support
 
 For questions or issues:
+
 1. Check [BIBLE.md](../../BIBLE.md) for conceptual guidance
 2. Review [examples/](../../examples/) for real-world usage
 3. Consult referenced standards documentation
@@ -296,6 +311,7 @@ For questions or issues:
 ## Contributing
 
 To improve these templates:
+
 1. Fork the repository
 2. Make your changes
 3. Test with real projects

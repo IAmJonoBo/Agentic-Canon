@@ -15,6 +15,7 @@ Jupyter notebooks (`.ipynb` files) are JSON files that contain code, outputs, an
 5. **Collaboration**: Multiple people editing notebooks leads to conflicts
 
 We need a solution that allows us to:
+
 - Version control notebook code effectively
 - Enable meaningful code reviews
 - Avoid output pollution in git
@@ -47,6 +48,7 @@ We will use **Jupytext** to pair `.ipynb` notebooks with MyST Markdown (`.md`) f
 ```
 
 This configuration:
+
 - Keeps executable `.ipynb` files in `notebooks/`
 - Stores version-controlled `.md` files in `docs/notebooks/`
 - Uses MyST Markdown format for Jupyter Book compatibility
@@ -129,16 +131,19 @@ jupytext --sync notebooks/*.ipynb
 ## Consequences for CI/CD
 
 ### Notebook Testing
+
 - Tests run against `.ipynb` files in `notebooks/`
 - CI uses `pytest --nbmake` to execute notebooks
 - Ensures notebooks remain executable
 
 ### Documentation Building
+
 - Jupyter Book uses `.md` files from `docs/notebooks/`
 - MyST Markdown provides rich formatting
 - Documentation stays in sync with code
 
 ### Version Control
+
 - Only `.md` files committed to git
 - Clean history and diffs
 - Easy to track changes
@@ -148,10 +153,12 @@ jupytext --sync notebooks/*.ipynb
 ### 1. nbstripout Only
 
 **Pros**:
+
 - Simpler setup
 - Keeps `.ipynb` format
 
 **Cons**:
+
 - Still noisy diffs
 - JSON merge conflicts
 - Harder code reviews
@@ -159,19 +166,23 @@ jupytext --sync notebooks/*.ipynb
 ### 2. Jupyter Book MyST Notebooks
 
 **Pros**:
+
 - Pure Markdown
 - Clean diffs
 
 **Cons**:
+
 - No `.ipynb` for local execution
 - Requires different editing workflow
 
 ### 3. ReviewNB or Similar Tools
 
 **Pros**:
+
 - Better notebook PR reviews
 
 **Cons**:
+
 - External service dependency
 - Doesn't solve git diff issues
 - Additional cost
@@ -179,9 +190,11 @@ jupytext --sync notebooks/*.ipynb
 ### 4. No Pairing (`.ipynb` only)
 
 **Pros**:
+
 - Simplest approach
 
 **Cons**:
+
 - All the original problems remain
 - Poor version control experience
 

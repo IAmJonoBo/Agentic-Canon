@@ -9,11 +9,13 @@
 ## Quick Links
 
 ### Framework Core
+
 - 🎯 [FRAMEWORK.md](FRAMEWORK.md) - **Unified framework and our standards**
 - ⭐ [QUALITY_STANDARDS.md](QUALITY_STANDARDS.md) - Comprehensive quality requirements
 - 📋 [CONVENTIONS.md](CONVENTIONS.md) - Development conventions and best practices
 
 ### Implementation Guides
+
 - 📖 [BIBLE.md](BIBLE.md) - Main AI-friendly reference
 - 📘 [Agentic_Canon.md](Agentic_Canon.md) - Unified playbook + implementation guide
 - 🔗 [Control Traceability Matrix](control-traceability-matrix.json) - Standards mapping
@@ -26,15 +28,15 @@
 
 ### Core Documentation
 
-| File                                                                           | Purpose                                       | Standards                                        |
-| ------------------------------------------------------------------------------ | --------------------------------------------- | ------------------------------------------------ |
-| [FRAMEWORK.md](FRAMEWORK.md)                                                   | **Unified framework defining our approach**   | All standards                                    |
-| [QUALITY_STANDARDS.md](QUALITY_STANDARDS.md)                                   | **Comprehensive quality requirements**        | ISO/IEC 25010, OWASP SAMM, NIST SSDF            |
-| [CONVENTIONS.md](CONVENTIONS.md)                                               | **Development conventions and best practices**| Industry standards, language idioms             |
-| [BIBLE.md](BIBLE.md)                                                           | Master reference for software excellence      | All standards                                    |
-| [Agentic_Canon.md](Agentic_Canon.md)                                           | Unified playbook + implementation blueprint   | All standards                                    |
-| [control-traceability-matrix.json](control-traceability-matrix.json)           | Standards → Implementation → Evidence mapping | NIST SSDF, OWASP SAMM, SLSA, ISO/IEC 25010, WCAG |
-| [Red Team + Software Excellence.md](Red%20Team%20+%20Software%20Excellence.md) | Original comprehensive playbook               | All standards                                    |
+| File                                                                           | Purpose                                        | Standards                                        |
+| ------------------------------------------------------------------------------ | ---------------------------------------------- | ------------------------------------------------ |
+| [FRAMEWORK.md](FRAMEWORK.md)                                                   | **Unified framework defining our approach**    | All standards                                    |
+| [QUALITY_STANDARDS.md](QUALITY_STANDARDS.md)                                   | **Comprehensive quality requirements**         | ISO/IEC 25010, OWASP SAMM, NIST SSDF             |
+| [CONVENTIONS.md](CONVENTIONS.md)                                               | **Development conventions and best practices** | Industry standards, language idioms              |
+| [BIBLE.md](BIBLE.md)                                                           | Master reference for software excellence       | All standards                                    |
+| [Agentic_Canon.md](Agentic_Canon.md)                                           | Unified playbook + implementation blueprint    | All standards                                    |
+| [control-traceability-matrix.json](control-traceability-matrix.json)           | Standards → Implementation → Evidence mapping  | NIST SSDF, OWASP SAMM, SLSA, ISO/IEC 25010, WCAG |
+| [Red Team + Software Excellence.md](Red%20Team%20+%20Software%20Excellence.md) | Original comprehensive playbook                | All standards                                    |
 
 ### Templates Directory Structure
 

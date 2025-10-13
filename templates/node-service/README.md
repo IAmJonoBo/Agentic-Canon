@@ -46,23 +46,23 @@ agentic-canon init
 
 ### Required Parameters
 
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| `project_name` | Human-readable name | "Acme Node Service" |
-| `project_slug` | URL-friendly name (kebab-case) | "acme-node-service" |
-| `description` | Short description | "A production-ready Node.js service" |
-| `author_name` | Your name | "Jane Doe" |
-| `author_email` | Your email | "jane@example.com" |
+| Parameter      | Description                    | Example                              |
+| -------------- | ------------------------------ | ------------------------------------ |
+| `project_name` | Human-readable name            | "Acme Node Service"                  |
+| `project_slug` | URL-friendly name (kebab-case) | "acme-node-service"                  |
+| `description`  | Short description              | "A production-ready Node.js service" |
+| `author_name`  | Your name                      | "Jane Doe"                           |
+| `author_email` | Your email                     | "jane@example.com"                   |
 
 ### Optional Parameters
 
-| Parameter | Options | Default | Description |
-|-----------|---------|---------|-------------|
-| `license` | Apache-2.0, MIT, Proprietary | Apache-2.0 | License type |
-| `node_version` | 18, 20, 22 | 20 | Minimum Node.js version |
-| `enable_security_gates` | yes, no | yes | Enable security scanning |
-| `enable_sbom_signing` | yes, no | yes | Enable SBOM + signing |
-| `ci_provider` | github, gitlab | github | CI/CD platform |
+| Parameter               | Options                      | Default    | Description              |
+| ----------------------- | ---------------------------- | ---------- | ------------------------ |
+| `license`               | Apache-2.0, MIT, Proprietary | Apache-2.0 | License type             |
+| `node_version`          | 18, 20, 22                   | 20         | Minimum Node.js version  |
+| `enable_security_gates` | yes, no                      | yes        | Enable security scanning |
+| `enable_sbom_signing`   | yes, no                      | yes        | Enable SBOM + signing    |
+| `ci_provider`           | github, gitlab               | github     | CI/CD platform           |
 
 ## Generated Project Structure
 
@@ -117,6 +117,7 @@ npm run build
 ## CI/CD Workflows
 
 **ci.yml** - Main CI/CD Pipeline:
+
 - Install and cache dependencies
 - Lint and format checks
 - Type checking
@@ -125,6 +126,7 @@ npm run build
 - Multi-version testing (Node 18, 20, 22)
 
 **security.yml** - Security Scanning:
+
 - npm audit for dependencies
 - CodeQL for JavaScript/TypeScript
 - Semgrep for security patterns
@@ -146,13 +148,13 @@ npm run build
 
 ```typescript
 // tests/example.test.ts
-import { describe, it, expect } from 'vitest';
-import { myFunction } from '../src/index';
+import { describe, it, expect } from "vitest";
+import { myFunction } from "../src/index";
 
-describe('myFunction', () => {
-  it('should return expected result', () => {
-    const result = myFunction('input');
-    expect(result).toBe('expected');
+describe("myFunction", () => {
+  it("should return expected result", () => {
+    const result = myFunction("input");
+    expect(result).toBe("expected");
   });
 });
 ```

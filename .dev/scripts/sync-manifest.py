@@ -36,7 +36,8 @@ def load_json() -> dict | None:
 
 
 def dump_json(data: dict) -> None:
-    JSON_PATH.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    content = json.dumps(data, indent=2, sort_keys=True) + "\n"
+    JSON_PATH.write_text(content, encoding="utf-8")
 
 
 def _normalise_key(key: object) -> str:

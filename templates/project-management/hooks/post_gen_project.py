@@ -57,7 +57,10 @@ def setup_git_repo() -> None:
     print("\n🚀 Setting up project management automation...\n")
     if not (PROJECT_ROOT / ".git").exists():
         run_command(["git", "init"], "Initialize git repository")
-        run_command(["git", "branch", "-M", CONFIG["default_branch"]], "Set default branch")
+        run_command(
+            ["git", "branch", "-M", CONFIG["default_branch"]],
+            "Set default branch",
+        )
 
 
 def setup_github_labels() -> None:
@@ -83,7 +86,10 @@ def setup_github_labels() -> None:
     print("To create labels, run:")
     print("```bash")
     for name, color, desc in labels:
-        print(f'gh label create "{name}" --color "{color}" --description "{desc}" --force')
+        print(
+            f'gh label create "{name}" --color "{color}" '
+            f'--description "{desc}" --force'
+        )
     print("```\n")
 
 
@@ -94,7 +100,9 @@ def setup_branch_protection() -> None:
     print("=" * 50)
     print("To enable branch protection, run:")
     print("```bash")
-    print("gh api repos/$OWNER/$REPO/branches/{{ cookiecutter.default_branch }}/protection \\")
+    print(
+        "gh api repos/$OWNER/$REPO/branches/"
+        "{{ cookiecutter.default_branch }}/protection \\")
     print("  --method PUT \\")
     print("  --field required_status_checks[strict]=true \\")
     print("  --field enforce_admins=true \\")

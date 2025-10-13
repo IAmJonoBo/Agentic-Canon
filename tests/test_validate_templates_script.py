@@ -124,7 +124,11 @@ def test_skip_safe_pip_bypasses_upgrade(tmp_path: Path) -> None:
 
     assert result.returncode == 0
 
-    log_lines = [line for line in (log_dir / "nox.log").read_text().splitlines() if line.strip()]
+    log_lines = [
+        line
+        for line in (log_dir / "nox.log").read_text().splitlines()
+        if line.strip()
+    ]
     args_lines = [line for line in log_lines if line.startswith("ARGS:")]
 
     assert args_lines == ["ARGS:-s render_templates", "ARGS:-s lint_templates"]

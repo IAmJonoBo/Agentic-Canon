@@ -58,7 +58,9 @@ def _resolve_safe_pip_spec() -> str:
     return override or SAFE_PIP_SPEC
 
 
-def ensure_safe_pip(python_executable: Path | None = None, quiet: bool = False) -> tuple[bool, str]:
+def ensure_safe_pip(
+    python_executable: Path | None = None, quiet: bool = False
+) -> tuple[bool, str]:
     """Upgrade pip to a patched build that includes the GHSA fix.
 
     Args:

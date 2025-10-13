@@ -296,22 +296,33 @@ def validate_description(
     """
     if not description or not description.strip():
         print(f"ERROR: {field_name} cannot be empty")
-        print(f"  Please provide a brief description (at least {min_length} characters)")
+        print(
+            f"  Please provide a brief description (at least {min_length} characters)"
+        )
         sys.exit(1)
 
     desc_length = len(description.strip())
 
     if desc_length < min_length:
-        print(f"ERROR: {field_name} is too short ({desc_length} chars, minimum {min_length})")
+        print(
+            f"ERROR: {field_name} is too short "
+            f"({desc_length} chars, minimum {min_length})"
+        )
         print("  Please provide a more detailed description")
         sys.exit(1)
 
     if desc_length > max_length:
-        print(f"ERROR: {field_name} is too long ({desc_length} chars, maximum {max_length})")
+        print(
+            f"ERROR: {field_name} is too long "
+            f"({desc_length} chars, maximum {max_length})"
+        )
         print("  Please provide a more concise description")
         sys.exit(1)
 
-    print(f"✓ Validated {field_name}: {description[:50]}{'...' if len(description) > 50 else ''}")
+    print(
+        f"✓ Validated {field_name}: {description[:50]}"
+        f"{'...' if len(description) > 50 else ''}"
+    )
     return True
 
 

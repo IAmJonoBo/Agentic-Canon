@@ -81,13 +81,19 @@ except (ImportError, FileNotFoundError):
             "None",
         }
         if not name or not re.match(r"^[a-z_][a-z0-9_]*$", name) or name in reserved:
-            print(f"ERROR: {field_name} must be a valid Python identifier (snake_case)")
+            print(
+                f"ERROR: {field_name} must be a valid Python identifier "
+                "(snake_case)"
+            )
             sys.exit(1)
         print(f"✓ Validated {field_name}: {name}")
         return True
 
     def validate_email(email, field_name="email"):
-        if not email or not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email):
+        if not email or not re.match(
+            r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+            email,
+        ):
             print(f"ERROR: {field_name} must be a valid email address")
             sys.exit(1)
         print(f"✓ Validated {field_name}: {email}")
@@ -100,7 +106,10 @@ except (ImportError, FileNotFoundError):
             or len(name.strip()) < 2
             or not re.search(r"[a-zA-Z]", name)
         ):
-            print(f"ERROR: {field_name} must be a valid name (at least 2 characters with letters)")
+            print(
+                f"ERROR: {field_name} must be a valid name "
+                "(at least 2 characters with letters)"
+            )
             sys.exit(1)
         print(f"✓ Validated {field_name}: {name}")
         return True
@@ -113,7 +122,9 @@ except (ImportError, FileNotFoundError):
         print(f"✓ Validated {field_name}: {license_id}")
         return True
 
-    def validate_description(description, field_name="description", min_length=10, max_length=500):
+    def validate_description(
+        description, field_name="description", min_length=10, max_length=500
+    ):
         if not description or len(description.strip()) < min_length:
             print(f"ERROR: {field_name} must be at least {min_length} characters")
             sys.exit(1)

@@ -64,7 +64,9 @@ def _run_sanity(session: nox.Session, *sections: str) -> None:
 
 
 def _load_manifest_templates() -> dict[str, Mapping[str, Any]]:
-    from templates._shared.manifest import load_manifest  # pylint: disable=import-outside-toplevel
+    from templates._shared.manifest import (
+        load_manifest,  # pylint: disable=import-outside-toplevel
+    )
 
     manifest = load_manifest()
     return manifest.get("templates", {})
@@ -115,7 +117,8 @@ def _iter_render_targets(
             if feature_filter:
                 context_dict = {str(k): str(v) for k, v in context.items()}
                 matches = all(
-                    context_dict.get(name) == value for name, value in feature_filter.items()
+                    context_dict.get(name) == value
+                    for name, value in feature_filter.items()
                 )
                 if not matches:
                     continue
@@ -143,7 +146,8 @@ def _ensure_trunk(session: nox.Session) -> None:
         external=True,
     )
 
-    session.env["PATH"] = f"{install_path}:{session.env.get('PATH', os.environ.get('PATH', ''))}"
+    existing_path = session.env.get("PATH", os.environ.get("PATH", ""))
+    session.env["PATH"] = f"{install_path}:{existing_path}"
     if not shutil.which("trunk"):
         session.error("Trunk installation failed")
 
@@ -170,7 +174,9 @@ def _collect_key_material(project_path: Path, candidates: Iterable[str]) -> list
     return material
 
 
-def _resolve_env(project_path: Path, env_cfg: Mapping[str, Any] | None) -> dict[str, str]:
+def _resolve_env(
+    project_path: Path, env_cfg: Mapping[str, Any] | None
+) -> dict[str, str]:
     resolved: dict[str, str] = {}
     for key, value in (env_cfg or {}).items():
         if not isinstance(value, str):
@@ -196,7 +202,9 @@ def _run_installers(
     if not cache_cfg:
         return
 
-    from templates._shared import cache as cache_utils  # pylint: disable=import-outside-toplevel
+    from templates._shared import (
+        cache as cache_utils,  # pylint: disable=import-outside-toplevel
+    )
 
     installers = cache_cfg.get("installers", {})
     if not isinstance(installers, Mapping):
@@ -219,7 +227,9 @@ def _run_installers(
             with session.chdir(str(path)):
                 session.run(*command, external=True)
 
-        cache_utils.cache_node_modules(project_path, key_material, _node_installer, force=force)
+        cache_utils.cache_node_modules(
+            project_path, key_material, _node_installer, force=force
+        )
 
     # Python / pip dependencies
     pip_cfg = installers.get("pip")
@@ -234,7 +244,9 @@ def _run_installers(
             with session.chdir(str(path)):
                 session.run(*command, external=True)
 
-        cache_utils.cache_pip_install(project_path, key_material, _pip_installer, force=force)
+        cache_utils.cache_pip_install(
+            project_path, key_material, _pip_installer, force=force
+        )
 
     # Go module downloads
     go_cfg = installers.get("go")
@@ -243,13 +255,17 @@ def _run_installers(
         key_material = _collect_key_material(project_path, [str(f) for f in key_files])
         command = _command_list(["go", "mod", "download"], go_cfg)
         env_cfg = go_cfg.get("env")
-        env = _resolve_env(project_path, env_cfg) if isinstance(env_cfg, Mapping) else {}
+        env = (
+            _resolve_env(project_path, env_cfg) if isinstance(env_cfg, Mapping) else {}
+        )
 
         def _go_installer(path: Path) -> None:
             with session.chdir(str(path)):
                 session.run(*command, external=True, env=env)
 
-        cache_utils.cache_go_modules(project_path, key_material, _go_installer, force=force)
+        cache_utils.cache_go_modules(
+            project_path, key_material, _go_installer, force=force
+        )
 
 
 @nox.session
@@ -271,7 +287,9 @@ def render_templates(session: nox.Session) -> None:
         existing_pythonpath = session.env.get("PYTHONPATH")
         extra_paths = [str(REPO_ROOT), str(TEMPLATES_DIR)]
         if existing_pythonpath:
-            session.env["PYTHONPATH"] = os.pathsep.join(extra_paths + [existing_pythonpath])
+            session.env["PYTHONPATH"] = os.pathsep.join(
+                extra_paths + [existing_pythonpath]
+            )
         else:
             session.env["PYTHONPATH"] = os.pathsep.join(extra_paths)
 
@@ -298,10 +316,14 @@ def render_templates(session: nox.Session) -> None:
             else:
                 prefix = payload.get("prefix")
                 version = payload.get("version") or []
-                if isinstance(prefix, str) and isinstance(version, list) and len(version) >= 2:
+                if (
+                    isinstance(prefix, str)
+                    and isinstance(version, list)
+                    and len(version) >= 2
+                ):
                     major, minor = version[:2]
-                    site_packages_path = (
-                        Path(prefix) / "lib" / f"python{major}.{minor}" / "site-packages"
+                    site_packages_path = Path(prefix).joinpath(
+                        "lib", f"python{major}.{minor}", "site-packages"
                     )
                     if site_packages_path.exists():
                         candidate = str(site_packages_path)
@@ -326,9 +348,13 @@ def render_templates(session: nox.Session) -> None:
         for template_name, context_name, extra_context, template_cfg in targets:
             root_value_obj = template_cfg.get("root")  # type: ignore[call-overload]
             if not isinstance(root_value_obj, str):
-                session.error(f"Template '{template_name}' is missing a valid 'root' path")
+                session.error(
+                    f"Template '{template_name}' is missing a valid 'root' path"
+                )
             template_root = Path(cast(str, root_value_obj))
-            session.log(f"Rendering template '{template_name}' context '{context_name}'")
+            session.log(
+                f"Rendering template '{template_name}' context '{context_name}'"
+            )
 
             context_payload = dict(extra_context)
             slug_value = str(context_payload.get("project_slug") or template_name)
@@ -362,7 +388,11 @@ def render_templates(session: nox.Session) -> None:
 
             render_path = RENDER_ROOT / template_name / context_name
             cache_utils.copy_from_cache(cache_dir, render_path)
-            cache_cfg = template_cfg.get("cache", {}) if isinstance(template_cfg, Mapping) else {}
+            cache_cfg = (
+                template_cfg.get("cache", {})
+                if isinstance(template_cfg, Mapping)
+                else {}
+            )
             if isinstance(cache_cfg, Mapping):
                 _run_installers(session, render_path, cache_cfg, force=args.force)
 
@@ -388,7 +418,9 @@ def _load_render_index() -> Sequence[Mapping[str, str]]:
     return data.get("entries", [])
 
 
-def _copy_trunk_configuration(project_path: Path, template_cfg: Mapping[str, Any]) -> None:
+def _copy_trunk_configuration(
+    project_path: Path, template_cfg: Mapping[str, Any]
+) -> None:
     trunk_cfg = template_cfg.get("trunk", {})
     inherit = True
     if isinstance(trunk_cfg, Mapping):
@@ -428,7 +460,9 @@ def _ensure_git_repo(
         head_ref = project_path / ".git" / "refs" / "heads" / default_branch
         if not head_ref.exists():
             session.run("git", "config", "user.name", "Template Bot", external=True)
-            session.run("git", "config", "user.email", "template@example.com", external=True)
+            session.run(
+                "git", "config", "user.email", "template@example.com", external=True
+            )
             session.run(
                 "git",
                 "commit",
@@ -439,7 +473,9 @@ def _ensure_git_repo(
             )
 
 
-def _quality_commands(template_cfg: Mapping[str, Any], category: str) -> list[dict[str, Any]]:
+def _quality_commands(
+    template_cfg: Mapping[str, Any], category: str
+) -> list[dict[str, Any]]:
     quality_cfg = template_cfg.get("quality")
     if not isinstance(quality_cfg, Mapping):
         return []
@@ -458,7 +494,11 @@ def _quality_commands(template_cfg: Mapping[str, Any], category: str) -> list[di
         env_cfg = entry.get("env")
         env: dict[str, str] = {}
         if isinstance(env_cfg, Mapping):
-            env = {str(key): str(value) for key, value in env_cfg.items() if isinstance(value, str)}
+            env = {
+                str(key): str(value)
+                for key, value in env_cfg.items()
+                if isinstance(value, str)
+            }
         workdir = str(entry.get("workdir") or ".")
         commands.append(
             {
@@ -481,7 +521,9 @@ def lint_templates(session: nox.Session) -> None:
         templates = _load_manifest_templates()
         entries = _load_render_index()
         if not entries:
-            session.error("No rendered templates found. Run `nox -s render_templates` first.")
+            session.error(
+                "No rendered templates found. Run `nox -s render_templates` first."
+            )
 
         _ensure_trunk(session)
 
@@ -522,7 +564,9 @@ def format_templates(session: nox.Session) -> None:
         templates = _load_manifest_templates()
         entries = _load_render_index()
         if not entries:
-            session.error("No rendered templates found. Run `nox -s render_templates` first.")
+            session.error(
+                "No rendered templates found. Run `nox -s render_templates` first."
+            )
 
         _ensure_trunk(session)
 
@@ -573,7 +617,9 @@ def type_templates(session: nox.Session) -> None:
         templates = _load_manifest_templates()
         entries = _load_render_index()
         if not entries:
-            session.error("No rendered templates found. Run `nox -s render_templates` first.")
+            session.error(
+                "No rendered templates found. Run `nox -s render_templates` first."
+            )
 
         for entry in entries:
             template_name = entry["template"]
@@ -591,19 +637,25 @@ def type_templates(session: nox.Session) -> None:
             template_cfg = templates.get(template_name, {})
             commands = _quality_commands(template_cfg, "type")
             if not commands:
-                session.log(f"[type] {template_name} :: {context_name} (no commands configured)")
+                session.log(
+                    f"[type] {template_name} :: {context_name} (no commands configured)"
+                )
                 continue
 
             for command in commands:
                 workdir = project_path / command["workdir"]
                 if not workdir.exists():
                     session.warn(
-                        f"[{command['name']}] Working directory {workdir} missing; skipping."
+                        f"[{command['name']}] Working directory {workdir} "
+                        "missing; skipping."
                     )
                     continue
                 env = session.env.copy()
                 env.update(command["env"])
-                session.log(f"[type] {template_name} :: {context_name} :: {command['name']}")
+                session.log(
+                    f"[type] {template_name} :: {context_name} :: "
+                    f"{command['name']}"
+                )
                 with session.chdir(str(workdir)):
                     session.run(*command["command"], external=True, env=env)
 
@@ -618,7 +670,9 @@ def security_templates(session: nox.Session) -> None:
         templates = _load_manifest_templates()
         entries = _load_render_index()
         if not entries:
-            session.error("No rendered templates found. Run `nox -s render_templates` first.")
+            session.error(
+                "No rendered templates found. Run `nox -s render_templates` first."
+            )
 
         success, detail = pip_support.ensure_safe_pip(Path(sys.executable), quiet=True)
         if not success:
@@ -646,12 +700,16 @@ def security_templates(session: nox.Session) -> None:
                 workdir = project_path / command["workdir"]
                 if not workdir.exists():
                     session.warn(
-                        f"[{command['name']}] Working directory {workdir} missing; skipping."
+                        f"[{command['name']}] Working directory {workdir} "
+                        "missing; skipping."
                     )
                     continue
                 env = session.env.copy()
                 env.update(command["env"])
-                session.log(f"[security] {template_name} :: {context_name} :: {command['name']}")
+                session.log(
+                    f"[security] {template_name} :: {context_name} :: "
+                    f"{command['name']}"
+                )
                 with session.chdir(str(workdir)):
                     session.run(*command["command"], external=True, env=env)
 

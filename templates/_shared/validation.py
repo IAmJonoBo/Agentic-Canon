@@ -11,7 +11,6 @@ Standards Compliance:
 """
 import re
 import sys
-from typing import List, Optional
 
 # Approved open source licenses (SPDX identifiers)
 APPROVED_LICENSES = {
@@ -323,7 +322,7 @@ def validate_description(
     return True
 
 
-def print_validation_summary(validations: List[str]) -> None:
+def print_validation_summary(validations: list[str]) -> None:
     """Print a summary of completed validations.
 
     Args:

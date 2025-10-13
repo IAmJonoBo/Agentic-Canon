@@ -3,14 +3,16 @@
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import os
 import shutil
 import sys
 import time
+from collections.abc import Iterable, Iterator, Mapping, Sequence
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Dict, Iterable, Iterator, Mapping, Sequence, cast
+from typing import Any, cast
 
 import nox  # type: ignore[import]
 
@@ -59,7 +61,7 @@ def _run_sanity(session: nox.Session, *sections: str) -> None:
     session.run(*command, external=True)
 
 
-def _load_manifest_templates() -> Dict[str, Mapping[str, object]]:
+def _load_manifest_templates() -> dict[str, Mapping[str, Any]]:
     from templates._shared.manifest import load_manifest  # pylint: disable=import-outside-toplevel
 
     manifest = load_manifest()
@@ -75,8 +77,8 @@ def _arg_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _parse_feature_filters(feature_args: Iterable[str] | None) -> Dict[str, str]:
-    result: Dict[str, str] = {}
+def _parse_feature_filters(feature_args: Iterable[str] | None) -> dict[str, str]:
+    result: dict[str, str] = {}
     for clause in feature_args or []:
         if "=" not in clause:
             raise ValueError(f"Feature filter must be NAME=value, got '{clause}'")
@@ -86,9 +88,9 @@ def _parse_feature_filters(feature_args: Iterable[str] | None) -> Dict[str, str]
 
 
 def _iter_render_targets(
-    templates: Mapping[str, Mapping[str, object]],
+    templates: Mapping[str, Mapping[str, Any]],
     args: argparse.Namespace,
-) -> Iterator[tuple[str, str, Dict[str, str], Mapping[str, object]]]:
+) -> Iterator[tuple[str, str, dict[str, str], Mapping[str, Any]]]:
     template_filter = set(args.templates or [])
     context_filter = set(args.contexts or [])
     feature_filter = _parse_feature_filters(args.features)
@@ -110,7 +112,11 @@ def _iter_render_targets(
             # Feature filters require the context value to match the desired value.
             if feature_filter:
                 context_dict = {str(k): str(v) for k, v in context.items()}
-                if not all(context_dict.get(name) == value for name, value in feature_filter.items()):
+                matches = all(
+                    context_dict.get(name) == value
+                    for name, value in feature_filter.items()
+                )
+                if not matches:
                     continue
             yield template_name, context_name, dict(context), template_cfg
 
@@ -163,7 +169,7 @@ def _collect_key_material(project_path: Path, candidates: Iterable[str]) -> list
     return material
 
 
-def _resolve_env(project_path: Path, env_cfg: Mapping[str, object] | None) -> dict[str, str]:
+def _resolve_env(project_path: Path, env_cfg: Mapping[str, Any] | None) -> dict[str, str]:
     resolved: dict[str, str] = {}
     for key, value in (env_cfg or {}).items():
         if not isinstance(value, str):
@@ -182,7 +188,7 @@ def _resolve_env(project_path: Path, env_cfg: Mapping[str, object] | None) -> di
 def _run_installers(
     session: nox.Session,
     project_path: Path,
-    cache_cfg: Mapping[str, object] | None,
+    cache_cfg: Mapping[str, Any] | None,
     *,
     force: bool,
 ) -> None:
@@ -195,7 +201,7 @@ def _run_installers(
     if not isinstance(installers, Mapping):
         return
 
-    def _command_list(default: Sequence[str], cfg: Mapping[str, object]) -> list[str]:
+    def _command_list(default: Sequence[str], cfg: Mapping[str, Any]) -> list[str]:
         command = cfg.get("command")
         if isinstance(command, Sequence) and not isinstance(command, str):
             return [str(part) for part in command]
@@ -236,10 +242,7 @@ def _run_installers(
         key_material = _collect_key_material(project_path, [str(f) for f in key_files])
         command = _command_list(["go", "mod", "download"], go_cfg)
         env_cfg = go_cfg.get("env")
-        if isinstance(env_cfg, Mapping):
-            env = _resolve_env(project_path, env_cfg)
-        else:
-            env = {}
+        env = _resolve_env(project_path, env_cfg) if isinstance(env_cfg, Mapping) else {}
 
         def _go_installer(path: Path) -> None:
             with session.chdir(str(path)):
@@ -271,10 +274,14 @@ def render_templates(session: nox.Session) -> None:
         else:
             session.env["PYTHONPATH"] = os.pathsep.join(extra_paths)
 
+        python_env_script = (
+            "import json, sys; print(json.dumps({'prefix': sys.prefix, "
+            "'version': sys.version_info[:2]}))"
+        )
         python_env_info = session.run(
             "python",
             "-c",
-            "import json, sys; print(json.dumps({'prefix': sys.prefix, 'version': sys.version_info[:2]}))",
+            python_env_script,
             silent=True,
         )
         python_env_stdout = ""
@@ -292,14 +299,19 @@ def render_templates(session: nox.Session) -> None:
                 version = payload.get("version") or []
                 if isinstance(prefix, str) and isinstance(version, list) and len(version) >= 2:
                     major, minor = version[:2]
-                    site_packages_path = Path(prefix) / "lib" / f"python{major}.{minor}" / "site-packages"
+                    site_packages_path = (
+                        Path(prefix)
+                        / "lib"
+                        / f"python{major}.{minor}"
+                        / "site-packages"
+                    )
                     if site_packages_path.exists():
                         candidate = str(site_packages_path)
                         if candidate not in sys.path:
                             sys.path.insert(0, candidate)
 
-        from cookiecutter.main import cookiecutter  # type: ignore[import]  # pylint: disable=import-outside-toplevel
-        from templates._shared import cache as cache_utils  # pylint: disable=import-outside-toplevel
+        cookiecutter = importlib.import_module("cookiecutter.main").cookiecutter
+        cache_utils = importlib.import_module("templates._shared.cache")
 
         templates = _load_manifest_templates()
         targets = list(_iter_render_targets(templates, args))
@@ -375,7 +387,7 @@ def _load_render_index() -> Sequence[Mapping[str, str]]:
     return data.get("entries", [])
 
 
-def _copy_trunk_configuration(project_path: Path, template_cfg: Mapping[str, object]) -> None:
+def _copy_trunk_configuration(project_path: Path, template_cfg: Mapping[str, Any]) -> None:
     trunk_cfg = template_cfg.get("trunk", {})
     inherit = True
     if isinstance(trunk_cfg, Mapping):
@@ -400,7 +412,9 @@ def _copy_trunk_configuration(project_path: Path, template_cfg: Mapping[str, obj
         shutil.copytree(trunk_root, target_trunk, dirs_exist_ok=True)
 
 
-def _ensure_git_repo(session: nox.Session, project_path: Path, default_branch: str = "main") -> None:
+def _ensure_git_repo(
+    session: nox.Session, project_path: Path, default_branch: str = "main"
+) -> None:
     with session.chdir(str(project_path)):
         session.run("git", "init", "-q", external=True)
         session.run(

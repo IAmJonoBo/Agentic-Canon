@@ -1,8 +1,9 @@
 """User models for FastAPI service."""
 
+from __future__ import annotations
+
 from datetime import datetime
 from enum import Enum
-from typing import Optional
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, EmailStr, Field
@@ -34,11 +35,11 @@ class UserCreate(UserBase):
 class UserUpdate(BaseModel):
     """User update model with optional fields."""
 
-    email: Optional[EmailStr] = None
-    full_name: Optional[str] = Field(None, min_length=1, max_length=100)
-    role: Optional[UserRole] = None
-    is_active: Optional[bool] = None
-    password: Optional[str] = Field(None, min_length=8, max_length=100)
+    email: EmailStr | None = None
+    full_name: str | None = Field(None, min_length=1, max_length=100)
+    role: UserRole | None = None
+    is_active: bool | None = None
+    password: str | None = Field(None, min_length=8, max_length=100)
 
 
 class User(UserBase):

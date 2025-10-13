@@ -1,4 +1,4 @@
-"""{{ cookiecutter.pkg_name }} - {{ cookiecutter.project_description }}"""
+"""{{ cookiecutter.pkg_name }} - {{ cookiecutter.project_description }}"""  # noqa: N999
 
 __version__ = "0.1.0"
 

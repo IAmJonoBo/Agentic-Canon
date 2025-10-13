@@ -5,8 +5,9 @@ from __future__ import annotations
 import os
 import shutil
 import subprocess
+from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Sequence
+from typing import Any
 
 from .manifest import get_template_config
 
@@ -31,7 +32,9 @@ def remove_paths(base_path: Path, paths: Iterable[str]) -> None:
             target.unlink()
 
 
-def replace_workflow_placeholders(project_path: Path, workflows: Sequence[Mapping[str, Any]]) -> None:
+def replace_workflow_placeholders(
+    project_path: Path, workflows: Sequence[Mapping[str, Any]]
+) -> None:
     """Replace templated placeholders inside rendered workflow files."""
     for workflow in workflows or []:
         if not isinstance(workflow, Mapping):
@@ -39,7 +42,9 @@ def replace_workflow_placeholders(project_path: Path, workflows: Sequence[Mappin
         file_path = workflow.get("path") or workflow.get("file")
         if not file_path:
             continue
-        replacements: Mapping[str, str] = workflow.get("replacements") or workflow.get("placeholders") or {}
+        replacements: Mapping[str, str] = (
+            workflow.get("replacements") or workflow.get("placeholders") or {}
+        )
         target = project_path / file_path
         if not target.exists():
             continue
@@ -62,9 +67,15 @@ def run_commands(project_path: Path, commands: Iterable[Any]) -> None:
             pass
 
 
-def ensure_git_repo(project_path: Path, git_config: Mapping[str, Any], context: Mapping[str, Any]) -> None:
+def ensure_git_repo(
+    project_path: Path, git_config: Mapping[str, Any], context: Mapping[str, Any]
+) -> None:
     """Initialise a git repository when enabled."""
-    if not git_config or not git_config.get("init") or os.environ.get("AGENTIC_CANON_SKIP_GIT_INIT"):
+    if (
+        not git_config
+        or not git_config.get("init")
+        or os.environ.get("AGENTIC_CANON_SKIP_GIT_INIT")
+    ):
         return
 
     try:
@@ -103,7 +114,9 @@ def _apply_actions(project_path: Path, actions: Mapping[str, Any]) -> None:
         run_commands(project_path, commands)
 
 
-def _apply_option_matrix(project_path: Path, options: Mapping[str, Any], context: Mapping[str, Any]) -> None:
+def _apply_option_matrix(
+    project_path: Path, options: Mapping[str, Any], context: Mapping[str, Any]
+) -> None:
     for option_name, option_config in (options or {}).items():
         desired_value = context.get(option_name)
         if desired_value is None and "default" in option_config:
@@ -115,7 +128,9 @@ def _apply_option_matrix(project_path: Path, options: Mapping[str, Any], context
             _apply_actions(project_path, actions)
 
 
-def _apply_legacy_features(project_path: Path, config: Mapping[str, Any], context: Mapping[str, Any]) -> None:
+def _apply_legacy_features(
+    project_path: Path, config: Mapping[str, Any], context: Mapping[str, Any]
+) -> None:
     for feature in config.get("features", []) or []:
         variable = feature.get("variable")
         if not variable:
@@ -131,7 +146,7 @@ def _apply_cleanup(project_path: Path, hooks_config: Mapping[str, Any]) -> None:
     remove_optional_components(project_path, cleanup_cfg.get("remove_after_render", []))
 
 
-def run_post_gen(template_name: str, project_path: Path, context: Dict[str, Any]) -> None:
+def run_post_gen(template_name: str, project_path: Path, context: dict[str, Any]) -> None:
     """Apply manifest-driven post-generation customisations."""
     config = get_template_config(template_name)
     hooks_config: Mapping[str, Any] = config.get("hooks", {})
@@ -149,7 +164,9 @@ def run_post_gen(template_name: str, project_path: Path, context: Dict[str, Any]
     ensure_git_repo(project_path, config.get("git", {}), context)
 
 
-def apply_template_config(template_name: str, project_path: Path, context: Dict[str, Any]) -> None:
+def apply_template_config(
+    template_name: str, project_path: Path, context: dict[str, Any]
+) -> None:
     """
     Backwards-compatible alias for older hooks.
 

@@ -7,7 +7,7 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -38,7 +38,7 @@ _ensure_sys_path(_REPO_ROOT)
 _ensure_sys_path(_TEMPLATES_DIR)
 _ensure_pythonpath(_REPO_ROOT, _TEMPLATES_DIR)
 
-_BAKE_CACHE: Dict[str, Any] = {}
+_BAKE_CACHE: dict[str, Any] = {}
 
 
 @pytest.fixture(autouse=True)

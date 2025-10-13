@@ -1,6 +1,7 @@
 """In-memory database for demonstration purposes."""
 
-from typing import Dict, Optional
+from __future__ import annotations
+
 from uuid import UUID
 
 from acme_service.models import UserInDB
@@ -11,8 +12,8 @@ class UserDatabase:
 
     def __init__(self) -> None:
         """Initialize empty database."""
-        self.users: Dict[UUID, UserInDB] = {}
-        self.email_index: Dict[str, UUID] = {}
+        self.users: dict[UUID, UserInDB] = {}
+        self.email_index: dict[str, UUID] = {}
 
     def create(self, user: UserInDB) -> UserInDB:
         """Create a new user."""
@@ -20,18 +21,18 @@ class UserDatabase:
         self.email_index[user.email] = user.id
         return user
 
-    def get(self, user_id: UUID) -> Optional[UserInDB]:
+    def get(self, user_id: UUID) -> UserInDB | None:
         """Get user by ID."""
         return self.users.get(user_id)
 
-    def get_by_email(self, email: str) -> Optional[UserInDB]:
+    def get_by_email(self, email: str) -> UserInDB | None:
         """Get user by email."""
         user_id = self.email_index.get(email)
         if user_id:
             return self.users.get(user_id)
         return None
 
-    def update(self, user_id: UUID, user: UserInDB) -> Optional[UserInDB]:
+    def update(self, user_id: UUID, user: UserInDB) -> UserInDB | None:
         """Update an existing user."""
         if user_id in self.users:
             # Update email index if email changed

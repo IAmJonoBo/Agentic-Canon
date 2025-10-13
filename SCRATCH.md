@@ -15,9 +15,12 @@ Solidify template validation so every run performs manifest sync, template rende
 
 ### Current Progress
 
-- Added deterministic `PYTHONPATH` bootstrapping in `tests/conftest.py` and `.dev/validate-templates.sh` so pytest and the CLI wrapper both discover `templates._shared` without manual environment tweaks.
-- Baseline reruns must now verify that the import failures are resolved before proceeding with broader lint/type/security gates.
-- Targeted validation confirms the environment fix: `pytest tests/test_manifest_sync.py` now passes and `.dev/validate-templates.sh --help` executes without import errors; next reruns should focus on remaining template-specific blockers.
+- Added deterministic `PYTHONPATH` bootstrapping in `tests/conftest.py`, `.dev/validate-templates.sh`, and every template hook so pytest, Nox, and cookiecutter executions all discover `templates._shared` without ad-hoc path tweaks.
+- Modernized Ruff configuration to the `[tool.ruff.lint]` schema, added template-specific ignores for jinja placeholders, and cleaned up outstanding lint violations (unused imports, outdated typing aliases, and f-string warnings).
+- Wrapped the project-management `tasklist-scan.yml` workflow in a conditional block so disabling tasklist automation now yields an empty artifact, matching the pytest expectation.
+- Project-management cookiecutter test now passes in isolation, confirming the workflow gating fix. 【ea3314†L1-L3】
+- Repository-level `ruff check` now completes cleanly after the config migration. 【6e0b69†L1-L2】
+- Baseline reruns show Node and React end-to-end template tests still failing due to npm install/test conflicts (Storybook peer dependency and Vitest exit), blocking full suite success. 【3078d5†L1-L161】
 
 ### 1. Add Unified Validation Session
 
@@ -104,10 +107,10 @@ Make sure the workflow installs nox and dependencies before calling the session.
 
 ### Baseline Findings
 
-- `pytest` now progresses past import wiring but fails on: (a) project-management template expecting empty workflows (tasklist `todos.yml` content) and (b) React webapp e2e `npm install` peer dependency conflict between Storybook 9 and addon essentials 8.x.
-- `ruff check` reports 42 issues alongside deprecation warnings for top-level `select`/`ignore` keys across root and template `pyproject.toml` files.
-- `mypy` has no configured targets; running the command exits with an error because no modules are specified.
-- Security scanning tooling (e.g., TruffleHog/Gitleaks) is referenced in docs and workflows, but local command coverage has not been verified during the baseline run.
+- `pytest` now completes the project-management cookiecutter path but still fails for Node (`npm run test`) and React (`npm install` Storybook conflict); both require dependency remediation before the unified suite can pass. 【3078d5†L1-L161】
+- `ruff check` previously reported 41 issues and configuration deprecation warnings; the migration to `[tool.ruff.lint]` and lint clean-up brings the command to a clean pass. 【c61c7e†L1-L83】【6e0b69†L1-L2】
+- `mypy` has no configured targets; running the command exits with an error because no modules are specified. 【2458de†L1-L4】
+- Security scanning tooling (e.g., TruffleHog/Gitleaks) is referenced in docs and workflows, but local command coverage has not been verified during the baseline run. `pip-audit` currently passes with pinned dependencies. 【695db8†L1-L2】
 
 ### Remediation Strategy
 
@@ -121,8 +124,8 @@ Make sure the workflow installs nox and dependencies before calling the session.
    - Add targeted unit tests under `tests/` to exercise hook modules directly, guarding against regressions.
 
 3. **Consolidate Linting/Formatting Workflow**
-   - Refactor root and template-level Ruff configurations to the modern `[tool.ruff.lint]` layout and tighten rule coverage called out in `QUALITY_STANDARDS.md`.
-   - Update rendered project scaffolds (e.g., `pyproject.toml`, `.ruff.toml`) so `ruff check` and `ruff format` run cleanly across all template variants.
+   - Refactor root and template-level Ruff configurations to the modern `[tool.ruff.lint]` layout and tighten rule coverage called out in `QUALITY_STANDARDS.md`. *(Status: Completed; configs migrated and legacy warnings resolved.)*
+   - Update rendered project scaffolds (e.g., `pyproject.toml`, `.ruff.toml`) so `ruff check` and `ruff format` run cleanly across all template variants. *(Status: FastAPI example + Python template updated; confirm other templates after full render pass.)*
    - Extend `validate_templates_all` to invoke `ruff check` after rendering (mirroring CI) and gate merges on a lint-clean workspace.
    - Ensure formatting tools (Black, Prettier, gofmt, rustfmt) run as part of the session, per automation guardrails.
 

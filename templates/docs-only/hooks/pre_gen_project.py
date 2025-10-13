@@ -24,7 +24,7 @@ APPROVED_LICENSES = {
 
 def validate_project_slug(slug):
     if not slug or not re.match(r"^[a-z0-9]+(?:-[a-z0-9]+)*$", slug):
-        print(f"ERROR: project_slug must be kebab-case: [a-z0-9-]")
+        print("ERROR: project_slug must be kebab-case: [a-z0-9-]")
         print("Examples: my-docs, api-documentation, user-guide")
         sys.exit(1)
     print(f"✓ Validated project_slug: {slug}")
@@ -47,7 +47,7 @@ def validate_author_name(name):
         or not re.search(r"[a-zA-Z]", name)
     ):
         print(
-            f"ERROR: author_name must be a valid name (at least 2 characters with letters)"
+            "ERROR: author_name must be a valid name (at least 2 characters with letters)"
         )
         sys.exit(1)
     print(f"✓ Validated author_name: {name}")

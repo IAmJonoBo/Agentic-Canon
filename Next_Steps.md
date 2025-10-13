@@ -39,6 +39,7 @@
 - [x] Added Ruff config regression coverage for the Python template to guard against deprecated settings (chunk e8dedd)
 - [x] Reviewed template standards/docs to extract cookiecutter + boilerplate quality expectations for upcoming CLI alignment (see TEMPLATE_STANDARDS.md)
 - [x] Ensured quick-mode sanity summary stays synchronized with recorded passes and captured regression coverage (`tests/test_sanity_check.py`, pytest chunk cd2c27)
+- [x] Added quick-mode HTML report regression coverage so rendered artifacts track recorded passes (`tests/test_sanity_check.py::test_sanity_check_quick_mode_html_report`, pytest chunk 59ba8a)
 
 ## Deliverables
 
@@ -66,7 +67,7 @@
 - [x] Updated failure snapshots for Node/React e2e (`pytest` chunk 3078d5)
 - [x] Ruff clean pass reference (`ruff check` chunk 0254a4)
 - [x] Project-management targeted test confirmation (`pytest` chunk ea3314)
-- [x] Latest validation evidence (`pytest` chunk 48e64d; `ruff check` chunk 2509a3; `mypy` chunk 7679c3; `pip-audit` chunk aac0e9)
+- [x] Latest validation evidence (`pytest` chunks 59ba8a/895d86; `ruff check` chunk 511a4c; `mypy` chunk e76474; `pip-audit` chunks d8ebd1/351c8b)
 - [x] Template hook updates ensuring shared import discovery (e.g., `templates/python-service/hooks/post_gen_project.py`)
 
 ## Risks/Notes
@@ -77,6 +78,6 @@
 - [ ] React Storybook 8 upgrade: confirm docs/changelog guidance added for template consumers
 - [ ] Replace temporary SAFE_PIP_SPEC pin once upstream pip publishes a patched release
 - [x] Quick-mode sanity summary now derives from recorded passes (guarded by `tests/test_sanity_check.py::test_sanity_check_quick_mode_summary_matches_passes`, pytest chunk cd2c27)
-- [ ] Evaluate adding targeted tests for `.dev/sanity-check.sh` quick-mode output to prevent regressions
+- [x] Evaluate adding targeted tests for `.dev/sanity-check.sh` quick-mode output to prevent regressions _(HTML report parity locked by pytest chunk 59ba8a)_
 - [ ] `pip-audit` virtualenv bootstrap occasionally hangs; investigate caching/timeout strategy before gating CI
 - [ ] Template formatting drift (`ruff format --check`) spans shared hooks/notebooks; monitor templated placeholders ahead of strict enforcement (chunk 56fb10)

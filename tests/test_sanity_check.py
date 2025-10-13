@@ -187,6 +187,45 @@ def test_sanity_check_quick_mode_summary_matches_passes():
     )
 
 
+def test_sanity_check_quick_mode_html_report(tmp_path):
+    """Quick-mode HTML report should mirror recorded pass entries."""
+
+    env = os.environ.copy()
+    env["AGENTIC_CANON_SANITY_MODE"] = "quick"
+
+    report_path = tmp_path / "sanity-report.html"
+
+    result = subprocess.run(
+        ["./.dev/sanity-check.sh", "--html-report", str(report_path)],
+        capture_output=True,
+        text=True,
+        timeout=180,
+        env=env,
+    )
+
+    assert result.returncode == 0, result.stdout
+    html = report_path.read_text()
+
+    assert "PASS_COUNT_PLACEHOLDER" not in html
+    assert "RESULTS_PLACEHOLDER" not in html
+
+    import re
+
+    summary_match = re.search(r"Passed:\s+(\d+)", result.stdout)
+    assert summary_match, "Quick-mode run should report pass count"
+    summary_passes = int(summary_match.group(1))
+
+    html_match = re.search(r'<p class="number pass">(\d+)</p>', html)
+    assert html_match, "HTML report should include pass count"
+    html_passes = int(html_match.group(1))
+
+    pass_rows = re.findall(r"class='result-item pass'>", html)
+    assert pass_rows, "HTML report should contain individual pass entries"
+    assert len(pass_rows) == summary_passes == html_passes
+
+    assert "✅ README.md exists" in html
+
+
 def test_sanity_check_verbose_mode():
     """Test that sanity check runs in verbose mode."""
     result = subprocess.run(

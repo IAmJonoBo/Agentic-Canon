@@ -28,6 +28,7 @@ Solidify template validation so every run performs manifest sync, template rende
 - Added a cookiecutter regression to assert rendered Python projects keep Ruff configuration under `[tool.ruff.lint]`, preventing deprecated schema warnings.【F:tests/test_cookiecutters.py†L41-L72】
 - Re-ran `pip-audit` after invoking the safe pip helper; upstream advisory is mitigated locally (chunk aa754c).
 - Quick-mode sanity check now derives its summary from the recorded pass list, and the new regression in `tests/test_sanity_check.py` keeps the quick-mode counter aligned with the scripted checks.
+- Quick-mode HTML report now reuses the shared renderer so quick-mode artifacts mirror recorded passes; regression captured by `tests/test_sanity_check.py::test_sanity_check_quick_mode_html_report`.【59ba8a†L1-L3】
 
 ### 1. Add Unified Validation Session
 

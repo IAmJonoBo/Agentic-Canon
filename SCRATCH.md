@@ -21,6 +21,7 @@ Solidify template validation so every run performs manifest sync, template rende
 - Project-management cookiecutter test now passes in isolation, confirming the workflow gating fix. 【ea3314†L1-L3】
 - Repository-level `ruff check` now completes cleanly after the config migration. 【6e0b69†L1-L2】
 - Baseline reruns show Node and React end-to-end template tests still failing due to npm install/test conflicts (Storybook peer dependency and Vitest exit), blocking full suite success. 【3078d5†L1-L161】
+- Latest baseline validations refreshed this pass: `pytest` (chunk c5a613), `ruff check` (chunk 1d832c), `mypy` (chunk 26642a), `ruff format --check` (chunk fbd829), and `pip-audit` (chunk 623fd8) provide the current evidence trail.
 
 ### 1. Add Unified Validation Session
 
@@ -110,7 +111,8 @@ Make sure the workflow installs nox and dependencies before calling the session.
 - `pytest` now completes the project-management cookiecutter path but still fails for Node (`npm run test`) and React (`npm install` Storybook conflict); both require dependency remediation before the unified suite can pass. 【3078d5†L1-L161】
 - `ruff check` previously reported 41 issues and configuration deprecation warnings; the migration to `[tool.ruff.lint]` and lint clean-up brings the command to a clean pass. 【c61c7e†L1-L83】【6e0b69†L1-L2】
 - `mypy` has no configured targets; running the command exits with an error because no modules are specified. 【2458de†L1-L4】
-- Security scanning tooling (e.g., TruffleHog/Gitleaks) is referenced in docs and workflows, but local command coverage has not been verified during the baseline run. `pip-audit` currently passes with pinned dependencies. 【695db8†L1-L2】
+- Security scanning tooling (e.g., TruffleHog/Gitleaks) is referenced in docs and workflows, but local command coverage has not been verified during the baseline run. Current `pip-audit` invocation fails with an "invalid requirements" error when pointed at `requirements.txt`. 【623fd8†L1-L2】
+- Formatting enforcement remains pending: `ruff format --check .` flags 26 files across shared hooks, notebooks, and tests, so a templated-friendly strategy is required before turning the check on in CI. 【fbd829†L1-L27】
 
 ### Remediation Strategy
 
@@ -127,6 +129,7 @@ Make sure the workflow installs nox and dependencies before calling the session.
    - Refactor root and template-level Ruff configurations to the modern `[tool.ruff.lint]` layout and tighten rule coverage called out in `QUALITY_STANDARDS.md`. *(Status: Completed; configs migrated and legacy warnings resolved.)*
    - Update rendered project scaffolds (e.g., `pyproject.toml`, `.ruff.toml`) so `ruff check` and `ruff format` run cleanly across all template variants. *(Status: FastAPI example + Python template updated; confirm other templates after full render pass.)*
    - Extend `validate_templates_all` to invoke `ruff check` after rendering (mirroring CI) and gate merges on a lint-clean workspace.
+   - Add a formatting pass that can cope with templated placeholders—evaluate per-language formatters vs. Ruff formatter to keep cookiecutter syntax intact before enforcing.
    - Ensure formatting tools (Black, Prettier, gofmt, rustfmt) run as part of the session, per automation guardrails.
 
 4. **Define Type-Checking Coverage**
@@ -137,6 +140,7 @@ Make sure the workflow installs nox and dependencies before calling the session.
 5. **Verify Security and Compliance Hooks**
    - Wire `.dev/validate-templates.sh` to call TruffleHog/Gitleaks via an opt-in flag that also runs inside `validate_templates_all` for CI gating.
    - Update pipeline documentation to clarify local vs. CI security coverage, including remediation SLAs and evidence capture expectations.
+   - Investigate why `pip-audit -r requirements.txt` reports invalid input and adjust invocation or requirements formatting before blocking the gate.
 
 6. **CI/CD Alignment**
    - Review GitHub Actions workflows to ensure they call the updated unified session and propagate environment fixes. Capture the order of operations in the plan to avoid downstream race conditions.
@@ -173,6 +177,13 @@ Make sure the workflow installs nox and dependencies before calling the session.
 - Evaluate lightweight secret scanning (`trufflehog filesystem`, `gitleaks detect`) for inclusion under a new `.dev/validate-templates.sh --security` flag that toggles corresponding Nox sessions.
 - Document external binary prerequisites (TruffleHog, Gitleaks) in README/TASKS and ensure CI installs pinned versions via cacheable scripts.
 - For rendered templates, emit SBOM stubs (CycloneDX JSON) and store them under `build/` so subsequent validation steps can assert their presence.
+- Confirm `requirements.txt` content complies with `pip-audit` parsing rules or provide per-template requirement snapshots if segmentation is required.
+
+#### Template Quality Touchpoints for CLI Alignment
+
+- Cookiecutter and boilerplate directories must ship with structure essentials: `README.md`, `cookiecutter.json`, hooks, and `.gitignore` so generated projects start from a compliant baseline. 【F:TEMPLATE_STANDARDS.md†L23-L37】
+- Quality gates—linting, formatting, testing, coverage scaffolding, and type checking—are mandatory in templates, reinforcing the need for the lint/format CLI to orchestrate these checks for every rendered variant. 【F:TEMPLATE_STANDARDS.md†L89-L98】
+- CI/CD automation, including security scanning workflows, is required in templates, which the CLI flow should surface to agents running `validate_templates_all`. 【F:TEMPLATE_STANDARDS.md†L65-L87】
 
 ### Assumptions & Unknowns
 

@@ -22,6 +22,11 @@ Solidify template validation so every run performs manifest sync, template rende
 - Repository-level `ruff check` now completes cleanly after the config migration. 【6e0b69†L1-L2】
 - Baseline reruns show Node and React end-to-end template tests still failing due to npm install/test conflicts (Storybook peer dependency and Vitest exit), blocking full suite success. 【3078d5†L1-L161】
 - Latest baseline validations refreshed this pass: `pytest` (chunk c5a613), `ruff check` (chunk 1d832c), `mypy` (chunk 26642a), `ruff format --check` (chunk fbd829), and `pip-audit` (chunk 623fd8) provide the current evidence trail.
+- Introduced a reusable `agentic_canon_cli.pip_support` helper so CLI, shell scripts, and Nox sessions can upgrade pip to the GHSA-4xh5-x5gv-qwph patched build; local `pip-audit` invocations now pass quietly with `--progress-spinner off`.【3d121b†L1-L4】【a0943a†L1-L1】
+- Added environment toggles (`AGENTIC_CANON_SKIP_SAFE_PIP`, `AGENTIC_CANON_SAFE_PIP_SPEC`) so the CLI, validation script, and Nox sessions stay aligned when teams need to bypass or customize the hardened pip installation.
+- Added regression tests for `.dev/validate-templates.sh` verifying PYTHONPATH bootstrapping and `--skip-safe-pip` behavior, protecting the new shell flow from regressions.【5cd380†L1-L2】
+- Added a cookiecutter regression to assert rendered Python projects keep Ruff configuration under `[tool.ruff.lint]`, preventing deprecated schema warnings.【F:tests/test_cookiecutters.py†L41-L72】
+- Re-ran `pip-audit` after invoking the safe pip helper; upstream advisory is mitigated locally (chunk aa754c).
 
 ### 1. Add Unified Validation Session
 

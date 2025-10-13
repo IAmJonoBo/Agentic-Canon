@@ -149,6 +149,7 @@ templates:
             - install
             - --no-fund
             - --no-audit
+            - --legacy-peer-deps
         pip:
           enabled: false
         go:
@@ -234,6 +235,7 @@ templates:
             - install
             - --no-fund
             - --no-audit
+            - --legacy-peer-deps
         pip:
           enabled: false
         go:

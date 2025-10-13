@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import shutil
+import sys
 import time
 from contextlib import contextmanager
 from pathlib import Path
@@ -29,6 +30,22 @@ RENDER_INDEX = RENDER_ROOT / "index.json"
 REPO_ROOT = Path(__file__).parent.resolve()
 TRUNK_SCRIPT = REPO_ROOT / ".dev" / "trunk-with-progress.sh"
 TRUNK_BIN = Path.home() / ".cache" / "trunk" / "bin" / "trunk"
+
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+TEMPLATES_DIR = REPO_ROOT / "templates"
+if str(TEMPLATES_DIR) not in sys.path:
+    sys.path.insert(0, str(TEMPLATES_DIR))
+
+if "PYTHONPATH" not in os.environ:
+    os.environ["PYTHONPATH"] = f"{REPO_ROOT}{os.pathsep}{TEMPLATES_DIR}"
+else:
+    existing_paths = os.environ["PYTHONPATH"].split(os.pathsep)
+    if str(REPO_ROOT) not in existing_paths:
+        existing_paths.insert(0, str(REPO_ROOT))
+    if str(TEMPLATES_DIR) not in existing_paths:
+        existing_paths.insert(0, str(TEMPLATES_DIR))
+    os.environ["PYTHONPATH"] = os.pathsep.join(existing_paths)
 
 nox.options.error_on_missing_interpreters = False
 nox.options.reuse_existing_virtualenvs = True
@@ -246,6 +263,12 @@ def render_templates(session: nox.Session) -> None:
         )
 
         session.install("cookiecutter==2.6.0")
+        existing_pythonpath = session.env.get("PYTHONPATH")
+        extra_paths = [str(REPO_ROOT), str(TEMPLATES_DIR)]
+        if existing_pythonpath:
+            session.env["PYTHONPATH"] = os.pathsep.join(extra_paths + [existing_pythonpath])
+        else:
+            session.env["PYTHONPATH"] = os.pathsep.join(extra_paths)
 
         from cookiecutter.main import cookiecutter  # type: ignore[import]  # pylint: disable=import-outside-toplevel
         from templates._shared import cache as cache_utils  # pylint: disable=import-outside-toplevel
@@ -340,7 +363,36 @@ def _copy_trunk_configuration(project_path: Path, template_cfg: Mapping[str, obj
     target_trunk = project_path / ".trunk"
     if target_trunk.exists():
         shutil.rmtree(target_trunk)
-    shutil.copytree(trunk_root, target_trunk, dirs_exist_ok=True)
+    try:
+        os.symlink(trunk_root, target_trunk, target_is_directory=True)
+    except OSError:
+        shutil.copytree(trunk_root, target_trunk, dirs_exist_ok=True)
+
+
+def _ensure_git_repo(session: nox.Session, project_path: Path, default_branch: str = "main") -> None:
+    with session.chdir(str(project_path)):
+        session.run("git", "init", "-q", external=True)
+        session.run(
+            "git",
+            "symbolic-ref",
+            "HEAD",
+            f"refs/heads/{default_branch}",
+            external=True,
+        )
+        head_ref = project_path / ".git" / "refs" / "heads" / default_branch
+        if not head_ref.exists():
+            session.run("git", "config", "user.name", "Template Bot", external=True)
+            session.run(
+                "git", "config", "user.email", "template@example.com", external=True
+            )
+            session.run(
+                "git",
+                "commit",
+                "--allow-empty",
+                "-m",
+                "Initial commit",
+                external=True,
+            )
 
 
 @nox.session
@@ -372,6 +424,7 @@ def lint_templates(session: nox.Session) -> None:
 
             template_cfg = templates.get(template_name, {})
             _copy_trunk_configuration(project_path, template_cfg)
+            _ensure_git_repo(session, project_path)
 
             session.log(f"[lint] {template_name} :: {context_name}")
             with session.chdir(str(project_path)):
@@ -412,6 +465,7 @@ def format_templates(session: nox.Session) -> None:
 
             template_cfg = templates.get(template_name, {})
             _copy_trunk_configuration(project_path, template_cfg)
+            _ensure_git_repo(session, project_path)
 
             session.log(f"[format] {template_name} :: {context_name}")
             with session.chdir(str(project_path)):

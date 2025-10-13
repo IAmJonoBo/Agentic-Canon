@@ -83,17 +83,20 @@ def setup_branch_protection() -> None:
     print("To enable branch protection, run:")
     print("```bash")
     print(
-        "gh api repos/$OWNER/$REPO/branches/{{ cookiecutter.default_branch }}/protection \")
-    print("  --method PUT \")
-    print("  --field required_status_checks[strict]=true \")
-    print("  --field enforce_admins=true \")
-    print("  --field required_pull_request_reviews[dismiss_stale_reviews]=true \")
+        "gh api repos/$OWNER/$REPO/branches/{{ cookiecutter.default_branch }}/protection \\"
+    )
+    print("  --method PUT \\")
+    print("  --field required_status_checks[strict]=true \\")
+    print("  --field enforce_admins=true \\")
+    print("  --field required_pull_request_reviews[dismiss_stale_reviews]=true \\")
     print(
-        "  --field required_pull_request_reviews[require_code_owner_reviews]=true \")
+        "  --field required_pull_request_reviews[require_code_owner_reviews]=true \\"
+    )
     print(
-        "  --field required_pull_request_reviews[required_approving_review_count]={{ cookiecutter.require_approvals }} \")
-    print("  --field required_linear_history=true \")
-    print("  --field allow_force_pushes=false \")
+        "  --field required_pull_request_reviews[required_approving_review_count]={{ cookiecutter.require_approvals }} \\"
+    )
+    print("  --field required_linear_history=true \\")
+    print("  --field allow_force_pushes=false \\")
     print("  --field allow_deletions=false")
     print("```\n")
 

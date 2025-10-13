@@ -142,7 +142,13 @@
             "enabled": false
           },
           "node": {
-            "command": ["npm", "install", "--no-fund", "--no-audit"],
+            "command": [
+              "npm",
+              "install",
+              "--no-fund",
+              "--no-audit",
+              "--legacy-peer-deps"
+            ],
             "enabled": true,
             "key_files": ["package-lock.json", "package.json"],
             "path": "node_modules"
@@ -462,7 +468,13 @@
             "enabled": false
           },
           "node": {
-            "command": ["npm", "install", "--no-fund", "--no-audit"],
+            "command": [
+              "npm",
+              "install",
+              "--no-fund",
+              "--no-audit",
+              "--legacy-peer-deps"
+            ],
             "enabled": true,
             "key_files": ["package-lock.json", "package.json"],
             "path": "node_modules"

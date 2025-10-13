@@ -25,7 +25,7 @@ Without --linters/--format/--upgrade the script runs render + lint + format.
 EOF
 }
 
-TEMPLATES=()
+declare -a TEMPLATES=()
 RUN_LINTERS=0
 RUN_FORMAT=0
 RUN_UPGRADE=0
@@ -75,10 +75,12 @@ if [[ ${RUN_LINTERS} -eq 0 && ${RUN_FORMAT} -eq 0 && ${RUN_UPGRADE} -eq 0 ]]; th
 	RUN_FORMAT=1
 fi
 
-NOX_ARGS=()
-for template in "${TEMPLATES[@]}"; do
-	NOX_ARGS+=("--template" "${template}")
-done
+declare -a NOX_ARGS=()
+if ((${#TEMPLATES[@]})); then
+	for template in "${TEMPLATES[@]}"; do
+		NOX_ARGS+=("--template" "${template}")
+	done
+fi
 if [[ ${FORCE_REBUILD} -eq 1 ]]; then
 	NOX_ARGS+=("--force")
 fi
@@ -99,17 +101,33 @@ run_nox() {
 
 # Always render ahead of lint/format so they have a consistent workspace.
 if [[ ${RUN_LINTERS} -eq 1 || ${RUN_FORMAT} -eq 1 ]]; then
-	run_nox render_templates "${NOX_ARGS[@]}"
+	if ((${#NOX_ARGS[@]})); then
+		run_nox render_templates "${NOX_ARGS[@]}"
+	else
+		run_nox render_templates
+	fi
 fi
 
 if [[ ${RUN_LINTERS} -eq 1 ]]; then
-	run_nox lint_templates "${NOX_ARGS[@]}"
+	if ((${#NOX_ARGS[@]})); then
+		run_nox lint_templates "${NOX_ARGS[@]}"
+	else
+		run_nox lint_templates
+	fi
 fi
 
 if [[ ${RUN_FORMAT} -eq 1 ]]; then
-	run_nox format_templates "${NOX_ARGS[@]}"
+	if ((${#NOX_ARGS[@]})); then
+		run_nox format_templates "${NOX_ARGS[@]}"
+	else
+		run_nox format_templates
+	fi
 fi
 
 if [[ ${RUN_UPGRADE} -eq 1 ]]; then
-	run_nox upgrade_tools "${NOX_ARGS[@]}"
+	if ((${#NOX_ARGS[@]})); then
+		run_nox upgrade_tools "${NOX_ARGS[@]}"
+	else
+		run_nox upgrade_tools
+	fi
 fi

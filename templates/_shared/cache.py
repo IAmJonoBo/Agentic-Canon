@@ -7,7 +7,7 @@ import hashlib
 import json
 import os
 import shutil
-from collections.abc import Callable, Iterable, Mapping
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from pathlib import Path
 from typing import Any
 
@@ -73,7 +73,7 @@ def _manifest_digest(template_name: str) -> str | None:
 
 
 @contextlib.contextmanager
-def file_lock(lock_path: Path):
+def file_lock(lock_path: Path) -> Iterator[None]:
     if fcntl is None:
         yield
         return
@@ -108,7 +108,7 @@ def copy_from_cache(cache_dir: Path, destination: Path) -> None:
     if destination.exists():
         shutil.rmtree(destination)
 
-    def _ignore(_src: str, names: Iterable[str]):
+    def _ignore(_src: str, names: Iterable[str]) -> set[str]:
         ignored = {SENTINEL}
         return {name for name in names if name in ignored}
 
@@ -173,7 +173,7 @@ def cache_node_modules(
             if node_modules.exists():
                 shutil.rmtree(node_modules)
 
-            def _ignore(_src: str, names: Iterable[str]):
+            def _ignore(_src: str, names: Iterable[str]) -> set[str]:
                 return {name for name in names if name == SENTINEL}
 
             shutil.copytree(cache_dir, node_modules, dirs_exist_ok=True, ignore=_ignore)

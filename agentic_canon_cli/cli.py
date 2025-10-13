@@ -17,7 +17,7 @@ SAFE_PIP_SPEC = "pip @ git+https://github.com/pypa/pip@f2b92314da012b9fffa36b3f3
 """Patched pip build that includes the GHSA-4xh5-x5gv-qwph fix."""
 
 
-def print_banner():
+def print_banner() -> None:
     """Print the Agentic Canon banner."""
     banner = """
     ╔═══════════════════════════════════════════════════════════╗
@@ -303,7 +303,7 @@ def generate_project(template: str, context: dict[str, Any]) -> bool:
         return False
 
 
-def show_next_steps(project_slug: str):
+def show_next_steps(project_slug: str) -> None:
     """Display next steps after project generation."""
     print("\n📋 Next Steps:\n")
     print(f"  1. cd {project_slug}")
@@ -318,7 +318,7 @@ def show_next_steps(project_slug: str):
     print("\n🎉 Happy coding!\n")
 
 
-def cmd_init():
+def cmd_init() -> int:
     """Interactive wizard to create a new project."""
     try:
         print_banner()
@@ -364,7 +364,7 @@ def cmd_init():
         return 1
 
 
-def cmd_repo_init():
+def cmd_repo_init() -> int:
     """Initialize project management automation in current repository."""
     print("\n🔧 Repository Management Setup\n")
 
@@ -518,7 +518,7 @@ def cmd_repo_init():
         return 1
 
 
-def cmd_validate():
+def cmd_validate() -> int:
     """Validate project structure and configuration."""
     print("\n🔍 Validating Project Structure\n")
 
@@ -588,7 +588,7 @@ def cmd_validate():
     return 0
 
 
-def cmd_doctor():
+def cmd_doctor() -> int:
     """Check environment setup and dependencies."""
     print("\n🩺 Environment Diagnostic\n")
 
@@ -663,7 +663,7 @@ def cmd_doctor():
     return 0 if not failed else 1
 
 
-def cmd_audit():
+def cmd_audit() -> int:
     """Run security and quality audit on project."""
     print("\n🔒 Security & Quality Audit\n")
 
@@ -741,7 +741,7 @@ def cmd_audit():
     return 0
 
 
-def cmd_update():
+def cmd_update() -> int:
     """Update project from template using Cruft."""
     print("\n🔄 Updating Project from Template\n")
 
@@ -874,7 +874,7 @@ def cmd_fix() -> int:
     return 1
 
 
-def main():
+def main() -> int:
     """Main CLI entry point with subcommands."""
     parser = argparse.ArgumentParser(
         description="Agentic Canon CLI - Project scaffolding and management",

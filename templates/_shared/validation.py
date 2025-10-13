@@ -336,7 +336,7 @@ def print_validation_summary(validations: list[str]) -> None:
     print("=" * 60 + "\n")
 
 
-def main():
+def main() -> int:
     """Run self-tests for validation functions."""
     print("Running validation module self-tests...\n")
 

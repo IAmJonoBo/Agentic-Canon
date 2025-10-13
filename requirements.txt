@@ -2,6 +2,7 @@ jupyter==1.1.1
 jupytext==1.17.3
 nbstripout==0.8.1
 pytest==8.4.2
+pytest-cov==5.0.0
 pytest-xdist==3.8.0
 nbmake==1.5.5
 papermill==2.6.0
@@ -13,3 +14,4 @@ pytest-cookies==0.7.0
 pip-audit==2.9.0
 pip-licenses==5.0.0
 PyYAML==6.0.3
+mypy==1.14.1

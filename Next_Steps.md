@@ -3,7 +3,7 @@
 ## Tasks
 - [x] Establish pipeline remediation plan (Owner: Agent, Due: 2025-02-05)
 - [x] Harden local/CLI PYTHONPATH bootstrapping so template hooks import cleanly (Owner: Agent, Due: 2025-02-05)
-- [x] Re-run baseline validation to confirm import fixes and capture fresh results (Owner: Agent, Due: 2025-02-05) _(pytest manifest test passes; `ruff check` now clean; `mypy` and remaining gates still outstanding; `pip-audit` interrupted due to tool hang)_
+- [x] Re-run baseline validation to confirm import fixes and capture fresh results (Owner: Agent, Due: 2025-02-05) _(pytest manifest test passes; `ruff check` now clean — latest pass chunk 0254a4; `mypy` and remaining gates still outstanding; `pip-audit` interrupted due to tool hang)_
 - [x] Produce lint/type/security integration design updates for unified validation flow (Owner: Agent, Due: 2025-02-06) _(blueprint recorded in SCRATCH.md §Detailed Gate Integration Blueprint)_
 - [x] Migrate Ruff configs to `[tool.ruff.lint]` schema and clear existing lint violations (Owner: Agent, Due: 2025-02-06)
 - [ ] Resolve React template npm peer dependency conflict so e2e test can pass (Owner: Agent, Due: 2025-02-07)
@@ -42,9 +42,9 @@
 - [x] SCRATCH.md §Current Progress, Remediation Strategy
 - [x] `.dev/validate-templates.sh` PYTHONPATH bootstrapping
 - [x] `tests/conftest.py` environment preparation helpers
-- [x] Test + lint failure logs (`pytest` chunk d35d86, `ruff check` chunk c61c7e, `mypy` chunk 3f2957, `pip-audit` chunk 695db8)
+- [x] Test + lint failure logs (`pytest` chunks d35d86 & c8cb83, `ruff check` chunk c61c7e, `mypy` chunk 3f2957, `pip-audit` chunk 695db8)
 - [x] Updated failure snapshots for Node/React e2e (`pytest` chunk 3078d5)
-- [x] Ruff clean pass reference (`ruff check` chunk 6e0b69)
+- [x] Ruff clean pass reference (`ruff check` chunk 0254a4)
 - [x] Project-management targeted test confirmation (`pytest` chunk ea3314)
 - [x] Template hook updates ensuring shared import discovery (e.g., `templates/python-service/hooks/post_gen_project.py`)
 
@@ -52,6 +52,6 @@
 - [ ] Validate template hook imports across other entry points (nox sessions, pytest-cookies)
 - [ ] Ruff config deprecation warnings from generated projects _(pending validation after next render)_
 - [ ] Baseline commands currently failing or incomplete
-- [ ] React template npm peer dependency conflicts block e2e test coverage
+- [ ] React template npm peer dependency conflicts block e2e test coverage (`pytest` chunk c8cb83)
 - [ ] Node template Vitest run exits non-zero (fails `npm run test`)
 - [ ] `pip-audit` virtualenv bootstrap occasionally hangs; investigate caching/timeout strategy before gating CI

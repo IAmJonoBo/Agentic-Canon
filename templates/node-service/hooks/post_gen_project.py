@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Post-generation hook for node-service template."""
+
 from __future__ import annotations
 
 import importlib

@@ -1,5 +1,11 @@
 """Tests for Cookiecutter templates."""
 
+from __future__ import annotations
+
+import json
+import tomllib
+
+
 def test_python_cookiecutter_bakes(bake_template):
     """Test that the Python service template renders successfully."""
     result = bake_template(
@@ -31,6 +37,40 @@ def test_python_cookiecutter_bakes(bake_template):
     assert (result.project_path / "src" / "demo_service" / "__init__.py").exists()
     assert (result.project_path / "tests" / "test_smoke.py").exists()
     assert (result.project_path / ".github" / "workflows" / "ci.yml").exists()
+
+
+def test_python_cookiecutter_ruff_config_schema(bake_template):
+    """Ensure the rendered Python template uses the modern Ruff config layout."""
+
+    result = bake_template(
+        "templates/python-service",
+        {
+            "project_name": "Demo Service Ruff",
+            "project_slug": "demo-service-ruff",
+            "pkg_name": "demo_service_ruff",
+            "project_description": "A demo Python service",
+            "author_name": "Test Author",
+            "author_email": "test@example.com",
+            "license": "Apache-2.0",
+            "python_version": "3.11",
+            "include_jupyter_book": "yes",
+            "enable_security_gates": "yes",
+            "enable_sbom_signing": "yes",
+            "enable_contract_tests": "yes",
+            "ci_provider": "github",
+        },
+    )
+
+    assert result.exception is None
+    pyproject = result.project_path / "pyproject.toml"
+    data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+
+    ruff_config = data["tool"]["ruff"]
+    assert "lint" in ruff_config, "[tool.ruff.lint] table missing from pyproject.toml"
+    assert "select" not in ruff_config, "move select configuration under [tool.ruff.lint]"
+
+    lint_config = ruff_config["lint"]
+    assert lint_config["select"] == ["E", "F", "I", "N", "UP", "B", "C4", "SIM"]
 
 
 def test_python_cookiecutter_minimal(bake_template):
@@ -154,6 +194,42 @@ def test_react_cookiecutter_minimal(bake_template):
     # Storybook and E2E should not exist when disabled
     assert not (result.project_path / ".storybook").exists()
     assert not (result.project_path / "playwright.config.ts").exists()
+
+
+def test_react_cookiecutter_storybook_scripts(bake_template):
+    """Ensure Storybook scripts and dependencies stay on the validated toolchain."""
+
+    result = bake_template(
+        "templates/react-webapp",
+        {
+            "project_name": "Storybook React App",
+            "project_slug": "storybook-react-app",
+            "description": "Storybook regression coverage",
+            "author_name": "Test Author",
+            "author_email": "test@example.com",
+            "license": "MIT",
+            "include_storybook": "yes",
+            "include_e2e_tests": "yes",
+            "enable_accessibility_tests": "yes",
+            "ci_provider": "github",
+        },
+    )
+
+    assert result.exception is None
+
+    package_json = result.project_path / "package.json"
+    package_data = json.loads(package_json.read_text(encoding="utf-8"))
+
+    scripts = package_data["scripts"]
+    assert scripts["storybook"] == "storybook dev -p 6006"
+    assert scripts["build-storybook"] == "storybook build"
+
+    dev_dependencies = package_data["devDependencies"]
+    assert dev_dependencies["storybook"].startswith("^8.6")
+    assert dev_dependencies["@storybook/react-vite"].startswith("^8.6")
+
+    engines = package_data["engines"]
+    assert engines["node"].startswith(">=18"), "Documented engine constraint regressed"
 
 
 def test_go_cookiecutter_bakes(bake_template):
@@ -370,21 +446,13 @@ def test_project_management_bakes(bake_template):
     assert (result.project_path / "PROJECT_MANAGEMENT.md").exists()
     assert (result.project_path / "TASKS.md").exists()
     assert (result.project_path / ".github" / "workflows" / "todos.yml").exists()
-    assert (
-        result.project_path / ".github" / "workflows" / "tasklist-scan.yml"
-    ).exists()
-    assert (
-        result.project_path / ".github" / "workflows" / "pr-review-followup.yml"
-    ).exists()
+    assert (result.project_path / ".github" / "workflows" / "tasklist-scan.yml").exists()
+    assert (result.project_path / ".github" / "workflows" / "pr-review-followup.yml").exists()
     assert (result.project_path / ".github" / "workflows" / "issue-triage.yml").exists()
     assert (result.project_path / ".github" / "workflows" / "stale.yml").exists()
     assert (result.project_path / ".github" / "CODEOWNERS").exists()
-    assert (
-        result.project_path / ".github" / "ISSUE_TEMPLATE" / "bug_report.md"
-    ).exists()
-    assert (
-        result.project_path / ".github" / "ISSUE_TEMPLATE" / "feature_request.md"
-    ).exists()
+    assert (result.project_path / ".github" / "ISSUE_TEMPLATE" / "bug_report.md").exists()
+    assert (result.project_path / ".github" / "ISSUE_TEMPLATE" / "feature_request.md").exists()
     assert (result.project_path / ".github" / "ISSUE_TEMPLATE" / "task.md").exists()
     assert (result.project_path / ".github" / "PULL_REQUEST_TEMPLATE.md").exists()
 
@@ -411,9 +479,7 @@ def test_project_management_minimal(bake_template):
     assert result.project_path.is_dir()
 
     # Only todos.yml should have content
-    todos_content = (
-        result.project_path / ".github" / "workflows" / "todos.yml"
-    ).read_text()
+    todos_content = (result.project_path / ".github" / "workflows" / "todos.yml").read_text()
     assert "TODO" in todos_content
 
     # Other workflows should be empty or not generated

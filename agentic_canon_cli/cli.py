@@ -13,8 +13,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-SAFE_PIP_SPEC = "pip @ git+https://github.com/pypa/pip@f2b92314da012b9fffa36b3f3e67748a37ef464a"
-"""Patched pip build that includes the GHSA-4xh5-x5gv-qwph fix."""
+from . import pip_support
 
 
 def print_banner() -> None:
@@ -71,7 +70,7 @@ def get_project_details() -> dict[str, Any]:
 
     # Project slug (kebab-case)
     default_slug = name.lower().replace(" ", "-")
-    slug = input(f"  Project slug [{ default_slug}]: ").strip() or default_slug
+    slug = input(f"  Project slug [{default_slug}]: ").strip() or default_slug
     details["project_slug"] = slug
 
     # Package name (snake_case) - for Python/relevant templates
@@ -80,9 +79,7 @@ def get_project_details() -> dict[str, Any]:
     details["pkg_name"] = pkg
 
     # Description
-    description = (
-        input("  Description: ").strip() or "A modern, production-ready service"
-    )
+    description = input("  Description: ").strip() or "A modern, production-ready service"
     details["project_description"] = description
 
     # Author
@@ -102,17 +99,11 @@ def select_features() -> dict[str, str]:
     features = {}
 
     # Jupyter Book
-    jupyter_book = (
-        input("  Include Jupyter Book documentation? (Y/n): ").strip().lower()
-    )
+    jupyter_book = input("  Include Jupyter Book documentation? (Y/n): ").strip().lower()
     features["include_jupyter_book"] = "yes" if jupyter_book != "n" else "no"
 
     # Security gates
-    security = (
-        input("  Enable security gates (CodeQL, secret scanning)? (Y/n): ")
-        .strip()
-        .lower()
-    )
+    security = input("  Enable security gates (CodeQL, secret scanning)? (Y/n): ").strip().lower()
     features["enable_security_gates"] = "yes" if security != "n" else "no"
 
     # SBOM
@@ -144,9 +135,7 @@ def select_features() -> dict[str, str]:
     return features
 
 
-def _run_command(
-    cmd: list[str], cwd: Path | None = None
-) -> subprocess.CompletedProcess:
+def _run_command(cmd: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess:
     """Run a shell command, capturing output for diagnostics."""
     result = subprocess.run(
         cmd,
@@ -156,6 +145,18 @@ def _run_command(
         capture_output=True,
     )
     return result
+
+
+def _summarize_process_output(result: subprocess.CompletedProcess) -> str:
+    """Return the last non-empty line from stdout or stderr."""
+
+    for stream in (result.stdout, result.stderr):
+        if not stream:
+            continue
+        lines = [line for line in stream.strip().splitlines() if line.strip()]
+        if lines:
+            return lines[-1]
+    return ""
 
 
 def _venv_python_path(venv_path: Path) -> Path:
@@ -175,38 +176,20 @@ def _ensure_virtualenv() -> tuple[bool, str]:
     if not venv_path.exists():
         result = _run_command([sys.executable, "-m", "venv", str(venv_path)])
         if result.returncode != 0:
-            detail = (
-                result.stderr.strip() or result.stdout.strip() or "venv creation failed"
-            )
+            detail = result.stderr.strip() or result.stdout.strip() or "venv creation failed"
             return False, detail
 
     venv_python = _venv_python_path(venv_path)
     if not venv_python.exists():
         return False, "Unable to locate python executable inside .venv"
 
-    upgrade = _run_command(
-        [
-            str(venv_python),
-            "-m",
-            "pip",
-            "install",
-            "--upgrade",
-            SAFE_PIP_SPEC,
-        ]
-    )
-    if upgrade.returncode != 0:
-        detail = (
-            upgrade.stderr.strip() or upgrade.stdout.strip() or "pip upgrade failed"
-        )
+    success, detail = pip_support.ensure_safe_pip(venv_python, quiet=True)
+    if not success:
         return False, detail
 
-    install = _run_command(
-        [str(venv_python), "-m", "pip", "install", "-r", str(requirements)]
-    )
+    install = _run_command([str(venv_python), "-m", "pip", "install", "-r", str(requirements)])
     if install.returncode != 0:
-        detail = (
-            install.stderr.strip() or install.stdout.strip() or "pip install failed"
-        )
+        detail = install.stderr.strip() or install.stdout.strip() or "pip install failed"
         return False, detail
 
     return True, "Python virtual environment ready"
@@ -246,21 +229,51 @@ def _install_precommit_hooks() -> tuple[bool, str]:
     return True, "pre-commit hooks installed"
 
 
-def _run_sanity_check() -> tuple[bool, str]:
-    """Execute the repository sanity check in quiet mode."""
+def _run_sanity_check(skip_templates: bool = False) -> tuple[bool, str]:
+    """Execute the repository sanity check and optional template validation."""
+
     script = Path(".dev/sanity-check.sh")
     if not script.exists():
         return True, "Sanity check script not found; skipped"
 
-    result = _run_command(["bash", str(script), "--quiet", "--skip-templates"])
-    if result.returncode == 0:
-        return True, "Sanity check passed"
+    include_templates = not skip_templates
+    pipeline_summary: str | None = None
 
-    summary = "Review sanity-check output"
-    if result.stdout:
-        lines = [line for line in result.stdout.strip().splitlines() if line]
-        if lines:
-            summary = lines[-1]
+    if include_templates:
+        pipeline_script = Path(".dev/validate-templates.sh")
+        if pipeline_script.exists():
+            pipeline_cmd = ["bash", str(pipeline_script), "--all", "--quiet"]
+            pipeline_result = _run_command(pipeline_cmd)
+            if pipeline_result.returncode != 0:
+                summary = (
+                    _summarize_process_output(pipeline_result)
+                    or "Template validation pipeline failed"
+                )
+                return False, summary
+            pipeline_summary = (
+                _summarize_process_output(pipeline_result)
+                or "Template validation pipeline completed"
+            )
+        else:
+            pipeline_summary = "Template validation pipeline skipped (script missing)"
+
+    sanity_cmd = ["bash", str(script), "--quiet"]
+    if skip_templates:
+        sanity_cmd.append("--skip-templates")
+
+    result = _run_command(sanity_cmd)
+    if result.returncode == 0:
+        detail = "Sanity check passed"
+        if include_templates:
+            if pipeline_summary:
+                detail = f"{detail} ({pipeline_summary})"
+            else:
+                detail = f"{detail} (template checks included)"
+        else:
+            detail = f"{detail} (template checks skipped)"
+        return True, detail
+
+    summary = _summarize_process_output(result) or "Review sanity-check output"
     return False, summary
 
 
@@ -340,9 +353,7 @@ def cmd_init() -> int:
         print(f"  Template: {template}")
         print(f"  Name: {context['project_name']}")
         print(f"  Slug: {context['project_slug']}")
-        print(
-            f"  Features: {', '.join([k for k, v in features.items() if v == 'yes'])}"
-        )
+        print(f"  Features: {', '.join([k for k, v in features.items() if v == 'yes'])}")
 
         confirm = input("\n✅ Generate project? (Y/n): ").strip().lower()
         if confirm == "n":
@@ -375,25 +386,17 @@ def cmd_repo_init() -> int:
     print("Features: TODO tracking, tasklist automation, PR follow-ups, issue triage\n")
 
     # Ask for confirmation
-    confirm = (
-        input(f"Initialize project management in '{current_dir}'? (Y/n): ")
-        .strip()
-        .lower()
-    )
+    confirm = input(f"Initialize project management in '{current_dir}'? (Y/n): ").strip().lower()
     if confirm == "n":
         print("\n❌ Cancelled.")
         return 1
 
     # Collect details
     details = {}
-    details["project_name"] = (
-        input(f"  Project name [{current_dir}]: ").strip() or current_dir
-    )
+    details["project_name"] = input(f"  Project name [{current_dir}]: ").strip() or current_dir
     details["project_slug"] = current_dir
     details["github_org"] = input("  GitHub organization/user: ").strip() or "my-org"
-    details["project_description"] = (
-        input("  Description: ").strip() or "A well-managed project"
-    )
+    details["project_description"] = input("  Description: ").strip() or "A well-managed project"
 
     # Features with defaults
     print("\n⚙️  Enable features (Y/n):\n")
@@ -410,9 +413,7 @@ def cmd_repo_init() -> int:
         "no" if input("  Issue auto-triage? [Y/n]: ").strip().lower() == "n" else "yes"
     )
     details["auto_close_stale_issues"] = (
-        "no"
-        if input("  Auto-close stale issues? [Y/n]: ").strip().lower() == "n"
-        else "yes"
+        "no" if input("  Auto-close stale issues? [Y/n]: ").strip().lower() == "n" else "yes"
     )
     details["enable_codeowners"] = (
         "no" if input("  CODEOWNERS file? [Y/n]: ").strip().lower() == "n" else "yes"
@@ -461,16 +462,12 @@ def cmd_repo_init() -> int:
 
             if (temp_project / ".github" / "PULL_REQUEST_TEMPLATE.md").exists():
                 dest = Path(".github/PULL_REQUEST_TEMPLATE.md")
-                dest.write_text(
-                    (temp_project / ".github" / "PULL_REQUEST_TEMPLATE.md").read_text()
-                )
+                dest.write_text((temp_project / ".github" / "PULL_REQUEST_TEMPLATE.md").read_text())
                 print(f"  ✅ Created {dest}")
 
             # Copy issue templates
             os.makedirs(".github/ISSUE_TEMPLATE", exist_ok=True)
-            for template_file in (temp_project / ".github" / "ISSUE_TEMPLATE").glob(
-                "*.md"
-            ):
+            for template_file in (temp_project / ".github" / "ISSUE_TEMPLATE").glob("*.md"):
                 dest = Path(".github/ISSUE_TEMPLATE") / template_file.name
                 dest.write_text(template_file.read_text())
                 print(f"  ✅ Created {dest}")
@@ -479,9 +476,7 @@ def cmd_repo_init() -> int:
             if (temp_project / "PROJECT_MANAGEMENT.md").exists():
                 dest = Path("PROJECT_MANAGEMENT.md")
                 if not dest.exists():
-                    dest.write_text(
-                        (temp_project / "PROJECT_MANAGEMENT.md").read_text()
-                    )
+                    dest.write_text((temp_project / "PROJECT_MANAGEMENT.md").read_text())
                     print(f"  ✅ Created {dest}")
 
             if (temp_project / "TASKS.md").exists():
@@ -498,9 +493,7 @@ def cmd_repo_init() -> int:
         print("\n✅ Project management automation setup complete!")
         print("\n📋 Next Steps:")
         print("  1. Review generated workflows in .github/workflows/")
-        print(
-            "  2. git add . && git commit -m 'chore: add project management automation'"
-        )
+        print("  2. git add . && git commit -m 'chore: add project management automation'")
         print("  3. git push")
         print("  4. Create GitHub labels (see PROJECT_MANAGEMENT.md)")
         print("  5. Configure branch protection (see PROJECT_MANAGEMENT.md)")
@@ -565,12 +558,7 @@ def cmd_validate() -> int:
 
     # Summary
     print("\n📊 Validation Summary:")
-    checks_passed = (
-        len(required_files)
-        + len(recommended_files)
-        - len(issues)
-        - len(warnings)
-    )
+    checks_passed = len(required_files) + len(recommended_files) - len(issues) - len(warnings)
     print(f"  ✅ Checks passed: {checks_passed}")
 
     if warnings:
@@ -597,16 +585,12 @@ def cmd_doctor() -> int:
     # Check Python version
     import sys
 
-    python_version = (
-        f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-    )
+    python_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
     checks.append(("Python version", python_version, sys.version_info >= (3, 8)))
 
     # Check for git
     try:
-        result = subprocess.run(
-            ["git", "--version"], capture_output=True, text=True, check=True
-        )
+        result = subprocess.run(["git", "--version"], capture_output=True, text=True, check=True)
         git_version = result.stdout.strip()
         checks.append(("Git", git_version, True))
     except (subprocess.CalledProcessError, FileNotFoundError):
@@ -614,9 +598,7 @@ def cmd_doctor() -> int:
 
     # Check for gh CLI
     try:
-        result = subprocess.run(
-            ["gh", "--version"], capture_output=True, text=True, check=True
-        )
+        result = subprocess.run(["gh", "--version"], capture_output=True, text=True, check=True)
         gh_version = result.stdout.split("\n")[0].strip()
         checks.append(("GitHub CLI", gh_version, True))
     except (subprocess.CalledProcessError, FileNotFoundError):
@@ -678,9 +660,7 @@ def cmd_audit() -> int:
     # Check for .gitignore
     if Path(".gitignore").exists():
         gitignore = Path(".gitignore").read_text()
-        has_secrets = any(
-            pattern in gitignore for pattern in [".env", "*.key", "*.pem", "secret"]
-        )
+        has_secrets = any(pattern in gitignore for pattern in [".env", "*.key", "*.pem", "secret"])
         audit_items.append(
             (
                 "Secrets in .gitignore",
@@ -697,15 +677,12 @@ def cmd_audit() -> int:
         for workflow in Path(".github/workflows").glob("*.yml"):
             content = workflow.read_text().lower()
             if any(
-                keyword in content
-                for keyword in ["codeql", "security", "secret", "vulnerability"]
+                keyword in content for keyword in ["codeql", "security", "secret", "vulnerability"]
             ):
                 security_workflows.append(workflow.name)
 
     if security_workflows:
-        audit_items.append(
-            ("Security workflows", True, f"Found: {', '.join(security_workflows)}")
-        )
+        audit_items.append(("Security workflows", True, f"Found: {', '.join(security_workflows)}"))
     else:
         audit_items.append(("Security workflows", False, "No security workflows found"))
 
@@ -729,7 +706,7 @@ def cmd_audit() -> int:
     # Summary
     passed = sum(1 for item in audit_items if item[1])
     total = len(audit_items)
-    print(f"\n📊 Audit Score: {passed}/{total} ({int(passed/total*100)}%)")
+    print(f"\n📊 Audit Score: {passed}/{total} ({int(passed / total * 100)}%)")
 
     if passed < total:
         print("\n📝 Recommendations:")
@@ -823,9 +800,7 @@ def cmd_update() -> int:
             print("\n💡 Next steps:")
             print("  1. Review the changes: git diff")
             print("  2. Test the updated code")
-            print(
-                "  3. Commit: git add . && git commit -m 'chore: update from template'"
-            )
+            print("  3. Commit: git add . && git commit -m 'chore: update from template'")
 
         return 0
     except subprocess.CalledProcessError as e:
@@ -834,7 +809,7 @@ def cmd_update() -> int:
         return 1
 
 
-def cmd_fix() -> int:
+def cmd_fix(skip_template_checks: bool = False) -> int:
     """Run intelligent heuristics to remediate common setup issues."""
     print("\n🧠 Intelligent Auto-Fix (beta)\n")
 
@@ -842,7 +817,6 @@ def cmd_fix() -> int:
         ("Project validation", _run_validation_check),
         ("Python environment", _ensure_virtualenv),
         ("pre-commit hooks", _install_precommit_hooks),
-        ("Sanity check", _run_sanity_check),
     ]
 
     results = []
@@ -854,6 +828,14 @@ def cmd_fix() -> int:
             success = False
             detail = str(exc)
         results.append((name, success, detail))
+
+    print("🔧 Sanity check...")
+    try:
+        sanity_success, sanity_detail = _run_sanity_check(skip_templates=skip_template_checks)
+    except Exception as exc:  # noqa: BLE001
+        sanity_success = False
+        sanity_detail = str(exc)
+    results.append(("Sanity check", sanity_success, sanity_detail))
 
     print("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     print(" Fix Summary")
@@ -901,9 +883,7 @@ def main() -> int:
     )
 
     # validate command
-    subparsers.add_parser(
-        "validate", help="Validate project structure and configuration"
-    )
+    subparsers.add_parser("validate", help="Validate project structure and configuration")
 
     # doctor command
     subparsers.add_parser("doctor", help="Check environment setup and dependencies")
@@ -915,7 +895,12 @@ def main() -> int:
     subparsers.add_parser("update", help="Update project from template using Cruft")
 
     # fix command
-    subparsers.add_parser("fix", help="Run the intelligent auto-fix routine")
+    fix_parser = subparsers.add_parser("fix", help="Run the intelligent auto-fix routine")
+    fix_parser.add_argument(
+        "--skip-template-checks",
+        action="store_true",
+        help=("Skip running the template validation pipeline during the auto-fix routine."),
+    )
 
     args = parser.parse_args()
 
@@ -925,6 +910,9 @@ def main() -> int:
             return cmd_fix()
         return cmd_init()
 
+    if args.command == "fix":
+        return cmd_fix(skip_template_checks=getattr(args, "skip_template_checks", False))
+
     # Route to appropriate command
     commands = {
         "init": cmd_init,
@@ -933,7 +921,6 @@ def main() -> int:
         "doctor": cmd_doctor,
         "audit": cmd_audit,
         "update": cmd_update,
-        "fix": cmd_fix,
     }
 
     command_func = commands.get(args.command)
@@ -943,7 +930,7 @@ def main() -> int:
 
     result = command_func()
 
-    if args.fix and args.command != "fix":
+    if args.fix:
         fix_result = cmd_fix()
         return result if result != 0 else fix_result
 

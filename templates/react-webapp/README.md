@@ -26,7 +26,7 @@ agentic-canon init
 
 ### Development Experience
 
-- ✅ **Storybook** - Component development (optional)
+- ✅ **Storybook 8** - Component development with the Vite builder (optional)
 - ✅ **Hot Module Replacement** - Instant feedback
 - ✅ **ESLint + Prettier** - Code quality
 - ✅ **Pre-commit Hooks** - Automated checks
@@ -127,6 +127,18 @@ npm run preview
 npm run lint
 npm run format
 ```
+
+## Storybook 8 Upgrade Notes
+
+- The generated project pins Storybook 8.6 with the Vite builder and runs it via the
+  native `storybook dev` CLI (`npm run storybook`). This avoids broken symlinks in
+  CI environments where `node_modules/.bin` is cached between runs.
+- Node.js 20 LTS and newer (including Node 22) are fully supported. Ensure your
+  local environment meets the `"node": ">=18.0.0"` engines requirement before
+  installing dependencies.
+- When upgrading Storybook yourself, keep the `storybook dev -p 6006` script shape
+  so shared CI workflows and the validation pipeline continue to work without
+  modification.
 
 ## Development
 

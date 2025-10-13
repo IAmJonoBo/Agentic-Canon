@@ -31,8 +31,7 @@ def main():
 
     if not validate_github_org(github_org):
         errors.append(
-            f"Invalid github_org '{github_org}'. "
-            "Must be a valid GitHub organization name."
+            f"Invalid github_org '{github_org}'. Must be a valid GitHub organization name."
         )
 
     if errors:

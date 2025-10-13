@@ -16,6 +16,8 @@ from typing import Any, cast
 
 import nox  # type: ignore[import]
 
+from agentic_canon_cli import pip_support
+
 SANITY_SECTIONS = (
     "core",
     "templates",
@@ -113,8 +115,7 @@ def _iter_render_targets(
             if feature_filter:
                 context_dict = {str(k): str(v) for k, v in context.items()}
                 matches = all(
-                    context_dict.get(name) == value
-                    for name, value in feature_filter.items()
+                    context_dict.get(name) == value for name, value in feature_filter.items()
                 )
                 if not matches:
                     continue
@@ -300,10 +301,7 @@ def render_templates(session: nox.Session) -> None:
                 if isinstance(prefix, str) and isinstance(version, list) and len(version) >= 2:
                     major, minor = version[:2]
                     site_packages_path = (
-                        Path(prefix)
-                        / "lib"
-                        / f"python{major}.{minor}"
-                        / "site-packages"
+                        Path(prefix) / "lib" / f"python{major}.{minor}" / "site-packages"
                     )
                     if site_packages_path.exists():
                         candidate = str(site_packages_path)
@@ -335,11 +333,14 @@ def render_templates(session: nox.Session) -> None:
             context_payload = dict(extra_context)
             slug_value = str(context_payload.get("project_slug") or template_name)
 
-            def _produce(destination: Path, *,
-                         cookiecutter_func=cookiecutter,
-                         template_root_path=template_root,
-                         payload=context_payload,
-                         slug=slug_value) -> None:
+            def _produce(
+                destination: Path,
+                *,
+                cookiecutter_func=cookiecutter,
+                template_root_path=template_root,
+                payload=context_payload,
+                slug=slug_value,
+            ) -> None:
                 cookiecutter(
                     str(template_root_path),
                     no_input=True,
@@ -427,9 +428,7 @@ def _ensure_git_repo(
         head_ref = project_path / ".git" / "refs" / "heads" / default_branch
         if not head_ref.exists():
             session.run("git", "config", "user.name", "Template Bot", external=True)
-            session.run(
-                "git", "config", "user.email", "template@example.com", external=True
-            )
+            session.run("git", "config", "user.email", "template@example.com", external=True)
             session.run(
                 "git",
                 "commit",
@@ -438,6 +437,38 @@ def _ensure_git_repo(
                 "Initial commit",
                 external=True,
             )
+
+
+def _quality_commands(template_cfg: Mapping[str, Any], category: str) -> list[dict[str, Any]]:
+    quality_cfg = template_cfg.get("quality")
+    if not isinstance(quality_cfg, Mapping):
+        return []
+
+    category_entries = quality_cfg.get(category)
+    if not isinstance(category_entries, Sequence):
+        return []
+
+    commands: list[dict[str, Any]] = []
+    for entry in category_entries:
+        if not isinstance(entry, Mapping):
+            continue
+        run = entry.get("run")
+        if not isinstance(run, Sequence) or isinstance(run, str):
+            continue
+        env_cfg = entry.get("env")
+        env: dict[str, str] = {}
+        if isinstance(env_cfg, Mapping):
+            env = {str(key): str(value) for key, value in env_cfg.items() if isinstance(value, str)}
+        workdir = str(entry.get("workdir") or ".")
+        commands.append(
+            {
+                "name": str(entry.get("name") or " ".join(str(part) for part in run)),
+                "command": [str(part) for part in run],
+                "env": env,
+                "workdir": workdir,
+            }
+        )
+    return commands
 
 
 @nox.session
@@ -533,6 +564,114 @@ def format_templates(session: nox.Session) -> None:
 
 
 @nox.session
+def type_templates(session: nox.Session) -> None:
+    """Execute template-configured type-check commands across render variants."""
+    with _session_timer(session, "type_templates"):
+        parser = _arg_parser()
+        args = parser.parse_args(session.posargs)
+
+        templates = _load_manifest_templates()
+        entries = _load_render_index()
+        if not entries:
+            session.error("No rendered templates found. Run `nox -s render_templates` first.")
+
+        for entry in entries:
+            template_name = entry["template"]
+            context_name = entry["context"]
+            if args.templates and template_name not in args.templates:
+                continue
+            if args.contexts and context_name not in args.contexts:
+                continue
+
+            project_path = Path(entry["path"])
+            if not project_path.exists():
+                session.warn(f"Rendered project missing at {project_path}; skipping.")
+                continue
+
+            template_cfg = templates.get(template_name, {})
+            commands = _quality_commands(template_cfg, "type")
+            if not commands:
+                session.log(f"[type] {template_name} :: {context_name} (no commands configured)")
+                continue
+
+            for command in commands:
+                workdir = project_path / command["workdir"]
+                if not workdir.exists():
+                    session.warn(
+                        f"[{command['name']}] Working directory {workdir} missing; skipping."
+                    )
+                    continue
+                env = session.env.copy()
+                env.update(command["env"])
+                session.log(f"[type] {template_name} :: {context_name} :: {command['name']}")
+                with session.chdir(str(workdir)):
+                    session.run(*command["command"], external=True, env=env)
+
+
+@nox.session
+def security_templates(session: nox.Session) -> None:
+    """Run template-configured and Trunk security checks across render variants."""
+    with _session_timer(session, "security_templates"):
+        parser = _arg_parser()
+        args = parser.parse_args(session.posargs)
+
+        templates = _load_manifest_templates()
+        entries = _load_render_index()
+        if not entries:
+            session.error("No rendered templates found. Run `nox -s render_templates` first.")
+
+        success, detail = pip_support.ensure_safe_pip(Path(sys.executable), quiet=True)
+        if not success:
+            session.error(f"Failed to upgrade pip: {detail}")
+
+        _ensure_trunk(session)
+
+        for entry in entries:
+            template_name = entry["template"]
+            context_name = entry["context"]
+            if args.templates and template_name not in args.templates:
+                continue
+            if args.contexts and context_name not in args.contexts:
+                continue
+
+            project_path = Path(entry["path"])
+            if not project_path.exists():
+                session.warn(f"Rendered project missing at {project_path}; skipping.")
+                continue
+
+            template_cfg = templates.get(template_name, {})
+
+            manifest_commands = _quality_commands(template_cfg, "security")
+            for command in manifest_commands:
+                workdir = project_path / command["workdir"]
+                if not workdir.exists():
+                    session.warn(
+                        f"[{command['name']}] Working directory {workdir} missing; skipping."
+                    )
+                    continue
+                env = session.env.copy()
+                env.update(command["env"])
+                session.log(f"[security] {template_name} :: {context_name} :: {command['name']}")
+                with session.chdir(str(workdir)):
+                    session.run(*command["command"], external=True, env=env)
+
+            template_cfg = templates.get(template_name, {})
+            _copy_trunk_configuration(project_path, template_cfg)
+            _ensure_git_repo(session, project_path)
+
+            session.log(f"[security] {template_name} :: {context_name} :: trunk")
+            with session.chdir(str(project_path)):
+                session.run(
+                    str(TRUNK_SCRIPT),
+                    "check",
+                    "--all",
+                    "--scope",
+                    "security",
+                    external=True,
+                )
+
+
+@nox.session
 def upgrade_tools(session: nox.Session) -> None:
     """Upgrade shared tooling (Trunk, linters, template dependencies)."""
     with _session_timer(session, "upgrade_tools"):
@@ -558,6 +697,8 @@ def validate_templates_all(session: nox.Session) -> None:
         session.notify("sync_manifest", [])
         session.notify("render_templates", notify_args)
         session.notify("lint_templates", notify_args)
+        session.notify("type_templates", notify_args)
+        session.notify("security_templates", notify_args)
         session.notify("format_templates", notify_args)
 
 
@@ -577,6 +718,9 @@ def sanity(session: nox.Session) -> None:
         "pip-audit==2.9.0",
         "pip-licenses==5.0.0",
     )
+    success, detail = pip_support.ensure_safe_pip(Path(sys.executable), quiet=True)
+    if not success:
+        session.error(f"Failed to upgrade pip: {detail}")
     _run_sanity(session)
 
 

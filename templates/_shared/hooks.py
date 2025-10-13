@@ -164,9 +164,7 @@ def run_post_gen(template_name: str, project_path: Path, context: dict[str, Any]
     ensure_git_repo(project_path, config.get("git", {}), context)
 
 
-def apply_template_config(
-    template_name: str, project_path: Path, context: dict[str, Any]
-) -> None:
+def apply_template_config(template_name: str, project_path: Path, context: dict[str, Any]) -> None:
     """
     Backwards-compatible alias for older hooks.
 

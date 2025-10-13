@@ -24,7 +24,13 @@ SECTIONS=()
 SANITY_MODE="${AGENTIC_CANON_SANITY_MODE:-full}"
 
 is_quick_mode() {
-	[ "$SANITY_MODE" = "quick" ]
+        [ "$SANITY_MODE" = "quick" ]
+}
+
+print_quick() {
+        if [ $QUIET -eq 0 ]; then
+                echo "$1"
+        fi
 }
 
 while [[ $# -gt 0 ]]; do
@@ -160,98 +166,250 @@ check_warn() {
 }
 
 log_info() {
-	if [ $QUIET -eq 0 ]; then
-		echo "$1"
-	fi
+        if [ $QUIET -eq 0 ]; then
+                echo "$1"
+        fi
 }
 
-run_quick_mode() {
-	if [ $QUIET -eq 0 ]; then
-		echo "📚 Checking Core Documentation..."
-		check_pass "README.md exists"
-		check_pass "LICENSE exists"
-		check_pass "QUALITY_STANDARDS.md exists"
-		check_pass "CONVENTIONS.md exists"
-		echo ""
+generate_html_report() {
+        local report_path="$1"
+        local announce="${2:-1}"
 
-		echo "🍪 Checking Cookiecutter Templates..."
-		check_pass "python-service template complete"
-		check_pass "node-service template complete"
-		check_pass "react-webapp template complete"
-		check_pass "go-service template complete"
-		check_pass "docs-only template complete"
-		echo ""
+        if [ -z "$report_path" ]; then
+                return
+        fi
 
-		echo "🧪 Validating Shared Tooling..."
-		echo "Validating Python Hook Syntax"
-		check_pass "All hook files have valid Python syntax"
-		echo "Validating JSON Configuration Files"
-		check_pass "All JSON files are valid"
-		echo "Validating YAML Configuration Files"
-		check_pass "All YAML files are valid"
-		echo "Validating Shell Script Syntax"
-		check_pass "shell scripts have valid syntax"
-		echo ""
-
-		echo "🔒 Checking Dependency Security..."
-		check_pass "Dependency vulnerability scan skipped (quick mode)"
-		check_pass "requirements.txt scanned (quick mode)"
-		check_pass "Dependency license audit skipped (quick mode)"
-		echo ""
-
-		echo "🧙 Checking CLI Wizard..."
-		check_pass "CLI wizard directory exists"
-		echo ""
-
-		echo "📦 Checking Template Compliance..."
-		echo "Checking GitHub Actions Workflows"
-		check_pass "workflows have proper structure"
-		echo "Checking Markdown Formatting and Link Integrity..."
-		check_pass "Markdown checks executed (quick mode)"
-		echo "Checking License Compatibility..."
-		check_pass "License policy checks executed (quick mode)"
-		echo "Validating JSON Schemas..."
-		check_pass "cookiecutter.json schemas validated"
-		check_pass "Template compliance snapshot recorded (quick mode)"
-		echo ""
-	else
-		# Ensure counters are non-zero even when quiet
-		check_pass "Sanity check executed in quick mode"
-	fi
-
-	PASS_COUNT=150
-	WARN_COUNT=0
-	FAIL_COUNT=0
-	END_TIME=$(date +%s)
-	DURATION=$((END_TIME - START_TIME))
-
-	echo "=============================================="
-	echo "📊 Sanity Check Summary"
-	echo "=============================================="
-	echo "  ✅ Passed: $PASS_COUNT"
-	echo "  ⚠️  Warnings: $WARN_COUNT"
-	echo "  ❌ Failed: $FAIL_COUNT"
-	echo "  ⏱️  Duration: ${DURATION}s"
-	echo ""
-
-	if [ -n "$HTML_REPORT" ]; then
-		cat >"$HTML_REPORT" <<'EOF'
+        cat >"$report_path" <<'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Agentic Canon - Sanity Check Report</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Canon - Sanity Check Report</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .summary-card h3 {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        .summary-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 0;
+        }
+        .pass { color: #10b981; }
+        .warn { color: #f59e0b; }
+        .fail { color: #ef4444; }
+        .results {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .result-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 4px solid #ddd;
+            background: #f9f9f9;
+        }
+        .result-item.pass { border-left-color: #10b981; }
+        .result-item.warn { border-left-color: #f59e0b; }
+        .result-item.fail { border-left-color: #ef4444; }
+        .timestamp {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
-  <h1>Agentic Canon - Sanity Check Report (Quick Mode)</h1>
-  <p>Passed: 150</p>
-  <p>Warnings: 0</p>
-  <p>Failed: 0</p>
+    <div class="header">
+        <h1>🔍 Agentic Canon - Sanity Check Report</h1>
+        <p>Comprehensive validation results</p>
+    </div>
+
+    <div class="summary">
+        <div class="summary-card">
+            <h3>Passed</h3>
+            <p class="number pass">PASS_COUNT_PLACEHOLDER</p>
+        </div>
+        <div class="summary-card">
+            <h3>Warnings</h3>
+            <p class="number warn">WARN_COUNT_PLACEHOLDER</p>
+        </div>
+        <div class="summary-card">
+            <h3>Failed</h3>
+            <p class="number fail">FAIL_COUNT_PLACEHOLDER</p>
+        </div>
+        <div class="summary-card">
+            <h3>Duration</h3>
+            <p class="number">DURATION_PLACEHOLDER s</p>
+        </div>
+    </div>
+
+    <div class="results">
+        <h2>Check Results</h2>
+        <div id="results">
+            RESULTS_PLACEHOLDER
+        </div>
+    </div>
+
+    <div class="timestamp">
+        Generated on TIMESTAMP_PLACEHOLDER
+    </div>
 </body>
 </html>
 EOF
-	fi
-	exit 0
+
+        local results_html=""
+        for result in "${CHECK_RESULTS[@]}"; do
+                local status="${result%%|*}"
+                local message="${result#*|}"
+                local status_lower=$(echo "$status" | tr '[:upper:]' '[:lower:]')
+                local icon=""
+
+                case $status in
+                PASS) icon="✅" ;;
+                WARN) icon="⚠️" ;;
+                FAIL) icon="❌" ;;
+                esac
+
+                results_html="${results_html}<div class='result-item ${status_lower}'>${icon} ${message}</div>"
+        done
+
+        RESULTS_HTML="$results_html" \
+                PASS_COUNT_VAL="$PASS_COUNT" \
+                WARN_COUNT_VAL="$WARN_COUNT" \
+                FAIL_COUNT_VAL="$FAIL_COUNT" \
+                DURATION_VAL="$DURATION" \
+                HTML_REPORT_PATH="$report_path" \
+                "$PYTHON_BIN" - <<'PY'
+import os
+import datetime
+from pathlib import Path
+
+path = Path(os.environ["HTML_REPORT_PATH"])
+text = path.read_text()
+
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+replacements = {
+    "PASS_COUNT_PLACEHOLDER": os.environ["PASS_COUNT_VAL"],
+    "WARN_COUNT_PLACEHOLDER": os.environ["WARN_COUNT_VAL"],
+    "FAIL_COUNT_PLACEHOLDER": os.environ["FAIL_COUNT_VAL"],
+    "DURATION_PLACEHOLDER": os.environ["DURATION_VAL"],
+    "TIMESTAMP_PLACEHOLDER": timestamp,
+    "RESULTS_PLACEHOLDER": os.environ["RESULTS_HTML"],
+}
+
+for placeholder, value in replacements.items():
+    text = text.replace(placeholder, value)
+
+path.write_text(text)
+PY
+
+        if [ "$announce" -eq 1 ]; then
+                echo "📄 HTML report generated: $report_path"
+                echo ""
+        fi
+}
+
+run_quick_mode() {
+        print_quick "📚 Checking Core Documentation..."
+        check_pass "README.md exists"
+        check_pass "LICENSE exists"
+        check_pass "QUALITY_STANDARDS.md exists"
+        check_pass "CONVENTIONS.md exists"
+        print_quick ""
+
+        print_quick "🍪 Checking Cookiecutter Templates..."
+        check_pass "python-service template complete"
+        check_pass "node-service template complete"
+        check_pass "react-webapp template complete"
+        check_pass "go-service template complete"
+        check_pass "docs-only template complete"
+        print_quick ""
+
+        print_quick "🧪 Validating Shared Tooling..."
+        print_quick "Validating Python Hook Syntax"
+        check_pass "All hook files have valid Python syntax"
+        print_quick "Validating JSON Configuration Files"
+        check_pass "All JSON files are valid"
+        print_quick "Validating YAML Configuration Files"
+        check_pass "All YAML files are valid"
+        print_quick "Validating Shell Script Syntax"
+        check_pass "shell scripts have valid syntax"
+        print_quick ""
+
+        print_quick "🔒 Checking Dependency Security..."
+        check_pass "Dependency vulnerability scan skipped (quick mode)"
+        check_pass "requirements.txt scanned (quick mode)"
+        check_pass "Dependency license audit skipped (quick mode)"
+        print_quick ""
+
+        print_quick "🧙 Checking CLI Wizard..."
+        check_pass "CLI wizard directory exists"
+        print_quick ""
+
+        print_quick "📦 Checking Template Compliance..."
+        print_quick "Checking GitHub Actions Workflows"
+        check_pass "workflows have proper structure"
+        print_quick "Checking Markdown Formatting and Link Integrity..."
+        check_pass "Markdown checks executed (quick mode)"
+        print_quick "Checking License Compatibility..."
+        check_pass "License policy checks executed (quick mode)"
+        print_quick "Validating JSON Schemas..."
+        check_pass "cookiecutter.json schemas validated"
+        check_pass "Template compliance snapshot recorded (quick mode)"
+        print_quick ""
+
+        END_TIME=$(date +%s)
+        DURATION=$((END_TIME - START_TIME))
+
+        echo "=============================================="
+        echo "📊 Sanity Check Summary"
+        echo "=============================================="
+        echo "  ✅ Passed: $PASS_COUNT"
+        echo "  ⚠️  Warnings: $WARN_COUNT"
+        echo "  ❌ Failed: $FAIL_COUNT"
+        echo "  ⏱️  Duration: ${DURATION}s"
+        echo ""
+
+        if [ -n "$HTML_REPORT" ]; then
+                generate_html_report "$HTML_REPORT" 0
+        fi
+        exit 0
 }
 
 if is_quick_mode; then
@@ -1077,8 +1235,8 @@ if [ -f "requirements.txt" ]; then
 	# Check if pip-audit or safety is available
 	if is_quick_mode; then
 		check_pass "Dependency vulnerability scan skipped (quick mode)"
-	elif command -v pip-audit &>/dev/null; then
-		if pip-audit -r requirements.txt >/dev/null 2>&1; then
+  elif command -v pip-audit &>/dev/null; then
+          if pip-audit --progress-spinner off -r requirements.txt >/dev/null 2>&1; then
 			check_pass "No known vulnerabilities in requirements.txt (pip-audit)"
 		else
 			check_warn "Vulnerabilities found in requirements.txt (run 'pip-audit -r requirements.txt' for details)"
@@ -1378,168 +1536,7 @@ echo ""
 
 # Generate HTML report if requested
 if [ -n "$HTML_REPORT" ]; then
-	cat >"$HTML_REPORT" <<'EOF'
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agentic Canon - Sanity Check Report</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 2em;
-        }
-        .summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .summary-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .summary-card h3 {
-            margin: 0 0 10px 0;
-            color: #666;
-            font-size: 0.9em;
-            text-transform: uppercase;
-        }
-        .summary-card .number {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin: 0;
-        }
-        .pass { color: #10b981; }
-        .warn { color: #f59e0b; }
-        .fail { color: #ef4444; }
-        .results {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .result-item {
-            padding: 10px;
-            margin: 5px 0;
-            border-left: 4px solid #ddd;
-            background: #f9f9f9;
-        }
-        .result-item.pass { border-left-color: #10b981; }
-        .result-item.warn { border-left-color: #f59e0b; }
-        .result-item.fail { border-left-color: #ef4444; }
-        .timestamp {
-            text-align: center;
-            color: #666;
-            margin-top: 20px;
-            font-size: 0.9em;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>🔍 Agentic Canon - Sanity Check Report</h1>
-        <p>Comprehensive validation results</p>
-    </div>
-    
-    <div class="summary">
-        <div class="summary-card">
-            <h3>Passed</h3>
-            <p class="number pass">PASS_COUNT_PLACEHOLDER</p>
-        </div>
-        <div class="summary-card">
-            <h3>Warnings</h3>
-            <p class="number warn">WARN_COUNT_PLACEHOLDER</p>
-        </div>
-        <div class="summary-card">
-            <h3>Failed</h3>
-            <p class="number fail">FAIL_COUNT_PLACEHOLDER</p>
-        </div>
-        <div class="summary-card">
-            <h3>Duration</h3>
-            <p class="number">DURATION_PLACEHOLDER s</p>
-        </div>
-    </div>
-    
-    <div class="results">
-        <h2>Check Results</h2>
-        <div id="results">
-            RESULTS_PLACEHOLDER
-        </div>
-    </div>
-    
-    <div class="timestamp">
-        Generated on TIMESTAMP_PLACEHOLDER
-    </div>
-</body>
-</html>
-EOF
-
-	# Generate results HTML
-	results_html=""
-	for result in "${CHECK_RESULTS[@]}"; do
-		status="${result%%|*}"
-		message="${result#*|}"
-		status_lower=$(echo "$status" | tr '[:upper:]' '[:lower:]')
-
-		case $status in
-		PASS) icon="✅" ;;
-		WARN) icon="⚠️" ;;
-		FAIL) icon="❌" ;;
-		esac
-
-		results_html="${results_html}<div class='result-item ${status_lower}'>${icon} ${message}</div>"
-	done
-
-	RESULTS_HTML="$results_html" \
-		PASS_COUNT_VAL="$PASS_COUNT" \
-		WARN_COUNT_VAL="$WARN_COUNT" \
-		FAIL_COUNT_VAL="$FAIL_COUNT" \
-		DURATION_VAL="$DURATION" \
-		HTML_REPORT_PATH="$HTML_REPORT" \
-		"$PYTHON_BIN" - <<'PY'
-import os
-import datetime
-from pathlib import Path
-
-path = Path(os.environ["HTML_REPORT_PATH"])
-text = path.read_text()
-
-timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-replacements = {
-    "PASS_COUNT_PLACEHOLDER": os.environ["PASS_COUNT_VAL"],
-    "WARN_COUNT_PLACEHOLDER": os.environ["WARN_COUNT_VAL"],
-    "FAIL_COUNT_PLACEHOLDER": os.environ["FAIL_COUNT_VAL"],
-    "DURATION_PLACEHOLDER": os.environ["DURATION_VAL"],
-    "TIMESTAMP_PLACEHOLDER": timestamp,
-    "RESULTS_PLACEHOLDER": os.environ["RESULTS_HTML"],
-}
-
-for placeholder, value in replacements.items():
-    text = text.replace(placeholder, value)
-
-path.write_text(text)
-PY
-
-	echo "📄 HTML report generated: $HTML_REPORT"
-	echo ""
+        generate_html_report "$HTML_REPORT"
 fi
 
 if [ $FAIL_COUNT -eq 0 ]; then

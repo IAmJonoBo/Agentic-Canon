@@ -58,7 +58,12 @@ Options:
   --upgrade           Run upgrade_tools session
   --template NAME     Limit validation to a specific template (repeatable)
   --force-rebuild     Rebuild template render caches
+  --skip-safe-pip     Do not upgrade pip to the patched GHSA build
   --help              Show this message
+
+Environment:
+  AGENTIC_CANON_SKIP_SAFE_PIP   Skip pip upgrade even when --skip-safe-pip is not set
+  AGENTIC_CANON_SAFE_PIP_SPEC   Override the pip spec used for the upgrade command
 
 Without explicit mode flags the script runs the unified sync -> render -> lint -> format pipeline.
 EOF
@@ -73,6 +78,7 @@ RUN_UPGRADE=0
 RUN_ALL=0
 FORCE_REBUILD=0
 QUIET=0
+SKIP_SAFE_PIP=0
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -112,14 +118,18 @@ while [[ $# -gt 0 ]]; do
 		TEMPLATES+=("$2")
 		shift 2
 		;;
-	--quiet)
-		QUIET=1
-		shift
-		;;
-	--help | -h)
-		usage
-		exit 0
-		;;
+        --quiet)
+                QUIET=1
+                shift
+                ;;
+        --skip-safe-pip)
+                SKIP_SAFE_PIP=1
+                shift
+                ;;
+        --help | -h)
+                usage
+                exit 0
+                ;;
 	*)
 		echo "error: unknown option '$1'" >&2
 		echo "" >&2
@@ -130,14 +140,25 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ ${RUN_ALL} -eq 1 ]]; then
-	RUN_LINTERS=0
-	RUN_TYPE=0
-	RUN_SECURITY=0
-	RUN_FORMAT=0
+        RUN_LINTERS=0
+        RUN_TYPE=0
+        RUN_SECURITY=0
+        RUN_FORMAT=0
+fi
+
+if [[ ${SKIP_SAFE_PIP} -eq 0 && -n ${AGENTIC_CANON_SKIP_SAFE_PIP-} ]]; then
+        case "${AGENTIC_CANON_SKIP_SAFE_PIP,,}" in
+        1 | true | yes | y | on)
+                SKIP_SAFE_PIP=1
+                if [[ ${QUIET} -eq 0 ]]; then
+                        echo "⚠️  Skipping pip upgrade via AGENTIC_CANON_SKIP_SAFE_PIP"
+                fi
+                ;;
+        esac
 fi
 
 if [[ ${RUN_LINTERS} -eq 0 && ${RUN_TYPE} -eq 0 && ${RUN_SECURITY} -eq 0 && ${RUN_FORMAT} -eq 0 && ${RUN_UPGRADE} -eq 0 && ${RUN_ALL} -eq 0 ]]; then
-	RUN_ALL=1
+        RUN_ALL=1
 fi
 
 declare -a NOX_ARGS=()
@@ -147,14 +168,29 @@ if ((${#TEMPLATES[@]})); then
 	done
 fi
 if [[ ${FORCE_REBUILD} -eq 1 ]]; then
-	NOX_ARGS+=("--force")
+        NOX_ARGS+=("--force")
+fi
+
+if [[ ${SKIP_SAFE_PIP} -eq 0 ]]; then
+        if [[ ${QUIET} -eq 0 ]]; then
+                echo "🛡️ Ensuring pip includes GHSA-4xh5-x5gv-qwph patch"
+        fi
+        if [[ ${QUIET} -eq 1 ]]; then
+                python -m agentic_canon_cli.pip_support --quiet >/dev/null
+        else
+                python -m agentic_canon_cli.pip_support
+        fi
+        if [[ $? -ne 0 ]]; then
+                echo "error: unable to upgrade pip to patched build" >&2
+                exit 1
+        fi
 fi
 
 run_nox() {
-	local session="$1"
-	shift
-	if [[ ${QUIET} -eq 0 ]]; then
-		echo "🔧 Running nox -s ${session} -- $*"
+        local session="$1"
+        shift
+        if [[ ${QUIET} -eq 0 ]]; then
+                echo "🔧 Running nox -s ${session} -- $*"
 	fi
 	(
 		cd "${REPO_ROOT}"

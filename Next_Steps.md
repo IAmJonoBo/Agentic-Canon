@@ -15,6 +15,8 @@
 - [x] Align cookiecutter/boilerplate quality requirements with unified lint/format CLI updates (Owner: Agent, Due: 2025-02-09) _(React + Node workflows updated; manifest-driven commands exercised via chunks 72b969, 58e2e8, 7ff00d, ceb73c)_
 - [x] Investigate `pip-audit` invalid requirements failure and capture remediation plan (Owner: Agent, Due: 2025-02-08) _(`pip-audit -r requirements.txt` now succeeds; see chunk db9029)_
 - [x] Diagnose template formatting drift reported by `ruff format --check` before enabling enforcement (Owner: Agent, Due: 2025-02-08) _(`ruff format --check` clean in chunk 56fb10)_
+- [x] Ship pip hardening helper and quiet security audits (Owner: Agent, Due: 2025-02-09) _(pip patched via `agentic_canon_cli.pip_support`; spinner disabled; `pip-audit` passes in chunks 3d121b/a0943a)_
+- [x] Document safe-pip override controls across CLI + validation flows (Owner: Agent, Due: 2025-02-10) _(AGENTIC_CANON_SKIP_SAFE_PIP and AGENTIC_CANON_SAFE_PIP_SPEC documented + wired into `.dev/validate-templates.sh`)_
 
 ## Steps
 
@@ -31,6 +33,7 @@
 - [x] Define mypy coverage scope and codify invocation in automation
 - [x] Re-ran baseline validation commands to refresh evidence (`pytest` chunk 385380; `ruff check` chunk 5390e6; `mypy` chunk 6ba6e3; `ruff format --check` chunk 56fb10; `pip-audit` chunks 0f9f62/db9029)
 - [x] Added CLI regression coverage to confirm template pipeline visibility and skip controls (chunks 5951f9 & 5d3429)
+- [x] Captured environment escape hatch for hardened pip tooling so offline runs stay unblocked
 - [x] Reviewed template standards/docs to extract cookiecutter + boilerplate quality expectations for upcoming CLI alignment (see TEMPLATE_STANDARDS.md)
 
 ## Deliverables
@@ -43,10 +46,10 @@
 
 ## Quality Gates
 
-- [x] Tests: pytest (passing end-to-end, including React build fix) _(chunk 385380)_
-- [x] Lint: ruff check (passing; monitor for regressions) _(chunk 5390e6)_
-- [x] Type-check: mypy (configured and passing) _(chunk 6ba6e3)_
-- [ ] Security: secret scan (tool configured; upstream pip GHSA-4xh5-x5gv-qwph remains) _(chunk 0f9f62)_
+- [x] Tests: pytest (passing end-to-end, including React build fix) _(chunk b280cf)_
+- [x] Lint: ruff check (passing; monitor for regressions) _(chunk 041205)_
+- [x] Type-check: mypy (configured and passing) _(chunk 5d319c)_
+- [x] Security: secret scan (pip patched via helper; `pip-audit` clean) _(chunk 605881)_
 - [x] Build: applicable build commands succeed _(template renders + audits passing; see chunks f33a16, 8f1475, 58e2e8, 077e58)_
 
 ## Links
@@ -68,7 +71,7 @@
 - [ ] Ruff config deprecation warnings from generated projects _(pending validation after next render)_
 - [ ] Monitor baseline command health; only security gate blocked by upstream pip advisory (chunk 0f9f62)
 - [ ] React Storybook 8 upgrade: confirm docs/changelog guidance added for template consumers
-- [ ] Upstream pip 25.2 vulnerability flagged by `pip-audit`; await patched release or pin downgrade before enabling blocking gate (chunk 0f9f62)
+- [ ] Replace temporary SAFE_PIP_SPEC pin once upstream pip publishes a patched release
 - [ ] Quick-mode sanity `PASS_COUNT` (150) must be kept in sync with future script additions
 - [ ] Evaluate adding targeted tests for `.dev/sanity-check.sh` quick-mode output to prevent regressions
 - [ ] `pip-audit` virtualenv bootstrap occasionally hangs; investigate caching/timeout strategy before gating CI

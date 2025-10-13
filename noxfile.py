@@ -16,6 +16,8 @@ from typing import Any, cast
 
 import nox  # type: ignore[import]
 
+from agentic_canon_cli import pip_support
+
 SANITY_SECTIONS = (
     "core",
     "templates",
@@ -618,6 +620,10 @@ def security_templates(session: nox.Session) -> None:
         if not entries:
             session.error("No rendered templates found. Run `nox -s render_templates` first.")
 
+        success, detail = pip_support.ensure_safe_pip(Path(sys.executable), quiet=True)
+        if not success:
+            session.error(f"Failed to upgrade pip: {detail}")
+
         _ensure_trunk(session)
 
         for entry in entries:
@@ -712,6 +718,9 @@ def sanity(session: nox.Session) -> None:
         "pip-audit==2.9.0",
         "pip-licenses==5.0.0",
     )
+    success, detail = pip_support.ensure_safe_pip(Path(sys.executable), quiet=True)
+    if not success:
+        session.error(f"Failed to upgrade pip: {detail}")
     _run_sanity(session)
 
 

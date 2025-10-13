@@ -13,8 +13,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-SAFE_PIP_SPEC = "pip @ git+https://github.com/pypa/pip@f2b92314da012b9fffa36b3f3e67748a37ef464a"
-"""Patched pip build that includes the GHSA-4xh5-x5gv-qwph fix."""
+from . import pip_support
 
 
 def print_banner() -> None:
@@ -184,18 +183,8 @@ def _ensure_virtualenv() -> tuple[bool, str]:
     if not venv_python.exists():
         return False, "Unable to locate python executable inside .venv"
 
-    upgrade = _run_command(
-        [
-            str(venv_python),
-            "-m",
-            "pip",
-            "install",
-            "--upgrade",
-            SAFE_PIP_SPEC,
-        ]
-    )
-    if upgrade.returncode != 0:
-        detail = upgrade.stderr.strip() or upgrade.stdout.strip() or "pip upgrade failed"
+    success, detail = pip_support.ensure_safe_pip(venv_python, quiet=True)
+    if not success:
         return False, detail
 
     install = _run_command([str(venv_python), "-m", "pip", "install", "-r", str(requirements)])

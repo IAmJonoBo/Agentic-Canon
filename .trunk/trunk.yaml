@@ -30,7 +30,7 @@ lint:
     - eslint@9.37.0
     - osv-scanner@2.2.3
     - prettier@3.6.2
-    - renovate@41.146.7
+    - renovate@41.146.8
     - ruff@0.14.0
     - shellcheck@0.11.0
     - shfmt@3.12.0

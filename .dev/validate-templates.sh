@@ -11,33 +11,36 @@ REPO_ROOT=$(cd "${SCRIPT_DIR}/.." && pwd)
 TEMPLATES_DIR="${REPO_ROOT}/templates"
 
 ensure_pythonpath() {
-        local -a path_list=()
-        local entry existing
-        local updated=0
+	local -a path_list=()
+	local entry existing
+	local updated=0
 
-        if [[ -n "${PYTHONPATH:-}" ]]; then
-                IFS=":" read -r -a path_list <<<"${PYTHONPATH}"
-        fi
+	if [[ -n ${PYTHONPATH-} ]]; then
+		IFS=":" read -r -a path_list <<<"${PYTHONPATH}"
+	fi
 
-        for entry in "$@"; do
-                local found=0
-                for existing in "${path_list[@]}"; do
-                        if [[ "${existing}" == "${entry}" ]]; then
-                                found=1
-                                break
-                        fi
-                done
-                if [[ ${found} -eq 0 ]]; then
-                        path_list=("${entry}" "${path_list[@]}")
-                        updated=1
-                fi
-        done
+	for entry in "$@"; do
+		local found=0
+		for existing in "${path_list[@]}"; do
+			if [[ ${existing} == "${entry}" ]]; then
+				found=1
+				break
+			fi
+		done
+		if [[ ${found} -eq 0 ]]; then
+			path_list=("${entry}" "${path_list[@]}")
+			updated=1
+		fi
+	done
 
-        if [[ ${updated} -eq 1 || -z "${PYTHONPATH:-}" ]]; then
-                PYTHONPATH=$(IFS=":"; echo "${path_list[*]}")
-        fi
+	if [[ ${updated} -eq 1 || -z ${PYTHONPATH-} ]]; then
+		PYTHONPATH=$(
+			IFS=":"
+			echo "${path_list[*]}"
+		)
+	fi
 
-        export PYTHONPATH
+	export PYTHONPATH
 }
 
 ensure_pythonpath "${REPO_ROOT}" "${TEMPLATES_DIR}"
@@ -47,8 +50,10 @@ usage() {
 Usage: .dev/validate-templates.sh [options]
 
 Options:
-  --all              Run full validation (sync + render + lint + format)
+  --all              Run full validation (sync + render + lint + type + security + format)
   --linters           Run lint-only validation (render + lint_templates)
+  --type              Run type-check validation (render + type_templates)
+  --security          Run security validation (render + security_templates)
   --format            Run formatting validation (render + format_templates)
   --upgrade           Run upgrade_tools session
   --template NAME     Limit validation to a specific template (repeatable)
@@ -61,10 +66,13 @@ EOF
 
 declare -a TEMPLATES=()
 RUN_LINTERS=0
+RUN_TYPE=0
+RUN_SECURITY=0
 RUN_FORMAT=0
 RUN_UPGRADE=0
 RUN_ALL=0
 FORCE_REBUILD=0
+QUIET=0
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -78,6 +86,14 @@ while [[ $# -gt 0 ]]; do
 		;;
 	--format)
 		RUN_FORMAT=1
+		shift
+		;;
+	--type)
+		RUN_TYPE=1
+		shift
+		;;
+	--security)
+		RUN_SECURITY=1
 		shift
 		;;
 	--upgrade)
@@ -96,6 +112,10 @@ while [[ $# -gt 0 ]]; do
 		TEMPLATES+=("$2")
 		shift 2
 		;;
+	--quiet)
+		QUIET=1
+		shift
+		;;
 	--help | -h)
 		usage
 		exit 0
@@ -111,10 +131,12 @@ done
 
 if [[ ${RUN_ALL} -eq 1 ]]; then
 	RUN_LINTERS=0
+	RUN_TYPE=0
+	RUN_SECURITY=0
 	RUN_FORMAT=0
 fi
 
-if [[ ${RUN_LINTERS} -eq 0 && ${RUN_FORMAT} -eq 0 && ${RUN_UPGRADE} -eq 0 && ${RUN_ALL} -eq 0 ]]; then
+if [[ ${RUN_LINTERS} -eq 0 && ${RUN_TYPE} -eq 0 && ${RUN_SECURITY} -eq 0 && ${RUN_FORMAT} -eq 0 && ${RUN_UPGRADE} -eq 0 && ${RUN_ALL} -eq 0 ]]; then
 	RUN_ALL=1
 fi
 
@@ -131,7 +153,9 @@ fi
 run_nox() {
 	local session="$1"
 	shift
-	echo "🔧 Running nox -s ${session} -- $*"
+	if [[ ${QUIET} -eq 0 ]]; then
+		echo "🔧 Running nox -s ${session} -- $*"
+	fi
 	(
 		cd "${REPO_ROOT}"
 		if [[ $# -eq 0 ]]; then
@@ -152,7 +176,7 @@ if [[ ${RUN_ALL} -eq 1 ]]; then
 fi
 
 # Legacy flows retained for targeted runs.
-if [[ ${RUN_LINTERS} -eq 1 || ${RUN_FORMAT} -eq 1 ]]; then
+if [[ ${RUN_LINTERS} -eq 1 || ${RUN_TYPE} -eq 1 || ${RUN_SECURITY} -eq 1 || ${RUN_FORMAT} -eq 1 ]]; then
 	if ((${#NOX_ARGS[@]})); then
 		run_nox render_templates "${NOX_ARGS[@]}"
 	else
@@ -165,6 +189,22 @@ if [[ ${RUN_LINTERS} -eq 1 ]]; then
 		run_nox lint_templates "${NOX_ARGS[@]}"
 	else
 		run_nox lint_templates
+	fi
+fi
+
+if [[ ${RUN_TYPE} -eq 1 ]]; then
+	if ((${#NOX_ARGS[@]})); then
+		run_nox type_templates "${NOX_ARGS[@]}"
+	else
+		run_nox type_templates
+	fi
+fi
+
+if [[ ${RUN_SECURITY} -eq 1 ]]; then
+	if ((${#NOX_ARGS[@]})); then
+		run_nox security_templates "${NOX_ARGS[@]}"
+	else
+		run_nox security_templates
 	fi
 fi
 

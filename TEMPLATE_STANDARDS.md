@@ -94,6 +94,7 @@ Templates and examples must meet these standards to ensure quality and usability
 - [ ] Testing framework and examples
 - [ ] Coverage configuration (minimum thresholds)
 - [ ] Type checking where applicable (mypy, TypeScript strict mode)
+- [ ] Template validation pipeline executes render → lint → type → security → format via `.dev/validate-templates.sh --all`
 
 **Rationale:** Templates should set users up for success with quality tooling.
 

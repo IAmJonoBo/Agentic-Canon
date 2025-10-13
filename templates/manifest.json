@@ -113,6 +113,14 @@
           }
         ]
       },
+      "quality": {
+        "type": [
+          {
+            "name": "go-vet",
+            "run": ["go", "vet", "./..."]
+          }
+        ]
+      },
       "root": "templates/go-service",
       "sample_contexts": {
         "default": {
@@ -196,6 +204,26 @@
               "DEFAULT_BRANCH_EXPR": "${{ github.event.repository.default_branch }}",
               "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
             }
+          }
+        ]
+      },
+      "quality": {
+        "security": [
+          {
+            "env": {
+              "CI": "true"
+            },
+            "name": "node-audit",
+            "run": ["npm", "audit", "--omit=dev", "--audit-level=high"]
+          }
+        ],
+        "type": [
+          {
+            "env": {
+              "CI": "true"
+            },
+            "name": "node-tsc",
+            "run": ["npm", "run", "typecheck"]
           }
         ]
       },
@@ -349,7 +377,12 @@
             "enabled": false
           },
           "pip": {
-            "enabled": false
+            "command": [
+              "bash",
+              "-lc",
+              "python -m venv .venv && source .venv/bin/activate && pip install --upgrade pip setuptools wheel && pip install -e .[dev]"
+            ],
+            "enabled": true
           }
         },
         "render": {
@@ -422,6 +455,24 @@
               "IF_DEPENDENCY_REVIEW": "${{ github.event_name == 'pull_request' }}",
               "SBOM_JOB_ENABLED": "${{ true }}"
             }
+          }
+        ]
+      },
+      "quality": {
+        "security": [
+          {
+            "name": "python-pip-audit",
+            "run": ["bash", "-lc", "source .venv/bin/activate && pip-audit ."]
+          }
+        ],
+        "type": [
+          {
+            "name": "python-mypy",
+            "run": [
+              "bash",
+              "-lc",
+              "source .venv/bin/activate && python -m mypy src"
+            ]
           }
         ]
       },
@@ -538,6 +589,26 @@
               "DEFAULT_BRANCH_EXPR": "${{ github.event.repository.default_branch }}",
               "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
             }
+          }
+        ]
+      },
+      "quality": {
+        "security": [
+          {
+            "env": {
+              "CI": "true"
+            },
+            "name": "react-audit",
+            "run": ["npm", "audit", "--omit=dev", "--audit-level=high"]
+          }
+        ],
+        "type": [
+          {
+            "env": {
+              "CI": "true"
+            },
+            "name": "react-tsc",
+            "run": ["npm", "run", "typecheck"]
           }
         ]
       },

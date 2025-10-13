@@ -146,8 +146,13 @@ What it does:
 - Executes the validation routine to surface missing project scaffolding
 - Ensures a `.venv/` virtual environment exists and installs `requirements.txt`
 - Installs/refreshes pre-commit hooks when configured
-- Runs `.dev/sanity-check.sh --quiet --skip-templates` to spot any lingering problems
+- Runs the full sanity check **with template validation enabled by default**, invoking
+  `.dev/validate-templates.sh --all --quiet` so the same render → lint → type → security
+  → format pipeline used in CI also runs locally
 - Produces a concise summary highlighting remaining actions
+
+Need a faster pass? Append `--skip-template-checks` to bypass the template
+pipeline when running the fixer.
 
 💡 You can append the global `--fix` flag to any other command to run the fixer
 after the primary action. Example: `agentic-canon init --fix` will scaffold a

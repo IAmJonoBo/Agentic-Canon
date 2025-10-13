@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: "Setup Node.js NODE_VERSION_LABEL"
+      - name: 'Setup Node.js NODE_VERSION_LABEL'
         uses: actions/setup-node@v5
         with:
           node-version: NODE_VERSION_EXPR

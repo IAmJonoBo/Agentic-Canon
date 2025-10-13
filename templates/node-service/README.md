@@ -22,7 +22,7 @@ agentic-canon init
 - ✅ **ESM Support** - Native ES modules
 - ✅ **Testing** - Vitest for fast unit tests
 - ✅ **Linting** - ESLint with TypeScript support
-- ✅ **Formatting** - Prettier for consistent code style
+- ✅ **Formatting** - Prettier for consistent code style (single quotes by default)
 - ✅ **Pre-commit Hooks** - Automated quality checks
 
 ### CI/CD

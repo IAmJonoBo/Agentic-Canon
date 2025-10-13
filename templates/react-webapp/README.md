@@ -28,7 +28,7 @@ agentic-canon init
 
 - ✅ **Storybook 8** - Component development with the Vite builder (optional)
 - ✅ **Hot Module Replacement** - Instant feedback
-- ✅ **ESLint + Prettier** - Code quality
+- ✅ **ESLint + Prettier** - Code quality (single quotes by default)
 - ✅ **Pre-commit Hooks** - Automated checks
 
 ### Testing & Quality

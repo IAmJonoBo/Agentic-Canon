@@ -1,0 +1,7 @@
+- repo: local
+  hooks:
+    - id: semgrep
+      name: semgrep
+      entry: semgrep --config templates/_shared/semgrep/rules.yml
+      language: system
+      types: [python, javascript, typescript, go]

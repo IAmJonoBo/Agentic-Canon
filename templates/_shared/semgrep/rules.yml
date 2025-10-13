@@ -1,0 +1,30 @@
+rules:
+  - id: python-dangerous-subprocess
+    message: "Avoid shell=True in subprocess calls."
+    severity: ERROR
+    languages: [python]
+    pattern: subprocess.run(..., shell=True, ...)
+
+  - id: python-eval
+    message: "Avoid using eval(); prefer safer alternatives."
+    severity: ERROR
+    languages: [python]
+    pattern: eval(...)
+
+  - id: js-dangerous-innerhtml
+    message: "Avoid assigning to innerHTML; use DOM APIs instead."
+    severity: WARNING
+    languages: [javascript, typescript]
+    pattern: $OBJ.innerHTML = ...
+
+  - id: js-no-eval
+    message: "Avoid eval() in JavaScript/TypeScript."
+    severity: ERROR
+    languages: [javascript, typescript]
+    pattern: eval(...)
+
+  - id: go-os-exec
+    message: "Validate input before passing to os/exec."
+    severity: WARNING
+    languages: [go]
+    pattern: exec.Command(...)

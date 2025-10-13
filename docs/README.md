@@ -190,6 +190,11 @@ Actions workflow located at `.github/workflows/sbom-scan.yml`.
 See [`dev-environments.md`](dev-environments.md) for Gitpod and VS Code Dev
 Container configuration details introduced in Task #133.
 
+### Semgrep Shared Ruleset
+
+[`semgrep-ruleset.md`](semgrep-ruleset.md) explains how to adopt the shared
+Semgrep configuration and GitHub Actions workflow introduced in Task #134.
+
 ## Adding Content
 
 ### New Page

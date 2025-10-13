@@ -299,6 +299,9 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
   - ✅ `.gitpod.yml` + `.gitpod.Dockerfile` for cloud workspaces
   - ✅ `.devcontainer/devcontainer.json` for VS Code
   - ✅ Usage guide `docs/dev-environments.md`
+- [x] #134 Semgrep shared ruleset and automation guidance (CI + pre-commit adoption)
+  - ✅ Reusable config in `templates/_shared/semgrep/`
+  - ✅ Docs in `docs/semgrep-ruleset.md`
 - [ ] #134 Semgrep shared ruleset and automation guidance (CI + pre-commit adoption)
 
 ## Version 2.0.0 - Advanced Features

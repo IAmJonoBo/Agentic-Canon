@@ -10,3 +10,4 @@ chapters:
   - file: feature-flags
   - file: sbom-workflow
   - file: dev-environments
+  - file: semgrep-ruleset

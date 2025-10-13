@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenFeature/flagd starter kit (`templates/_shared/feature_flags/`) with docs (`docs/feature-flags.md`) (Task #131)
 - Syft/Grype SBOM reusable workflow (`.github/workflows/sbom-scan.yml`) + docs (`docs/sbom-workflow.md`) (Task #132)
 - Remote dev environment configs (`.gitpod.yml`, `.gitpod.Dockerfile`, `.devcontainer/devcontainer.json`) + docs (`docs/dev-environments.md`) (Task #133)
+- Semgrep shared ruleset (templates/\_shared/semgrep/) + docs (docs/semgrep-ruleset.md) (Task #134)
 
 ### Updates
 

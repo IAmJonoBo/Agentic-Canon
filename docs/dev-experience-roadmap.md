@@ -43,6 +43,9 @@ tracked alongside the rest of the backlog.
 - Centralize a Semgrep ruleset covering secure defaults across languages.
 - Deliver helper workflows / pre-commit examples so teams can opt-in without
   editing template payloads.
+- ✅ Baseline rules stored under `templates/_shared/semgrep/`
+- ✅ Documentation added in `docs/semgrep-ruleset.md`
+- ⏳ Next: integrate a Semgrep scan into the `--fix` routine / shared CI once teams adopt the ruleset.
 
 ### Contributing Feedback
 

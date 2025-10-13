@@ -3,7 +3,7 @@
 ## Tasks
 - [x] Establish pipeline remediation plan (Owner: Agent, Due: 2025-02-05)
 - [x] Harden local/CLI PYTHONPATH bootstrapping so template hooks import cleanly (Owner: Agent, Due: 2025-02-05)
-- [x] Re-run baseline validation to confirm import fixes and capture fresh results (Owner: Agent, Due: 2025-02-05) _(pytest manifest test passes; `ruff`/`mypy` still failing; `pip-audit` interrupted due to tool hang)_
+- [x] Re-run baseline validation to confirm import fixes and capture fresh results (Owner: Agent, Due: 2025-02-05) _(pytest manifest test passes; `ruff check` now clean; `mypy` and remaining gates still outstanding; `pip-audit` interrupted due to tool hang)_
 - [x] Produce lint/type/security integration design updates for unified validation flow (Owner: Agent, Due: 2025-02-06) _(blueprint recorded in SCRATCH.md §Detailed Gate Integration Blueprint)_
 - [x] Migrate Ruff configs to `[tool.ruff.lint]` schema and clear existing lint violations (Owner: Agent, Due: 2025-02-06)
 - [ ] Resolve React template npm peer dependency conflict so e2e test can pass (Owner: Agent, Due: 2025-02-07)
@@ -33,7 +33,7 @@
 
 ## Quality Gates
 - [ ] Tests: pytest (pass or documented blockers)
-- [ ] Lint: ruff check (pass or documented blockers)
+- [x] Lint: ruff check (passing; monitor for regressions)
 - [ ] Type-check: mypy (configured and passing)
 - [ ] Security: secret scan (tool configured and passing)
 - [ ] Build: applicable build commands succeed

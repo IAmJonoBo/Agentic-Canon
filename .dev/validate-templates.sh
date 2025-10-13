@@ -58,6 +58,7 @@ Options:
   --upgrade           Run upgrade_tools session
   --template NAME     Limit validation to a specific template (repeatable)
   --force-rebuild     Rebuild template render caches
+  --quiet             Reduce console noise while still surfacing failures
   --skip-safe-pip     Do not upgrade pip to the patched GHSA build
   --help              Show this message
 

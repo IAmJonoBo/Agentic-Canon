@@ -17,6 +17,7 @@
 - [x] Diagnose template formatting drift reported by `ruff format --check` before enabling enforcement (Owner: Agent, Due: 2025-02-08) _(`ruff format --check` clean in chunk 56fb10)_
 - [x] Ship pip hardening helper and quiet security audits (Owner: Agent, Due: 2025-02-09) _(pip patched via `agentic_canon_cli.pip_support`; spinner disabled; `pip-audit` passes in chunks 3d121b/a0943a)_
 - [x] Document safe-pip override controls across CLI + validation flows (Owner: Agent, Due: 2025-02-10) _(AGENTIC_CANON_SKIP_SAFE_PIP and AGENTIC_CANON_SAFE_PIP_SPEC documented + wired into `.dev/validate-templates.sh`)_
+- [x] Add validate-templates orchestrator regression coverage (Owner: Agent, Due: 2025-02-11) _(new shell wrapper tests confirm PYTHONPATH seeding and skip controls; see `tests/test_validate_templates_script.py` + pytest chunk 5cd380)_
 
 ## Steps
 
@@ -34,6 +35,7 @@
 - [x] Re-ran baseline validation commands to refresh evidence (`pytest` chunk 385380; `ruff check` chunk 5390e6; `mypy` chunk 6ba6e3; `ruff format --check` chunk 56fb10; `pip-audit` chunks 0f9f62/db9029)
 - [x] Added CLI regression coverage to confirm template pipeline visibility and skip controls (chunks 5951f9 & 5d3429)
 - [x] Captured environment escape hatch for hardened pip tooling so offline runs stay unblocked
+- [x] Added regression coverage ensuring `.dev/validate-templates.sh` seeds PYTHONPATH and respects skip flags (`tests/test_validate_templates_script.py`, chunk 5cd380)
 - [x] Reviewed template standards/docs to extract cookiecutter + boilerplate quality expectations for upcoming CLI alignment (see TEMPLATE_STANDARDS.md)
 
 ## Deliverables
@@ -67,7 +69,7 @@
 
 ## Risks/Notes
 
-- [ ] Validate template hook imports across other entry points (nox sessions, pytest-cookies)
+- [x] Validate template hook imports across other entry points (nox sessions, pytest-cookies) _(shell wrapper tests guard PYTHONPATH + skip flows; chunk 5cd380)_
 - [ ] Ruff config deprecation warnings from generated projects _(pending validation after next render)_
 - [ ] Monitor baseline command health; only security gate blocked by upstream pip advisory (chunk 0f9f62)
 - [ ] React Storybook 8 upgrade: confirm docs/changelog guidance added for template consumers

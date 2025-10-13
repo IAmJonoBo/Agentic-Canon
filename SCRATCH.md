@@ -8,7 +8,7 @@ Solidify template validation so every run performs manifest sync, template rende
 
 - Use repo root `Agentic-Canon`
 - Activate the virtualenv: `source .venv/bin/activate`
-- Ensure core deps installed: `pip install -r requirements.txt` and `pip install nox`
+- Ensure core deps installed: `pip install -r requirements.txt`
 - Most tasks rely on `noxfile.py`, `validate-templates.sh`, and `README.md`; check for user edits before touching them
 
 ## Implementation Steps
@@ -17,6 +17,7 @@ Solidify template validation so every run performs manifest sync, template rende
 
 - Added deterministic `PYTHONPATH` bootstrapping in `tests/conftest.py` and `.dev/validate-templates.sh` so pytest and the CLI wrapper both discover `templates._shared` without manual environment tweaks.
 - Baseline reruns must now verify that the import failures are resolved before proceeding with broader lint/type/security gates.
+- Targeted validation confirms the environment fix: `pytest tests/test_manifest_sync.py` now passes and `.dev/validate-templates.sh --help` executes without import errors; next reruns should focus on remaining template-specific blockers.
 
 ### 1. Add Unified Validation Session
 
@@ -146,6 +147,29 @@ Make sure the workflow installs nox and dependencies before calling the session.
 8. **Validation Gates**
    - Once fixes are implemented, re-run baseline commands (`pytest`, `ruff check`, `mypy`, secret scans, builds) and capture outputs.
    - Block release until all gates pass or documented exceptions are approved per governance docs.
+
+### Detailed Gate Integration Blueprint
+
+#### Lint Modernization & Enforcement
+
+- Inventory every Ruff configuration (`pyproject.toml`, `.ruff.toml`, `.trunk/configs/ruff.toml`) and migrate deprecated `[tool.ruff]` keys to the modern `[tool.ruff.lint]` / `[tool.ruff.format]` structure to eliminate warnings surfaced in the latest baseline run.
+- Harmonize rule sets: define a shared include/exclude matrix for repository roots and rendered templates, then update cookiecutter scaffolds so downstream projects inherit the same lint posture.
+- Extend `validate_templates_all` with a post-render Ruff stage that shells out to `ruff check --output-format text build/template-renders/*` (respecting template filters) and fails fast on violations; plumb a `--skip-lint` switch through `.dev/validate-templates.sh` for emergency bypass.
+- Capture autofix guidance—when safe—in documentation so contributors can run `ruff check --fix` locally without breaking template determinism.
+
+#### Type-Check Orchestration
+
+- Author a `mypy.ini` (or update `pyproject.toml`) that explicitly targets `agentic_canon_cli`, `templates._shared`, and new shared utilities, starting with `strict = False` but enabling incremental caches.
+- Implement a dedicated `@nox.session(name="typecheck")` that installs `mypy`, respects the configured cache directory, and accepts the same template filter arguments for per-render checks.
+- Have `validate_templates_all` notify `typecheck` once linting succeeds; surface skip controls via `--skip-typecheck` flags in both the Nox session and wrapper script.
+- Record minimum type coverage expectations in `Next_Steps.md` Quality Gates and cross-link to the governance docs for sign-off criteria.
+
+#### Security Scan Integration
+
+- Keep `pip-audit` in the default validation stack now that it is manifest-pinned; add retries/timeouts to mitigate transient index hangs observed locally.
+- Evaluate lightweight secret scanning (`trufflehog filesystem`, `gitleaks detect`) for inclusion under a new `.dev/validate-templates.sh --security` flag that toggles corresponding Nox sessions.
+- Document external binary prerequisites (TruffleHog, Gitleaks) in README/TASKS and ensure CI installs pinned versions via cacheable scripts.
+- For rendered templates, emit SBOM stubs (CycloneDX JSON) and store them under `build/` so subsequent validation steps can assert their presence.
 
 ### Assumptions & Unknowns
 

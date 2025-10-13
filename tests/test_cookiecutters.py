@@ -1,5 +1,6 @@
 """Tests for Cookiecutter templates."""
 
+
 def test_python_cookiecutter_bakes(bake_template):
     """Test that the Python service template renders successfully."""
     result = bake_template(
@@ -370,21 +371,13 @@ def test_project_management_bakes(bake_template):
     assert (result.project_path / "PROJECT_MANAGEMENT.md").exists()
     assert (result.project_path / "TASKS.md").exists()
     assert (result.project_path / ".github" / "workflows" / "todos.yml").exists()
-    assert (
-        result.project_path / ".github" / "workflows" / "tasklist-scan.yml"
-    ).exists()
-    assert (
-        result.project_path / ".github" / "workflows" / "pr-review-followup.yml"
-    ).exists()
+    assert (result.project_path / ".github" / "workflows" / "tasklist-scan.yml").exists()
+    assert (result.project_path / ".github" / "workflows" / "pr-review-followup.yml").exists()
     assert (result.project_path / ".github" / "workflows" / "issue-triage.yml").exists()
     assert (result.project_path / ".github" / "workflows" / "stale.yml").exists()
     assert (result.project_path / ".github" / "CODEOWNERS").exists()
-    assert (
-        result.project_path / ".github" / "ISSUE_TEMPLATE" / "bug_report.md"
-    ).exists()
-    assert (
-        result.project_path / ".github" / "ISSUE_TEMPLATE" / "feature_request.md"
-    ).exists()
+    assert (result.project_path / ".github" / "ISSUE_TEMPLATE" / "bug_report.md").exists()
+    assert (result.project_path / ".github" / "ISSUE_TEMPLATE" / "feature_request.md").exists()
     assert (result.project_path / ".github" / "ISSUE_TEMPLATE" / "task.md").exists()
     assert (result.project_path / ".github" / "PULL_REQUEST_TEMPLATE.md").exists()
 
@@ -411,9 +404,7 @@ def test_project_management_minimal(bake_template):
     assert result.project_path.is_dir()
 
     # Only todos.yml should have content
-    todos_content = (
-        result.project_path / ".github" / "workflows" / "todos.yml"
-    ).read_text()
+    todos_content = (result.project_path / ".github" / "workflows" / "todos.yml").read_text()
     assert "TODO" in todos_content
 
     # Other workflows should be empty or not generated

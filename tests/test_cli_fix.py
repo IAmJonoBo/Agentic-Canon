@@ -1,5 +1,3 @@
-"""Regression tests for the ``agentic-canon fix`` workflow."""
-
 from __future__ import annotations
 
 import os

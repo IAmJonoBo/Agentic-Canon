@@ -1,5 +1,9 @@
 """Tests for Cookiecutter templates."""
 
+from __future__ import annotations
+
+import tomllib
+
 
 def test_python_cookiecutter_bakes(bake_template):
     """Test that the Python service template renders successfully."""
@@ -32,6 +36,40 @@ def test_python_cookiecutter_bakes(bake_template):
     assert (result.project_path / "src" / "demo_service" / "__init__.py").exists()
     assert (result.project_path / "tests" / "test_smoke.py").exists()
     assert (result.project_path / ".github" / "workflows" / "ci.yml").exists()
+
+
+def test_python_cookiecutter_ruff_config_schema(bake_template):
+    """Ensure the rendered Python template uses the modern Ruff config layout."""
+
+    result = bake_template(
+        "templates/python-service",
+        {
+            "project_name": "Demo Service Ruff",
+            "project_slug": "demo-service-ruff",
+            "pkg_name": "demo_service_ruff",
+            "project_description": "A demo Python service",
+            "author_name": "Test Author",
+            "author_email": "test@example.com",
+            "license": "Apache-2.0",
+            "python_version": "3.11",
+            "include_jupyter_book": "yes",
+            "enable_security_gates": "yes",
+            "enable_sbom_signing": "yes",
+            "enable_contract_tests": "yes",
+            "ci_provider": "github",
+        },
+    )
+
+    assert result.exception is None
+    pyproject = result.project_path / "pyproject.toml"
+    data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+
+    ruff_config = data["tool"]["ruff"]
+    assert "lint" in ruff_config, "[tool.ruff.lint] table missing from pyproject.toml"
+    assert "select" not in ruff_config, "move select configuration under [tool.ruff.lint]"
+
+    lint_config = ruff_config["lint"]
+    assert lint_config["select"] == ["E", "F", "I", "N", "UP", "B", "C4", "SIM"]
 
 
 def test_python_cookiecutter_minimal(bake_template):

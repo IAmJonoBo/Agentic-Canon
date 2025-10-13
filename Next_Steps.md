@@ -36,6 +36,7 @@
 - [x] Added CLI regression coverage to confirm template pipeline visibility and skip controls (chunks 5951f9 & 5d3429)
 - [x] Captured environment escape hatch for hardened pip tooling so offline runs stay unblocked
 - [x] Added regression coverage ensuring `.dev/validate-templates.sh` seeds PYTHONPATH and respects skip flags (`tests/test_validate_templates_script.py`, chunk 5cd380)
+- [x] Added Ruff config regression coverage for the Python template to guard against deprecated settings (chunk e8dedd)
 - [x] Reviewed template standards/docs to extract cookiecutter + boilerplate quality expectations for upcoming CLI alignment (see TEMPLATE_STANDARDS.md)
 
 ## Deliverables
@@ -70,8 +71,8 @@
 ## Risks/Notes
 
 - [x] Validate template hook imports across other entry points (nox sessions, pytest-cookies) _(shell wrapper tests guard PYTHONPATH + skip flows; chunk 5cd380)_
-- [ ] Ruff config deprecation warnings from generated projects _(pending validation after next render)_
-- [ ] Monitor baseline command health; only security gate blocked by upstream pip advisory (chunk 0f9f62)
+- [x] Ruff config deprecation warnings from generated projects _(validated via new regression in `tests/test_cookiecutters.py`; pytest chunk e8dedd)_
+- [ ] Monitor baseline command health; security gate now green after safe pip upgrade (chunk aa754c)
 - [ ] React Storybook 8 upgrade: confirm docs/changelog guidance added for template consumers
 - [ ] Replace temporary SAFE_PIP_SPEC pin once upstream pip publishes a patched release
 - [ ] Quick-mode sanity `PASS_COUNT` (150) must be kept in sync with future script additions

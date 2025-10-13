@@ -84,7 +84,11 @@ def ensure_git_repo(
         if default_branch_var:
             branch_name = _stringify(context.get(default_branch_var))
             if branch_name:
-                subprocess.run(["git", "branch", "-M", branch_name], cwd=project_path, check=False)
+                subprocess.run(
+                    ["git", "branch", "-M", branch_name],
+                    cwd=project_path,
+                    check=False,
+                )
     except OSError:
         # Git may not be available in constrained environments.
         pass
@@ -146,7 +150,9 @@ def _apply_cleanup(project_path: Path, hooks_config: Mapping[str, Any]) -> None:
     remove_optional_components(project_path, cleanup_cfg.get("remove_after_render", []))
 
 
-def run_post_gen(template_name: str, project_path: Path, context: dict[str, Any]) -> None:
+def run_post_gen(
+    template_name: str, project_path: Path, context: dict[str, Any]
+) -> None:
     """Apply manifest-driven post-generation customisations."""
     config = get_template_config(template_name)
     hooks_config: Mapping[str, Any] = config.get("hooks", {})
@@ -164,7 +170,9 @@ def run_post_gen(template_name: str, project_path: Path, context: dict[str, Any]
     ensure_git_repo(project_path, config.get("git", {}), context)
 
 
-def apply_template_config(template_name: str, project_path: Path, context: dict[str, Any]) -> None:
+def apply_template_config(
+    template_name: str, project_path: Path, context: dict[str, Any]
+) -> None:
     """
     Backwards-compatible alias for older hooks.
 

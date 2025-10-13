@@ -102,7 +102,8 @@ def test_fix_command_can_skip_template_pipeline(tmp_path: Path) -> None:
     workspace = _bootstrap_workspace(tmp_path)
     dev_dir = workspace / ".dev"
 
-    # If the pipeline ran this script the fixer would fail, ensuring the skip flag is honoured.
+    # If the pipeline ran this script the fixer would fail, ensuring the skip flag is
+    # honoured.
     _write_executable_script(
         dev_dir / "validate-templates.sh",
         """#!/usr/bin/env bash

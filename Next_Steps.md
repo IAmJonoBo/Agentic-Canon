@@ -2,6 +2,8 @@
 
 ## Tasks
 
+- [x] Reconcile repository formatting with 88-character Ruff limit (Owner: Agent, Due: 2025-02-06) _(repo-wide `ruff check` clean in chunk 2fc5ed after wrapping CLI/tests/templates)_
+- [x] Align Ruff line-length configuration with Black default (Owner: Agent, Due: 2025-02-05) _(root `ruff.toml` + Python service template `pyproject.toml` updated to 88)_
 - [x] Establish pipeline remediation plan (Owner: Agent, Due: 2025-02-05)
 - [x] Harden local/CLI PYTHONPATH bootstrapping so template hooks import cleanly (Owner: Agent, Due: 2025-02-05)
 - [x] Re-run baseline validation to confirm import fixes and capture fresh results (Owner: Agent, Due: 2025-02-05) _(pytest manifest test passes; `ruff check` now clean — latest pass chunk 5390e6; `mypy` and remaining gates still outstanding; `pip-audit` vulnerable package noted in chunk 0f9f62)_
@@ -21,6 +23,7 @@
 
 ## Steps
 
+- [x] Updated Ruff + Black line-length defaults and verified Python template bake regression (`pytest tests/test_cookiecutters.py::test_python_cookiecutter_bakes` chunk 00ff2a)
 - [x] Document current pipeline baseline results
 - [x] Identify root causes for template validation failures (missing PYTHONPATH wiring)
 - [x] Propose remediation actions aligned with standards
@@ -52,10 +55,10 @@
 
 ## Quality Gates
 
-- [x] Tests: pytest (passing end-to-end, including React build fix) _(chunk 895d86)_
-- [x] Lint: ruff check (passing; monitor for regressions) _(chunk 511a4c)_
-- [x] Type-check: mypy (configured and passing) _(chunk e76474)_
-- [x] Security: secret scan (pip patched via helper; `pip-audit` clean) _(chunks d8ebd1/351c8b)_
+- [ ] Tests: pytest (full suite still blocked by React Storybook dependency resolution; see chunk 1a5277, targeted bake regression chunk 00ff2a passes)
+- [x] Lint: ruff check (clean in chunk 2fc5ed)
+- [x] Type-check: mypy (configured and passing) _(chunk cba5cc)_
+- [ ] Security: pip-audit (current run hung while auditing; spinner chunk fe8014 — requires follow-up execution)
 - [x] Build: applicable build commands succeed _(template renders + audits passing; see chunks f33a16, 8f1475, 58e2e8, 077e58)_
 
 ## Links
@@ -73,9 +76,10 @@
 
 ## Risks/Notes
 
+- [x] Ruff tightening surfaced widespread 90-100 char lines across CLI/tests; capture reformatting strategy before enabling gating (addressed via wrapping in chunk 2fc5ed)
 - [x] Validate template hook imports across other entry points (nox sessions, pytest-cookies) _(shell wrapper tests guard PYTHONPATH + skip flows; chunk 5cd380)_
 - [x] Ruff config deprecation warnings from generated projects _(validated via new regression in `tests/test_cookiecutters.py`; pytest chunk e8dedd)_
-- [ ] Monitor baseline command health; security gate now green after safe pip upgrade (chunk aa754c)
+- [ ] Monitor baseline command health; security gate still pending due to `pip-audit` hang (spinner chunk fe8014)
 - [x] React Storybook 8 upgrade: confirm docs/changelog guidance added for template consumers _(React template README refreshed; coverage added via `tests/test_cookiecutters.py::test_react_cookiecutter_storybook_scripts`, pytest chunk 3d7b60)_
 - [ ] Replace temporary SAFE_PIP_SPEC pin once upstream pip publishes a patched release
 - [x] Quick-mode sanity summary now derives from recorded passes (guarded by `tests/test_sanity_check.py::test_sanity_check_quick_mode_summary_matches_passes`, pytest chunk cd2c27)

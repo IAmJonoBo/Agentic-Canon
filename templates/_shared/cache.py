@@ -21,7 +21,9 @@ def _default_root() -> Path:
     return Path.home() / ".cache" / "agentic-canon"
 
 
-CACHE_ROOT = Path(os.environ.get("AGENTIC_CANON_CACHE_DIR", _default_root())).expanduser()
+CACHE_ROOT = Path(
+    os.environ.get("AGENTIC_CANON_CACHE_DIR", _default_root())
+).expanduser()
 TEMPLATE_CACHE_DIR = CACHE_ROOT / "templates"
 INSTALLER_CACHE_ROOT = CACHE_ROOT / "installers"
 
@@ -60,7 +62,9 @@ def _normalise_payload(data: Mapping[str, Any]) -> str:
 
 def _manifest_digest(template_name: str) -> str | None:
     try:
-        from .manifest import get_template_config  # pylint: disable=import-outside-toplevel
+        from .manifest import (
+            get_template_config,  # pylint: disable=import-outside-toplevel
+        )
     except Exception:  # pragma: no cover - manifest unavailable during bootstrap
         return None
     try:

@@ -8,7 +8,7 @@ This repository uses GitHub Actions and GitHub Issues/Projects to automate task 
 
 ## System Architecture
 
-```
+```text
 Code Changes → Workflows → GitHub Issues → GitHub Projects
                     ↓
               Auto-triage & Label
@@ -93,7 +93,7 @@ After workflow runs:
 
 **Configuration**:
 
-- Watches: TASKS.md, docs/**/\*.md, **/\*.md
+- Watches: `TASKS.md`, `docs/**/*.md`, `**/*.md`
 - Labels: `task`, `from:tasklist`
 - Auto-commits: Yes
   {% endif -%}
@@ -122,7 +122,7 @@ After workflow runs:
 
 **Example review comment**:
 
-```
+```text
 LGTM! The implementation is solid.
 
 Follow-up: We should add comprehensive error handling for edge cases.
@@ -131,7 +131,7 @@ This can be out of scope for this PR.
 
 Creates issue:
 
-```
+```text
 Title: Follow-up from PR #42: Add user authentication
 Body:
   ## Context
@@ -238,7 +238,7 @@ Configure these built-in automations:
 
 ### Workflow
 
-```
+```text
 New Issue → Auto-add → Todo
     ↓
 Assign & Start → In Progress

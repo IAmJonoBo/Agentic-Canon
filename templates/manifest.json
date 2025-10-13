@@ -183,7 +183,11 @@
           {
             "path": ".github/workflows/ci.yml",
             "replacements": {
-              "NODE_VERSION_MATRIX": "${{ matrix.node-version }}"
+              "CODECOV_TOKEN_EXPR": "${{ secrets.CODECOV_TOKEN }}",
+              "NODE_VERSION_EXPR": "${{ matrix.node-version }}",
+              "NODE_VERSION_LABEL": "${{ matrix.node-version }}",
+              "NODE_VERSION_MATRIX": "${{ matrix.node-version }}",
+              "UPLOAD_COVERAGE_EXPR": "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.CODECOV_TOKEN != '' }}"
             }
           },
           {
@@ -398,16 +402,16 @@
             "path": ".github/workflows/ci.yml",
             "replacements": {
               "IF_MATRIX_PY311": "${{ matrix.python-version == '3.11' }}",
-              "IF_NOTEBOOKS_PRESENT": "${{ hashFiles('notebooks/**/*.ipynb') != '' }}",
+              "NOTEBOOKS_PRESENT_EXPR": "${{ steps.detect_notebooks.outputs.present == 'true' }}",
               "PY_VERSION_MATRIX": "${{ matrix.python-version }}"
             }
           },
           {
             "path": ".github/workflows/docs.yml",
             "replacements": {
-              "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}",
-              "IF_DOCS_DEPLOY": "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}",
-              "IF_DOCS_PRESENT": "${{ hashFiles('docs/**') != '' }}"
+              "DOCS_DEPLOY_EXPR": "${{ steps.detect_docs.outputs.present == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}",
+              "DOCS_PRESENT_EXPR": "${{ steps.detect_docs.outputs.present == 'true' }}",
+              "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
             }
           },
           {

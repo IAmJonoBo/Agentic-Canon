@@ -22,7 +22,7 @@ Options:
   --force-rebuild     Rebuild template render caches
   --help              Show this message
 
-Without --linters/--format/--upgrade the script runs render + lint + format.
+Without explicit mode flags the script runs the unified sync -> render -> lint -> format pipeline.
 EOF
 }
 

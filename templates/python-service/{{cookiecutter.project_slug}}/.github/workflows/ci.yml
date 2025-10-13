@@ -6,6 +6,9 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -43,19 +46,32 @@ jobs:
           files: ./coverage.xml
 
   notebooks:
-    if: IF_NOTEBOOKS_PRESENT
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
 
+      - name: Detect notebooks
+        id: detect_notebooks
+        run: |
+          if [[ -n "$(git ls-files -- 'notebooks/**/*.ipynb')" ]]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "Notebooks detected; enabling notebook validation."
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No notebooks detected; skipping notebook validation."
+          fi
+
       - uses: actions/setup-python@v6
+        if: NOTEBOOKS_PRESENT_EXPR
         with:
           python-version: "3.14"
 
       - name: Install dependencies
+        if: NOTEBOOKS_PRESENT_EXPR
         run: |
           pip install -e .[dev,docs]
           pip install nbmake
 
       - name: Test notebooks
+        if: NOTEBOOKS_PRESENT_EXPR
         run: pytest --nbmake notebooks/**/*.ipynb -q

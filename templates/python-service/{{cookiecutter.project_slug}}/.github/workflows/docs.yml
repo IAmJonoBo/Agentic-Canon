@@ -12,27 +12,40 @@ permissions:
 
 jobs:
   build-and-deploy:
-    if: IF_DOCS_PRESENT
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
 
+      - name: Detect documentation sources
+        id: detect_docs
+        run: |
+          if [[ -n "$(git ls-files -- 'docs/**')" ]]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "Documentation detected; enabling build and deploy."
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No documentation content detected; skipping documentation workflow."
+          fi
+
       - name: Setup Python
         uses: actions/setup-python@v6
+        if: DOCS_PRESENT_EXPR
         with:
           python-version: "{{ cookiecutter.python_version }}"
           cache: pip
 
       - name: Install dependencies
+        if: DOCS_PRESENT_EXPR
         run: |
           pip install jupyter-book ghp-import
           pip install -e .[docs]
 
       - name: Build Jupyter Book
+        if: DOCS_PRESENT_EXPR
         run: jupyter-book build docs
 
       - name: Publish to gh-pages
-        if: IF_DOCS_DEPLOY
+        if: DOCS_DEPLOY_EXPR
         run: ghp-import -n -p -f docs/_build/html
         env:
           GITHUB_TOKEN: GITHUB_TOKEN_EXPR

@@ -86,3 +86,10 @@ Make sure the workflow installs nox and dependencies before calling the session.
 - Review `git status`; ensure only intended files changed (noxfile, shell script, docs, workflow)
 - Avoid touching user modifications unless coordinated
 - Provide a concise summary with validation commands executed
+
+### YAML Formatting Guardrails
+
+- Confirm `.trunk/trunk.yaml` keeps both `prettier` and `yamllint` enabled for `**/*.yml` and `**/*.yaml` so indentation and style stay consistent across the repo.
+- After modifying or generating YAML, run `.dev/validate-templates.sh` (or `nox -s format_templates`) to let Trunk apply formatting before committing changes.
+- For generated YAML (e.g., manifest sync, cookiecutter hooks), rely on Trunk’s formatter rather than manual whitespace tweaks; re-run the formatter after generation.
+- Optionally wire up the pre-commit helper (`.dev/install-precommit.sh`) to call `trunk fmt --staged`, ensuring staged YAML is auto-formatted.

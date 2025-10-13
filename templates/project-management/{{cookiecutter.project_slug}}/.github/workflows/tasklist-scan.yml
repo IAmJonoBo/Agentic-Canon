@@ -1,7 +1,10 @@
 name: Tasklists → Issues
 on:
   push:
-    paths: ["TASKS.md", "docs/**.md", "**/*.md"]
+    paths:
+      - TASKS.md
+      - docs/**.md
+      - "**/*.md"
 permissions:
   contents: write
   issues: write

@@ -122,7 +122,7 @@ The workflow will:
 
 When reviewing PRs, mention follow-up work using keywords:
 
-```
+```text
 This looks good! The implementation is solid, but we should follow-up with:
 - Add more comprehensive error handling
 - Consider performance optimization for large datasets
@@ -197,4 +197,4 @@ For questions or issues with the automation:
 
 ---
 
-**Generated with Agentic Canon Project Management Template**
+#### Generated with Agentic Canon Project Management Template

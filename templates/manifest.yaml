@@ -39,12 +39,12 @@ templates:
         - path: .github/workflows/ci.yml
           replacements:
             IF_MATRIX_PY311: "${{ matrix.python-version == '3.11' }}"
-            IF_NOTEBOOKS_PRESENT: "${{ hashFiles('notebooks/**/*.ipynb') != '' }}"
+            NOTEBOOKS_PRESENT_EXPR: "${{ steps.detect_notebooks.outputs.present == 'true' }}"
             PY_VERSION_MATRIX: "${{ matrix.python-version }}"
         - path: .github/workflows/docs.yml
           replacements:
-            IF_DOCS_PRESENT: "${{ hashFiles('docs/**') != '' }}"
-            IF_DOCS_DEPLOY: "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}"
+            DOCS_PRESENT_EXPR: "${{ steps.detect_docs.outputs.present == 'true' }}"
+            DOCS_DEPLOY_EXPR: "${{ steps.detect_docs.outputs.present == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}"
             GITHUB_TOKEN_EXPR: "${{ secrets.GITHUB_TOKEN }}"
         - path: .github/workflows/security.yml
           replacements:
@@ -116,6 +116,10 @@ templates:
         - path: .github/workflows/ci.yml
           replacements:
             NODE_VERSION_MATRIX: "${{ matrix.node-version }}"
+            NODE_VERSION_LABEL: "${{ matrix.node-version }}"
+            NODE_VERSION_EXPR: "${{ matrix.node-version }}"
+            UPLOAD_COVERAGE_EXPR: "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.CODECOV_TOKEN != '' }}"
+            CODECOV_TOKEN_EXPR: "${{ secrets.CODECOV_TOKEN }}"
         - path: .github/workflows/security.yml
           replacements:
             DEFAULT_BRANCH_EXPR: "${{ github.event.repository.default_branch }}"

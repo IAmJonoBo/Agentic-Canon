@@ -9,16 +9,16 @@
 - ✅ Testing with pytest and coverage
 - 🔍 Code quality with black, ruff, and mypy
 - 🔒 Pre-commit hooks for consistent code style
-  {% if cookiecutter.enable_security_gates == "yes" -%}
+  {% if cookiecutter.enable_security_gates == "yes" %}
 - 🛡️ Security scanning with CodeQL and Gitleaks
-  {% endif -%}
-  {% if cookiecutter.enable_sbom_signing == "yes" -%}
+  {% endif %}
+  {% if cookiecutter.enable_sbom_signing == "yes" %}
 - 📋 SBOM generation with CycloneDX
 - ✍️ Artifact signing with Sigstore/Cosign
-  {% endif -%}
-  {% if cookiecutter.include_jupyter_book == "yes" -%}
+  {% endif %}
+  {% if cookiecutter.include_jupyter_book == "yes" %}
 - 📚 Documentation with Jupyter Book
-  {% endif -%}
+  {% endif %}
 
 ## Quick Start
 
@@ -63,7 +63,7 @@ ruff check src tests
 mypy src
 ```
 
-{% if cookiecutter.include_jupyter_book == "yes" -%}
+{% if cookiecutter.include_jupyter_book == "yes" %}
 
 ### Documentation
 
@@ -74,11 +74,11 @@ jupyter-book build docs
 ```
 
 View locally: Open `docs/_build/html/index.html` in your browser.
-{% endif -%}
+{% endif %}
 
 ## Project Structure
 
-```
+```text
 {{ cookiecutter.project_slug }}/
 ├── src/
 │   └── {{ cookiecutter.pkg_name }}/

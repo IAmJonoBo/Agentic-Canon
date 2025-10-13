@@ -7,13 +7,13 @@
 - ✅ React 18 with TypeScript
 - ✅ Vite for fast development and optimized builds
 - ✅ Vitest for unit testing
-  {% if cookiecutter.include_storybook == "yes" %}
+  {% if cookiecutter.include_storybook == "yes" -%}
 - ✅ Storybook for component development
   {% endif %}
-  {% if cookiecutter.include_e2e_tests == "yes" %}
+  {% if cookiecutter.include_e2e_tests == "yes" -%}
 - ✅ Playwright for E2E testing
   {% endif %}
-  {% if cookiecutter.enable_accessibility_tests == "yes" %}
+  {% if cookiecutter.enable_accessibility_tests == "yes" -%}
 - ✅ Accessibility testing with axe
   {% endif %}
 - ✅ ESLint + Prettier for code quality
@@ -53,7 +53,7 @@ npm test
 
 # Run unit tests with UI
 npm run test:ui
-{% if cookiecutter.include_e2e_tests == "yes" %}
+{% if cookiecutter.include_e2e_tests == "yes" -%}
 # Run E2E tests
 npm run test:e2e
 
@@ -62,7 +62,7 @@ npm run test:e2e:ui
 {% endif %}
 ```
 
-{% if cookiecutter.include_storybook == "yes" %}
+{% if cookiecutter.include_storybook == "yes" -%}
 
 ### Storybook
 
@@ -74,7 +74,7 @@ npm run storybook
 npm run build-storybook
 ```
 
-{% endif %}
+{% endif -%}
 
 ### Code Quality
 
@@ -94,17 +94,17 @@ npm run typecheck
 
 ## Project Structure
 
-```
+```text
 .
 ├── src/
 │   ├── components/    # React components
 │   ├── App.tsx        # Main app component
 │   └── main.tsx       # Entry point
-{% if cookiecutter.include_e2e_tests == "yes" %}
+{% if cookiecutter.include_e2e_tests == "yes" -%}
 ├── tests/
 │   └── e2e/          # E2E tests
 {% endif %}
-{% if cookiecutter.include_storybook == "yes" %}
+{% if cookiecutter.include_storybook == "yes" -%}
 ├── .storybook/       # Storybook configuration
 {% endif %}
 └── .github/
@@ -121,14 +121,14 @@ This project uses GitHub Actions:
   - Format checking
   - Unit tests
   - Production build
-    {% if cookiecutter.include_e2e_tests == "yes" %}
+    {% if cookiecutter.include_e2e_tests == "yes" -%}
 - **E2E Tests**: Runs on every push and PR
   - Cross-browser testing (Chrome, Firefox, Safari)
   - Visual regression testing
     {% endif %}
-    {% if cookiecutter.include_storybook == "yes" %}
+    {% if cookiecutter.include_storybook == "yes" -%}
 - **Storybook**: Deploys to GitHub Pages on main branch
-  {% endif %}
+  {% endif -%}
 
 ## License
 

@@ -13,13 +13,13 @@ def get_package():
 def test_import() -> None:
     """Test that the package can be imported."""
     package = get_package()
-    assert isinstance(package.__version__, str)
+    assert isinstance(package.__version__, str)  # nosec B101
 
 
 def test_hello() -> None:
     """Test the hello function."""
     package = get_package()
     result = package.hello()
-    assert isinstance(result, str)
-    assert "Hello" in result
-    assert PACKAGE_NAME in result
+    assert isinstance(result, str)  # nosec B101
+    assert "Hello" in result  # nosec B101
+    assert PACKAGE_NAME in result  # nosec B101

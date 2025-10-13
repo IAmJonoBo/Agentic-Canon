@@ -1,10 +1,14 @@
 name: Security
+
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
   pull_request:
   schedule:
-    - cron: "0 0 * * 1" # Weekly on Monday
+    - cron: 0 0 * * 1 # Weekly on Monday
 
 jobs:
   dependency-scan:
@@ -16,7 +20,7 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: "22"
-          cache: "npm"
+          cache: npm
 
       - name: Install dependencies
         run: npm ci

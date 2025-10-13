@@ -93,3 +93,61 @@ Make sure the workflow installs nox and dependencies before calling the session.
 - After modifying or generating YAML, run `.dev/validate-templates.sh` (or `nox -s format_templates`) to let Trunk apply formatting before committing changes.
 - For generated YAML (e.g., manifest sync, cookiecutter hooks), rely on Trunk’s formatter rather than manual whitespace tweaks; re-run the formatter after generation.
 - Optionally wire up the pre-commit helper (`.dev/install-precommit.sh`) to call `trunk fmt --staged`, ensuring staged YAML is auto-formatted.
+
+## Pipeline Remediation Plan
+
+### Baseline Findings
+
+- `pytest` currently fails with `ModuleNotFoundError: No module named 'templates'` and post-generation hook import errors for `_shared`, blocking template validation tests. (See `tests/test_template_e2e.py` failure details.)
+- `ruff check` reports 41 issues, including deprecated configuration fields and lint errors across template hook scripts and generated examples.
+- `mypy` has no configured targets; running the command exits with an error because no modules are specified.
+- Security scanning tooling (e.g., TruffleHog/Gitleaks) is referenced in docs and workflows, but local command coverage has not been verified during the baseline run.
+
+### Remediation Strategy
+
+1. **Stabilize Environment Bootstrapping**
+   - Update Nox sessions (`render_templates`, `validate_templates_all`) to prepend both repo root and `templates/` paths to `PYTHONPATH`, matching documented expectations for template hooks. This should eliminate the `_shared` import failures during pytest runs.
+   - Extend `.dev/validate-templates.sh` to export equivalent environment variables so CLI usage mirrors CI behavior.
+
+2. **Harden Template Hooks and Shared Utilities**
+   - Audit `templates/_shared` to confirm it exposes importable hook utilities without relying on implicit relative paths.
+   - Refactor hook scripts to avoid top-level sys.path manipulations where possible; encapsulate shared behaviors in a dedicated module within `_shared` and ensure packaging metadata (e.g., `__init__.py`) supports module discovery.
+   - Add targeted unit tests under `tests/` to exercise hook modules directly, guarding against regressions.
+
+3. **Consolidate Linting/Formatting Workflow**
+   - Resolve outstanding `ruff` findings by updating template sources and generated example code, aligning with current Ruff lint API (transition deprecated `select` keys to `[tool.ruff.lint]` sections as required by the warnings).
+   - Introduce Ruff configuration validation into the `validate_templates_all` session so generated projects are linted post-render.
+   - Ensure formatting tools (e.g., Black, Prettier) run as part of the session, per `QUALITY_STANDARDS.md` mandates for automated code quality gates.
+
+4. **Define Type-Checking Coverage**
+   - Document intended type-check targets (core CLI, shared template utilities) in `SCRATCH.md` and configure `mypy.ini` or `pyproject.toml` accordingly.
+   - Add a Nox session and CLI switch to execute `mypy` across these paths, integrating it into the unified validation flow.
+
+5. **Verify Security and Compliance Hooks**
+   - Confirm `.dev/validate-templates.sh` can trigger secret scanning (TruffleHog/Gitleaks) when requested, aligning with `QUALITY_STANDARDS.md` and security ADR requirements.
+   - Update pipeline documentation to clarify when and how security scans run locally vs. CI, preventing false assumptions by downstream users.
+
+6. **CI/CD Alignment**
+   - Review GitHub Actions workflows to ensure they call the updated unified session and propagate environment fixes. Capture the order of operations in the plan to avoid downstream race conditions.
+   - Add workflow assertions (e.g., `PYTHONPATH` echo) to aid troubleshooting if imports regress.
+
+7. **Documentation & Change Management**
+   - Cross-reference updates in README, TASKS.md, and relevant ADRs to maintain traceability.
+   - Record baseline deltas and remediation status in `Next_Steps.md`, updating checkboxes as work progresses.
+   - Prepare rollback guidance for each change set (e.g., toggling environment variables, disabling new lint rules) to minimize downstream disruption.
+
+8. **Validation Gates**
+   - Once fixes are implemented, re-run baseline commands (`pytest`, `ruff check`, `mypy`, secret scans, builds) and capture outputs.
+   - Block release until all gates pass or documented exceptions are approved per governance docs.
+
+### Assumptions & Unknowns
+
+- Precise scope of CLI integration for template validation (need to confirm whether additional commands beyond `.dev/validate-templates.sh` require updates).
+- Availability of TruffleHog/Gitleaks binaries in contributor environments; may need to document installation prerequisites.
+- Potential need for Dockerized execution to mimic CI runner for certain hooks—requires validation.
+
+### Immediate Next Steps
+
+- Confirm ownership of existing `noxfile.py` sessions and gather historical context from ADRs before modifying behavior.
+- Draft ADR or update existing records if significant workflow changes are introduced.
+- Schedule follow-up baseline run after environment path adjustments to verify import fixes before broader refactors.

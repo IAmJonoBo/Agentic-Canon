@@ -30,6 +30,7 @@ dev = [
   "ruff>=0.1",
   "mypy>=1.7",
   "pre-commit>=3.5",
+  "pip-audit>=2.9",
 ]
 docs = ["jupyter-book>=0.15", "jupytext>=1.14"]
 

@@ -967,7 +967,7 @@ log_info "🔒 Checking Dependency Security..."
 if [ -f "requirements.txt" ]; then
 	# Check if pip-audit or safety is available
 	if command -v pip-audit &>/dev/null; then
-		if pip-audit -r requirements.txt --quiet 2>/dev/null; then
+		if pip-audit -r requirements.txt >/dev/null 2>&1; then
 			check_pass "No known vulnerabilities in requirements.txt (pip-audit)"
 		else
 			check_warn "Vulnerabilities found in requirements.txt (run 'pip-audit -r requirements.txt' for details)"

@@ -517,6 +517,10 @@ def sync_manifest(session: nox.Session) -> None:
 @nox.session
 def sanity(session: nox.Session) -> None:
     """Run the full sanity check."""
+    session.install(
+        "pip-audit==2.9.0",
+        "pip-licenses==5.0.0",
+    )
     _run_sanity(session)
 
 

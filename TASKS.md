@@ -900,6 +900,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Configure pip-compile/uv managers
   - [ ] Configure npm/yarn managers
   - [ ] Set up cache rebuild on releases
+  - [ ] Replace SAFE_PIP_SPEC pin once pip 25.3 (GHSA-4xh5-x5gv-qwph fix) ships on PyPI
 
 ### Automation & Release Management
 

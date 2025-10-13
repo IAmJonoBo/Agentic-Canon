@@ -21,6 +21,7 @@ def _bootstrap_workspace(tmp_path: Path) -> Path:
     workspace = tmp_path / "workspace"
     workspace.mkdir()
 
+    # Minimal repo structure expected by ``cmd_validate``.
     for filename in [
         "README.md",
         "CONTRIBUTING.md",
@@ -65,6 +66,23 @@ def test_fix_command_runs_template_pipeline(tmp_path: Path) -> None:
         f"""#!/usr/bin/env bash
 set -euo pipefail
 echo \"$@\" > "{pipeline_log}"
+    dev_dir = workspace / ".dev"
+    dev_dir.mkdir()
+
+    # Provide stubbed scripts that mimic the interface used by the fixer.
+    _write_executable_script(
+        dev_dir / "validate-templates.sh",
+        """#!/usr/bin/env bash
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --all|--quiet)
+      shift
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
 echo "Template validation pipeline complete"
 exit 0
 """,
@@ -80,6 +98,15 @@ echo "Failed: 0"
 exit 0
 """,
     )
+
+    env = os.environ.copy()
+    repo_root = Path(__file__).resolve().parent.parent
+    existing_pythonpath = env.get("PYTHONPATH", "")
+    components = [str(repo_root)]
+    if existing_pythonpath:
+        components.append(existing_pythonpath)
+    env["PYTHONPATH"] = os.pathsep.join(components)
+    env["AGENTIC_CANON_SANITY_MODE"] = "full"
 
     result = subprocess.run(
         [sys.executable, "-m", "agentic_canon_cli.cli", "fix"],
@@ -144,3 +171,8 @@ exit 0
     recorded_args = sanity_args.read_text().strip()
     assert recorded_args == "--quiet --skip-templates"
     assert "template checks skipped" in result.stdout
+        env=env,
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "Template validation pipeline" in result.stdout

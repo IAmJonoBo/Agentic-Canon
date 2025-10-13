@@ -171,69 +171,15 @@ log_info() {
         fi
 }
 
-run_quick_mode() {
-        print_quick "📚 Checking Core Documentation..."
-        check_pass "README.md exists"
-        check_pass "LICENSE exists"
-        check_pass "QUALITY_STANDARDS.md exists"
-        check_pass "CONVENTIONS.md exists"
-        print_quick ""
+generate_html_report() {
+        local report_path="$1"
+        local announce="${2:-1}"
 
-        print_quick "🍪 Checking Cookiecutter Templates..."
-        check_pass "python-service template complete"
-        check_pass "node-service template complete"
-        check_pass "react-webapp template complete"
-        check_pass "go-service template complete"
-        check_pass "docs-only template complete"
-        print_quick ""
+        if [ -z "$report_path" ]; then
+                return
+        fi
 
-        print_quick "🧪 Validating Shared Tooling..."
-        print_quick "Validating Python Hook Syntax"
-        check_pass "All hook files have valid Python syntax"
-        print_quick "Validating JSON Configuration Files"
-        check_pass "All JSON files are valid"
-        print_quick "Validating YAML Configuration Files"
-        check_pass "All YAML files are valid"
-        print_quick "Validating Shell Script Syntax"
-        check_pass "shell scripts have valid syntax"
-        print_quick ""
-
-        print_quick "🔒 Checking Dependency Security..."
-        check_pass "Dependency vulnerability scan skipped (quick mode)"
-        check_pass "requirements.txt scanned (quick mode)"
-        check_pass "Dependency license audit skipped (quick mode)"
-        print_quick ""
-
-        print_quick "🧙 Checking CLI Wizard..."
-        check_pass "CLI wizard directory exists"
-        print_quick ""
-
-        print_quick "📦 Checking Template Compliance..."
-        print_quick "Checking GitHub Actions Workflows"
-        check_pass "workflows have proper structure"
-        print_quick "Checking Markdown Formatting and Link Integrity..."
-        check_pass "Markdown checks executed (quick mode)"
-        print_quick "Checking License Compatibility..."
-        check_pass "License policy checks executed (quick mode)"
-        print_quick "Validating JSON Schemas..."
-        check_pass "cookiecutter.json schemas validated"
-        check_pass "Template compliance snapshot recorded (quick mode)"
-        print_quick ""
-
-        END_TIME=$(date +%s)
-        DURATION=$((END_TIME - START_TIME))
-
-        echo "=============================================="
-        echo "📊 Sanity Check Summary"
-        echo "=============================================="
-        echo "  ✅ Passed: $PASS_COUNT"
-        echo "  ⚠️  Warnings: $WARN_COUNT"
-        echo "  ❌ Failed: $FAIL_COUNT"
-        echo "  ⏱️  Duration: ${DURATION}s"
-        echo ""
-
-        if [ -n "$HTML_REPORT" ]; then
-                cat >"$HTML_REPORT" <<EOF
+        cat >"$report_path" <<'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>

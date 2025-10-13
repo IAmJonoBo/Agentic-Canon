@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import tomllib
 
 
@@ -193,6 +194,42 @@ def test_react_cookiecutter_minimal(bake_template):
     # Storybook and E2E should not exist when disabled
     assert not (result.project_path / ".storybook").exists()
     assert not (result.project_path / "playwright.config.ts").exists()
+
+
+def test_react_cookiecutter_storybook_scripts(bake_template):
+    """Ensure Storybook scripts and dependencies stay on the validated toolchain."""
+
+    result = bake_template(
+        "templates/react-webapp",
+        {
+            "project_name": "Storybook React App",
+            "project_slug": "storybook-react-app",
+            "description": "Storybook regression coverage",
+            "author_name": "Test Author",
+            "author_email": "test@example.com",
+            "license": "MIT",
+            "include_storybook": "yes",
+            "include_e2e_tests": "yes",
+            "enable_accessibility_tests": "yes",
+            "ci_provider": "github",
+        },
+    )
+
+    assert result.exception is None
+
+    package_json = result.project_path / "package.json"
+    package_data = json.loads(package_json.read_text(encoding="utf-8"))
+
+    scripts = package_data["scripts"]
+    assert scripts["storybook"] == "storybook dev -p 6006"
+    assert scripts["build-storybook"] == "storybook build"
+
+    dev_dependencies = package_data["devDependencies"]
+    assert dev_dependencies["storybook"].startswith("^8.6")
+    assert dev_dependencies["@storybook/react-vite"].startswith("^8.6")
+
+    engines = package_data["engines"]
+    assert engines["node"].startswith(">=18"), "Documented engine constraint regressed"
 
 
 def test_go_cookiecutter_bakes(bake_template):

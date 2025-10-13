@@ -40,6 +40,7 @@
 - [x] Reviewed template standards/docs to extract cookiecutter + boilerplate quality expectations for upcoming CLI alignment (see TEMPLATE_STANDARDS.md)
 - [x] Ensured quick-mode sanity summary stays synchronized with recorded passes and captured regression coverage (`tests/test_sanity_check.py`, pytest chunk cd2c27)
 - [x] Added quick-mode HTML report regression coverage so rendered artifacts track recorded passes (`tests/test_sanity_check.py::test_sanity_check_quick_mode_html_report`, pytest chunk 59ba8a)
+- [x] Documented the React Storybook 8 upgrade path and added regression coverage for scripts/dependencies (`tests/test_cookiecutters.py::test_react_cookiecutter_storybook_scripts`, pytest chunk 3d7b60)
 
 ## Deliverables
 
@@ -51,10 +52,10 @@
 
 ## Quality Gates
 
-- [x] Tests: pytest (passing end-to-end, including React build fix) _(chunk b280cf)_
-- [x] Lint: ruff check (passing; monitor for regressions) _(chunk 041205)_
-- [x] Type-check: mypy (configured and passing) _(chunk 5d319c)_
-- [x] Security: secret scan (pip patched via helper; `pip-audit` clean) _(chunk 605881)_
+- [x] Tests: pytest (passing end-to-end, including React build fix) _(chunk 895d86)_
+- [x] Lint: ruff check (passing; monitor for regressions) _(chunk 511a4c)_
+- [x] Type-check: mypy (configured and passing) _(chunk e76474)_
+- [x] Security: secret scan (pip patched via helper; `pip-audit` clean) _(chunks d8ebd1/351c8b)_
 - [x] Build: applicable build commands succeed _(template renders + audits passing; see chunks f33a16, 8f1475, 58e2e8, 077e58)_
 
 ## Links
@@ -75,7 +76,7 @@
 - [x] Validate template hook imports across other entry points (nox sessions, pytest-cookies) _(shell wrapper tests guard PYTHONPATH + skip flows; chunk 5cd380)_
 - [x] Ruff config deprecation warnings from generated projects _(validated via new regression in `tests/test_cookiecutters.py`; pytest chunk e8dedd)_
 - [ ] Monitor baseline command health; security gate now green after safe pip upgrade (chunk aa754c)
-- [ ] React Storybook 8 upgrade: confirm docs/changelog guidance added for template consumers
+- [x] React Storybook 8 upgrade: confirm docs/changelog guidance added for template consumers _(React template README refreshed; coverage added via `tests/test_cookiecutters.py::test_react_cookiecutter_storybook_scripts`, pytest chunk 3d7b60)_
 - [ ] Replace temporary SAFE_PIP_SPEC pin once upstream pip publishes a patched release
 - [x] Quick-mode sanity summary now derives from recorded passes (guarded by `tests/test_sanity_check.py::test_sanity_check_quick_mode_summary_matches_passes`, pytest chunk cd2c27)
 - [x] Evaluate adding targeted tests for `.dev/sanity-check.sh` quick-mode output to prevent regressions _(HTML report parity locked by pytest chunk 59ba8a)_

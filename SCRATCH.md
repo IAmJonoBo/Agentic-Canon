@@ -29,6 +29,7 @@ Solidify template validation so every run performs manifest sync, template rende
 - Re-ran `pip-audit` after invoking the safe pip helper; upstream advisory is mitigated locally (chunk aa754c).
 - Quick-mode sanity check now derives its summary from the recorded pass list, and the new regression in `tests/test_sanity_check.py` keeps the quick-mode counter aligned with the scripted checks.
 - Quick-mode HTML report now reuses the shared renderer so quick-mode artifacts mirror recorded passes; regression captured by `tests/test_sanity_check.py::test_sanity_check_quick_mode_html_report`.【59ba8a†L1-L3】
+- Documented the React template's Storybook 8 upgrade path in the template README and added regression coverage ensuring the `storybook dev` script and dependencies remain pinned to the validated toolchain.【F:templates/react-webapp/README.md†L29-L41】【F:tests/test_cookiecutters.py†L199-L232】
 
 ### 1. Add Unified Validation Session
 

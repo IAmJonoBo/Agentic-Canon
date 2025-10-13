@@ -73,10 +73,10 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: { { "${{ github.event.repository.default_branch }}" } }
+          base: DEFAULT_BRANCH_EXPR
           head: HEAD
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
-          GITHUB_TOKEN: { { "${{ secrets.GITHUB_TOKEN }}" } }
+          GITHUB_TOKEN: GITHUB_TOKEN_EXPR

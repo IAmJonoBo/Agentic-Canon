@@ -35,4 +35,4 @@ jobs:
         if: IF_DOCS_DEPLOY
         run: ghp-import -n -p -f docs/_build/html
         env:
-          GITHUB_TOKEN: { { "${{ secrets.GITHUB_TOKEN }}" } }
+          GITHUB_TOKEN: GITHUB_TOKEN_EXPR

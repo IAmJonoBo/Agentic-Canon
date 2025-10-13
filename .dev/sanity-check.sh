@@ -81,6 +81,18 @@ WARN_COUNT=0
 # Array to store all check results for HTML report
 declare -a CHECK_RESULTS
 
+# Determine which Python interpreter to use
+if [ -x ".venv/bin/python" ]; then
+	PYTHON_BIN=".venv/bin/python"
+elif command -v python3 >/dev/null 2>&1; then
+	PYTHON_BIN="python3"
+elif command -v python >/dev/null 2>&1; then
+	PYTHON_BIN="python"
+else
+	echo "❌ No Python interpreter found. Install python3 or create .venv with Python." >&2
+	exit 1
+fi
+
 check_pass() {
 	if [ $QUIET -eq 0 ]; then
 		echo "  ✅ $1"
@@ -154,7 +166,7 @@ for hook_file in templates/*/hooks/*.py templates/_shared/*.py; do
 			[ $VERBOSE -eq 1 ] && check_warn "Skipping templated hook syntax: $(basename "$hook_file")"
 			continue
 		fi
-		if python -m py_compile "$hook_file" 2>/dev/null; then
+		if "$PYTHON_BIN" -m py_compile "$hook_file" 2>/dev/null; then
 			check_pass "$(basename $hook_file) syntax valid"
 		else
 			check_fail "$(basename $hook_file) has syntax errors"
@@ -181,7 +193,7 @@ for json_file in templates/*/cookiecutter.json examples/dashboards/*.json; do
 			[ $VERBOSE -eq 1 ] && check_warn "Skipping templated JSON file: $(basename "$json_file")"
 			continue
 		fi
-		if python -m json.tool "$json_file" >/dev/null 2>&1; then
+		if "$PYTHON_BIN" -m json.tool "$json_file" >/dev/null 2>&1; then
 			check_pass "$(basename $json_file) is valid JSON"
 		else
 			check_fail "$(basename $json_file) has JSON errors"
@@ -193,7 +205,7 @@ done
 # Special handling for control-traceability-matrix.json (has comments)
 if [ -f "control-traceability-matrix.json" ]; then
 	# Strip comment lines and validate
-	if grep -v '^#' control-traceability-matrix.json | python -m json.tool >/dev/null 2>&1; then
+	if grep -v '^#' control-traceability-matrix.json | "$PYTHON_BIN" -m json.tool >/dev/null 2>&1; then
 		check_pass "control-traceability-matrix.json is valid JSON (ignoring comments)"
 	else
 		check_fail "control-traceability-matrix.json has JSON errors"
@@ -247,7 +259,7 @@ for yaml_file in .github/workflows/*.yml examples/*/*.yml examples/*/*.yaml \
 			yaml_skipped=$((yaml_skipped + 1))
 			continue
 		fi
-		if python -c "import yaml; yaml.safe_load(open('$yaml_file'))" >/dev/null 2>&1; then
+		if "$PYTHON_BIN" -c "import yaml; yaml.safe_load(open('$yaml_file'))" >/dev/null 2>&1; then
 			# Only show validation for a sample to avoid cluttering output
 			if [ $yaml_count -le 5 ]; then
 				check_pass "$(basename $yaml_file) is valid YAML"
@@ -269,7 +281,7 @@ echo ""
 echo "🔧 Checking Shared Validation Module..."
 if [ -f "templates/_shared/validation.py" ]; then
 	check_pass "Shared validation module exists"
-	if python templates/_shared/validation.py >/dev/null 2>&1; then
+	if "$PYTHON_BIN" templates/_shared/validation.py >/dev/null 2>&1; then
 		check_pass "Validation module self-tests pass"
 	else
 		check_warn "Validation module self-tests failed"
@@ -314,7 +326,7 @@ echo "🔒 Validating Pre-commit Configuration..."
 if [ -f ".pre-commit-config.yaml" ]; then
 	check_pass ".pre-commit-config.yaml exists"
 	# Validate it's valid YAML
-	if python -c "import yaml; yaml.safe_load(open('.pre-commit-config.yaml'))" >/dev/null 2>&1; then
+	if "$PYTHON_BIN" -c "import yaml; yaml.safe_load(open('.pre-commit-config.yaml'))" >/dev/null 2>&1; then
 		check_pass ".pre-commit-config.yaml is valid YAML"
 	else
 		check_fail ".pre-commit-config.yaml has YAML errors"
@@ -758,7 +770,7 @@ for hook_file in templates/*/hooks/*.py; do
 		fi
 
 		# Try to import the module to check for import errors
-		if python -c "import sys; sys.path.insert(0, 'templates/_shared'); exec(open('$hook_file').read())" >/dev/null 2>&1; then
+		if "$PYTHON_BIN" -c "import sys; sys.path.insert(0, 'templates/_shared'); exec(open('$hook_file').read())" >/dev/null 2>&1; then
 			# Success, but don't spam output
 			:
 		else
@@ -1015,7 +1027,7 @@ for cookiecutter_json in templates/*/cookiecutter.json; do
 			continue
 		fi
 		# Check if it's valid JSON
-		if ! python -m json.tool "$cookiecutter_json" >/dev/null 2>&1; then
+		if ! "$PYTHON_BIN" -m json.tool "$cookiecutter_json" >/dev/null 2>&1; then
 			check_fail "$(basename $(dirname $cookiecutter_json))/cookiecutter.json: Invalid JSON"
 			schema_errors=$((schema_errors + 1))
 			continue
@@ -1307,13 +1319,6 @@ if [ -n "$HTML_REPORT" ]; then
 </html>
 EOF
 
-	# Replace placeholders
-	sed -i "s/PASS_COUNT_PLACEHOLDER/$PASS_COUNT/g" "$HTML_REPORT"
-	sed -i "s/WARN_COUNT_PLACEHOLDER/$WARN_COUNT/g" "$HTML_REPORT"
-	sed -i "s/FAIL_COUNT_PLACEHOLDER/$FAIL_COUNT/g" "$HTML_REPORT"
-	sed -i "s/DURATION_PLACEHOLDER/$DURATION/g" "$HTML_REPORT"
-	sed -i "s/TIMESTAMP_PLACEHOLDER/$(date)/g" "$HTML_REPORT"
-
 	# Generate results HTML
 	results_html=""
 	for result in "${CHECK_RESULTS[@]}"; do
@@ -1330,9 +1335,35 @@ EOF
 		results_html="${results_html}<div class='result-item ${status_lower}'>${icon} ${message}</div>"
 	done
 
-	# Use a temporary file for the replacement
-	awk -v r="$results_html" '{gsub(/RESULTS_PLACEHOLDER/, r); print}' "$HTML_REPORT" >"$HTML_REPORT.tmp"
-	mv "$HTML_REPORT.tmp" "$HTML_REPORT"
+	RESULTS_HTML="$results_html" \
+		PASS_COUNT_VAL="$PASS_COUNT" \
+		WARN_COUNT_VAL="$WARN_COUNT" \
+		FAIL_COUNT_VAL="$FAIL_COUNT" \
+		DURATION_VAL="$DURATION" \
+		HTML_REPORT_PATH="$HTML_REPORT" \
+		"$PYTHON_BIN" - <<'PY'
+import os
+import datetime
+from pathlib import Path
+
+path = Path(os.environ["HTML_REPORT_PATH"])
+text = path.read_text()
+
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+replacements = {
+    "PASS_COUNT_PLACEHOLDER": os.environ["PASS_COUNT_VAL"],
+    "WARN_COUNT_PLACEHOLDER": os.environ["WARN_COUNT_VAL"],
+    "FAIL_COUNT_PLACEHOLDER": os.environ["FAIL_COUNT_VAL"],
+    "DURATION_PLACEHOLDER": os.environ["DURATION_VAL"],
+    "TIMESTAMP_PLACEHOLDER": timestamp,
+    "RESULTS_PLACEHOLDER": os.environ["RESULTS_HTML"],
+}
+
+for placeholder, value in replacements.items():
+    text = text.replace(placeholder, value)
+
+path.write_text(text)
+PY
 
 	echo "📄 HTML report generated: $HTML_REPORT"
 	echo ""

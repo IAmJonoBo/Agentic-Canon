@@ -17,10 +17,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: "Setup Go ${{ matrix.go-version }}"
+      - name: "Setup Go GO_VERSION_LABEL"
         uses: actions/setup-go@v5
         with:
-          go-version: { { "${{ matrix.go-version }}" } }
+          go-version: GO_VERSION_EXPR
           cache: true
 
       - name: Install dependencies

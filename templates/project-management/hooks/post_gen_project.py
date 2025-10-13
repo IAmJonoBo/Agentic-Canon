@@ -15,6 +15,11 @@ CONFIG = {
 }
 
 
+def gh_expr(body: str) -> str:
+    """Build a GitHub Actions expression without Jinja conflicts."""
+    return "${" + "{ " + body + " }}"
+
+
 def run_command(cmd: list[str], description: str) -> bool:
     """Run a shell command and return success status."""
     try:
@@ -190,6 +195,25 @@ def main():
     setup_github_labels()
     setup_branch_protection()
     setup_projects_board()
+
+    replacements = {
+        ".github/workflows/stale.yml": {
+            "GITHUB_TOKEN_EXPR": gh_expr("secrets.GITHUB_TOKEN"),
+        },
+        ".github/workflows/todos.yml": {
+            "PROJECT_EXPR": gh_expr("github.event.repository.full_name"),
+        },
+    }
+
+    for rel_path, mapping in replacements.items():
+        workflow = Path(rel_path)
+        if not workflow.exists():
+            continue
+        content = workflow.read_text()
+        for placeholder, expr in mapping.items():
+            content = content.replace(placeholder, expr)
+        workflow.write_text(content)
+
     display_next_steps()
 
     print("✅ Setup complete!\n")

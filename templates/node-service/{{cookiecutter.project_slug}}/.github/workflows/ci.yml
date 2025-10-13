@@ -18,10 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: "Setup Node.js ${{ matrix.node-version }}"
+      - name: "Setup Node.js NODE_VERSION_LABEL"
         uses: actions/setup-node@v4
         with:
-          node-version: { { "${{ matrix.node-version }}" } }
+          node-version: NODE_VERSION_EXPR
           cache: npm
 
       - name: Install dependencies
@@ -43,8 +43,8 @@ jobs:
         run: npm test
 
       - name: Upload coverage
-        if: { { "${{ matrix.node-version == 20 }}" } }
+        if: UPLOAD_COVERAGE_EXPR
         uses: codecov/codecov-action@v5
         with:
-          token: { { "${{ secrets.CODECOV_TOKEN }}" } }
+          token: CODECOV_TOKEN_EXPR
           fail_ci_if_error: false

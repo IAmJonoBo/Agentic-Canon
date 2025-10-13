@@ -70,15 +70,20 @@ def update_package_json() -> None:
     package_path.write_text(json.dumps(data, indent=2) + "\n")
 
 
+def gh_expr(body: str) -> str:
+    """Build a GitHub Actions expression without Jinja conflicts."""
+    return "${" + "{ " + body + " }}"
+
+
 def update_workflows() -> None:
     """Replace placeholder expressions in workflow files."""
     security_path = root / ".github/workflows/security.yml"
     if security_path.exists():
         content = security_path.read_text()
         content = content.replace(
-            "DEFAULT_BRANCH_EXPR", "${{ github.event.repository.default_branch }}"
+            "DEFAULT_BRANCH_EXPR", gh_expr("github.event.repository.default_branch")
         )
-        content = content.replace("GITHUB_TOKEN_EXPR", "${{ secrets.GITHUB_TOKEN }}")
+        content = content.replace("GITHUB_TOKEN_EXPR", gh_expr("secrets.GITHUB_TOKEN"))
         security_path.write_text(content)
 
 
@@ -101,7 +106,7 @@ print("\nFor development:")
 if include_storybook == "yes":
     print("  - npm run storybook (Component development)")
 if include_e2e == "yes":
-print("  - npm run test:e2e (End-to-end tests)")
+    print("  - npm run test:e2e (End-to-end tests)")
 print("\nFor CI/CD:")
 print("  - Push to GitHub to trigger workflows")
 print("=" * 60)

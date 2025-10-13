@@ -1,5 +1,5 @@
-title: { { cookiecutter.project_name } }
-author: { { cookiecutter.author_name } }
+title: "{{ cookiecutter.project_name }}"
+author: "{{ cookiecutter.author_name }}"
 copyright: "{{cookiecutter.author_name}}"
 logo: _static/logo.png
 

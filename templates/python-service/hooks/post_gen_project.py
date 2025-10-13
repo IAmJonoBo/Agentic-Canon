@@ -12,6 +12,11 @@ cc = {
 root = pathlib.Path(".")
 
 
+def gh_expr(body: str) -> str:
+    """Build a GitHub Actions expression without Jinja conflicts."""
+    return "${" + "{ " + body + " }}"
+
+
 def rm(*paths):
     """Remove files or directories if they exist."""
     for p in paths:
@@ -28,17 +33,20 @@ def update_workflows():
     """Replace workflow placeholders with GitHub expressions."""
     replacements = {
         ".github/workflows/ci.yml": {
-            "IF_MATRIX_PY311": "${{ matrix.python-version == '3.11' }}",
-            "IF_NOTEBOOKS_PRESENT": "${{ hashFiles('notebooks/**/*.ipynb') != '' }}",
-            "PY_VERSION_MATRIX": "${{ matrix.python-version }}",
+            "IF_MATRIX_PY311": gh_expr("matrix.python-version == '3.11'"),
+            "IF_NOTEBOOKS_PRESENT": gh_expr("hashFiles('notebooks/**/*.ipynb') != ''"),
+            "PY_VERSION_MATRIX": gh_expr("matrix.python-version"),
         },
         ".github/workflows/docs.yml": {
-            "IF_DOCS_PRESENT": "${{ hashFiles('docs/**') != '' }}",
-            "IF_DOCS_DEPLOY": "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}",
+            "IF_DOCS_PRESENT": gh_expr("hashFiles('docs/**') != ''"),
+            "IF_DOCS_DEPLOY": gh_expr("github.event_name == 'push' && github.ref == 'refs/heads/main'"),
+            "GITHUB_TOKEN_EXPR": gh_expr("secrets.GITHUB_TOKEN"),
         },
         ".github/workflows/security.yml": {
-            "IF_DEPENDENCY_REVIEW": "${{ github.event_name == 'pull_request' }}",
-            "SBOM_JOB_ENABLED": "${{ %s }}" % ("true" if cc["sbom"] == "yes" else "false"),
+            "IF_DEPENDENCY_REVIEW": gh_expr("github.event_name == 'pull_request'"),
+            "SBOM_JOB_ENABLED": gh_expr("true" if cc["sbom"] == "yes" else "false"),
+            "GITHUB_TOKEN_EXPR": gh_expr("secrets.GITHUB_TOKEN"),
+            "DEFAULT_BRANCH_EXPR": gh_expr("github.event.repository.default_branch"),
         },
     }
 

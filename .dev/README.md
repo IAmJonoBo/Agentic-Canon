@@ -129,18 +129,74 @@ When adding new development tools:
 - [CONTRIBUTING.md](../CONTRIBUTING.md) - Contribution guidelines
 - [FRAMEWORK.md](../FRAMEWORK.md) - Framework and philosophy
 
-## Runtime Alignment (Trunk CLI)
+## Linting & Formatting Workflow
 
-Trunk runtimes now mirror the versions used across our working examples and CI pipelines:
+Agentic Canon standardises on the Trunk CLI for linting, formatting, and security scans. The
+configuration lives in [`.trunk/trunk.yaml`](../.trunk/trunk.yaml) and is intentionally aligned with
+the versions used by our templates and example projects.
 
-- **Go 1.22.6** → matches the gRPC service example and ensures `gofmt` parity with Go toolchain
-- **Node.js 22.16.0** → covers modern Vite/React/Vitest workflows
-- **Python 3.12.5** → keeps security tooling (ruff, bandit, etc.) on a supported interpreter
+### Runtime Baselines
 
-After pulling updates run:
+- **Python 3.10.8** — matches the interpreter baked into the templates and keeps `ruff`, `bandit`,
+  and other Python linters on a supported version.
+- **Go 1.22.6** — mirrors the sample gRPC/Go services so `gofmt` output is identical in CI and
+  locally.
+- **Node.js 22.16.0** — supports the React, Vite, and Vitest stacks used across the repo.
+
+If you change runtime versions, update them in `.trunk/trunk.yaml` and run:
 
 ```bash
 .dev/trunk-with-progress.sh upgrade
 ```
 
-This installs the updated runtimes and makes them available for `trunk check` and `trunk fmt` runs.
+### Enabled Linters
+
+Trunk drives all tooling—`prettier`, `eslint`, `ruff`, `gofmt`, `yamllint`, `shellcheck`, and more.
+Refer to `lint.enabled` in `.trunk/trunk.yaml` for the complete list. To add or upgrade a tool:
+
+1. Update the entry in `.trunk/trunk.yaml` (or add a new one under `lint.enabled`).
+2. Run `.dev/trunk-with-progress.sh upgrade` to download the new tool version.
+3. Commit both the YAML change and any resulting formatting edits.
+
+### Import Sorting / Python Formatting
+
+Python projects rely on `ruff` for linting and `black`-style formatting. Import ordering is handled
+by `isort` with the configuration in the repository root (`.isort.cfg`), set to mirror Black’s
+style (`line_length = 100`, trailing commas, etc.). This means the following will yield identical
+results:
+
+```bash
+trunk fmt --all          # preferred – runs every formatter
+trunk check --all        # preferred – runs linters + security scanners
+```
+
+### When to Run What
+
+| Command                                   | Purpose                                                        |
+| ----------------------------------------- | -------------------------------------------------------------- |
+| `.dev/trunk-with-progress.sh fmt --all`   | Format everything with progress feedback                       |
+| `.dev/trunk-with-progress.sh check --all` | Run the full lint + security suite                             |
+| `.dev/sanity-check.sh --format`           | Run Trunk via the sanity check helper (auto-formats if needed) |
+
+The sanity check script now prefers the repository’s virtual environment (`.venv/bin/python`), so
+all JSON/YAML/validation steps use the same interpreter as our tooling. This keeps local runs,
+cookiecutter hooks, and CI pipelines fully aligned.
+
+### Reproducibility Tips
+
+- Always create or refresh the virtual environment before running the checks:
+
+  ```bash
+  python3 -m venv .venv
+  source .venv/bin/activate
+  pip install -r requirements.txt
+  ```
+
+- After pulling changes, re-run the sanity check:
+
+  ```bash
+  .dev/sanity-check.sh --quiet
+  ```
+
+  Add `--format` if you want the script to invoke `trunk fmt --all` automatically when it detects
+  unformatted files.

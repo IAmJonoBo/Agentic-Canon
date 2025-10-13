@@ -13,6 +13,11 @@ enable_sbom = "{{ cookiecutter.enable_sbom_signing }}"
 root = pathlib.Path(".")
 
 
+def gh_expr(body: str) -> str:
+    """Build a GitHub Actions expression without Jinja conflicts."""
+    return "${" + "{ " + body + " }}"
+
+
 def remove_file(*paths):
     """Remove files or directories."""
     for path in paths:
@@ -28,6 +33,31 @@ def remove_file(*paths):
 # Remove optional files based on configuration
 if enable_security == "no":
     remove_file(".github/workflows/security.yml")
+
+
+def update_workflows():
+    """Replace placeholder expressions in workflow files."""
+    replacements = {
+        ".github/workflows/security.yml": {
+            "DEFAULT_BRANCH_EXPR": gh_expr("github.event.repository.default_branch"),
+        },
+        ".github/workflows/ci.yml": {
+            "NODE_VERSION_LABEL": gh_expr("matrix.node-version"),
+            "NODE_VERSION_EXPR": gh_expr("matrix.node-version"),
+            "UPLOAD_COVERAGE_EXPR": gh_expr("matrix.node-version == 20"),
+            "CODECOV_TOKEN_EXPR": gh_expr("secrets.CODECOV_TOKEN"),
+        },
+    }
+
+    for rel_path, mapping in replacements.items():
+        workflow = root / rel_path
+        if not workflow.exists():
+            continue
+        content = workflow.read_text()
+        for placeholder, expr in mapping.items():
+            content = content.replace(placeholder, expr)
+        workflow.write_text(content)
+
 
 if enable_sbom == "no":
     # Remove SBOM-related configurations from security workflow if it exists
@@ -52,3 +82,5 @@ print("\nFor CI/CD:")
 print("  - Push to GitHub to trigger workflows")
 print("  - Review .github/workflows/ for pipeline configuration")
 print("=" * 60)
+
+update_workflows()

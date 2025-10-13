@@ -15,9 +15,4 @@ jobs:
           INSERT_ISSUE_URLS: "true"
           AUTO_ASSIGN: "@me"
           LABELS: "task, from:todo"
-          PROJECT:
-            {
-              {
-                "${{ github.repository_owner }}/${{ github.event.repository.name }}",
-              },
-            }
+          PROJECT: PROJECT_EXPR

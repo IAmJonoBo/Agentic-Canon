@@ -1,5 +1,5 @@
-title: { { cookiecutter.project_name } }
-author: { { cookiecutter.author_name } }
+title: "{{ cookiecutter.project_name }}"
+author: "{{ cookiecutter.author_name }}"
 only_build_toc_files: true
 repository:
   url: https://github.com/YOUR_USERNAME/{{ cookiecutter.project_slug }}

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -19,9 +21,21 @@ pytest.importorskip(
 def test_jupyter_book_builds_successfully(tmp_path: Path) -> None:
     """Ensure the docs build cleanly using the same command as the Pages workflow."""
     output_dir = tmp_path / "book-build"
-    command = ["jb", "build", "docs", "--path-output", str(output_dir)]
+    jb_executable = shutil.which("jb")
+    if jb_executable is None:
+        candidate = Path(".venv/bin/jb")
+        if candidate.exists():
+            jb_executable = str(candidate)
+        else:
+            pytest.skip("jb CLI not available in PATH or .venv/bin")
 
-    subprocess.run(command, check=True)
+    env = os.environ.copy()
+    env.setdefault("PATH", os.environ.get("PATH", ""))
+    env["PATH"] = f"{Path(jb_executable).parent}:{env['PATH']}"
+
+    command = [jb_executable, "build", "docs", "--path-output", str(output_dir)]
+
+    subprocess.run(command, check=True, env=env)
 
     index_html = output_dir / "_build" / "html" / "index.html"
     assert (

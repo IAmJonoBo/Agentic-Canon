@@ -51,10 +51,10 @@
 
 ## Quality Gates
 
-- [x] Tests: pytest (passing end-to-end, including React build fix) _(chunk 895d86)_
-- [x] Lint: ruff check (passing; monitor for regressions) _(chunk 511a4c)_
-- [x] Type-check: mypy (configured and passing) _(chunk e76474)_
-- [x] Security: secret scan (pip patched via helper; `pip-audit` clean) _(chunks d8ebd1/351c8b)_
+- [x] Tests: pytest (passing end-to-end, including React build fix) _(chunk b280cf)_
+- [x] Lint: ruff check (passing; monitor for regressions) _(chunk 041205)_
+- [x] Type-check: mypy (configured and passing) _(chunk 5d319c)_
+- [x] Security: secret scan (pip patched via helper; `pip-audit` clean) _(chunk 605881)_
 - [x] Build: applicable build commands succeed _(template renders + audits passing; see chunks f33a16, 8f1475, 58e2e8, 077e58)_
 
 ## Links

@@ -8,6 +8,39 @@ set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 REPO_ROOT=$(cd "${SCRIPT_DIR}/.." && pwd)
+TEMPLATES_DIR="${REPO_ROOT}/templates"
+
+ensure_pythonpath() {
+        local -a path_list=()
+        local entry existing
+        local updated=0
+
+        if [[ -n "${PYTHONPATH:-}" ]]; then
+                IFS=":" read -r -a path_list <<<"${PYTHONPATH}"
+        fi
+
+        for entry in "$@"; do
+                local found=0
+                for existing in "${path_list[@]}"; do
+                        if [[ "${existing}" == "${entry}" ]]; then
+                                found=1
+                                break
+                        fi
+                done
+                if [[ ${found} -eq 0 ]]; then
+                        path_list=("${entry}" "${path_list[@]}")
+                        updated=1
+                fi
+        done
+
+        if [[ ${updated} -eq 1 || -z "${PYTHONPATH:-}" ]]; then
+                PYTHONPATH=$(IFS=":"; echo "${path_list[*]}")
+        fi
+
+        export PYTHONPATH
+}
+
+ensure_pythonpath "${REPO_ROOT}" "${TEMPLATES_DIR}"
 
 usage() {
 	cat <<'EOF'

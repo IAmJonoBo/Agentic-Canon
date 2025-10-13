@@ -13,6 +13,11 @@ Solidify template validation so every run performs manifest sync, template rende
 
 ## Implementation Steps
 
+### Current Progress
+
+- Added deterministic `PYTHONPATH` bootstrapping in `tests/conftest.py` and `.dev/validate-templates.sh` so pytest and the CLI wrapper both discover `templates._shared` without manual environment tweaks.
+- Baseline reruns must now verify that the import failures are resolved before proceeding with broader lint/type/security gates.
+
 ### 1. Add Unified Validation Session
 
 In `noxfile.py`, create a new session (e.g., `@nox.session` named `validate_templates_all`) that executes, in order:
@@ -93,3 +98,63 @@ Make sure the workflow installs nox and dependencies before calling the session.
 - After modifying or generating YAML, run `.dev/validate-templates.sh` (or `nox -s format_templates`) to let Trunk apply formatting before committing changes.
 - For generated YAML (e.g., manifest sync, cookiecutter hooks), rely on Trunk’s formatter rather than manual whitespace tweaks; re-run the formatter after generation.
 - Optionally wire up the pre-commit helper (`.dev/install-precommit.sh`) to call `trunk fmt --staged`, ensuring staged YAML is auto-formatted.
+
+## Pipeline Remediation Plan
+
+### Baseline Findings
+
+- `pytest` now progresses past import wiring but fails on: (a) project-management template expecting empty workflows (tasklist `todos.yml` content) and (b) React webapp e2e `npm install` peer dependency conflict between Storybook 9 and addon essentials 8.x.
+- `ruff check` reports 42 issues alongside deprecation warnings for top-level `select`/`ignore` keys across root and template `pyproject.toml` files.
+- `mypy` has no configured targets; running the command exits with an error because no modules are specified.
+- Security scanning tooling (e.g., TruffleHog/Gitleaks) is referenced in docs and workflows, but local command coverage has not been verified during the baseline run.
+
+### Remediation Strategy
+
+1. **Stabilize Environment Bootstrapping**
+   - Update Nox sessions (`render_templates`, `validate_templates_all`) to prepend both repo root and `templates/` paths to `PYTHONPATH`, matching documented expectations for template hooks. This should eliminate the `_shared` import failures during pytest runs.
+   - Extend `.dev/validate-templates.sh` to export equivalent environment variables so CLI usage mirrors CI behavior.
+
+2. **Harden Template Hooks and Shared Utilities**
+   - Audit `templates/_shared` to confirm it exposes importable hook utilities without relying on implicit relative paths.
+   - Refactor hook scripts to avoid top-level sys.path manipulations where possible; encapsulate shared behaviors in a dedicated module within `_shared` and ensure packaging metadata (e.g., `__init__.py`) supports module discovery.
+   - Add targeted unit tests under `tests/` to exercise hook modules directly, guarding against regressions.
+
+3. **Consolidate Linting/Formatting Workflow**
+   - Refactor root and template-level Ruff configurations to the modern `[tool.ruff.lint]` layout and tighten rule coverage called out in `QUALITY_STANDARDS.md`.
+   - Update rendered project scaffolds (e.g., `pyproject.toml`, `.ruff.toml`) so `ruff check` and `ruff format` run cleanly across all template variants.
+   - Extend `validate_templates_all` to invoke `ruff check` after rendering (mirroring CI) and gate merges on a lint-clean workspace.
+   - Ensure formatting tools (Black, Prettier, gofmt, rustfmt) run as part of the session, per automation guardrails.
+
+4. **Define Type-Checking Coverage**
+   - Document intended type-check targets (core CLI, shared template utilities) in `SCRATCH.md` and configure `mypy.ini`/`pyproject.toml` with explicit module lists and strictness levels.
+   - Introduce a dedicated `typecheck` Nox session (wrapping `mypy`) and have `validate_templates_all` notify it after linting unless explicitly skipped via CLI flag.
+   - Cache `.mypy_cache` per-rendered project when feasible to keep the unified flow performant.
+
+5. **Verify Security and Compliance Hooks**
+   - Wire `.dev/validate-templates.sh` to call TruffleHog/Gitleaks via an opt-in flag that also runs inside `validate_templates_all` for CI gating.
+   - Update pipeline documentation to clarify local vs. CI security coverage, including remediation SLAs and evidence capture expectations.
+
+6. **CI/CD Alignment**
+   - Review GitHub Actions workflows to ensure they call the updated unified session and propagate environment fixes. Capture the order of operations in the plan to avoid downstream race conditions.
+   - Add workflow assertions (e.g., `PYTHONPATH` echo) to aid troubleshooting if imports regress.
+
+7. **Documentation & Change Management**
+   - Cross-reference updates in README, TASKS.md, and relevant ADRs to maintain traceability.
+   - Record baseline deltas and remediation status in `Next_Steps.md`, updating checkboxes as work progresses.
+   - Prepare rollback guidance for each change set (e.g., toggling environment variables, disabling new lint rules) to minimize downstream disruption.
+
+8. **Validation Gates**
+   - Once fixes are implemented, re-run baseline commands (`pytest`, `ruff check`, `mypy`, secret scans, builds) and capture outputs.
+   - Block release until all gates pass or documented exceptions are approved per governance docs.
+
+### Assumptions & Unknowns
+
+- Precise scope of CLI integration for template validation (need to confirm whether additional commands beyond `.dev/validate-templates.sh` require updates).
+- Availability of TruffleHog/Gitleaks binaries in contributor environments; may need to document installation prerequisites.
+- Potential need for Dockerized execution to mimic CI runner for certain hooks—requires validation.
+
+### Immediate Next Steps
+
+- Confirm ownership of existing `noxfile.py` sessions and gather historical context from ADRs before modifying behavior.
+- Draft ADR or update existing records if significant workflow changes are introduced.
+- Schedule follow-up baseline run after environment path adjustments to verify import fixes before broader refactors.

@@ -237,6 +237,7 @@ def render_templates(session: nox.Session) -> None:
         parser = _arg_parser()
         args = parser.parse_args(session.posargs)
 
+        session.install("PyYAML>=6.0")  # manifest sync depends on PyYAML
         session.run(
             "python3",
             str(REPO_ROOT / ".dev" / "scripts" / "sync-manifest.py"),

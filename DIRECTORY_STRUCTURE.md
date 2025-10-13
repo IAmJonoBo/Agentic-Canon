@@ -65,7 +65,7 @@ Core project documentation files located at repository root for easy discovery:
 - **`jupytext.toml`** - Jupytext notebook pairing settings
 - **`renovate.json`** - Renovate dependency update config
 - **`requirements.txt`** - Python dependencies
-- **`.dev/validate-templates.sh`** - Template validation orchestrator (Nox wrapper)
+- **`.dev/validate-templates.sh`** - Unified template validation orchestrator (sync → render → lint → format)
 - **`control-traceability-matrix.json`** - Compliance control mapping
 
 ---
@@ -79,7 +79,7 @@ Core project documentation files located at repository root for easy discovery:
 ├── README.md                      # Development tools documentation
 ├── scripts/                       # Development scripts
 │   └── setup-labels.sh           # GitHub labels setup
-├── validate-templates.sh          # Template validation orchestrator
+├── validate-templates.sh          # Unified template validation orchestrator
 └── sanity-check.sh               # Repository health checks
 ```
 
@@ -87,7 +87,7 @@ Core project documentation files located at repository root for easy discovery:
 
 **Key Tools:**
 
-- **`validate-templates.sh`** - Runs Nox template sessions (render/lint/format)
+- **`validate-templates.sh`** - Runs unified template validation (sync → render → lint → format)
 - **`sanity-check.sh`** - Runs comprehensive repository health checks
 - **`scripts/setup-labels.sh`** - Sets up GitHub issue labels
 

@@ -335,7 +335,7 @@ See [control-traceability-matrix.json](control-traceability-matrix.json) for com
 
 **Internal use - for maintaining this repository:**
 
-- `.dev/validate-templates.sh` - Template validation orchestrator (Nox wrapper)
+- `.dev/validate-templates.sh` - Unified template validation orchestrator (runs sync → render → lint → format)
 - `.dev/sanity-check.sh` - Repository health checks
 - `.dev/scripts/` - Maintenance scripts (labels, etc.)
 
@@ -411,8 +411,10 @@ ghp-import -n -p -f docs/_build/html
 # Validate GitHub Actions workflows
 actionlint .github/workflows/*.yml
 
-# Validate templates
+# Validate templates (sync + render + lint + format)
 .dev/validate-templates.sh
+# or run directly with Nox
+nox -s validate_templates_all
 
 # Check notebook output is stripped
 git status  # Should show no changes to .ipynb files after execution

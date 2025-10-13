@@ -14,6 +14,7 @@ usage() {
 Usage: .dev/validate-templates.sh [options]
 
 Options:
+  --all              Run full validation (sync + render + lint + format)
   --linters           Run lint-only validation (render + lint_templates)
   --format            Run formatting validation (render + format_templates)
   --upgrade           Run upgrade_tools session
@@ -29,10 +30,15 @@ declare -a TEMPLATES=()
 RUN_LINTERS=0
 RUN_FORMAT=0
 RUN_UPGRADE=0
+RUN_ALL=0
 FORCE_REBUILD=0
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
+	--all)
+		RUN_ALL=1
+		shift
+		;;
 	--linters)
 		RUN_LINTERS=1
 		shift
@@ -70,9 +76,13 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-if [[ ${RUN_LINTERS} -eq 0 && ${RUN_FORMAT} -eq 0 && ${RUN_UPGRADE} -eq 0 ]]; then
-	RUN_LINTERS=1
-	RUN_FORMAT=1
+if [[ ${RUN_ALL} -eq 1 ]]; then
+	RUN_LINTERS=0
+	RUN_FORMAT=0
+fi
+
+if [[ ${RUN_LINTERS} -eq 0 && ${RUN_FORMAT} -eq 0 && ${RUN_UPGRADE} -eq 0 && ${RUN_ALL} -eq 0 ]]; then
+	RUN_ALL=1
 fi
 
 declare -a NOX_ARGS=()
@@ -99,7 +109,16 @@ run_nox() {
 	)
 }
 
-# Always render ahead of lint/format so they have a consistent workspace.
+# Unified validation pipeline (sync + render + lint + format).
+if [[ ${RUN_ALL} -eq 1 ]]; then
+	if ((${#NOX_ARGS[@]})); then
+		run_nox validate_templates_all "${NOX_ARGS[@]}"
+	else
+		run_nox validate_templates_all
+	fi
+fi
+
+# Legacy flows retained for targeted runs.
 if [[ ${RUN_LINTERS} -eq 1 || ${RUN_FORMAT} -eq 1 ]]; then
 	if ((${#NOX_ARGS[@]})); then
 		run_nox render_templates "${NOX_ARGS[@]}"

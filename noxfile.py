@@ -271,6 +271,33 @@ def render_templates(session: nox.Session) -> None:
         else:
             session.env["PYTHONPATH"] = os.pathsep.join(extra_paths)
 
+        python_env_info = session.run(
+            "python",
+            "-c",
+            "import json, sys; print(json.dumps({'prefix': sys.prefix, 'version': sys.version_info[:2]}))",
+            silent=True,
+        )
+        python_env_stdout = ""
+        if isinstance(python_env_info, str):
+            python_env_stdout = python_env_info.strip()
+        elif python_env_info:
+            python_env_stdout = getattr(python_env_info, "stdout", "").strip()
+        if python_env_stdout:
+            try:
+                payload = json.loads(python_env_stdout.splitlines()[-1])
+            except json.JSONDecodeError:
+                payload = {}
+            else:
+                prefix = payload.get("prefix")
+                version = payload.get("version") or []
+                if isinstance(prefix, str) and isinstance(version, list) and len(version) >= 2:
+                    major, minor = version[:2]
+                    site_packages_path = Path(prefix) / "lib" / f"python{major}.{minor}" / "site-packages"
+                    if site_packages_path.exists():
+                        candidate = str(site_packages_path)
+                        if candidate not in sys.path:
+                            sys.path.insert(0, candidate)
+
         from cookiecutter.main import cookiecutter  # type: ignore[import]  # pylint: disable=import-outside-toplevel
         from templates._shared import cache as cache_utils  # pylint: disable=import-outside-toplevel
 
@@ -363,7 +390,10 @@ def _copy_trunk_configuration(project_path: Path, template_cfg: Mapping[str, obj
 
     target_trunk = project_path / ".trunk"
     if target_trunk.exists():
-        shutil.rmtree(target_trunk)
+        if target_trunk.is_symlink():
+            target_trunk.unlink()
+        else:
+            shutil.rmtree(target_trunk)
     try:
         os.symlink(trunk_root, target_trunk, target_is_directory=True)
     except OSError:
@@ -503,6 +533,18 @@ def upgrade_tools(session: nox.Session) -> None:
         session.log("Template-specific dependency upgrade hooks not yet implemented.")
         if args.templates:
             session.log(f"Templates requested for upgrade: {', '.join(args.templates)}")
+
+
+@nox.session
+def validate_templates_all(session: nox.Session) -> None:
+    """Run manifest sync, render, lint, and format in sequence for templates."""
+    with _session_timer(session, "validate_templates_all"):
+        session.log("Starting unified template validation pipeline.")
+        notify_args = list(session.posargs)
+        session.notify("sync_manifest", [])
+        session.notify("render_templates", notify_args)
+        session.notify("lint_templates", notify_args)
+        session.notify("format_templates", notify_args)
 
 
 @nox.session

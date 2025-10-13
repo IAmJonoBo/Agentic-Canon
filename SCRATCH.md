@@ -36,6 +36,7 @@ Update `render_templates` session in `noxfile.py`:
 - This prevents `ModuleNotFoundError` when Nox runs outside repo root
 
 **Example:**
+
 ```python
 session.env["PYTHONPATH"] = str(Path.cwd() / "templates")
 ```

@@ -51,7 +51,7 @@ tracked alongside the rest of the backlog.
 
 - ✅ Manifest-driven template manifest (`templates/manifest.yaml`) with JSON mirror and sync tooling.
 - ✅ Shared hook helpers (`templates/_shared/hooks.py`) with cache-aware `run_post_gen` entry point.
-- ✅ Cached render/install flows exposed through Nox + `.dev/validate-templates.sh`.
+- ✅ Cached render/install flows exposed through unified `.dev/validate-templates.sh` pipeline.
 - ✅ CI workflows (`templates-validate`, `templates-upgrade`) adopt the new pipeline.
 - ✅ Renovate regex managers cover `.trunk/trunk.yaml` and apply `type:tools` labels/grouping.
 

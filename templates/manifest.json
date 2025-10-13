@@ -55,16 +55,29 @@
       }
     },
     "go-service": {
-      "bootstrap": [["go", "mod", "tidy"]],
+      "bootstrap": [
+        [
+          "go",
+          "mod",
+          "tidy"
+        ]
+      ],
       "cache": {
         "installers": {
           "go": {
-            "command": ["go", "mod", "download"],
+            "command": [
+              "go",
+              "mod",
+              "download"
+            ],
             "enabled": true,
             "env": {
               "GOMODCACHE": ".cache/go"
             },
-            "key_files": ["go.sum", "go.mod"],
+            "key_files": [
+              "go.sum",
+              "go.mod"
+            ],
             "path": ".cache/go"
           },
           "node": {
@@ -89,7 +102,9 @@
           "enable_security_gates": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/security.yml"]
+                "remove": [
+                  ".github/workflows/security.yml"
+                ]
               }
             },
             "default": "yes",
@@ -110,6 +125,18 @@
               "DEFAULT_BRANCH_EXPR": "${{ github.event.repository.default_branch }}",
               "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
             }
+          }
+        ]
+      },
+      "quality": {
+        "type": [
+          {
+            "name": "go-vet",
+            "run": [
+              "go",
+              "vet",
+              "./..."
+            ]
           }
         ]
       },
@@ -150,7 +177,10 @@
               "--legacy-peer-deps"
             ],
             "enabled": true,
-            "key_files": ["package-lock.json", "package.json"],
+            "key_files": [
+              "package-lock.json",
+              "package.json"
+            ],
             "path": "node_modules"
           },
           "pip": {
@@ -172,7 +202,9 @@
           "enable_security_gates": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/security.yml"]
+                "remove": [
+                  ".github/workflows/security.yml"
+                ]
               }
             },
             "default": "yes",
@@ -196,6 +228,35 @@
               "DEFAULT_BRANCH_EXPR": "${{ github.event.repository.default_branch }}",
               "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
             }
+          }
+        ]
+      },
+      "quality": {
+        "security": [
+          {
+            "env": {
+              "CI": "true"
+            },
+            "name": "node-audit",
+            "run": [
+              "npm",
+              "audit",
+              "--omit=dev",
+              "--audit-level=high"
+            ]
+          }
+        ],
+        "type": [
+          {
+            "env": {
+              "CI": "true"
+            },
+            "name": "node-tsc",
+            "run": [
+              "npm",
+              "run",
+              "typecheck"
+            ]
           }
         ]
       },
@@ -250,7 +311,9 @@
           "auto_close_stale_issues": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/stale.yml"]
+                "remove": [
+                  ".github/workflows/stale.yml"
+                ]
               }
             },
             "default": "yes",
@@ -259,7 +322,9 @@
           "enable_issue_triage": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/issue-triage.yml"]
+                "remove": [
+                  ".github/workflows/issue-triage.yml"
+                ]
               }
             },
             "default": "yes",
@@ -268,7 +333,9 @@
           "enable_pr_followups": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/pr-review-followup.yml"]
+                "remove": [
+                  ".github/workflows/pr-review-followup.yml"
+                ]
               }
             },
             "default": "yes",
@@ -277,7 +344,9 @@
           "enable_tasklist_tracking": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/tasklist-scan.yml"]
+                "remove": [
+                  ".github/workflows/tasklist-scan.yml"
+                ]
               }
             },
             "default": "yes",
@@ -286,7 +355,9 @@
           "enable_todo_tracking": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/todos.yml"]
+                "remove": [
+                  ".github/workflows/todos.yml"
+                ]
               }
             },
             "default": "yes",
@@ -349,7 +420,12 @@
             "enabled": false
           },
           "pip": {
-            "enabled": false
+            "command": [
+              "bash",
+              "-lc",
+              "python -m venv .venv && source .venv/bin/activate && pip install --upgrade pip setuptools wheel && pip install -e .[dev]"
+            ],
+            "enabled": true
           }
         },
         "render": {
@@ -367,7 +443,9 @@
           "enable_contract_tests": {
             "cases": {
               "no": {
-                "remove": ["tests/contract"]
+                "remove": [
+                  "tests/contract"
+                ]
               }
             },
             "default": "yes",
@@ -376,7 +454,9 @@
           "enable_security_gates": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/security.yml"]
+                "remove": [
+                  ".github/workflows/security.yml"
+                ]
               }
             },
             "default": "yes",
@@ -422,6 +502,28 @@
               "IF_DEPENDENCY_REVIEW": "${{ github.event_name == 'pull_request' }}",
               "SBOM_JOB_ENABLED": "${{ true }}"
             }
+          }
+        ]
+      },
+      "quality": {
+        "security": [
+          {
+            "name": "python-pip-audit",
+            "run": [
+              "bash",
+              "-lc",
+              "source .venv/bin/activate && pip-audit --progress-spinner off ."
+            ]
+          }
+        ],
+        "type": [
+          {
+            "name": "python-mypy",
+            "run": [
+              "bash",
+              "-lc",
+              "source .venv/bin/activate && python -m mypy src"
+            ]
           }
         ]
       },
@@ -480,7 +582,10 @@
               "--legacy-peer-deps"
             ],
             "enabled": true,
-            "key_files": ["package-lock.json", "package.json"],
+            "key_files": [
+              "package-lock.json",
+              "package.json"
+            ],
             "path": "node_modules"
           },
           "pip": {
@@ -502,7 +607,9 @@
           "enable_accessibility_tests": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/accessibility.yml"]
+                "remove": [
+                  ".github/workflows/accessibility.yml"
+                ]
               }
             },
             "default": "yes",
@@ -511,7 +618,10 @@
           "include_e2e_tests": {
             "cases": {
               "no": {
-                "remove": ["tests/e2e", "playwright.config.ts"]
+                "remove": [
+                  "tests/e2e",
+                  "playwright.config.ts"
+                ]
               }
             },
             "default": "yes",
@@ -538,6 +648,35 @@
               "DEFAULT_BRANCH_EXPR": "${{ github.event.repository.default_branch }}",
               "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
             }
+          }
+        ]
+      },
+      "quality": {
+        "security": [
+          {
+            "env": {
+              "CI": "true"
+            },
+            "name": "react-audit",
+            "run": [
+              "npm",
+              "audit",
+              "--omit=dev",
+              "--audit-level=high"
+            ]
+          }
+        ],
+        "type": [
+          {
+            "env": {
+              "CI": "true"
+            },
+            "name": "react-tsc",
+            "run": [
+              "npm",
+              "run",
+              "typecheck"
+            ]
           }
         ]
       },

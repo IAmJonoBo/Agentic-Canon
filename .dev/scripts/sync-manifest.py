@@ -36,9 +36,7 @@ def load_json() -> dict | None:
 
 
 def dump_json(data: dict) -> None:
-    JSON_PATH.write_text(
-        json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    JSON_PATH.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def _normalise_key(key: object) -> str:
@@ -49,10 +47,7 @@ def _normalise_key(key: object) -> str:
 
 def normalise(data: object) -> object:
     if isinstance(data, dict):
-        return {
-            _normalise_key(key): normalise(value)
-            for key, value in data.items()
-        }
+        return {_normalise_key(key): normalise(value) for key, value in data.items()}
     if isinstance(data, list):
         return [normalise(item) for item in data]
     return data

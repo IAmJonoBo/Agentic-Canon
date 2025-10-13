@@ -1,4 +1,5 @@
 """Post-generation setup hook for project-management template."""
+
 from __future__ import annotations
 
 import importlib
@@ -31,7 +32,7 @@ CONFIG = {
     "projects_board": "{{ cookiecutter.enable_projects_board }}",
     "branch_protection": "{{ cookiecutter.enable_branch_protection }}",
     "default_branch": "{{ cookiecutter.default_branch }}",
-    "require_approvals": "{{ cookiecutter.require_approvals }}"
+    "require_approvals": "{{ cookiecutter.require_approvals }}",
 }
 
 PROJECT_ROOT = Path(".").resolve()
@@ -93,20 +94,16 @@ def setup_branch_protection() -> None:
     print("=" * 50)
     print("To enable branch protection, run:")
     print("```bash")
-    print(
-        "gh api repos/$OWNER/$REPO/branches/{{ cookiecutter.default_branch }}/protection \\"
-    )
+    print("gh api repos/$OWNER/$REPO/branches/{{ cookiecutter.default_branch }}/protection \\")
     print("  --method PUT \\")
     print("  --field required_status_checks[strict]=true \\")
     print("  --field enforce_admins=true \\")
     print("  --field required_pull_request_reviews[dismiss_stale_reviews]=true \\")
-    print(
-        "  --field required_pull_request_reviews[require_code_owner_reviews]=true \\"
-    )
+    print("  --field required_pull_request_reviews[require_code_owner_reviews]=true \\")
     approval_field = (
         "  --field "
         "required_pull_request_reviews[required_approving_review_count]="
-        '{{ cookiecutter.require_approvals }} \\'
+        "{{ cookiecutter.require_approvals }} \\"
     )
     print(approval_field)
     print("  --field required_linear_history=true \\")

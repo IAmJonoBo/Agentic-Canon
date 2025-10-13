@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Post-generation hook for docs-only template."""
+
 from __future__ import annotations
 
 import importlib
@@ -23,9 +24,7 @@ def _load_hooks() -> ModuleType:
 hooks = _load_hooks()
 
 PROJECT_ROOT = Path(".").resolve()
-CONTEXT = {
-    "ci_provider": "{{ cookiecutter.ci_provider }}"
-}
+CONTEXT = {"ci_provider": "{{ cookiecutter.ci_provider }}"}
 
 hooks.run_post_gen("docs-only", PROJECT_ROOT, CONTEXT)
 

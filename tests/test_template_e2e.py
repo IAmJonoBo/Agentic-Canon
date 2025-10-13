@@ -2,9 +2,6 @@
 
 from __future__ import annotations
 
-import contextlib
-import hashlib
-import json
 import os
 import shutil
 import subprocess
@@ -13,42 +10,13 @@ from typing import Callable
 
 import pytest
 
+from templates._shared import cache as cache_utils
+
 cookiecutter_main = pytest.importorskip(
     "cookiecutter.main",
     reason="cookiecutter is required for template integration tests",
 )
 cookiecutter = cookiecutter_main.cookiecutter
-
-
-CACHE_ROOT = Path(
-    os.environ.get("AGENTIC_CANON_CACHE_DIR", Path.home() / ".cache" / "agentic-canon")
-)
-TEMPLATE_CACHE_DIR = CACHE_ROOT / "templates"
-NODE_CACHE_DIR = CACHE_ROOT / "node_modules"
-
-TEMPLATE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
-NODE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
-
-try:  # pragma: no cover - platform dependent
-    import fcntl
-except ImportError:  # pragma: no cover - Windows fallback
-    fcntl = None
-
-
-@contextlib.contextmanager
-def _file_lock(lock_path: Path):
-    if fcntl is None:
-        yield
-        return
-
-    lock_path.parent.mkdir(parents=True, exist_ok=True)
-    fd = os.open(lock_path, os.O_CREAT | os.O_RDWR)
-    try:
-        fcntl.flock(fd, fcntl.LOCK_EX)
-        yield
-    finally:
-        fcntl.flock(fd, fcntl.LOCK_UN)
-        os.close(fd)
 
 
 def _run(cmd: list[str], cwd: Path, env: dict[str, str] | None = None) -> None:
@@ -93,35 +61,29 @@ def _cookiecutter_bake(
     slug = extra_context["project_slug"]
     project_path = tmp_path / slug
 
-    cache_key = hashlib.sha256(
-        json.dumps({"template": template_name, "context": extra_context}, sort_keys=True).encode()
-    ).hexdigest()
-    cache_dir = TEMPLATE_CACHE_DIR / template_name / cache_key
-    lock_file = cache_dir.with_suffix(".lock")
+    os.environ.setdefault("AGENTIC_CANON_SKIP_GIT_INIT", "1")
+    os.environ.setdefault("AGENTIC_CANON_SKIP_MESSAGES", "1")
 
-    if cache_dir.exists():
-        shutil.copytree(cache_dir, project_path, dirs_exist_ok=True)
-        return project_path
-
-    cache_dir.parent.mkdir(parents=True, exist_ok=True)
-    with _file_lock(lock_file):
-        if cache_dir.exists():
-            shutil.copytree(cache_dir, project_path, dirs_exist_ok=True)
-            return project_path
-
+    def _produce(destination: Path) -> None:
         cookiecutter(
             str(template_dir),
             no_input=True,
             extra_context=extra_context,
-            output_dir=str(tmp_path),
+            output_dir=str(destination),
         )
+        generated = destination / slug
+        if generated.exists():
+            for item in generated.iterdir():
+                shutil.move(str(item), destination)
+            shutil.rmtree(generated)
 
-        cache_tmp = cache_dir.with_suffix(".tmp")
-        if cache_tmp.exists():
-            shutil.rmtree(cache_tmp)
-        shutil.copytree(project_path, cache_tmp, dirs_exist_ok=True)
-        os.replace(cache_tmp, cache_dir)
+    cache_dir = cache_utils.prime_template_cache(
+        template_name,
+        extra_context,
+        _produce,
+    )
 
+    cache_utils.copy_from_cache(cache_dir, project_path)
     return project_path
 
 
@@ -139,29 +101,16 @@ def _parse_go_version(output: str) -> str:
 
 def _cache_node_modules(project_path: Path, env: dict[str, str]) -> None:
     lockfile = project_path / "package-lock.json"
+    key_material: list[bytes]
     if lockfile.exists():
-        key_source = lockfile.read_bytes()
+        key_material = [lockfile.read_bytes()]
     else:
-        key_source = (project_path / "package.json").read_bytes()
+        key_material = [(project_path / "package.json").read_bytes()]
 
-    digest = hashlib.sha256(key_source).hexdigest()
-    cache_dir = NODE_CACHE_DIR / digest
-    lock_file = cache_dir.with_suffix(".lock")
-    node_modules = project_path / "node_modules"
+    def installer(path: Path) -> None:
+        _run(["npm", "install", "--no-fund", "--no-audit"], cwd=path, env=env)
 
-    with _file_lock(lock_file):
-        if cache_dir.exists():
-            if node_modules.exists():
-                shutil.rmtree(node_modules)
-            shutil.copytree(cache_dir, node_modules, dirs_exist_ok=True)
-            return
-
-        _run(["npm", "install", "--no-fund", "--no-audit"], cwd=project_path, env=env)
-        cache_tmp = cache_dir.with_suffix(".tmp")
-        if cache_tmp.exists():
-            shutil.rmtree(cache_tmp)
-        shutil.copytree(node_modules, cache_tmp, dirs_exist_ok=True)
-        os.replace(cache_tmp, cache_dir)
+    cache_utils.cache_node_modules(project_path, key_material, installer)
 
 
 @pytest.mark.slow

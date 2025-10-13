@@ -1,8 +1,15 @@
 """Post-generation setup hook for project-management template."""
+from __future__ import annotations
 
 import subprocess
 import sys
 from pathlib import Path
+
+TEMPLATE_ROOT = Path("{{ cookiecutter._template }}").resolve()
+if TEMPLATE_ROOT.exists():
+    sys.path.insert(0, str(TEMPLATE_ROOT.parent))
+
+from _shared import hooks  # type: ignore  # pylint: disable=wrong-import-position
 
 CONFIG = {
     "issue_triage": "{{ cookiecutter.enable_issue_triage }}",
@@ -10,40 +17,40 @@ CONFIG = {
     "stale_issues": "{{ cookiecutter.auto_close_stale_issues }}",
     "todo_tracking": "{{ cookiecutter.enable_todo_tracking }}",
     "tasklist_tracking": "{{ cookiecutter.enable_tasklist_tracking }}",
-    "branch_protection": "{{ cookiecutter.enable_branch_protection }}",
     "projects_board": "{{ cookiecutter.enable_projects_board }}",
+    "branch_protection": "{{ cookiecutter.enable_branch_protection }}",
+    "default_branch": "{{ cookiecutter.default_branch }}",
+    "require_approvals": "{{ cookiecutter.require_approvals }}"
 }
 
+PROJECT_ROOT = Path(".").resolve()
 
-def gh_expr(body: str) -> str:
-    """Build a GitHub Actions expression without Jinja conflicts."""
-    return "${" + "{ " + body + " }}"
+hooks.run_post_gen("project-management", PROJECT_ROOT, CONFIG)
 
 
 def run_command(cmd: list[str], description: str) -> bool:
-    """Run a shell command and return success status."""
     try:
         print(f"🔨 {description}...")
         subprocess.run(cmd, check=True, capture_output=True, text=True)
         print(f"✅ {description} complete")
         return True
-    except subprocess.CalledProcessError as e:
-        print(f"❌ {description} failed: {e.stderr}", file=sys.stderr)
+    except subprocess.CalledProcessError as exc:
+        print(f"❌ {description} failed: {exc.stderr}", file=sys.stderr)
         return False
 
 
-def setup_git_repo():
-    """Initialize git repository if not already initialized."""
-    if not Path(".git").exists():
+def setup_git_repo() -> None:
+    if hooks.should_suppress_messages():
+        return
+    print("\n🚀 Setting up project management automation...\n")
+    if not (PROJECT_ROOT / ".git").exists():
         run_command(["git", "init"], "Initialize git repository")
-        run_command(
-            ["git", "branch", "-M", "{{ cookiecutter.default_branch }}"],
-            "Set default branch",
-        )
+        run_command(["git", "branch", "-M", CONFIG["default_branch"]], "Set default branch")
 
 
-def setup_github_labels():
-    """Create standard GitHub labels."""
+def setup_github_labels() -> None:
+    if hooks.should_suppress_messages():
+        return
     labels = [
         ("task", "0e8a16", "General task"),
         ("from:todo", "d4c5f9", "Created from TODO comment"),
@@ -64,65 +71,58 @@ def setup_github_labels():
     print("To create labels, run:")
     print("```bash")
     for name, color, desc in labels:
-        print(
-            f'gh label create "{name}" --color "{color}" --description "{desc}" --force'
-        )
+        print(f'gh label create "{name}" --color "{color}" --description "{desc}" --force')
     print("```\n")
 
 
-def setup_branch_protection():
-    """Display branch protection setup instructions."""
-    if CONFIG["branch_protection"] == "yes":
-        print("\n🔒 Branch Protection Setup")
-        print("=" * 50)
-        print("To enable branch protection, run:")
-        print("```bash")
-        print(
-            "gh api repos/$OWNER/$REPO/branches/{{ cookiecutter.default_branch }}/protection \\"
-        )
-        print("  --method PUT \\")
-        print("  --field required_status_checks[strict]=true \\")
-        print("  --field enforce_admins=true \\")
-        print("  --field required_pull_request_reviews[dismiss_stale_reviews]=true \\")
-        print(
-            "  --field required_pull_request_reviews[require_code_owner_reviews]=true \\"
-        )
-        print(
-            "  --field required_pull_request_reviews[required_approving_review_count]={{ cookiecutter.require_approvals }} \\"
-        )
-        print("  --field required_linear_history=true \\")
-        print("  --field allow_force_pushes=false \\")
-        print("  --field allow_deletions=false")
-        print("```\n")
+def setup_branch_protection() -> None:
+    if hooks.should_suppress_messages() or CONFIG["branch_protection"].lower() != "yes":
+        return
+    print("\n🔒 Branch Protection Setup")
+    print("=" * 50)
+    print("To enable branch protection, run:")
+    print("```bash")
+    print(
+        "gh api repos/$OWNER/$REPO/branches/{{ cookiecutter.default_branch }}/protection \")
+    print("  --method PUT \")
+    print("  --field required_status_checks[strict]=true \")
+    print("  --field enforce_admins=true \")
+    print("  --field required_pull_request_reviews[dismiss_stale_reviews]=true \")
+    print(
+        "  --field required_pull_request_reviews[require_code_owner_reviews]=true \")
+    print(
+        "  --field required_pull_request_reviews[required_approving_review_count]={{ cookiecutter.require_approvals }} \")
+    print("  --field required_linear_history=true \")
+    print("  --field allow_force_pushes=false \")
+    print("  --field allow_deletions=false")
+    print("```\n")
 
 
-def setup_projects_board():
-    """Display GitHub Projects setup instructions."""
-    if CONFIG["projects_board"] == "yes":
-        print("\n📊 GitHub Projects Setup")
-        print("=" * 50)
-        print("To create a GitHub Project:")
-        print(
-            "1. Go to: https://github.com/orgs/{{ cookiecutter.github_org }}/projects"
-        )
-        print("2. Click 'New project'")
-        print("3. Choose 'Board' template")
-        print("4. Add custom fields:")
-        print("   - Priority: Single select (High, Medium, Low)")
-        print("   - Iteration: Iteration field")
-        print("5. Enable automation:")
-        print("   - Auto-add: Add new issues to project")
-        print("   - Auto-archive: Archive closed items after 14 days")
-        print("   - Status sync: Sync issue state with column")
-        print("\n")
+def setup_projects_board() -> None:
+    if hooks.should_suppress_messages() or CONFIG["projects_board"].lower() != "yes":
+        return
+    print("\n📊 GitHub Projects Setup")
+    print("=" * 50)
+    print("To create a GitHub Project:")
+    print("1. Go to: https://github.com/orgs/{{ cookiecutter.github_org }}/projects")
+    print("2. Click 'New project'")
+    print("3. Choose 'Board' template")
+    print("4. Add custom fields:")
+    print("   - Priority: Single select (High, Medium, Low)")
+    print("   - Iteration: Iteration field")
+    print("5. Enable automation:")
+    print("   - Auto-add: Add new issues to project")
+    print("   - Auto-archive: Archive closed items after 14 days")
+    print("   - Status sync: Sync issue state with column")
+    print("\n")
 
 
-def display_next_steps():
-    """Display next steps for the user."""
+def display_next_steps() -> None:
+    if hooks.should_suppress_messages():
+        return
     print("\n✨ Project Management Setup Complete!")
     print("=" * 50)
     print("\n📝 Next Steps:\n")
-
     steps = [
         "1. Review generated workflows in .github/workflows/",
         "2. Commit and push to GitHub:",
@@ -132,10 +132,10 @@ def display_next_steps():
         "3. Set up GitHub labels (see instructions above)",
     ]
 
-    if CONFIG["branch_protection"] == "yes":
+    if CONFIG["branch_protection"].lower() == "yes":
         steps.append("4. Configure branch protection (see instructions above)")
 
-    if CONFIG["projects_board"] == "yes":
+    if CONFIG["projects_board"].lower() == "yes":
         steps.append("5. Create GitHub Projects board (see instructions above)")
 
     steps.extend(
@@ -157,66 +157,14 @@ def display_next_steps():
     print("\n")
 
 
-def main():
-    """Run post-generation setup."""
-    print("\n🚀 Setting up project management automation...\n")
-
-    if CONFIG["issue_triage"] == "no":
-        workflow = Path(".github/workflows/issue-triage.yml")
-        if workflow.exists():
-            workflow.unlink()
-            print("🧹 Removed issue triage workflow (disabled in template options)")
-
-    if CONFIG["pr_followups"] == "no":
-        workflow = Path(".github/workflows/pr-review-followup.yml")
-        if workflow.exists():
-            workflow.unlink()
-            print("🧹 Removed PR review follow-up workflow (disabled in template options)")
-
-    if CONFIG["stale_issues"] == "no":
-        workflow = Path(".github/workflows/stale.yml")
-        if workflow.exists():
-            workflow.unlink()
-            print("🧹 Removed stale issue workflow (disabled in template options)")
-
-    if CONFIG["todo_tracking"] == "no":
-        workflow = Path(".github/workflows/todos.yml")
-        if workflow.exists():
-            workflow.unlink()
-            print("🧹 Removed TODO tracking workflow (disabled in template options)")
-
-    if CONFIG["tasklist_tracking"] == "no":
-        workflow = Path(".github/workflows/tasklist-scan.yml")
-        if workflow.exists():
-            workflow.unlink()
-            print("🧹 Removed tasklist tracking workflow (disabled in template options)")
-
+def main() -> None:
     setup_git_repo()
     setup_github_labels()
     setup_branch_protection()
     setup_projects_board()
-
-    replacements = {
-        ".github/workflows/stale.yml": {
-            "GITHUB_TOKEN_EXPR": gh_expr("secrets.GITHUB_TOKEN"),
-        },
-        ".github/workflows/todos.yml": {
-            "PROJECT_EXPR": gh_expr("github.event.repository.full_name"),
-        },
-    }
-
-    for rel_path, mapping in replacements.items():
-        workflow = Path(rel_path)
-        if not workflow.exists():
-            continue
-        content = workflow.read_text()
-        for placeholder, expr in mapping.items():
-            content = content.replace(placeholder, expr)
-        workflow.write_text(content)
-
     display_next_steps()
-
-    print("✅ Setup complete!\n")
+    if not hooks.should_suppress_messages():
+        print("✅ Setup complete!\n")
 
 
 if __name__ == "__main__":

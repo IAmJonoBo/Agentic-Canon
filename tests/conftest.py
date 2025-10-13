@@ -11,6 +11,12 @@ import pytest
 _BAKE_CACHE: Dict[str, Any] = {}
 
 
+@pytest.fixture(autouse=True)
+def _patch_hook_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("AGENTIC_CANON_SKIP_GIT_INIT", "1")
+    monkeypatch.setenv("AGENTIC_CANON_SKIP_MESSAGES", "1")
+
+
 def pytest_configure(config):
     """Ensure pytest-cookies is registered exactly once."""
     if not (

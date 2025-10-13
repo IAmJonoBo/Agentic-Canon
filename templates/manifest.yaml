@@ -1,0 +1,435 @@
+schema_version: "1.0"
+templates:
+  python-service:
+    root: "templates/python-service"
+    summary: "Production-ready Python service with FastAPI, pytest, and GitHub Actions."
+    git:
+      init: true
+    sample_contexts:
+      default:
+        project_name: "Demo Service"
+        project_slug: "demo-service"
+        pkg_name: "demo_service"
+        project_description: "A demo Python service"
+        author_name: "Test Author"
+        author_email: "test@example.com"
+        license: "Apache-2.0"
+        python_version: "3.11"
+        include_jupyter_book: "yes"
+        enable_security_gates: "yes"
+        enable_sbom_signing: "yes"
+        enable_contract_tests: "yes"
+        ci_provider: "github"
+      minimal:
+        project_name: "Minimal Service"
+        project_slug: "minimal-service"
+        pkg_name: "minimal_service"
+        project_description: "A Python service with best practices"
+        author_name: "Your Name"
+        author_email: "your.email@example.com"
+        license: "MIT"
+        python_version: "3.11"
+        include_jupyter_book: "no"
+        enable_security_gates: "no"
+        enable_sbom_signing: "no"
+        enable_contract_tests: "no"
+        ci_provider: "github"
+    hooks:
+      workflows:
+        - path: ".github/workflows/ci.yml"
+          replacements:
+            IF_MATRIX_PY311: "${{ matrix.python-version == '3.11' }}"
+            IF_NOTEBOOKS_PRESENT: "${{ hashFiles('notebooks/**/*.ipynb') != '' }}"
+            PY_VERSION_MATRIX: "${{ matrix.python-version }}"
+        - path: ".github/workflows/docs.yml"
+          replacements:
+            GITHUB_TOKEN_EXPR: "${{ secrets.GITHUB_TOKEN }}"
+            IF_DOCS_DEPLOY: "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}"
+            IF_DOCS_PRESENT: "${{ hashFiles('docs/**') != '' }}"
+        - path: ".github/workflows/security.yml"
+          replacements:
+            DEFAULT_BRANCH_EXPR: "${{ github.event.repository.default_branch }}"
+            GITHUB_TOKEN_EXPR: "${{ secrets.GITHUB_TOKEN }}"
+            IF_DEPENDENCY_REVIEW: "${{ github.event_name == 'pull_request' }}"
+            SBOM_JOB_ENABLED: "${{ true }}"
+      options:
+        include_jupyter_book:
+          description: "Include the Jupyter Book documentation scaffolding."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - "docs/_config.yml"
+                - "docs/_toc.yml"
+                - "docs/intro.md"
+                - "notebooks"
+        enable_security_gates:
+          description: "Enable security guardrails workflows."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - ".github/workflows/security.yml"
+        enable_contract_tests:
+          description: "Provision the contract testing skeleton."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - "tests/contract"
+      cleanup:
+        remove_after_render: []
+    bootstrap: []
+    trunk:
+      inherit_from_root: true
+      overrides: []
+    cache:
+      render:
+        strategy: "templates"
+      installers:
+        node:
+          enabled: false
+          path: "node_modules"
+        pip:
+          enabled: false
+          path: ".venv"
+        go:
+          enabled: false
+          path: "vendor"
+  node-service:
+    root: "templates/node-service"
+    summary: "Node.js service template with TypeScript, Vitest, and GitHub Actions."
+    git:
+      init: true
+    sample_contexts:
+      default:
+        project_name: "Demo Node Service"
+        project_slug: "demo-node-service"
+        description: "A demo Node.js service"
+        author_name: "Test Author"
+        author_email: "test@example.com"
+        license: "Apache-2.0"
+        node_version: "20"
+        enable_security_gates: "yes"
+        enable_sbom_signing: "yes"
+        ci_provider: "github"
+    hooks:
+      workflows:
+        - path: ".github/workflows/ci.yml"
+          replacements:
+            NODE_VERSION_MATRIX: "${{ matrix.node-version }}"
+        - path: ".github/workflows/security.yml"
+          replacements:
+            DEFAULT_BRANCH_EXPR: "${{ github.event.repository.default_branch }}"
+            GITHUB_TOKEN_EXPR: "${{ secrets.GITHUB_TOKEN }}"
+      options:
+        enable_security_gates:
+          description: "Enable security scanning workflows."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - ".github/workflows/security.yml"
+      cleanup:
+        remove_after_render: []
+    bootstrap: []
+    trunk:
+      inherit_from_root: true
+      overrides: []
+    cache:
+      render:
+        strategy: "templates"
+      installers:
+        node:
+          enabled: true
+          path: "node_modules"
+          command:
+            - "npm"
+            - "install"
+            - "--no-fund"
+            - "--no-audit"
+        pip:
+          enabled: false
+          path: ".venv"
+        go:
+          enabled: false
+          path: "vendor"
+  react-webapp:
+    root: "templates/react-webapp"
+    summary: "React webapp template with Vite, Vitest, and Storybook."
+    git:
+      init: true
+    sample_contexts:
+      default:
+        project_name: "Demo React App"
+        project_slug: "demo-react-app"
+        description: "A demo React application"
+        author_name: "Test Author"
+        author_email: "test@example.com"
+        license: "MIT"
+        include_storybook: "yes"
+        include_e2e_tests: "yes"
+        enable_accessibility_tests: "yes"
+        ci_provider: "github"
+      minimal:
+        project_name: "Minimal React App"
+        project_slug: "minimal-react-app"
+        description: "A production-ready React application"
+        author_name: "Your Name"
+        author_email: "you@example.com"
+        license: "MIT"
+        include_storybook: "no"
+        include_e2e_tests: "no"
+        enable_accessibility_tests: "no"
+        ci_provider: "github"
+    hooks:
+      workflows:
+        - path: ".github/workflows/security.yml"
+          replacements:
+            DEFAULT_BRANCH_EXPR: "${{ github.event.repository.default_branch }}"
+            GITHUB_TOKEN_EXPR: "${{ secrets.GITHUB_TOKEN }}"
+      options:
+        include_storybook:
+          description: "Include Storybook authoring workflows."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - ".storybook"
+                - "src/components/Button.stories.tsx"
+                - ".github/workflows/storybook-pages.yml"
+        include_e2e_tests:
+          description: "Include Playwright end-to-end tests."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - "tests/e2e"
+                - "playwright.config.ts"
+        enable_accessibility_tests:
+          description: "Enable accessibility scanning workflows."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - ".github/workflows/accessibility.yml"
+      cleanup:
+        remove_after_render: []
+    bootstrap: []
+    trunk:
+      inherit_from_root: true
+      overrides: []
+    cache:
+      render:
+        strategy: "templates"
+      installers:
+        node:
+          enabled: true
+          path: "node_modules"
+          command:
+            - "npm"
+            - "install"
+            - "--no-fund"
+            - "--no-audit"
+        pip:
+          enabled: false
+          path: ".venv"
+        go:
+          enabled: false
+          path: "vendor"
+  go-service:
+    root: "templates/go-service"
+    summary: "Go service template with standard tooling and GitHub Actions."
+    git:
+      init: true
+    sample_contexts:
+      default:
+        project_name: "Integration Go Service"
+        project_slug: "integration-go-service"
+        module_path: "github.com/agentic-canon/integration-go-service"
+        description: "Go service integration test"
+        author_name: "Agentic Canon"
+        author_email: "devnull@example.com"
+        license: "Apache-2.0"
+        go_version: "1.22"
+        enable_security_gates: "yes"
+        ci_provider: "github"
+    hooks:
+      workflows:
+        - path: ".github/workflows/ci.yml"
+          replacements:
+            GO_VERSION_EXPR: "${{ matrix.go-version }}"
+            GO_VERSION_LABEL: "${{ matrix.go-version }}"
+        - path: ".github/workflows/security.yml"
+          replacements:
+            DEFAULT_BRANCH_EXPR: "${{ github.event.repository.default_branch }}"
+            GITHUB_TOKEN_EXPR: "${{ secrets.GITHUB_TOKEN }}"
+      options:
+        enable_security_gates:
+          description: "Enable CodeQL and security scans."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - ".github/workflows/security.yml"
+      cleanup:
+        remove_after_render: []
+    bootstrap:
+      - - "go"
+        - "mod"
+        - "tidy"
+    trunk:
+      inherit_from_root: true
+      overrides: []
+    cache:
+      render:
+        strategy: "templates"
+      installers:
+        node:
+          enabled: false
+          path: "node_modules"
+        pip:
+          enabled: false
+          path: ".venv"
+        go:
+          enabled: true
+          path: "pkg/mod"
+          command:
+            - "go"
+            - "mod"
+            - "download"
+  docs-only:
+    root: "templates/docs-only"
+    summary: "Documentation-only template powered by Jupyter Book."
+    git:
+      init: true
+    sample_contexts:
+      default:
+        project_name: "Demo Documentation"
+        project_slug: "demo-docs"
+        description: "Demo documentation project"
+        author_name: "Test Author"
+        author_email: "test@example.com"
+        license: "CC-BY-4.0"
+        ci_provider: "github"
+    hooks:
+      workflows:
+        - path: ".github/workflows/book-deploy.yml"
+          replacements:
+            GITHUB_TOKEN_EXPR: "${{ secrets.GITHUB_TOKEN }}"
+      options:
+      cleanup:
+        remove_after_render: []
+    bootstrap: []
+    trunk:
+      inherit_from_root: true
+      overrides: []
+    cache:
+      render:
+        strategy: "templates"
+      installers:
+        node:
+          enabled: false
+          path: "node_modules"
+        pip:
+          enabled: false
+          path: ".venv"
+        go:
+          enabled: false
+          path: "vendor"
+  project-management:
+    root: "templates/project-management"
+    summary: "Project management automation pack for GitHub repositories."
+    git:
+      init: true
+      default_branch_variable: "default_branch"
+    sample_contexts:
+      default:
+        project_name: "My Project"
+        project_slug: "my-project"
+        github_org: "my-org"
+        project_description: "A well-managed project"
+        enable_todo_tracking: "yes"
+        enable_tasklist_tracking: "yes"
+        enable_pr_followups: "yes"
+        enable_issue_triage: "yes"
+        enable_projects_board: "yes"
+        enable_branch_protection: "yes"
+        enable_codeowners: "yes"
+        default_branch: "main"
+        require_approvals: "2"
+        auto_close_stale_issues: "yes"
+        stale_days: "60"
+      minimal:
+        project_name: "Minimal Project"
+        project_slug: "minimal-project"
+        github_org: "test-org"
+        project_description: "A well-managed project"
+        enable_todo_tracking: "yes"
+        enable_tasklist_tracking: "no"
+        enable_pr_followups: "no"
+        enable_issue_triage: "no"
+        enable_projects_board: "no"
+        enable_branch_protection: "no"
+        enable_codeowners: "no"
+        default_branch: "main"
+        require_approvals: "1"
+        auto_close_stale_issues: "no"
+        stale_days: "60"
+    hooks:
+      workflows: []
+      options:
+        enable_todo_tracking:
+          description: "Generate TODO automation workflow."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - ".github/workflows/todos.yml"
+        enable_tasklist_tracking:
+          description: "Generate tasklist automation workflow."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - ".github/workflows/tasklist-scan.yml"
+        enable_pr_followups:
+          description: "Generate PR follow-up automation workflow."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - ".github/workflows/pr-review-followup.yml"
+        enable_issue_triage:
+          description: "Generate issue triage workflow."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - ".github/workflows/issue-triage.yml"
+        auto_close_stale_issues:
+          description: "Generate stale issue management workflow."
+          default: "yes"
+          cases:
+            no:
+              remove:
+                - ".github/workflows/stale.yml"
+      cleanup:
+        remove_after_render: []
+    bootstrap: []
+    trunk:
+      inherit_from_root: true
+      overrides: []
+    cache:
+      render:
+        strategy: "templates"
+      installers:
+        node:
+          enabled: false
+          path: "node_modules"
+        pip:
+          enabled: false
+          path: ".venv"
+        go:
+          enabled: false
+          path: "vendor"

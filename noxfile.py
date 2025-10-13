@@ -4,11 +4,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
+import time
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Dict, Iterable, Iterator, Mapping, Sequence
+from typing import Dict, Iterable, Iterator, Mapping, Sequence, cast
 
-import nox
+import nox  # type: ignore[import]
 
 SANITY_SECTIONS = (
     "core",
@@ -25,6 +28,7 @@ RENDER_ROOT = Path("build/template-renders")
 RENDER_INDEX = RENDER_ROOT / "index.json"
 REPO_ROOT = Path(__file__).parent.resolve()
 TRUNK_SCRIPT = REPO_ROOT / ".dev" / "trunk-with-progress.sh"
+TRUNK_BIN = Path.home() / ".cache" / "trunk" / "bin" / "trunk"
 
 nox.options.error_on_missing_interpreters = False
 nox.options.reuse_existing_virtualenvs = True
@@ -99,68 +103,215 @@ def _ensure_clean_directory(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
+def _ensure_trunk(session: nox.Session) -> None:
+    """Install the Trunk CLI if it is not already present."""
+    existing = shutil.which("trunk")
+    if existing:
+        return
+
+    install_path = TRUNK_BIN.parent
+    session.log("Installing Trunk CLI")
+    session.run(
+        "bash",
+        "-c",
+        "curl https://get.trunk.io -fsSL | bash -s -- -y",
+        external=True,
+    )
+
+    session.env["PATH"] = f"{install_path}:{session.env.get('PATH', os.environ.get('PATH', ''))}"
+    if not shutil.which("trunk"):
+        session.error("Trunk installation failed")
+
+
+@contextmanager
+def _session_timer(session: nox.Session, label: str):
+    start = time.perf_counter()
+    session.log(f"[timer] {label} started")
+    try:
+        yield
+    finally:
+        duration = time.perf_counter() - start
+        session.log(f"[timer] {label} finished in {duration:.2f}s")
+
+
+def _collect_key_material(project_path: Path, candidates: Iterable[str]) -> list[bytes]:
+    material: list[bytes] = []
+    for relative in candidates:
+        candidate_path = project_path / relative
+        if candidate_path.exists():
+            material.append(candidate_path.read_bytes())
+    if not material:
+        material.append(str(project_path).encode("utf-8"))
+    return material
+
+
+def _resolve_env(project_path: Path, env_cfg: Mapping[str, object] | None) -> dict[str, str]:
+    resolved: dict[str, str] = {}
+    for key, value in (env_cfg or {}).items():
+        if not isinstance(value, str):
+            continue
+        if value.startswith("$") or value.startswith("${"):
+            resolved[str(key)] = value
+            continue
+        candidate = Path(value)
+        if candidate.is_absolute():
+            resolved[str(key)] = str(candidate)
+        else:
+            resolved[str(key)] = str((project_path / candidate).resolve())
+    return resolved
+
+
+def _run_installers(
+    session: nox.Session,
+    project_path: Path,
+    cache_cfg: Mapping[str, object] | None,
+    *,
+    force: bool,
+) -> None:
+    if not cache_cfg:
+        return
+
+    from templates._shared import cache as cache_utils  # pylint: disable=import-outside-toplevel
+
+    installers = cache_cfg.get("installers", {})
+    if not isinstance(installers, Mapping):
+        return
+
+    def _command_list(default: Sequence[str], cfg: Mapping[str, object]) -> list[str]:
+        command = cfg.get("command")
+        if isinstance(command, Sequence) and not isinstance(command, str):
+            return [str(part) for part in command]
+        return list(default)
+
+    # Node.js dependencies
+    node_cfg = installers.get("node")
+    if isinstance(node_cfg, Mapping) and node_cfg.get("enabled"):
+        key_files = node_cfg.get("key_files") or ["package-lock.json", "package.json"]
+        key_material = _collect_key_material(project_path, [str(f) for f in key_files])
+        command = _command_list(["npm", "install", "--no-fund", "--no-audit"], node_cfg)
+
+        def _node_installer(path: Path) -> None:
+            with session.chdir(str(path)):
+                session.run(*command, external=True)
+
+        cache_utils.cache_node_modules(project_path, key_material, _node_installer, force=force)
+
+    # Python / pip dependencies
+    pip_cfg = installers.get("pip")
+    if isinstance(pip_cfg, Mapping) and pip_cfg.get("enabled"):
+        key_files = pip_cfg.get("key_files") or ["requirements.txt", "pyproject.toml"]
+        key_material = _collect_key_material(project_path, [str(f) for f in key_files])
+        command = _command_list(
+            ["python", "-m", "pip", "install", "-r", "requirements.txt"], pip_cfg
+        )
+
+        def _pip_installer(path: Path) -> None:
+            with session.chdir(str(path)):
+                session.run(*command, external=True)
+
+        cache_utils.cache_pip_install(project_path, key_material, _pip_installer, force=force)
+
+    # Go module downloads
+    go_cfg = installers.get("go")
+    if isinstance(go_cfg, Mapping) and go_cfg.get("enabled"):
+        key_files = go_cfg.get("key_files") or ["go.sum", "go.mod"]
+        key_material = _collect_key_material(project_path, [str(f) for f in key_files])
+        command = _command_list(["go", "mod", "download"], go_cfg)
+        env_cfg = go_cfg.get("env")
+        if isinstance(env_cfg, Mapping):
+            env = _resolve_env(project_path, env_cfg)
+        else:
+            env = {}
+
+        def _go_installer(path: Path) -> None:
+            with session.chdir(str(path)):
+                session.run(*command, external=True, env=env)
+
+        cache_utils.cache_go_modules(project_path, key_material, _go_installer, force=force)
+
+
 @nox.session
 def render_templates(session: nox.Session) -> None:
     """Render all template/context combinations into build/template-renders."""
-    parser = _arg_parser()
-    args = parser.parse_args(session.posargs)
+    with _session_timer(session, "render_templates"):
+        parser = _arg_parser()
+        args = parser.parse_args(session.posargs)
 
-    session.install("cookiecutter==2.6.0")
+        session.run(
+            "python3",
+            str(REPO_ROOT / ".dev" / "scripts" / "sync-manifest.py"),
+            "--check",
+            external=True,
+        )
 
-    from cookiecutter.main import cookiecutter  # pylint: disable=import-outside-toplevel
-    from templates._shared import cache as cache_utils  # pylint: disable=import-outside-toplevel
+        session.install("cookiecutter==2.6.0")
 
-    templates = _load_manifest_templates()
-    targets = list(_iter_render_targets(templates, args))
-    if not targets:
-        session.log("No template contexts matched the provided filters.")
-        return
+        from cookiecutter.main import cookiecutter  # type: ignore[import]  # pylint: disable=import-outside-toplevel
+        from templates._shared import cache as cache_utils  # pylint: disable=import-outside-toplevel
 
-    _ensure_clean_directory(RENDER_ROOT)
-    index: list[dict[str, str]] = []
+        templates = _load_manifest_templates()
+        targets = list(_iter_render_targets(templates, args))
+        if not targets:
+            session.log("No template contexts matched the provided filters.")
+            return
 
-    session.env.setdefault("AGENTIC_CANON_SKIP_GIT_INIT", "1")
-    session.env.setdefault("AGENTIC_CANON_SKIP_MESSAGES", "1")
+        _ensure_clean_directory(RENDER_ROOT)
+        index: list[dict[str, str]] = []
 
-    for template_name, context_name, extra_context, template_cfg in targets:
-        template_root = Path(template_cfg["root"])  # type: ignore[index]
-        session.log(f"Rendering template '{template_name}' context '{context_name}'")
+        session.env.setdefault("AGENTIC_CANON_SKIP_GIT_INIT", "1")
+        session.env.setdefault("AGENTIC_CANON_SKIP_MESSAGES", "1")
 
-        def _produce(destination: Path) -> None:
-            cookiecutter(
-                str(template_root),
-                no_input=True,
-                extra_context=extra_context,
-                output_dir=str(destination),
+        for template_name, context_name, extra_context, template_cfg in targets:
+            root_value_obj = template_cfg.get("root")  # type: ignore[call-overload]
+            if not isinstance(root_value_obj, str):
+                session.error(f"Template '{template_name}' is missing a valid 'root' path")
+            template_root = Path(cast(str, root_value_obj))
+            session.log(f"Rendering template '{template_name}' context '{context_name}'")
+
+            context_payload = dict(extra_context)
+            slug_value = str(context_payload.get("project_slug") or template_name)
+
+            def _produce(destination: Path, *,
+                         cookiecutter_func=cookiecutter,
+                         template_root_path=template_root,
+                         payload=context_payload,
+                         slug=slug_value) -> None:
+                cookiecutter(
+                    str(template_root_path),
+                    no_input=True,
+                    extra_context=payload,
+                    output_dir=str(destination),
+                )
+                generated = destination / slug
+                if generated.exists():
+                    for item in generated.iterdir():
+                        shutil.move(str(item), destination)
+                    shutil.rmtree(generated)
+
+            cache_dir = cache_utils.prime_template_cache(
+                template_name,
+                extra_context,
+                _produce,
+                force=args.force,
             )
-            slug = extra_context.get("project_slug") or extra_context.get("project_slug", template_name)
-            generated = destination / str(slug)
-            if generated.exists():
-                for item in generated.iterdir():
-                    shutil.move(str(item), destination)
-                shutil.rmtree(generated)
 
-        cache_dir = cache_utils.prime_template_cache(
-            template_name,
-            extra_context,
-            _produce,
-            force=args.force,
-        )
+            render_path = RENDER_ROOT / template_name / context_name
+            cache_utils.copy_from_cache(cache_dir, render_path)
+            cache_cfg = template_cfg.get("cache", {}) if isinstance(template_cfg, Mapping) else {}
+            if isinstance(cache_cfg, Mapping):
+                _run_installers(session, render_path, cache_cfg, force=args.force)
 
-        render_path = RENDER_ROOT / template_name / context_name
-        cache_utils.copy_from_cache(cache_dir, render_path)
+            index.append(
+                {
+                    "template": template_name,
+                    "context": context_name,
+                    "path": str(render_path),
+                    "cache_dir": str(cache_dir),
+                }
+            )
 
-        index.append(
-            {
-                "template": template_name,
-                "context": context_name,
-                "path": str(render_path),
-                "cache_dir": str(cache_dir),
-            }
-        )
-
-    with RENDER_INDEX.open("w", encoding="utf-8") as handle:
-        json.dump({"entries": index}, handle, indent=2)
+        with RENDER_INDEX.open("w", encoding="utf-8") as handle:
+            json.dump({"entries": index}, handle, indent=2)
 
 
 def _load_render_index() -> Sequence[Mapping[str, str]]:
@@ -194,92 +345,110 @@ def _copy_trunk_configuration(project_path: Path, template_cfg: Mapping[str, obj
 @nox.session
 def lint_templates(session: nox.Session) -> None:
     """Run Trunk checks across rendered template variants."""
-    parser = _arg_parser()
-    args = parser.parse_args(session.posargs)
+    with _session_timer(session, "lint_templates"):
+        parser = _arg_parser()
+        args = parser.parse_args(session.posargs)
 
-    templates = _load_manifest_templates()
-    entries = _load_render_index()
-    if not entries:
-        session.error("No rendered templates found. Run `nox -s render_templates` first.")
+        templates = _load_manifest_templates()
+        entries = _load_render_index()
+        if not entries:
+            session.error("No rendered templates found. Run `nox -s render_templates` first.")
 
-    for entry in entries:
-        template_name = entry["template"]
-        context_name = entry["context"]
-        if args.templates and template_name not in args.templates:
-            continue
-        if args.contexts and context_name not in args.contexts:
-            continue
+        _ensure_trunk(session)
 
-        project_path = Path(entry["path"])
-        if not project_path.exists():
-            session.warn(f"Rendered project missing at {project_path}; skipping.")
-            continue
+        for entry in entries:
+            template_name = entry["template"]
+            context_name = entry["context"]
+            if args.templates and template_name not in args.templates:
+                continue
+            if args.contexts and context_name not in args.contexts:
+                continue
 
-        template_cfg = templates.get(template_name, {})
-        _copy_trunk_configuration(project_path, template_cfg)
+            project_path = Path(entry["path"])
+            if not project_path.exists():
+                session.warn(f"Rendered project missing at {project_path}; skipping.")
+                continue
 
-        session.log(f"[lint] {template_name} :: {context_name}")
-        with session.chdir(str(project_path)):
-            session.run(
-                str(TRUNK_SCRIPT),
-                "check",
-                "--all",
-                external=True,
-            )
+            template_cfg = templates.get(template_name, {})
+            _copy_trunk_configuration(project_path, template_cfg)
+
+            session.log(f"[lint] {template_name} :: {context_name}")
+            with session.chdir(str(project_path)):
+                session.run(
+                    str(TRUNK_SCRIPT),
+                    "check",
+                    "--all",
+                    external=True,
+                )
 
 
 @nox.session
 def format_templates(session: nox.Session) -> None:
     """Format rendered templates and fail if formatting introduces changes."""
-    parser = _arg_parser()
-    args = parser.parse_args(session.posargs)
+    with _session_timer(session, "format_templates"):
+        parser = _arg_parser()
+        args = parser.parse_args(session.posargs)
 
-    templates = _load_manifest_templates()
-    entries = _load_render_index()
-    if not entries:
-        session.error("No rendered templates found. Run `nox -s render_templates` first.")
+        templates = _load_manifest_templates()
+        entries = _load_render_index()
+        if not entries:
+            session.error("No rendered templates found. Run `nox -s render_templates` first.")
 
-    for entry in entries:
-        template_name = entry["template"]
-        context_name = entry["context"]
-        if args.templates and template_name not in args.templates:
-            continue
-        if args.contexts and context_name not in args.contexts:
-            continue
+        _ensure_trunk(session)
 
-        project_path = Path(entry["path"])
-        if not project_path.exists():
-            session.warn(f"Rendered project missing at {project_path}; skipping.")
-            continue
+        for entry in entries:
+            template_name = entry["template"]
+            context_name = entry["context"]
+            if args.templates and template_name not in args.templates:
+                continue
+            if args.contexts and context_name not in args.contexts:
+                continue
 
-        template_cfg = templates.get(template_name, {})
-        _copy_trunk_configuration(project_path, template_cfg)
+            project_path = Path(entry["path"])
+            if not project_path.exists():
+                session.warn(f"Rendered project missing at {project_path}; skipping.")
+                continue
 
-        session.log(f"[format] {template_name} :: {context_name}")
-        with session.chdir(str(project_path)):
-            session.run(
-                str(TRUNK_SCRIPT),
-                "fmt",
-                "--all",
-                external=True,
-            )
-            result = session.run("git", "status", "--porcelain", external=True, silent=True)
-            if result.stdout.strip():
-                session.error(f"Formatting produced changes in {project_path}")
+            template_cfg = templates.get(template_name, {})
+            _copy_trunk_configuration(project_path, template_cfg)
+
+            session.log(f"[format] {template_name} :: {context_name}")
+            with session.chdir(str(project_path)):
+                session.run(
+                    str(TRUNK_SCRIPT),
+                    "fmt",
+                    "--all",
+                    external=True,
+                )
+                result = session.run("git", "status", "--porcelain", external=True, silent=True)
+                if result.stdout.strip():
+                    session.error(f"Formatting produced changes in {project_path}")
 
 
 @nox.session
 def upgrade_tools(session: nox.Session) -> None:
     """Upgrade shared tooling (Trunk, linters, template dependencies)."""
-    parser = _arg_parser()
-    args = parser.parse_args(session.posargs)
+    with _session_timer(session, "upgrade_tools"):
+        parser = _arg_parser()
+        args = parser.parse_args(session.posargs)
 
-    session.log("Upgrading Trunk CLI and pinned plugins.")
-    session.run(".dev/trunk-with-progress.sh", "upgrade", external=True)
+        _ensure_trunk(session)
 
-    session.log("Template-specific dependency upgrade hooks not yet implemented.")
-    if args.templates:
-        session.log(f"Templates requested for upgrade: {', '.join(args.templates)}")
+        session.log("Upgrading Trunk CLI and pinned plugins.")
+        session.run(".dev/trunk-with-progress.sh", "upgrade", external=True)
+
+        session.log("Template-specific dependency upgrade hooks not yet implemented.")
+        if args.templates:
+            session.log(f"Templates requested for upgrade: {', '.join(args.templates)}")
+
+
+@nox.session
+def sync_manifest(session: nox.Session) -> None:
+    """Synchronise manifest.json from manifest.yaml."""
+    session.install("PyYAML==6.0.2")
+    command = [str(SYNC_MANIFEST_SCRIPT)]
+    command.extend(session.posargs)
+    session.run(*command, external=True)
 
 
 @nox.session

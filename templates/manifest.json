@@ -1,45 +1,392 @@
 {
   "schema_version": "1.0",
   "templates": {
-    "python-service": {
-      "root": "templates/python-service",
-      "summary": "Production-ready Python service with FastAPI, pytest, and GitHub Actions.",
+    "docs-only": {
+      "bootstrap": [],
+      "cache": {
+        "installers": {
+          "go": {
+            "enabled": false
+          },
+          "node": {
+            "enabled": false
+          },
+          "pip": {
+            "enabled": false
+          }
+        },
+        "render": {
+          "strategy": "templates"
+        }
+      },
       "git": {
         "init": true
       },
+      "hooks": {
+        "cleanup": {
+          "remove_after_render": []
+        },
+        "options": {},
+        "workflows": [
+          {
+            "path": ".github/workflows/book-deploy.yml",
+            "replacements": {
+              "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
+            }
+          }
+        ]
+      },
+      "root": "templates/docs-only",
       "sample_contexts": {
         "default": {
-          "project_name": "Demo Service",
-          "project_slug": "demo-service",
-          "pkg_name": "demo_service",
-          "project_description": "A demo Python service",
-          "author_name": "Test Author",
           "author_email": "test@example.com",
-          "license": "Apache-2.0",
-          "python_version": "3.11",
-          "include_jupyter_book": "yes",
-          "enable_security_gates": "yes",
-          "enable_sbom_signing": "yes",
-          "enable_contract_tests": "yes",
-          "ci_provider": "github"
-        },
-        "minimal": {
-          "project_name": "Minimal Service",
-          "project_slug": "minimal-service",
-          "pkg_name": "minimal_service",
-          "project_description": "A Python service with best practices",
-          "author_name": "Your Name",
-          "author_email": "your.email@example.com",
-          "license": "MIT",
-          "python_version": "3.11",
-          "include_jupyter_book": "no",
-          "enable_security_gates": "no",
-          "enable_sbom_signing": "no",
-          "enable_contract_tests": "no",
-          "ci_provider": "github"
+          "author_name": "Test Author",
+          "ci_provider": "github",
+          "description": "Demo documentation project",
+          "license": "CC-BY-4.0",
+          "project_name": "Demo Documentation",
+          "project_slug": "demo-docs"
         }
       },
+      "summary": "Documentation-only template powered by Jupyter Book.",
+      "trunk": {
+        "inherit_from_root": true,
+        "overrides": []
+      }
+    },
+    "go-service": {
+      "bootstrap": [["go", "mod", "tidy"]],
+      "cache": {
+        "installers": {
+          "go": {
+            "command": ["go", "mod", "download"],
+            "enabled": true,
+            "env": {
+              "GOMODCACHE": ".cache/go"
+            },
+            "key_files": ["go.sum", "go.mod"],
+            "path": ".cache/go"
+          },
+          "node": {
+            "enabled": false
+          },
+          "pip": {
+            "enabled": false
+          }
+        },
+        "render": {
+          "strategy": "templates"
+        }
+      },
+      "git": {
+        "init": true
+      },
       "hooks": {
+        "cleanup": {
+          "remove_after_render": []
+        },
+        "options": {
+          "enable_security_gates": {
+            "cases": {
+              "no": {
+                "remove": [".github/workflows/security.yml"]
+              }
+            },
+            "default": "yes",
+            "description": "Enable CodeQL and security scans."
+          }
+        },
+        "workflows": [
+          {
+            "path": ".github/workflows/ci.yml",
+            "replacements": {
+              "GO_VERSION_EXPR": "${{ matrix.go-version }}",
+              "GO_VERSION_LABEL": "${{ matrix.go-version }}"
+            }
+          },
+          {
+            "path": ".github/workflows/security.yml",
+            "replacements": {
+              "DEFAULT_BRANCH_EXPR": "${{ github.event.repository.default_branch }}",
+              "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
+            }
+          }
+        ]
+      },
+      "root": "templates/go-service",
+      "sample_contexts": {
+        "default": {
+          "author_email": "devnull@example.com",
+          "author_name": "Agentic Canon",
+          "ci_provider": "github",
+          "description": "Go service integration test",
+          "enable_security_gates": "yes",
+          "go_version": "1.22",
+          "license": "Apache-2.0",
+          "module_path": "github.com/agentic-canon/integration-go-service",
+          "project_name": "Integration Go Service",
+          "project_slug": "integration-go-service"
+        }
+      },
+      "summary": "Go service template with standard tooling and GitHub Actions.",
+      "trunk": {
+        "inherit_from_root": true,
+        "overrides": []
+      }
+    },
+    "node-service": {
+      "bootstrap": [],
+      "cache": {
+        "installers": {
+          "go": {
+            "enabled": false
+          },
+          "node": {
+            "command": ["npm", "install", "--no-fund", "--no-audit"],
+            "enabled": true,
+            "key_files": ["package-lock.json", "package.json"],
+            "path": "node_modules"
+          },
+          "pip": {
+            "enabled": false
+          }
+        },
+        "render": {
+          "strategy": "templates"
+        }
+      },
+      "git": {
+        "init": true
+      },
+      "hooks": {
+        "cleanup": {
+          "remove_after_render": []
+        },
+        "options": {
+          "enable_security_gates": {
+            "cases": {
+              "no": {
+                "remove": [".github/workflows/security.yml"]
+              }
+            },
+            "default": "yes",
+            "description": "Enable security scanning workflows."
+          }
+        },
+        "workflows": [
+          {
+            "path": ".github/workflows/ci.yml",
+            "replacements": {
+              "NODE_VERSION_MATRIX": "${{ matrix.node-version }}"
+            }
+          },
+          {
+            "path": ".github/workflows/security.yml",
+            "replacements": {
+              "DEFAULT_BRANCH_EXPR": "${{ github.event.repository.default_branch }}",
+              "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
+            }
+          }
+        ]
+      },
+      "root": "templates/node-service",
+      "sample_contexts": {
+        "default": {
+          "author_email": "test@example.com",
+          "author_name": "Test Author",
+          "ci_provider": "github",
+          "description": "A demo Node.js service",
+          "enable_sbom_signing": "yes",
+          "enable_security_gates": "yes",
+          "license": "Apache-2.0",
+          "node_version": "20",
+          "project_name": "Demo Node Service",
+          "project_slug": "demo-node-service"
+        }
+      },
+      "summary": "Node.js service template with TypeScript, Vitest, and GitHub Actions.",
+      "trunk": {
+        "inherit_from_root": true,
+        "overrides": []
+      }
+    },
+    "project-management": {
+      "bootstrap": [],
+      "cache": {
+        "installers": {
+          "go": {
+            "enabled": false
+          },
+          "node": {
+            "enabled": false
+          },
+          "pip": {
+            "enabled": false
+          }
+        },
+        "render": {
+          "strategy": "templates"
+        }
+      },
+      "git": {
+        "default_branch_variable": "default_branch",
+        "init": true
+      },
+      "hooks": {
+        "cleanup": {
+          "remove_after_render": []
+        },
+        "options": {
+          "auto_close_stale_issues": {
+            "cases": {
+              "no": {
+                "remove": [".github/workflows/stale.yml"]
+              }
+            },
+            "default": "yes",
+            "description": "Generate stale issue management workflow."
+          },
+          "enable_issue_triage": {
+            "cases": {
+              "no": {
+                "remove": [".github/workflows/issue-triage.yml"]
+              }
+            },
+            "default": "yes",
+            "description": "Generate issue triage workflow."
+          },
+          "enable_pr_followups": {
+            "cases": {
+              "no": {
+                "remove": [".github/workflows/pr-review-followup.yml"]
+              }
+            },
+            "default": "yes",
+            "description": "Generate PR follow-up automation workflow."
+          },
+          "enable_tasklist_tracking": {
+            "cases": {
+              "no": {
+                "remove": [".github/workflows/tasklist-scan.yml"]
+              }
+            },
+            "default": "yes",
+            "description": "Generate tasklist automation workflow."
+          },
+          "enable_todo_tracking": {
+            "cases": {
+              "no": {
+                "remove": [".github/workflows/todos.yml"]
+              }
+            },
+            "default": "yes",
+            "description": "Generate TODO automation workflow."
+          }
+        },
+        "workflows": []
+      },
+      "root": "templates/project-management",
+      "sample_contexts": {
+        "default": {
+          "auto_close_stale_issues": "yes",
+          "default_branch": "main",
+          "enable_branch_protection": "yes",
+          "enable_codeowners": "yes",
+          "enable_issue_triage": "yes",
+          "enable_pr_followups": "yes",
+          "enable_projects_board": "yes",
+          "enable_tasklist_tracking": "yes",
+          "enable_todo_tracking": "yes",
+          "github_org": "my-org",
+          "project_description": "A well-managed project",
+          "project_name": "My Project",
+          "project_slug": "my-project",
+          "require_approvals": "2",
+          "stale_days": "60"
+        },
+        "minimal": {
+          "auto_close_stale_issues": "no",
+          "default_branch": "main",
+          "enable_branch_protection": "no",
+          "enable_codeowners": "no",
+          "enable_issue_triage": "no",
+          "enable_pr_followups": "no",
+          "enable_projects_board": "no",
+          "enable_tasklist_tracking": "no",
+          "enable_todo_tracking": "yes",
+          "github_org": "test-org",
+          "project_description": "A well-managed project",
+          "project_name": "Minimal Project",
+          "project_slug": "minimal-project",
+          "require_approvals": "1",
+          "stale_days": "60"
+        }
+      },
+      "summary": "Project management automation pack for GitHub repositories.",
+      "trunk": {
+        "inherit_from_root": true,
+        "overrides": []
+      }
+    },
+    "python-service": {
+      "bootstrap": [],
+      "cache": {
+        "installers": {
+          "go": {
+            "enabled": false
+          },
+          "node": {
+            "enabled": false
+          },
+          "pip": {
+            "enabled": false
+          }
+        },
+        "render": {
+          "strategy": "templates"
+        }
+      },
+      "git": {
+        "init": true
+      },
+      "hooks": {
+        "cleanup": {
+          "remove_after_render": []
+        },
+        "options": {
+          "enable_contract_tests": {
+            "cases": {
+              "no": {
+                "remove": ["tests/contract"]
+              }
+            },
+            "default": "yes",
+            "description": "Provision the contract testing skeleton."
+          },
+          "enable_security_gates": {
+            "cases": {
+              "no": {
+                "remove": [".github/workflows/security.yml"]
+              }
+            },
+            "default": "yes",
+            "description": "Enable security guardrails workflows."
+          },
+          "include_jupyter_book": {
+            "cases": {
+              "no": {
+                "remove": [
+                  "docs/_config.yml",
+                  "docs/_toc.yml",
+                  "docs/intro.md",
+                  "notebooks"
+                ]
+              }
+            },
+            "default": "yes",
+            "description": "Include the Jupyter Book documentation scaffolding."
+          }
+        },
         "workflows": [
           {
             "path": ".github/workflows/ci.yml",
@@ -66,193 +413,95 @@
               "SBOM_JOB_ENABLED": "${{ true }}"
             }
           }
-        ],
-        "options": {
-          "include_jupyter_book": {
-            "description": "Include the Jupyter Book documentation scaffolding.",
-            "default": "yes",
-            "cases": {
-              "no": {
-                "remove": [
-                  "docs/_config.yml",
-                  "docs/_toc.yml",
-                  "docs/intro.md",
-                  "notebooks"
-                ]
-              }
-            }
-          },
-          "enable_security_gates": {
-            "description": "Enable security guardrails workflows.",
-            "default": "yes",
-            "cases": {
-              "no": {
-                "remove": [".github/workflows/security.yml"]
-              }
-            }
-          },
-          "enable_contract_tests": {
-            "description": "Provision the contract testing skeleton.",
-            "default": "yes",
-            "cases": {
-              "no": {
-                "remove": ["tests/contract"]
-              }
-            }
-          }
-        },
-        "cleanup": {
-          "remove_after_render": []
-        }
+        ]
       },
-      "bootstrap": [],
-      "trunk": {
-        "inherit_from_root": true,
-        "overrides": []
-      },
-      "cache": {
-        "render": {
-          "strategy": "templates"
-        },
-        "installers": {
-          "node": {
-            "enabled": false,
-            "path": "node_modules"
-          },
-          "pip": {
-            "enabled": false,
-            "path": ".venv"
-          },
-          "go": {
-            "enabled": false,
-            "path": "vendor"
-          }
-        }
-      }
-    },
-    "node-service": {
-      "root": "templates/node-service",
-      "summary": "Node.js service template with TypeScript, Vitest, and GitHub Actions.",
-      "git": {
-        "init": true
-      },
+      "root": "templates/python-service",
       "sample_contexts": {
         "default": {
-          "project_name": "Demo Node Service",
-          "project_slug": "demo-node-service",
-          "description": "A demo Node.js service",
-          "author_name": "Test Author",
           "author_email": "test@example.com",
-          "license": "Apache-2.0",
-          "node_version": "20",
-          "enable_security_gates": "yes",
+          "author_name": "Test Author",
+          "ci_provider": "github",
+          "enable_contract_tests": "yes",
           "enable_sbom_signing": "yes",
-          "ci_provider": "github"
-        }
-      },
-      "hooks": {
-        "workflows": [
-          {
-            "path": ".github/workflows/ci.yml",
-            "replacements": {
-              "NODE_VERSION_MATRIX": "${{ matrix.node-version }}"
-            }
-          },
-          {
-            "path": ".github/workflows/security.yml",
-            "replacements": {
-              "DEFAULT_BRANCH_EXPR": "${{ github.event.repository.default_branch }}",
-              "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
-            }
-          }
-        ],
-        "options": {
-          "enable_security_gates": {
-            "description": "Enable security scanning workflows.",
-            "default": "yes",
-            "cases": {
-              "no": {
-                "remove": [".github/workflows/security.yml"]
-              }
-            }
-          }
+          "enable_security_gates": "yes",
+          "include_jupyter_book": "yes",
+          "license": "Apache-2.0",
+          "pkg_name": "demo_service",
+          "project_description": "A demo Python service",
+          "project_name": "Demo Service",
+          "project_slug": "demo-service",
+          "python_version": "3.11"
         },
-        "cleanup": {
-          "remove_after_render": []
+        "minimal": {
+          "author_email": "your.email@example.com",
+          "author_name": "Your Name",
+          "ci_provider": "github",
+          "enable_contract_tests": "no",
+          "enable_sbom_signing": "no",
+          "enable_security_gates": "no",
+          "include_jupyter_book": "no",
+          "license": "MIT",
+          "pkg_name": "minimal_service",
+          "project_description": "A Python service with best practices",
+          "project_name": "Minimal Service",
+          "project_slug": "minimal-service",
+          "python_version": "3.11"
         }
       },
-      "bootstrap": [],
+      "summary": "Production-ready Python service with FastAPI, pytest, and GitHub Actions.",
       "trunk": {
         "inherit_from_root": true,
         "overrides": []
-      },
-      "cache": {
-        "render": {
-          "strategy": "templates"
-        },
-        "installers": {
-          "node": {
-            "enabled": true,
-            "path": "node_modules",
-            "command": ["npm", "install", "--no-fund", "--no-audit"]
-          },
-          "pip": {
-            "enabled": false,
-            "path": ".venv"
-          },
-          "go": {
-            "enabled": false,
-            "path": "vendor"
-          }
-        }
       }
     },
     "react-webapp": {
-      "root": "templates/react-webapp",
-      "summary": "React webapp template with Vite, Vitest, and Storybook.",
+      "bootstrap": [],
+      "cache": {
+        "installers": {
+          "go": {
+            "enabled": false
+          },
+          "node": {
+            "command": ["npm", "install", "--no-fund", "--no-audit"],
+            "enabled": true,
+            "key_files": ["package-lock.json", "package.json"],
+            "path": "node_modules"
+          },
+          "pip": {
+            "enabled": false
+          }
+        },
+        "render": {
+          "strategy": "templates"
+        }
+      },
       "git": {
         "init": true
       },
-      "sample_contexts": {
-        "default": {
-          "project_name": "Demo React App",
-          "project_slug": "demo-react-app",
-          "description": "A demo React application",
-          "author_name": "Test Author",
-          "author_email": "test@example.com",
-          "license": "MIT",
-          "include_storybook": "yes",
-          "include_e2e_tests": "yes",
-          "enable_accessibility_tests": "yes",
-          "ci_provider": "github"
-        },
-        "minimal": {
-          "project_name": "Minimal React App",
-          "project_slug": "minimal-react-app",
-          "description": "A production-ready React application",
-          "author_name": "Your Name",
-          "author_email": "you@example.com",
-          "license": "MIT",
-          "include_storybook": "no",
-          "include_e2e_tests": "no",
-          "enable_accessibility_tests": "no",
-          "ci_provider": "github"
-        }
-      },
       "hooks": {
-        "workflows": [
-          {
-            "path": ".github/workflows/security.yml",
-            "replacements": {
-              "DEFAULT_BRANCH_EXPR": "${{ github.event.repository.default_branch }}",
-              "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
-            }
-          }
-        ],
+        "cleanup": {
+          "remove_after_render": []
+        },
         "options": {
-          "include_storybook": {
-            "description": "Include Storybook authoring workflows.",
+          "enable_accessibility_tests": {
+            "cases": {
+              "no": {
+                "remove": [".github/workflows/accessibility.yml"]
+              }
+            },
             "default": "yes",
+            "description": "Enable accessibility scanning workflows."
+          },
+          "include_e2e_tests": {
+            "cases": {
+              "no": {
+                "remove": ["tests/e2e", "playwright.config.ts"]
+              }
+            },
+            "default": "yes",
+            "description": "Include Playwright end-to-end tests."
+          },
+          "include_storybook": {
             "cases": {
               "no": {
                 "remove": [
@@ -261,86 +510,12 @@
                   ".github/workflows/storybook-pages.yml"
                 ]
               }
-            }
-          },
-          "include_e2e_tests": {
-            "description": "Include Playwright end-to-end tests.",
+            },
             "default": "yes",
-            "cases": {
-              "no": {
-                "remove": ["tests/e2e", "playwright.config.ts"]
-              }
-            }
-          },
-          "enable_accessibility_tests": {
-            "description": "Enable accessibility scanning workflows.",
-            "default": "yes",
-            "cases": {
-              "no": {
-                "remove": [".github/workflows/accessibility.yml"]
-              }
-            }
+            "description": "Include Storybook authoring workflows."
           }
         },
-        "cleanup": {
-          "remove_after_render": []
-        }
-      },
-      "bootstrap": [],
-      "trunk": {
-        "inherit_from_root": true,
-        "overrides": []
-      },
-      "cache": {
-        "render": {
-          "strategy": "templates"
-        },
-        "installers": {
-          "node": {
-            "enabled": true,
-            "path": "node_modules",
-            "command": ["npm", "install", "--no-fund", "--no-audit"]
-          },
-          "pip": {
-            "enabled": false,
-            "path": ".venv"
-          },
-          "go": {
-            "enabled": false,
-            "path": "vendor"
-          }
-        }
-      }
-    },
-    "go-service": {
-      "root": "templates/go-service",
-      "summary": "Go service template with standard tooling and GitHub Actions.",
-      "git": {
-        "init": true
-      },
-      "sample_contexts": {
-        "default": {
-          "project_name": "Integration Go Service",
-          "project_slug": "integration-go-service",
-          "module_path": "github.com/agentic-canon/integration-go-service",
-          "description": "Go service integration test",
-          "author_name": "Agentic Canon",
-          "author_email": "devnull@example.com",
-          "license": "Apache-2.0",
-          "go_version": "1.22",
-          "enable_security_gates": "yes",
-          "ci_provider": "github"
-        }
-      },
-      "hooks": {
         "workflows": [
-          {
-            "path": ".github/workflows/ci.yml",
-            "replacements": {
-              "GO_VERSION_EXPR": "${{ matrix.go-version }}",
-              "GO_VERSION_LABEL": "${{ matrix.go-version }}"
-            }
-          },
           {
             "path": ".github/workflows/security.yml",
             "replacements": {
@@ -348,223 +523,39 @@
               "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
             }
           }
-        ],
-        "options": {
-          "enable_security_gates": {
-            "description": "Enable CodeQL and security scans.",
-            "default": "yes",
-            "cases": {
-              "no": {
-                "remove": [".github/workflows/security.yml"]
-              }
-            }
-          }
-        },
-        "cleanup": {
-          "remove_after_render": []
-        }
+        ]
       },
-      "bootstrap": [["go", "mod", "tidy"]],
-      "trunk": {
-        "inherit_from_root": true,
-        "overrides": []
-      },
-      "cache": {
-        "render": {
-          "strategy": "templates"
-        },
-        "installers": {
-          "node": {
-            "enabled": false,
-            "path": "node_modules"
-          },
-          "pip": {
-            "enabled": false,
-            "path": ".venv"
-          },
-          "go": {
-            "enabled": true,
-            "path": "pkg/mod",
-            "command": ["go", "mod", "download"]
-          }
-        }
-      }
-    },
-    "docs-only": {
-      "root": "templates/docs-only",
-      "summary": "Documentation-only template powered by Jupyter Book.",
-      "git": {
-        "init": true
-      },
+      "root": "templates/react-webapp",
       "sample_contexts": {
         "default": {
-          "project_name": "Demo Documentation",
-          "project_slug": "demo-docs",
-          "description": "Demo documentation project",
-          "author_name": "Test Author",
           "author_email": "test@example.com",
-          "license": "CC-BY-4.0",
-          "ci_provider": "github"
-        }
-      },
-      "hooks": {
-        "workflows": [
-          {
-            "path": ".github/workflows/book-deploy.yml",
-            "replacements": {
-              "GITHUB_TOKEN_EXPR": "${{ secrets.GITHUB_TOKEN }}"
-            }
-          }
-        ],
-        "options": {},
-        "cleanup": {
-          "remove_after_render": []
-        }
-      },
-      "bootstrap": [],
-      "trunk": {
-        "inherit_from_root": true,
-        "overrides": []
-      },
-      "cache": {
-        "render": {
-          "strategy": "templates"
-        },
-        "installers": {
-          "node": {
-            "enabled": false,
-            "path": "node_modules"
-          },
-          "pip": {
-            "enabled": false,
-            "path": ".venv"
-          },
-          "go": {
-            "enabled": false,
-            "path": "vendor"
-          }
-        }
-      }
-    },
-    "project-management": {
-      "root": "templates/project-management",
-      "summary": "Project management automation pack for GitHub repositories.",
-      "git": {
-        "init": true,
-        "default_branch_variable": "default_branch"
-      },
-      "sample_contexts": {
-        "default": {
-          "project_name": "My Project",
-          "project_slug": "my-project",
-          "github_org": "my-org",
-          "project_description": "A well-managed project",
-          "enable_todo_tracking": "yes",
-          "enable_tasklist_tracking": "yes",
-          "enable_pr_followups": "yes",
-          "enable_issue_triage": "yes",
-          "enable_projects_board": "yes",
-          "enable_branch_protection": "yes",
-          "enable_codeowners": "yes",
-          "default_branch": "main",
-          "require_approvals": "2",
-          "auto_close_stale_issues": "yes",
-          "stale_days": "60"
+          "author_name": "Test Author",
+          "ci_provider": "github",
+          "description": "A demo React application",
+          "enable_accessibility_tests": "yes",
+          "include_e2e_tests": "yes",
+          "include_storybook": "yes",
+          "license": "MIT",
+          "project_name": "Demo React App",
+          "project_slug": "demo-react-app"
         },
         "minimal": {
-          "project_name": "Minimal Project",
-          "project_slug": "minimal-project",
-          "github_org": "test-org",
-          "project_description": "A well-managed project",
-          "enable_todo_tracking": "yes",
-          "enable_tasklist_tracking": "no",
-          "enable_pr_followups": "no",
-          "enable_issue_triage": "no",
-          "enable_projects_board": "no",
-          "enable_branch_protection": "no",
-          "enable_codeowners": "no",
-          "default_branch": "main",
-          "require_approvals": "1",
-          "auto_close_stale_issues": "no",
-          "stale_days": "60"
+          "author_email": "you@example.com",
+          "author_name": "Your Name",
+          "ci_provider": "github",
+          "description": "A production-ready React application",
+          "enable_accessibility_tests": "no",
+          "include_e2e_tests": "no",
+          "include_storybook": "no",
+          "license": "MIT",
+          "project_name": "Minimal React App",
+          "project_slug": "minimal-react-app"
         }
       },
-      "hooks": {
-        "workflows": [],
-        "options": {
-          "enable_todo_tracking": {
-            "description": "Generate TODO automation workflow.",
-            "default": "yes",
-            "cases": {
-              "no": {
-                "remove": [".github/workflows/todos.yml"]
-              }
-            }
-          },
-          "enable_tasklist_tracking": {
-            "description": "Generate tasklist automation workflow.",
-            "default": "yes",
-            "cases": {
-              "no": {
-                "remove": [".github/workflows/tasklist-scan.yml"]
-              }
-            }
-          },
-          "enable_pr_followups": {
-            "description": "Generate PR follow-up automation workflow.",
-            "default": "yes",
-            "cases": {
-              "no": {
-                "remove": [".github/workflows/pr-review-followup.yml"]
-              }
-            }
-          },
-          "enable_issue_triage": {
-            "description": "Generate issue triage workflow.",
-            "default": "yes",
-            "cases": {
-              "no": {
-                "remove": [".github/workflows/issue-triage.yml"]
-              }
-            }
-          },
-          "auto_close_stale_issues": {
-            "description": "Generate stale issue management workflow.",
-            "default": "yes",
-            "cases": {
-              "no": {
-                "remove": [".github/workflows/stale.yml"]
-              }
-            }
-          }
-        },
-        "cleanup": {
-          "remove_after_render": []
-        }
-      },
-      "bootstrap": [],
+      "summary": "React webapp template with Vite, Vitest, and Storybook.",
       "trunk": {
         "inherit_from_root": true,
         "overrides": []
-      },
-      "cache": {
-        "render": {
-          "strategy": "templates"
-        },
-        "installers": {
-          "node": {
-            "enabled": false,
-            "path": "node_modules"
-          },
-          "pip": {
-            "enabled": false,
-            "path": ".venv"
-          },
-          "go": {
-            "enabled": false,
-            "path": "vendor"
-          }
-        }
       }
     }
   }

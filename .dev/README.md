@@ -11,7 +11,7 @@
 ├── README.md                   # This file
 ├── scripts/                    # Development scripts
 │   └── setup-labels.sh        # GitHub labels setup
-├── validate-templates.sh       # Template validation
+├── validate-templates.sh       # Template validation orchestrator
 └── sanity-check.sh            # Repository sanity checks
 ```
 
@@ -19,16 +19,42 @@
 
 ### validate-templates.sh
 
-Validates all Cookiecutter templates for correctness:
+Front-end for the Nox template sessions. Provides a single command that local
+developers, CI, and sanity-check tooling can share.
 
-- Checks cookiecutter.json syntax
-- Validates hooks (pre_gen_project.py, post_gen_project.py)
-- Verifies template structure
+- `--linters` runs `nox -s render_templates` followed by `lint_templates`
+- `--format` runs `nox -s render_templates` followed by `format_templates`
+- `--upgrade` runs `nox -s upgrade_tools`
+- `--template NAME` filters to matching templates (repeatable)
+- `--force-rebuild` invalidates render and installer caches
+
+**Usage examples:**
+
+```bash
+# Render + lint + format every template (default behaviour)
+.dev/validate-templates.sh
+
+# Lint a single template/context combination
+.dev/validate-templates.sh --linters --template python-service
+
+# Rebuild caches and run formatting checks
+.dev/validate-templates.sh --format --force-rebuild
+```
+
+### scripts/sync-manifest.py
+
+Synchronises the JSON manifest mirror from the YAML source so hooks continue to
+function in environments without PyYAML.
+
+- Reads `templates/manifest.yaml`
+- Writes `templates/manifest.json` with sorted keys and stable formatting
+- Supports a `--check` mode for CI enforcement
 
 **Usage:**
 
 ```bash
-.dev/validate-templates.sh
+.dev/scripts/sync-manifest.py           # updates manifest.json
+.dev/scripts/sync-manifest.py --check   # exits 1 if sync required
 ```
 
 ### sanity-check.sh
@@ -129,58 +155,55 @@ When adding new development tools:
 - [CONTRIBUTING.md](../CONTRIBUTING.md) - Contribution guidelines
 - [FRAMEWORK.md](../FRAMEWORK.md) - Framework and philosophy
 
-## Linting & Formatting Workflow
+## Template Linting & Formatting
 
-Agentic Canon standardises on the Trunk CLI for linting, formatting, and security scans. The
-configuration lives in [`.trunk/trunk.yaml`](../.trunk/trunk.yaml) and is intentionally aligned with
-the versions used by our templates and example projects.
+Agentic Canon standardises on Trunk, orchestrated through dedicated Nox sessions. Configuration
+lives in [`.trunk/trunk.yaml`](../.trunk/trunk.yaml) and mirrors the versions baked into each
+template.
 
-### Runtime Baselines
+### Session overview
 
-- **Python 3.10.8** — matches the interpreter baked into the templates and keeps `ruff`, `bandit`,
-  and other Python linters on a supported version.
-- **Go 1.22.6** — mirrors the sample gRPC/Go services so `gofmt` output is identical in CI and
-  locally.
-- **Node.js 22.16.0** — supports the React, Vite, and Vitest stacks used across the repo.
+- `render_templates` – renders every template/context combination into `build/template-renders/`
+  using the manifest cache. Installer caches (`node_modules`, `.venv`, Go modules) are populated
+  when enabled in the manifest.
+- `lint_templates` – copies or symlinks `.trunk/` into the rendered project and runs
+  `trunk check --all` via `.dev/trunk-with-progress.sh`.
+- `format_templates` – runs `trunk fmt --all` and fails if any files change afterwards.
+- `upgrade_tools` – upgrades Trunk itself and refreshes pinned tool versions.
 
-If you change runtime versions, update them in `.trunk/trunk.yaml` and run:
+`.dev/validate-templates.sh` wraps these sessions so you rarely need to remember individual Nox
+invocations.
 
-```bash
-.dev/trunk-with-progress.sh upgrade
-```
+### Runtime baselines (from `.trunk/trunk.yaml`)
 
-### Enabled Linters
+- **Python 3.10.8** keeps `ruff`, `bandit`, and the Python hook tooling aligned with the templates.
+- **Go 1.22.6** matches the Go service template and example projects, ensuring `gofmt` parity.
+- **Node.js 22.16.0** matches the Vite/React stacks used across templates and examples.
 
-Trunk drives all tooling—`prettier`, `eslint`, `ruff`, `gofmt`, `yamllint`, `shellcheck`, and more.
-Refer to `lint.enabled` in `.trunk/trunk.yaml` for the complete list. To add or upgrade a tool:
-
-1. Update the entry in `.trunk/trunk.yaml` (or add a new one under `lint.enabled`).
-2. Run `.dev/trunk-with-progress.sh upgrade` to download the new tool version.
-3. Commit both the YAML change and any resulting formatting edits.
-
-### Import Sorting / Python Formatting
-
-Python projects rely on `ruff` for linting and `black`-style formatting. Import ordering is handled
-by `isort` with the configuration in the repository root (`.isort.cfg`), set to mirror Black’s
-style (`line_length = 100`, trailing commas, etc.). This means the following will yield identical
-results:
+When bumping any runtime or tool version in `.trunk/trunk.yaml`, run:
 
 ```bash
-trunk fmt --all          # preferred – runs every formatter
-trunk check --all        # preferred – runs linters + security scanners
+nox -s upgrade_tools
 ```
 
-### When to Run What
+### Enabled linters & formatters
 
-| Command                                   | Purpose                                                        |
-| ----------------------------------------- | -------------------------------------------------------------- |
-| `.dev/trunk-with-progress.sh fmt --all`   | Format everything with progress feedback                       |
-| `.dev/trunk-with-progress.sh check --all` | Run the full lint + security suite                             |
-| `.dev/sanity-check.sh --format`           | Run Trunk via the sanity check helper (auto-formats if needed) |
+Trunk drives `prettier`, `eslint`, `ruff`, `yamllint`, `shellcheck`, `taplo`, and the rest. To add
+or update tooling:
 
-The sanity check script now prefers the repository’s virtual environment (`.venv/bin/python`), so
-all JSON/YAML/validation steps use the same interpreter as our tooling. This keeps local runs,
-cookiecutter hooks, and CI pipelines fully aligned.
+1. Edit `.trunk/trunk.yaml` (often under `lint.enabled`).
+2. Execute `.dev/validate-templates.sh --linters` locally to confirm the change.
+3. Commit both the config change and any resulting file updates.
+
+### Recommended commands
+
+| Command                                                   | Purpose                                                   |
+| --------------------------------------------------------- | --------------------------------------------------------- |
+| `.dev/validate-templates.sh`                              | Render, lint, and format every template (default flow)    |
+| `.dev/validate-templates.sh --linters --template react`   | Lint only the React template contexts                     |
+| `.dev/validate-templates.sh --format --force-rebuild`     | Re-render from scratch and verify formatting consistency  |
+| `nox -s lint_templates -- --feature include_storybook=no` | Ad-hoc lint run with manifest-driven feature filters      |
+| `.dev/sanity-check.sh --section templates`                | Structural checks + lint smoke through the sanity harness |
 
 ### Reproducibility Tips
 
@@ -191,6 +214,9 @@ cookiecutter hooks, and CI pipelines fully aligned.
   source .venv/bin/activate
   pip install -r requirements.txt
   ```
+
+- Reuse template installer caches by exporting `AGENTIC_CANON_CACHE_DIR` (CI points this to
+  `$RUNNER_TEMP/agentic-canon-cache`).
 
 - After pulling changes, re-run the sanity check:
 

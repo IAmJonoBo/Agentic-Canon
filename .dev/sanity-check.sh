@@ -504,6 +504,21 @@ if should_run "templates"; then
 		done
 		echo ""
 
+		echo "🛠 Running Template Linters..."
+		if command -v nox >/dev/null 2>&1 && [ -x ".dev/validate-templates.sh" ]; then
+			TEMPLATE_LINT_LOG=$(mktemp)
+			if .dev/validate-templates.sh --linters >"$TEMPLATE_LINT_LOG" 2>&1; then
+				check_pass "Template lint sessions completed"
+			else
+				check_fail "Template lint sessions failed (see $TEMPLATE_LINT_LOG)"
+				cat "$TEMPLATE_LINT_LOG"
+			fi
+			rm -f "$TEMPLATE_LINT_LOG"
+		else
+			check_warn "Nox or validator missing; skipping template lint sessions"
+		fi
+		echo ""
+
 		# 2.2. QUALITY_STANDARDS.md Compliance Checks
 		echo "📊 Checking QUALITY_STANDARDS.md Compliance..."
 		for template in "${templates[@]}"; do

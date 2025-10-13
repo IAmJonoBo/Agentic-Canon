@@ -1,0 +1,25 @@
+name: Templates • upgrade
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install tooling
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nox
+
+      - name: Upgrade shared tooling
+        run: nox -s upgrade_tools

@@ -47,6 +47,14 @@ tracked alongside the rest of the backlog.
 - ✅ Documentation added in `docs/semgrep-ruleset.md`
 - ⏳ Next: integrate a Semgrep scan into the `--fix` routine / shared CI once teams adopt the ruleset.
 
+## Template Validation Pipeline (#135)
+
+- ✅ Manifest-driven template manifest (`templates/manifest.yaml`) with JSON mirror and sync tooling.
+- ✅ Shared hook helpers (`templates/_shared/hooks.py`) with cache-aware `run_post_gen` entry point.
+- ✅ Cached render/install flows exposed through Nox + `.dev/validate-templates.sh`.
+- ✅ CI workflows (`templates-validate`, `templates-upgrade`) adopt the new pipeline.
+- ✅ Renovate regex managers cover `.trunk/trunk.yaml` and apply `type:tools` labels/grouping.
+
 ### Contributing Feedback
 
 Have suggestions or discover friction? Open an issue tagged `dx` so we can fold

@@ -335,7 +335,7 @@ See [control-traceability-matrix.json](control-traceability-matrix.json) for com
 
 **Internal use - for maintaining this repository:**
 
-- `.dev/validate-templates.sh` - Template validation
+- `.dev/validate-templates.sh` - Template validation orchestrator (Nox wrapper)
 - `.dev/sanity-check.sh` - Repository health checks
 - `.dev/scripts/` - Maintenance scripts (labels, etc.)
 

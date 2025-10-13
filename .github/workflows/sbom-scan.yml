@@ -2,11 +2,6 @@ name: Security • SBOM Scan
 
 on:
   workflow_dispatch:
-    inputs:
-      target:
-        description: "Path or image reference to scan (default: repository contents)"
-        required: false
-        default: .
   workflow_call:
     inputs:
       target:
@@ -18,10 +13,10 @@ jobs:
   sbom:
     runs-on: ubuntu-latest
     env:
-      TARGET: ${{ inputs.target || github.event.inputs.target || '.' }}
+      TARGET: ${{ inputs.target || '.' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 

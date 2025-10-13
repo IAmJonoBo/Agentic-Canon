@@ -27,11 +27,11 @@ Each ADR follows this structure:
 
 ## Current ADRs
 
-**Total ADRs:** 8 (all accepted)
+**Total ADRs:** 9 (all accepted)
 
 ### Status Summary
 
-- ✅ Accepted: 8
+- ✅ Accepted: 9
 - 🔄 Proposed: 0
 - ⚠️ Deprecated: 0
 - 🔀 Superseded: 0
@@ -41,6 +41,7 @@ Each ADR follows this structure:
 - [ADR-001: Cookiecutter for Multi-Template Approach](ADR-001-cookiecutter-multi-template.md) - Using Cookiecutter with multi-template repository structure
 - [ADR-002: Jupytext for Notebook Version Control](ADR-002-jupytext-notebook-version-control.md) - Using Jupytext to version control notebooks as MyST Markdown
 - [ADR-003: GitHub Actions for CI/CD](ADR-003-github-actions-cicd.md) - Using GitHub Actions as the primary CI/CD platform
+- [ADR-009: Evergreen Template Validation Pipeline](ADR-009-evergreen-template-validation.md) - Manifest-driven Nox orchestration, caching, and Renovate coverage for templates
 
 ### Observability & Operations
 
@@ -57,9 +58,9 @@ Each ADR follows this structure:
 
 The following ADRs are planned based on TASKS.md:
 
-- **ADR-009**: Trunk-based development workflow
-- **ADR-010**: Progressive delivery strategy
-- **ADR-011**: Error budgets and SLO tracking
+- **ADR-010**: Trunk-based development workflow
+- **ADR-011**: Progressive delivery strategy
+- **ADR-012**: Error budgets and SLO tracking
 
 ## Creating a New ADR
 

@@ -10,7 +10,7 @@
 
 This repository is organized for maximum clarity, ease of access, and maintainability. Each top-level directory serves a specific purpose in the Agentic Canon ecosystem.
 
-```
+```text
 Agentic-Canon/
 ├── 📄 Root Documentation          # Core project documents
 ├── 📁 .dev/                       # Development tools (internal)
@@ -65,21 +65,21 @@ Core project documentation files located at repository root for easy discovery:
 - **`jupytext.toml`** - Jupytext notebook pairing settings
 - **`renovate.json`** - Renovate dependency update config
 - **`requirements.txt`** - Python dependencies
-- **`.dev/validate-templates.sh`** - Template validation script (development tool)
+- **`.dev/validate-templates.sh`** - Template validation orchestrator (Nox wrapper)
 - **`control-traceability-matrix.json`** - Compliance control mapping
 
 ---
 
 ## 📁 .dev/
 
-**⚠️ Development tools for internal repository maintenance (not for end users)**
+### ⚠️ Development tools for internal repository maintenance (not for end users)
 
-```
+```text
 .dev/
 ├── README.md                      # Development tools documentation
 ├── scripts/                       # Development scripts
 │   └── setup-labels.sh           # GitHub labels setup
-├── validate-templates.sh          # Template validation
+├── validate-templates.sh          # Template validation orchestrator
 └── sanity-check.sh               # Repository health checks
 ```
 
@@ -87,7 +87,7 @@ Core project documentation files located at repository root for easy discovery:
 
 **Key Tools:**
 
-- **`validate-templates.sh`** - Validates Cookiecutter templates for correctness
+- **`validate-templates.sh`** - Runs Nox template sessions (render/lint/format)
 - **`sanity-check.sh`** - Runs comprehensive repository health checks
 - **`scripts/setup-labels.sh`** - Sets up GitHub issue labels
 
@@ -103,7 +103,7 @@ Core project documentation files located at repository root for easy discovery:
 
 Interactive CLI wizard for project generation
 
-```
+```text
 agentic_canon_cli/
 ├── __init__.py                    # Package initialization
 ├── __main__.py                    # CLI entry point
@@ -134,7 +134,7 @@ agentic-canon init
 
 Binder environment configuration for interactive notebooks
 
-```
+```text
 binder/
 └── requirements.txt               # Binder dependencies
 ```
@@ -155,7 +155,7 @@ binder/
 
 Jupyter Book documentation sources
 
-```
+```text
 docs/
 ├── _config.yml                    # Jupyter Book configuration
 ├── _toc.yml                       # Table of contents
@@ -206,7 +206,7 @@ Documented architecture decisions with context, rationale, and consequences:
 
 Reference implementations and practical examples
 
-```
+```text
 examples/
 ├── azure-pipelines/               # Azure DevOps pipeline examples
 │   ├── README.md                  # Setup guide
@@ -329,7 +329,7 @@ Complete scripts for video tutorial series (60+ minutes total)
 
 Executable Jupyter notebooks (source of truth)
 
-```
+```text
 notebooks/
 ├── 01_bootstrap.ipynb             # Repo scaffolding and gates
 ├── 02_security_supply_chain.ipynb # Security scanning and SBOM
@@ -356,7 +356,7 @@ notebooks/
 
 Operational procedures and automation guides
 
-```
+```text
 runbooks/
 └── README.md                      # Runbook index and overview
 ```
@@ -376,7 +376,7 @@ runbooks/
 
 Cookiecutter templates and supporting templates
 
-```
+```text
 templates/
 ├── python-service/                # Python service template
 │   ├── cookiecutter.json
@@ -475,7 +475,7 @@ Non-Cookiecutter template files for various purposes:
 
 Test suite for templates and infrastructure
 
-```
+```text
 tests/
 ├── README.md                      # Testing documentation
 └── test_cookiecutters.py          # Template rendering tests
@@ -503,7 +503,7 @@ pytest tests/ -v
 
 ### 1. Creating a New Project
 
-```
+```text
 User runs CLI
     ↓
 agentic_canon_cli/ → Interactive wizard
@@ -515,7 +515,7 @@ Generated project with CI/CD, security, docs
 
 ### 2. Documentation Workflow
 
-```
+```text
 Edit notebooks/*.ipynb
     ↓
 Save (Jupytext syncs to docs/notebooks/*.md)
@@ -529,7 +529,7 @@ Deploy to GitHub Pages
 
 ### 3. Examples and Reference
 
-```
+```text
 Need example? → examples/
 Need template? → templates/
 Need procedure? → runbooks/

@@ -191,6 +191,19 @@ Closes #123
 - For templates: Use pytest-cookies to test template rendering
 - For notebooks: Ensure notebooks execute without errors
 
+#### Template-specific checklist
+
+When modifying anything under `templates/`:
+
+1. Update `templates/manifest.yaml` with new contexts, options, or cache hints and run:
+   ```bash
+   python .dev/scripts/sync-manifest.py
+   ```
+   (use `--check` in CI to enforce synchronisation).
+2. Execute `.dev/validate-templates.sh --linters --template <name>` locally.
+3. If formatting or generated files change, also run `.dev/validate-templates.sh --format --template <name>`.
+4. Update or extend tests in `tests/test_cookiecutters.py` and friends as needed.
+
 ## Quality Standards
 
 All contributions must meet the Agentic Canon quality standards. See our comprehensive framework:

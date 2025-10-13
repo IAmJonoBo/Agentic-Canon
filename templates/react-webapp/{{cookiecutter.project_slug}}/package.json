@@ -25,9 +25,9 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.41.0",
-    "@storybook/addon-a11y": "^7.6.0",
-    "@storybook/addon-essentials": "^7.6.0",
-    "@storybook/react-vite": "^7.6.0",
+    "@storybook/addon-a11y": "^9.0.0",
+    "@storybook/addon-essentials": "^8.0.0",
+    "@storybook/react-vite": "^9.0.0",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^6.21.0",

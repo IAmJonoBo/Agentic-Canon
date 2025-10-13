@@ -185,6 +185,11 @@ Refer to [`feature-flags.md`](feature-flags.md) for guidance on adopting OpenFea
 [`sbom-workflow.md`](sbom-workflow.md) describes the reusable Syft/Grype GitHub
 Actions workflow located at `.github/workflows/sbom-scan.yml`.
 
+### Remote Dev Environments
+
+See [`dev-environments.md`](dev-environments.md) for Gitpod and VS Code Dev
+Container configuration details introduced in Task #133.
+
 ## Adding Content
 
 ### New Page

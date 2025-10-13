@@ -1,0 +1,27 @@
+image:
+  file: .gitpod.Dockerfile
+
+ports:
+  - port: 8000
+    onOpen: ignore
+  - port: 5173
+    onOpen: ignore
+
+checkoutLocation: agentic-canon
+
+tasks:
+  - name: Setup
+    init: |
+      python3 -m venv .venv
+      source .venv/bin/activate
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      npm install --global npm@latest
+    command: |
+      source .venv/bin/activate
+      pytest tests -m "not slow"
+
+  - name: Sanity
+    command: |
+      source .venv/bin/activate
+      .dev/sanity-check.sh --quiet --skip-templates || true

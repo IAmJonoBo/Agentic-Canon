@@ -295,7 +295,10 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
 - [x] #132 Syft/Grype SBOM + vulnerability scanning workflow for shared CI usage
   - ✅ Reusable workflow `.github/workflows/sbom-scan.yml`
   - ✅ Documentation in `docs/sbom-workflow.md`
-- [ ] #133 Remote dev environments (Gitpod workspace and Dev Container templates)
+- [x] #133 Remote dev environments (Gitpod workspace and Dev Container templates)
+  - ✅ `.gitpod.yml` + `.gitpod.Dockerfile` for cloud workspaces
+  - ✅ `.devcontainer/devcontainer.json` for VS Code
+  - ✅ Usage guide `docs/dev-environments.md`
 - [ ] #134 Semgrep shared ruleset and automation guidance (CI + pre-commit adoption)
 
 ## Version 2.0.0 - Advanced Features

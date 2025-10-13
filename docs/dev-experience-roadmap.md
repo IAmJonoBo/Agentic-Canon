@@ -32,10 +32,11 @@ tracked alongside the rest of the backlog.
 
 ## Remote Development Environments (#133)
 
-- Ship reference `.gitpod.yml` and `.devcontainer/` definitions aligned with the
-  repository toolchain.
-- Explain how to copy these configs post-cookiecutter to enable instant cloud or
-  container-based development environments.
+- ✅ Gitpod configuration (`.gitpod.yml` + `.gitpod.Dockerfile`)
+- ✅ VS Code Dev Container setup (`.devcontainer/devcontainer.json`) with Python,
+  Node, and Go features
+- ✅ Documentation in `docs/dev-environments.md`
+- ⏳ Future iteration: parameterise template-specific post-create steps
 
 ## Semgrep Guardrails (#134)
 

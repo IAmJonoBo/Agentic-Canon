@@ -7,15 +7,13 @@
 - ✅ TypeScript with strict mode
 - ✅ Modern Node.js (v{{cookiecutter.node_version}}+)
 - ✅ Vitest for testing with coverage
-- ✅ ESLint + Prettier for code quality
+- ✅ ESLint + Prettier for code quality (single quotes by default)
 - ✅ GitHub Actions CI/CD
-  {% if cookiecutter.enable_security_gates == "yes" %}
+{% if cookiecutter.enable_security_gates == "yes" %}
 - ✅ Security scanning (CodeQL, npm audit, secret scanning)
-  {% endif %}
-  {% if cookiecutter.enable_sbom_signing == "yes" %}
+{% endif %}{% if cookiecutter.enable_sbom_signing == "yes" %}
 - ✅ SBOM generation and signing
-  {% endif %}
-
+{% endif %}
 ## Getting Started
 
 ### Prerequisites
@@ -67,6 +65,8 @@ npm run format:check
 npm run typecheck
 ```
 
+> ℹ️ **Formatting defaults:** Prettier is configured to prefer single quotes across the codebase.
+
 ## Project Structure
 
 ```
@@ -101,15 +101,12 @@ This project uses GitHub Actions for continuous integration:
   - Format checking
   - Unit tests with coverage
   - Multi-version Node.js testing (18, 20, 21)
-
 {% if cookiecutter.enable_security_gates == "yes" %}
-
 - **Security Pipeline**: Runs weekly and on changes
   - Dependency vulnerability scanning (npm audit)
   - Static analysis (CodeQL)
   - Secret scanning (TruffleHog)
-    {% endif %}
-
+{% endif %}
 ## License
 
 {{cookiecutter.license}}

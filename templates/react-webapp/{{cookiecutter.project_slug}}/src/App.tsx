@@ -1,7 +1,7 @@
-import "./App.css";
+import './App.css';
 
-const PROJECT_NAME = "{{ cookiecutter.project_name }}";
-const PROJECT_DESCRIPTION = "{{ cookiecutter.description }}";
+const PROJECT_NAME = '{{ cookiecutter.project_name }}';
+const PROJECT_DESCRIPTION = '{{ cookiecutter.description }}';
 
 function App() {
   return (

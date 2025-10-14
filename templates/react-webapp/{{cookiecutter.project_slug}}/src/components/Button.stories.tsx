@@ -1,14 +1,14 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Button } from "./Button";
+import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from './Button';
 
 const meta: Meta<typeof Button> = {
-  title: "Components/Button",
+  title: 'Components/Button',
   component: Button,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {
     size: {
-      control: "select",
-      options: ["small", "medium", "large"],
+      control: 'select',
+      options: ['small', 'medium', 'large'],
     },
   },
 };
@@ -18,28 +18,28 @@ type Story = StoryObj<typeof Button>;
 
 export const Primary: Story = {
   args: {
-    label: "Click me",
+    label: 'Click me',
     primary: true,
   },
 };
 
 export const Default: Story = {
   args: {
-    label: "Click me",
+    label: 'Click me',
   },
 };
 
 export const Small: Story = {
   args: {
-    label: "Small button",
-    size: "small",
+    label: 'Small button',
+    size: 'small',
   },
 };
 
 export const Large: Story = {
   args: {
-    label: "Large button",
-    size: "large",
+    label: 'Large button',
+    size: 'large',
     primary: true,
   },
 };

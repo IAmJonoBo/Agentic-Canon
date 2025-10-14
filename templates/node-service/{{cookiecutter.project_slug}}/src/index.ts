@@ -3,7 +3,7 @@
  */
 
 export function ping(): string {
-  return "pong";
+  return 'pong';
 }
 
 export function greet(name: string): string {
@@ -12,7 +12,7 @@ export function greet(name: string): string {
 
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log("{{cookiecutter.project_name}} is running!");
+  console.log('{{cookiecutter.project_name}} is running!');
   console.log(ping());
-  console.log(greet("World"));
+  console.log(greet('World'));
 }

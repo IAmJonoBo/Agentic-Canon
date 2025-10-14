@@ -23,6 +23,7 @@
 - [x] Ship pip hardening helper and quiet security audits (Owner: Agent, Due: 2025-02-09) _(pip patched via `agentic_canon_cli.pip_support`; spinner disabled; `pip-audit` passes in chunks 3d121b/a0943a)_
 - [x] Document safe-pip override controls across CLI + validation flows (Owner: Agent, Due: 2025-02-10) _(AGENTIC_CANON_SKIP_SAFE_PIP and AGENTIC_CANON_SAFE_PIP_SPEC documented + wired into `.dev/validate-templates.sh`)_
 - [x] Add validate-templates orchestrator regression coverage (Owner: Agent, Due: 2025-02-11) _(new shell wrapper tests confirm PYTHONPATH seeding and skip controls; see `tests/test_validate_templates_script.py` + pytest chunk 5cd380)_
+- [x] Align Node/React templates on Prettier single-quote defaults and documentation (Owner: Agent, Due: 2025-02-13) _(configs updated plus lint/format checks via `npm run lint` / `npm run format:check`; Node uses `ESLINT_USE_FLAT_CONFIG=false`, React installs with `--legacy-peer-deps`)_
 
 ## Steps
 
@@ -58,6 +59,7 @@
 - [x] Add-on design notes covering lint/type/security flow adjustments
 - [x] Conditionalize tasklist workflow output when automation disabled
 - [x] Document React/npm resolution plan once validated _(captured via Tasks/Steps updates)_
+- [x] Captured npm-based validation evidence for Node/React single-quote rollout (`npm run lint` / `npm run format:check`; see chunks 3c9b4d/3beaf4 and ed253a/2c94f9)
 
 ## Quality Gates
 

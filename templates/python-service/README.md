@@ -28,11 +28,10 @@ agentic-canon init
 
 ### CI/CD
 
-- ✅ **GitHub Actions** - Complete CI/CD pipeline
-- ✅ **GitLab CI** - Alternative CI/CD support
+- ✅ **GitHub Actions** workflows for linting, testing, documentation, and security scanning
 - ✅ **Multi-version Testing** - Python 3.11, 3.12
-- ✅ **Coverage Reporting** - Codecov integration
-- ✅ **Automated Publishing** - PyPI/GitHub releases
+- ✅ **Coverage Reporting** - Codecov integration on the Python 3.11 job
+- ✅ **Notebook Validation** - Conditional nbmake run when notebooks are present
 
 ### Security
 
@@ -41,7 +40,7 @@ agentic-canon init
 - ✅ **Secret Scanning** - Gitleaks + TruffleHog
 - ✅ **Dependency Review** - Automated vulnerability checks
 - ✅ **SBOM Generation** - CycloneDX format
-- ✅ **Artifact Signing** - Cosign/Sigstore (optional)
+- 🛠️ **Artifact Signing (planned)** - Sigstore/Cosign integration to be scoped
 
 ### Documentation
 
@@ -70,9 +69,9 @@ agentic-canon init
 | `python_version`        | 3.11, 3.12                   | 3.11       | Minimum Python version     |
 | `include_jupyter_book`  | yes, no                      | yes        | Include documentation site |
 | `enable_security_gates` | yes, no                      | yes        | Enable security scanning   |
-| `enable_sbom_signing`   | yes, no                      | yes        | Enable SBOM + signing      |
+| `enable_sbom_signing`   | yes, no                      | yes        | Enable SBOM generation     |
 | `enable_contract_tests` | yes, no                      | no         | Enable API contract tests  |
-| `ci_provider`           | github, gitlab               | github     | CI/CD platform             |
+| `ci_provider`           | github, gitlab               | github     | Select CI provider (GitLab scaffolding pending)
 
 ## Generated Project Structure
 
@@ -80,9 +79,9 @@ agentic-canon init
 acme-service/
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml              # Main CI/CD pipeline
-│       ├── security.yml        # Security scanning
-│       └── docs.yml            # Documentation build
+│       ├── ci.yml              # Linting, tests, coverage, optional notebook checks
+│       ├── security.yml        # CodeQL, Semgrep, secrets, optional SBOM
+│       └── docs.yml            # Conditional documentation build & deploy
 ├── docs/                        # Jupyter Book documentation
 │   ├── _config.yml
 │   ├── _toc.yml
@@ -171,7 +170,8 @@ code .
 - Unit tests with coverage
 - Type checking with mypy
 - Multi-version testing (Python 3.11, 3.12)
-- Artifact publishing
+- Conditional notebook validation (nbmake) when notebooks are present
+- Coverage upload via Codecov on Python 3.11 job
 
 **security.yml** - Security Scanning:
 
@@ -181,7 +181,6 @@ code .
 - TruffleHog (secrets)
 - Dependency review
 - SBOM generation (optional)
-- Artifact signing (optional)
 
 **docs.yml** - Documentation:
 
@@ -189,14 +188,7 @@ code .
 - GitHub Pages deployment
 - Automated on commits to main
 
-### GitLab CI
-
-Similar pipeline with GitLab CI/CD:
-
-- Parallel job execution
-- Docker-in-Docker support
-- GitLab Pages deployment
-- Container Registry integration
+> ℹ️ GitLab CI scaffolding is planned; see `Next_Steps.md` for the release/signing roadmap.
 
 ## Development
 
@@ -291,7 +283,7 @@ jupyter-book serve docs/
 1. **No secrets** - Never commit credentials
 2. **Dependency scanning** - Keep dependencies updated
 3. **SBOM** - Generate for supply chain transparency
-4. **Signing** - Sign releases for verification
+4. **Signing** - Plan release signing once automation is available
 5. **Security scanning** - Run on every commit
 
 ## Customization

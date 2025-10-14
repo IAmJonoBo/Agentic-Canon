@@ -17,30 +17,27 @@ agentic-canon init
 
 ### Core Capabilities
 
-- ✅ **Modern Node.js** - Node.js 20+ with TypeScript
-- ✅ **TypeScript** - Full type safety with strict mode
-- ✅ **ESM Support** - Native ES modules
-- ✅ **Testing** - Vitest for fast unit tests
-- ✅ **Linting** - ESLint with TypeScript support
-- ✅ **Formatting** - Prettier for consistent code style (single quotes by default)
-- ✅ **Pre-commit Hooks** - Automated quality checks
+- ✅ **Modern Node.js** – Node.js 20+ baseline with TypeScript strict mode and native ESM
+- ✅ **Testing** – Vitest with V8 coverage thresholds set to 80%
+- ✅ **Quality Automation** – ESLint, Prettier (single-quote profile), and `npm run typecheck`
+- ✅ **Developer Ergonomics** – `tsx`-powered dev loop and curated pre-commit hooks
 
 ### CI/CD
 
-- ✅ **GitHub Actions** - Complete CI/CD pipeline
-- ✅ **GitLab CI** - Alternative CI/CD support
-- ✅ **Multi-version Testing** - Node 18, 20, 22
-- ✅ **npm Publishing** - Automated package publishing
-- ✅ **Docker Support** - Multi-stage builds
+- ✅ **GitHub Actions** – `ci.yml` runs on Node.js 18, 20, and 22 using `npm ci`
+- ✅ **Quality Gates** – Type checking, linting, formatting checks, build verification, and Vitest execution
+- ✅ **Coverage Upload (Optional)** – Codecov upload enabled when `CODECOV_TOKEN` is provided
+
+> ℹ️ GitLab pipelines, Docker images, and npm publishing are not yet scaffolded. See [What's Next](#whats-next) for planned work.
 
 ### Security
 
-- ✅ **CodeQL Analysis** - JavaScript/TypeScript SAST
-- ✅ **Semgrep** - Pattern-based security scanning
-- ✅ **Secret Scanning** - Gitleaks + TruffleHog
-- ✅ **npm Audit** - Dependency vulnerability checks
-- ✅ **SBOM Generation** - CycloneDX format (optional)
-- ✅ **Artifact Signing** - Cosign/Sigstore (optional)
+- ✅ **Dependency Scanning** – `npm audit --audit-level=moderate` (non-blocking) and `npm outdated`
+- ✅ **CodeQL** – JavaScript/TypeScript SAST with scheduled weekly runs
+- ✅ **Semgrep** – OWASP-aligned rulesets for JS/TS and secrets
+- ✅ **Secret Scanning** – TruffleHog against the default branch history
+
+> ℹ️ SBOM generation and artifact signing toggles are placeholders today.
 
 ## Template Configuration
 
@@ -60,9 +57,9 @@ agentic-canon init
 | ----------------------- | ---------------------------- | ---------- | ------------------------ |
 | `license`               | Apache-2.0, MIT, Proprietary | Apache-2.0 | License type             |
 | `node_version`          | 18, 20, 22                   | 20         | Minimum Node.js version  |
-| `enable_security_gates` | yes, no                      | yes        | Enable security scanning |
-| `enable_sbom_signing`   | yes, no                      | yes        | Enable SBOM + signing    |
-| `ci_provider`           | github, gitlab               | github     | CI/CD platform           |
+| `enable_security_gates` | yes, no                      | yes        | Include security.yml     |
+| `enable_sbom_signing`   | yes, no                      | yes        | _Reserved for future SBOM/signing support_ |
+| `ci_provider`           | github                       | github     | GitHub Actions only (GitLab planned) |
 
 ## Generated Project Structure
 
@@ -79,7 +76,8 @@ acme-node-service/
 ├── .editorconfig               # Editor configuration
 ├── .gitignore                  # Git ignore patterns
 ├── .pre-commit-config.yaml     # Pre-commit hooks
-├── eslint.config.js            # ESLint configuration
+├── .eslintrc.cjs               # ESLint configuration
+├── .prettierrc                 # Prettier configuration
 ├── package.json                # Project configuration
 ├── tsconfig.json               # TypeScript configuration
 ├── vitest.config.ts            # Vitest configuration
@@ -108,7 +106,7 @@ npm run lint
 npm run format
 
 # Type check
-npm run type-check
+npm run typecheck
 
 # Build for production
 npm run build
@@ -116,23 +114,21 @@ npm run build
 
 ## CI/CD Workflows
 
-**ci.yml** - Main CI/CD Pipeline:
+**ci.yml** – Main CI/CD pipeline:
 
-- Install and cache dependencies
-- Lint and format checks
-- Type checking
-- Unit tests with coverage
-- Build verification
-- Multi-version testing (Node 18, 20, 22)
+- Install and cache dependencies via `npm ci`
+- Type checking, linting, and Prettier verification
+- Vitest execution with coverage artifacts
+- Build verification across Node.js 18, 20, and 22
+- Optional Codecov upload when secrets are present
 
-**security.yml** - Security Scanning:
+**security.yml** – Security scanning suite:
 
-- npm audit for dependencies
-- CodeQL for JavaScript/TypeScript
-- Semgrep for security patterns
-- Secret scanning (Gitleaks, TruffleHog)
-- SBOM generation (optional)
-- Artifact signing (optional)
+- Weekly scheduled and PR-triggered runs
+- `npm audit --audit-level=moderate` (non-blocking) and `npm outdated`
+- GitHub CodeQL JavaScript analysis
+- Semgrep OWASP/security bundle
+- TruffleHog git history secret scanning
 
 ## Best Practices
 
@@ -168,26 +164,14 @@ npm install express
 # Development dependencies
 npm install -D @types/express
 
-# Update package.json with proper types
+# Update types and lint rules as needed
 ```
 
-## Standards Compliance
+## What's Next
 
-This template implements:
+- 🚀 **npm publishing automation** – Pipeline scaffolding is planned but not yet in place.
+- 🐳 **Container images** – A Dockerfile and registry workflow are on the roadmap.
+- 📦 **SBOM + signing toggle** – `enable_sbom_signing` will wire in CycloneDX generation and Cosign when ready.
+- 🌐 **Additional CI providers** – GitLab CI support is a future enhancement.
 
-- ✅ **ESM Standard** - Native ES modules
-- ✅ **TypeScript Strict Mode** - Maximum type safety
-- ✅ **NIST SSDF** - Secure development framework
-- ✅ **OWASP SAMM** - Software assurance maturity
-- ✅ **Node.js Best Practices** - Security and performance
-
-## Related Resources
-
-- [Template Creation Runbook](../../runbooks/template-creation-runbook.md)
-- [Video Tutorial: Creating Services](../../examples/video-tutorials/02-creating-services.md)
-- [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
-
----
-
-**Part of Agentic Canon - Frontier Software Excellence**  
-**Version**: 1.0.0
+Track progress in [`Next_Steps.md`](../../Next_Steps.md).

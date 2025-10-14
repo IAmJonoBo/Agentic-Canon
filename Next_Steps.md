@@ -7,6 +7,9 @@
 - [ ] Capture actionable coverage plan for `agentic_canon_cli` to raise baseline from 8% (Owner: Agent, Due: 2025-02-11)
 - [ ] Scope GitHub release packaging workflow for Python service template (Owner: Agent, Due: 2025-02-12)
 - [ ] Define artifact signing approach for generated Python services before enabling `enable_sbom_signing` flag (Owner: Agent, Due: 2025-02-12)
+- [ ] Implement npm publish automation for Node template once requirements baselined (Owner: Agent, Due: 2025-02-14)
+- [ ] Wire SBOM/signing controls for Node template `enable_sbom_signing` toggle (Owner: Agent, Due: 2025-02-14)
+- [ ] Add Docker image build/publish workflow for Node template (Owner: Agent, Due: 2025-02-14)
 - [x] Reconcile repository formatting with 88-character Ruff limit (Owner: Agent, Due: 2025-02-06) _(repo-wide `ruff check` clean in chunk 2fc5ed after wrapping CLI/tests/templates)_
 - [x] Align Ruff line-length configuration with Black default (Owner: Agent, Due: 2025-02-05) _(root `ruff.toml` + Python service template `pyproject.toml` updated to 88)_
 - [x] Establish pipeline remediation plan (Owner: Agent, Due: 2025-02-05)
@@ -51,6 +54,7 @@
 - [x] Reviewed template standards/docs to extract cookiecutter + boilerplate quality expectations for upcoming CLI alignment (see TEMPLATE_STANDARDS.md)
 - [x] Ensured quick-mode sanity summary stays synchronized with recorded passes and captured regression coverage (`tests/test_sanity_check.py`, pytest chunk cd2c27)
 - [x] Added quick-mode HTML report regression coverage so rendered artifacts track recorded passes (`tests/test_sanity_check.py::test_sanity_check_quick_mode_html_report`, pytest chunk 59ba8a)
+- [x] Reconciled Node template documentation with current CI/security capabilities and logged follow-up automation gaps (this pass)
 - [x] Documented the React Storybook 8 upgrade path and added regression coverage for scripts/dependencies (`tests/test_cookiecutters.py::test_react_cookiecutter_storybook_scripts`, pytest chunk 3d7b60)
 
 ## Deliverables
@@ -97,3 +101,4 @@
 - [x] Evaluate adding targeted tests for `.dev/sanity-check.sh` quick-mode output to prevent regressions _(HTML report parity locked by pytest chunk 59ba8a)_
 - [ ] `pip-audit` virtualenv bootstrap occasionally hangs; investigate caching/timeout strategy before gating CI
 - [ ] Template formatting drift (`ruff format --check`) spans shared hooks/notebooks; monitor templated placeholders ahead of strict enforcement (chunk 56fb10)
+- [ ] Node template automation gaps (npm publish, Docker packaging, SBOM/signing) documented but unimplemented; ensure roadmap tasks close before advertising features

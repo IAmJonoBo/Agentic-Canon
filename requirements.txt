@@ -14,4 +14,8 @@ pytest-cookies==0.7.0
 pip-audit==2.9.0
 pip-licenses==5.0.0
 PyYAML==6.0.3
+<<<<<<< Updated upstream
 mypy==1.18.2
+=======
+mypy==1.11.1
+>>>>>>> Stashed changes

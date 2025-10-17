@@ -804,6 +804,16 @@ def tests(session: nox.Session) -> None:
 
 @nox.session
 def typecheck(session: nox.Session) -> None:
+<<<<<<< Updated upstream
     """Run static type checks with mypy."""
     session.install("-r", "requirements.txt")
     session.run("mypy", "--config-file", "mypy.ini")
+=======
+    """Run static type analysis with mypy."""
+    session.install("-r", "requirements.txt")
+    targets = [
+        "agentic_canon_cli",
+        ".dev/scripts",
+    ]
+    session.run("mypy", *targets)
+>>>>>>> Stashed changes

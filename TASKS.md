@@ -705,11 +705,11 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
 
 ### Infrastructure
 
-- [ ] Kubernetes manifests
-- [ ] Helm charts
-- [ ] Terraform/OpenTofu modules
-- [ ] Container images
-- [ ] Service mesh configuration
+- [ ] #129 Kubernetes manifests
+- [ ] #130 Helm charts
+- [ ] #131 Terraform/OpenTofu modules
+- [ ] #132 Container images
+- [ ] #133 Service mesh configuration
 
 ## Priority Matrix
 
@@ -865,27 +865,27 @@ Templates and examples are checked for structure and best practices, but may be 
 
 ### Template Distribution & Access
 
-- [ ] Implement sparse-checkout support for template cherry-picking
+- [ ] #134 Implement sparse-checkout support for template cherry-picking
   - [ ] Document sparse-checkout + partial clone workflow
   - [ ] Add examples for public and private repos
   - [ ] Test with different Git versions
-- [ ] Add tiged support for subfolder extraction
+- [ ] #135 Add tiged support for subfolder extraction
   - [ ] Document public tiged usage
   - [ ] Document private SSH-based tiged usage
   - [ ] Add error handling and fallbacks
-- [ ] Create release bundle automation
+- [ ] #136 Create release bundle automation
   - [ ] Add `.github/workflows/release-assets.yml` workflow
   - [ ] Implement template zipping on release tags
   - [ ] Create wheelhouse for offline Python installs
   - [ ] Publish to GitHub Releases
-- [ ] Mark templates as template repositories (optional)
+- [ ] #137 Mark templates as template repositories (optional)
   - [ ] Configure template repository settings
   - [ ] Document template generation workflow
   - [ ] Test with private and public access
 
 ### Dependency Management & Offline Support
 
-- [ ] Python offline support
+- [ ] #138 Python offline support
   - [ ] Document PIP_INDEX_URL configuration
   - [ ] Implement wheelhouse generation
   - [ ] Add offline install documentation

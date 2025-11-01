@@ -21,21 +21,21 @@ lint:
     - hadolint@2.14.0
     - svgo@4.0.0
     - gofmt@1.22.6
-    - golangci-lint2@2.5.0
+    - golangci-lint2@2.6.0
     - actionlint@1.7.8
     - bandit@1.8.6
-    - checkov@3.2.483
+    - checkov@3.2.489
     - git-diff-check
     - markdownlint-cli2@0.18.1
-    - eslint@9.37.0
-    - osv-scanner@2.2.3
+    - eslint@9.39.0
+    - osv-scanner@2.2.4
     - prettier@3.6.2
-    - renovate@41.148.1
-    - ruff@0.14.0
+    - renovate@41.168.5
+    - ruff@0.14.3
     - shellcheck@0.11.0
     - shfmt@3.12.0
     - taplo@0.10.0
-    - trufflehog@3.90.8
+    - trufflehog@3.90.12
     - yamllint@1.37.1
   disabled:
     - markdownlint # Replaced with markdownlint-cli2

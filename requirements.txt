@@ -1,5 +1,5 @@
 jupyter==1.1.1
-jupytext==1.17.3
+jupytext==1.18.1
 nbstripout==0.8.1
 pytest==8.4.2
 pytest-cov==7.0.0

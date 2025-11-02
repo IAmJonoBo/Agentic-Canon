@@ -1,30 +1,4 @@
-Executive summary first, then we weaponise it for a model.
-
-You want the Agentic-Canon repo  ￼ turned into a model-executable brief that: (1) turns every control into enforceable policy-as-code (Rego / Conftest / Semgrep) in the style of OPA/Conftest  ￼, (2) aligns to NIST AI RMF govern–map–measure–manage and the 2024–25 generative profile  ￼, (3) bakes in LLM/agent failure modes from OWASP LLM Top 10 2025 so we treat AI output as hostile  ￼, and (4) exposes the Canon as a policy oracle + self-healing repo loop. Talk of money is noise; we ignore it.
-
-Below is the brief, in a form a code-gen model (your “Codex”) can run without guessing.
-
-⸻
-
-1. Meta
-
-brief_id: agentic-canon/policy-oracle-v1
-author: Jonathan (source conversation)
-optimised_for: LLM/codegen agents (GitHub, MCP, REST)
-status: draft-for-implementation
-influence_alert: none_detected  # user request is descriptive, not coercive
-primary_sources:
-  - agentic-canon-repo: https://github.com/IAmJonoBo/Agentic-Canon
-  - nist_ai_rmf_1_0: NIST.AI.100-1.pdf
-  - nist_ai_rmf_genai_profile_2024: NIST.AI.600-1.pdf
-  - owasp_llm_top_10_2025: https://owasp.org/www-project-top-10-for-large-language-model-applications/
-  - opa/conftest: https://github.com/open-policy-agent/conftest
-
-Sources:  ￼
-
-⸻
-
-2. Mission statement
+Mission statement
 
 Build an agent-addressable policy oracle over Agentic-Canon so that every LLM/agent action (scaffold service, add CI, generate SBOM, add threat model) must first ask: “what does the Canon require here?”; and so that repositories can self-heal to the Canon via nightly agents that open PRs with missing steps/templates and attach control IDs. This shifts policy to first-class, delivers lineage, and matches NIST AI RMF practice for governed AI artefacts.  ￼
 

@@ -14,7 +14,7 @@ runtimes:
   enabled:
     - python@3.10.8
     - go@1.22.6
-    - node@25.0.0
+    - node@25.1.0
 # This is the section where you manage your linters. (https://docs.trunk.io/check/configuration)
 lint:
   enabled:
@@ -30,7 +30,7 @@ lint:
     - eslint@9.39.0
     - osv-scanner@2.2.4
     - prettier@3.6.2
-    - renovate@41.168.5
+    - renovate@41.169.1
     - ruff@0.14.3
     - shellcheck@0.11.0
     - shfmt@3.12.0

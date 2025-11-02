@@ -1120,7 +1120,7 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Configure FastMCP integration
   - [ ] Test connection
   - [ ] Document setup
-- [ ] Create mcp-config-examples/
+- [ ] #256 Create mcp-config-examples/
   - [ ] Claude Desktop config
   - [ ] OpenAI config
   - [ ] Gemini config
@@ -1128,17 +1128,17 @@ Templates and examples are checked for structure and best practices, but may be 
 
 #### MCP Testing & Documentation
 
-- [ ] Guardrail tests
+- [ ] #257 Guardrail tests
   - [ ] Test schema validation
   - [ ] Test allowlists
   - [ ] Test destructive ops blocking
   - [ ] Test human-in-the-loop
-- [ ] Integration tests
+- [ ] #258 Integration tests
   - [ ] Test all tools
   - [ ] Test all resources
   - [ ] Test all prompts
   - [ ] Test error scenarios
-- [ ] Documentation
+- [ ] #259 Documentation
   - [ ] MCP server README
   - [ ] Tool reference docs
   - [ ] Resource reference docs
@@ -1148,12 +1148,12 @@ Templates and examples are checked for structure and best practices, but may be 
 
 ### Rollout Timeline (2 weeks)
 
-- [ ] Day 1-2: SDK selection, repo layout, Dockerization
-- [ ] Day 3-5: Implement resources and list_templates()
-- [ ] Day 6-8: Implement render_template() and create_repo()
-- [ ] Day 9-10: Implement offline cache tools and execute_notebook()
-- [ ] Day 11-12: Wire prompts (scaffold, gates, Storybook, Go lint)
-- [ ] Day 13-14: Package Desktop Extension, add examples, write tests
+- [ ] #260 Day 1-2: SDK selection, repo layout, Dockerization
+- [ ] #261 Day 3-5: Implement resources and list_templates()
+- [ ] #262 Day 6-8: Implement render_template() and create_repo()
+- [ ] #263 Day 9-10: Implement offline cache tools and execute_notebook()
+- [ ] #264 Day 11-12: Wire prompts (scaffold, gates, Storybook, Go lint)
+- [ ] #265 Day 13-14: Package Desktop Extension, add examples, write tests
 
 ## Future Maintenance & Improvements
 

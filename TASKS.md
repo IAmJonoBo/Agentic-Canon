@@ -1071,34 +1071,34 @@ Templates and examples are checked for structure and best practices, but may be 
 
 #### MCP Security Model
 
-- [ ] Implement least privilege design
+- [ ] #244 Implement least privilege design
   - [ ] Default read-only resources
   - [ ] Explicit enablement for mutations
   - [ ] Scope tools to target repos
-- [ ] Ephemeral authentication
+- [ ] #245 Ephemeral authentication
   - [ ] Short-lived GitHub App tokens
   - [ ] No standing PATs
   - [ ] Token rotation
-- [ ] Container isolation
+- [ ] #246 Container isolation
   - [ ] Locked namespace
   - [ ] Whitelist CLIs only
   - [ ] JSON-schema validation for args
-- [ ] Audit logging
+- [ ] #247 Audit logging
   - [ ] Structured logs (stderr/file)
   - [ ] Per-call audit records
   - [ ] Log retention policy
 
 #### MCP CI/CD & Operations
 
-- [ ] Build/test workflow
+- [ ] #248 Build/test workflow
   - [ ] Test server functionality
   - [ ] Contract test MCP schema
   - [ ] Publish container image
-- [ ] Release workflow
+- [ ] #249 Release workflow
   - [ ] Package Desktop Extension
   - [ ] Publish Release assets
   - [ ] Update documentation
-- [ ] Monitoring & SLOs
+- [ ] #250 Monitoring & SLOs
   - [ ] Track SSE endpoint availability
   - [ ] Track P95 tool latency
   - [ ] Track error rate
@@ -1106,17 +1106,17 @@ Templates and examples are checked for structure and best practices, but may be 
 
 #### MCP Client Integration
 
-- [ ] Claude Desktop Extension
+- [ ] #251 Claude Desktop Extension
   - [ ] Create .dxt/.mcpb package
   - [ ] One-click install
   - [ ] Configuration examples
   - [ ] Test local server connection
-- [ ] OpenAI Agents SDK example
+- [ ] #252 OpenAI Agents SDK example
   - [ ] Configure agent connection
   - [ ] Expose tools in UI
   - [ ] Test tool invocation
   - [ ] Document setup
-- [ ] Gemini CLI example
+- [ ] #253 Gemini CLI example
   - [ ] Configure FastMCP integration
   - [ ] Test connection
   - [ ] Document setup

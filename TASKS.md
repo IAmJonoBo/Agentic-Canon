@@ -1159,39 +1159,39 @@ Templates and examples are checked for structure and best practices, but may be 
 
 ### Standards Maintenance
 
-- [ ] Quarterly review of QUALITY_STANDARDS.md (next: 2026-01-12)
+- [ ] #266 Quarterly review of QUALITY_STANDARDS.md (next: 2026-01-12)
   - [ ] Review against latest NIST SSDF, OWASP SAMM updates
   - [ ] Update quality gates based on industry trends
   - [ ] Incorporate feedback from template usage
-- [ ] Update CONVENTIONS.md with new language standards (next: 2026-01-12)
+- [ ] #267 Update CONVENTIONS.md with new language standards (next: 2026-01-12)
   - [ ] Python 3.13+ conventions when released
   - [ ] TypeScript 5.x+ conventions
   - [ ] Go 1.24+ conventions
   - [ ] Emerging best practices
-- [ ] Add automated compliance trend tracking
+- [ ] #268 Add automated compliance trend tracking
   - [ ] Track template compliance over time
   - [ ] Generate trend charts
   - [ ] Alert on compliance regressions
-- [ ] Generate compliance badges for README
+- [ ] #269 Generate compliance badges for README
   - [ ] Shields.io integration
   - [ ] Per-template compliance badges
   - [ ] Overall project health badge
 
 ### Template Enhancement Backlog
 
-- [ ] Add mutation testing examples to templates
+- [ ] #270 Add mutation testing examples to templates
   - [ ] mutmut for Python
   - [ ] Stryker for JavaScript/TypeScript
   - [ ] go-mutesting for Go
-- [ ] Enhance SBOM generation in all templates
+- [ ] #271 Enhance SBOM generation in all templates
   - [ ] CycloneDX integration improvements
   - [ ] SPDX format support
   - [ ] Vulnerability correlation
-- [ ] Add performance testing frameworks
+- [ ] #272 Add performance testing frameworks
   - [ ] k6 for load testing
   - [ ] Locust for Python services
   - [ ] Apache JMeter alternatives
-- [ ] Implement accessibility testing in web templates
+- [ ] #273 Implement accessibility testing in web templates
   - [ ] axe-core integration
   - [ ] pa11y in CI/CD
   - [ ] WCAG 2.2 AA compliance checks
@@ -1204,14 +1204,14 @@ Templates and examples are checked for structure and best practices, but may be 
 
 ### Documentation Improvements
 
-- [ ] Create video tutorials for templates (scripts ready)
+- [ ] #274 Create video tutorials for templates (scripts ready)
   - [ ] Record Getting Started (8 min)
   - [ ] Record Creating Services (12 min)
   - [ ] Record CI/CD Setup (10 min)
   - [ ] Record Security Gates (15 min)
   - [ ] Record Observability Setup (12 min)
   - [ ] Record Jupyter Book Usage (8 min)
-- [ ] Expand TEMPLATE_STANDARDS.md
+- [ ] #275 Expand TEMPLATE_STANDARDS.md
   - [ ] Add more examples of acceptable variations
   - [ ] Document edge cases
   - [ ] Add troubleshooting section

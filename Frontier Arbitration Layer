@@ -1,0 +1,106 @@
+Frontier Arbitration Layer – Execution Brief
+
+Purpose. Add an orchestration tier that runs 2–3 heterogeneous LLMs/agents on the same task, scores their plans/artefacts against the Canon policy oracle, and only forwards the highest-scoring, policy-exact output. This mirrors 2025 practice of cross-lab safety evaluations (OpenAI ↔ Anthropic) and NIST/AISI-style red-team-first measurement.  ￼
+
+⸻
+
+1. Objectives
+	1.	Reduce model-specific weirdness (prompt-injection success, excessive agency, insecure output handling) by routing only the best-scored artefact to CI.  ￼
+	2.	Make policy, not model, the first authority: Canon judges, models compete.
+	3.	Exploit diversity: different models fail differently; arbitration converts that into safety, as seen in joint safety evaluations and multi-agent MAS research.  ￼
+	4.	Preserve auditability: every arbitrated choice is attested and links to Canon controls.
+
+⸻
+
+2. Architecture (logical)
+	1.	Call-fanout. Task arrives ("create service", "add SBOM", "threat model") → orchestrator runs N models (N=2–3) with identical Canon-primed context.
+	2.	Normalise. Each output is converted to Canon’s expected artefact schema (same fields you defined earlier).
+	3.	Score. Pass each candidate to Canon policy oracle:
+	•	POST /canon/controls/apply → get applicable controls.
+	•	POST /canon/attest with candidate → get provisional attestation.
+	•	Run generated Rego/Conftest/Semgrep locally → get pass/fail set.
+	4.	Arbitrate. Choose the candidate with:
+	•	0 critical policy violations,
+	•	highest Canon coverage (% of required controls actually evidenced),
+	•	lowest LLM-specific risk flags (OWASP LLM 2025: injection, excessive agency, insecure output).  ￼
+	5.	Emit. Forward only the winner to CI. Log losers for chaos/adversarial corpus. (This feeds your “generate adversaries with chaos” loop.)
+
+⸻
+
+3. Arbitration algorithm (deterministic core)
+
+candidates = run_all(models, task, canon_context)
+scored = []
+for c in candidates:
+    controls = oracle.apply(c.intent, c.meta)
+    eval = run_policies(c, controls)  # rego/conftest/semgrep
+    owasp = run_llm_risk_checks(c)    # LLM01..10
+    score = (
+        100 * eval.passed/controls.required
+        - 20 * eval.failed_critical
+        - 10 * owasp.high
+        + 5  * owasp.mitigations_present
+    )
+    scored.append({c, score, eval, owasp})
+winner = max(scored, key=score)
+if winner.eval.failed_critical > 0:
+    reject_all()  # no green → no done
+else:
+    emit(winner)
+    archive(losers(scored))
+
+This is ensemble selection, not model fusion; it’s closer to “committee red-team and pick the least-unsafe answer”, which is what OpenAI/Anthropic’s 2025 mutual evals are converging on.  ￼
+
+⸻
+
+4. Milestones
+	1.	A1 – Fanout runner
+	•	Orchestrator that can invoke ≥2 models with the same Canon-seeded prompt/tooling.
+	•	Gate: both candidates arrive in normalised JSON.
+	2.	A2 – Canon-scoring adapter
+	•	Implement scorer that: (i) calls oracle, (ii) runs generated Rego/Conftest, (iii) runs Semgrep LLM rules.
+	•	Gate: for a deliberately bad candidate, score < good candidate, every time.
+	3.	A3 – Arbiter service
+	•	Deterministic selection, failure mode = “reject all”.
+	•	Gate: pipeline fails if all candidates violate a critical Canon control.
+	4.	A4 – Attestation + logging
+	•	Each arbitration emits: task, candidate IDs, model names/versions, Canon version, controls applied, scores.
+	•	Gate: auditors can replay “why this model won”.
+	5.	A5 – Chaos/adversarial loop
+	•	Losers get mutated and re-evaluated; frequent failures auto-tighten Canon rules. Aligns with NIST/CSET guidance on iterative red-teaming.  ￼
+
+⸻
+
+5. Quality gates
+	•	QG-A1 (Policy supremacy): arbitration MUST use Canon scores, not model-reported confidence.
+	•	QG-A2 (OWASP coverage): arbitration MUST run at least LLM01, LLM02, LLM05, LLM06 checks on candidates.  ￼
+	•	QG-A3 (No silent downgrade): if all candidates fail → emit “policy-blocked” artefact + attestation, not a best-effort output.
+	•	QG-A4 (Lineage): attestation MUST name: Canon version, Oracle endpoint version, model IDs (gpt-*, claude-*, gemini-*), and policy bundle hash.
+	•	QG-A5 (Reproducibility): arbitration runs are deterministic given same inputs, policy bundle, and model versions.
+
+⸻
+
+6. Integration points with Canon
+	•	Arbitration always starts with oracle.apply().
+	•	Winning candidate is passed to the same CI reference pipelines you defined earlier (SAST, IaC, dep policy, SBOM, provenance).
+	•	Losers are passed to the “scan results → bump rules” endpoint to strengthen Canon against observed LLM mistakes.
+
+⸻
+
+7. Why this is justified (2025 context)
+	•	Multi-LLM / MAS work in 2024–25 explicitly warns that multiple “safe” agents can still produce unsafe collective behaviour; arbitration is the control to stop that.  ￼
+	•	NIST’s 2024–25 RMF/generative profile and the (now-renamed) US AI Safety Institute / CAISI work both push for measurable, replayable evaluations before deployment. Arbitration gives you that replayable trace.  ￼
+	•	OWASP LLM Top 10 2025 highlights “Excessive Agency” and “Insecure Output Handling” as still-prevalent failure modes; an arbitration layer that simply discards candidates tripping those controls is low-complexity, high-impact.  ￼
+	•	Frontier labs are already running cross-evaluations to spot model-specific safety holes; this is the open, repo-first mirror of that.  ￼
+
+⸻
+
+8. Provenance block
+
+Data. NIST AI RMF GenAI profile (2024) and 2025 AISI/CAISI consortium material for governed evaluation flows; OWASP LLM Top 10 2025 for concrete failure modes; OpenAI–Anthropic 2025 mutual safety evaluation for “evaluate with multiple systems” precedent; recent multi-LLM orchestration literature for fanout-score-select pattern.  ￼
+Methods. Constructed a 3-stage pipeline (fanout → Canon-scoring → deterministic selection) and aligned its gates with your existing “no green → no done” CI.
+Key results. Only policy-exact artefacts reach repos; losers become red-team fuel; Canon remains the single source of truth.
+Uncertainty. Arbitration quality depends on diversity of underlying models and freshness of Canon rules; rapid vendor shifts (see CAISI mission shift) can change preferred metrics.  ￼
+Safer alternative. Start with 2-model arbitration + warn-only mode; promote to hard-fail once Canon coverage ≥90% of target repos.
+
+That’s the layer. It’s not comedy; it’s just your Canon wearing a judge’s wig and refusing to ship nonsense.

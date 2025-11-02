@@ -1018,25 +1018,25 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Support zip or PR delivery
   - [ ] Return artifact URI or PR URL
   - [ ] Add error handling
-- [ ] create_repo() tool
+- [ ] #234 create_repo() tool
   - [ ] Scaffold project
   - [ ] Push to GitHub
   - [ ] Use GitHub API
   - [ ] Handle visibility (private/public)
-- [ ] add_workflows() tool
+- [ ] #235 add_workflows() tool
   - [ ] Add notebooks test/build workflows
   - [ ] Add Pages/Storybook deploy
   - [ ] Add release packer
   - [ ] Test workflow additions
-- [ ] build_wheelhouse() tool
+- [ ] #236 build_wheelhouse() tool
   - [ ] Generate Python cache
   - [ ] Support requirements files
   - [ ] Return cache location
-- [ ] yarn_zero_installs() tool
+- [ ] #237 yarn_zero_installs() tool
   - [ ] Set up Yarn cache
   - [ ] Configure PnP
   - [ ] Test Zero-Installs
-- [ ] execute_notebook() tool
+- [ ] #238 execute_notebook() tool
   - [ ] Run Papermill execution
   - [ ] Support parameters
   - [ ] Return execution results
@@ -1044,26 +1044,26 @@ Templates and examples are checked for structure and best practices, but may be 
 
 #### MCP Server Infrastructure
 
-- [ ] Choose SDK (FastMCP vs official Python SDK)
+- [ ] #239 Choose SDK (FastMCP vs official Python SDK)
   - [ ] Evaluate FastMCP features
   - [ ] Evaluate official SDK features
   - [ ] Make decision and document
-- [ ] Create mcp/ package structure
+- [ ] #240 Create mcp/ package structure
   - [ ] resources.py (bible, catalog, examples)
   - [ ] prompts.py (wizards)
   - [ ] tools.py (all tools)
   - [ ] **init**.py
   - [ ] tests/
-- [ ] Implement STDIO transport
+- [ ] #241 Implement STDIO transport
   - [ ] For local Claude Desktop
   - [ ] Test local connection
   - [ ] Add logging
-- [ ] Implement SSE transport (optional)
+- [ ] #242 Implement SSE transport (optional)
   - [ ] Behind VPN for remote access
   - [ ] Add OIDC/OAuth proxy
   - [ ] Implement rate limiting
   - [ ] Add public-ready option
-- [ ] Create Dockerfile
+- [ ] #243 Create Dockerfile
   - [ ] Non-root user
   - [ ] Minimal base image
   - [ ] Container security scanning

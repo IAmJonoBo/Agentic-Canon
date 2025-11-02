@@ -1215,37 +1215,37 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Add more examples of acceptable variations
   - [ ] Document edge cases
   - [ ] Add troubleshooting section
-- [ ] Create interactive compliance dashboard
+- [ ] #276 Create interactive compliance dashboard
   - [ ] Web-based compliance viewer
   - [ ] Real-time sanity check results
   - [ ] Historical trend visualization
 
 ### Automation Enhancements
 
-- [ ] Automated template updates via Cruft
+- [ ] #277 Automated template updates via Cruft
   - [ ] Monitor for template drift
   - [ ] Auto-generate update PRs
   - [ ] Test updates before applying
-- [ ] Continuous compliance monitoring
+- [ ] #278 Continuous compliance monitoring
   - [ ] Scheduled sanity check runs
   - [ ] Slack/Discord notifications
   - [ ] GitHub status checks
-- [ ] Template generator CLI improvements
+- [ ] #279 Template generator CLI improvements
   - [ ] Interactive template selection wizard
   - [ ] Preview before generation
   - [ ] Undo/rollback capability
 
 ### Community & Ecosystem
 
-- [ ] Template marketplace development
+- [ ] #280 Template marketplace development
   - [ ] Web frontend for browsing
   - [ ] Rating and review system
   - [ ] Usage statistics
-- [ ] Community template contribution framework
+- [ ] #281 Community template contribution framework
   - [ ] Submission guidelines enforcement
   - [ ] Automated quality checks
   - [ ] Review workflow
-- [ ] Plugin system for sanity check
+- [ ] #282 Plugin system for sanity check
   - [ ] Custom validation rules
   - [ ] Language-specific validators
   - [ ] Organization-specific checks

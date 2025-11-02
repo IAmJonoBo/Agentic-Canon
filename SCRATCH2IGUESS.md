@@ -1,134 +1,265 @@
-	1.	Lock the canon to real frameworks.
-Every control in the canon gets fields for: source (NIST AI RMF fn/guidance; SOC2; ISO 27001), rationale, version, and a Rego/Conftest/semgrep emission. That turns it from advice into enforcement. This mirrors what Wiz/Jit describe for PaC in cloud-native land.  ￼
-	2.	Make it the easiest path for agents.
-Ship an SDK that agents can load to get: “create-service”, “add-ci”, “add-sbom”, “add-threatmodel”. This is basically Backstage templates, but spoken in JSON for LLMs. If the easy path is also the compliant path, engineers will let agents use it.  ￼
-	3.	Wire in security-by-default for AI code.
-Since ~30–45% of AI code is still flawed in 2025  ￼, the canon should always generate: SAST + IaC checks + dep policy + “AI-origin SBOM tag”. Then: no green checks → no “done”. That directly answers the Copilot security reviews enterprises are now asking for.  ￼
-	4.	Add attestations.
-Every generated artefact carries a small signed note: “Generated from Agentic-Canon vX.Y, policy pack Z”. That gives auditors the lineage NIST keeps nagging about for trustworthy AI software.  ￼
-	5.	Publish reference integrations.
-GitHub Actions, GitLab CI, Azure DevOps, plus an example for GitHub’s own new AI agents so they can obey the canon automatically. That leverages the direction GitHub is already going in with repo-aware agents.  ￼
-	6.	Run feedback loops.
-Pipe scan results back into the canon to auto-bump rules that keep catching LLM mistakes (input validation, injection, bad randomness—the stuff Veracode and academics keep finding).  ￼
+Executive summary first, then we weaponise it for a model.
 
-You’re right to chase the “slightly impossible”. This repo actually has enough bones to do a weirdly ambitious thing.
+You want the Agentic-Canon repo  ￼ turned into a model-executable brief that: (1) turns every control into enforceable policy-as-code (Rego / Conftest / Semgrep) in the style of OPA/Conftest  ￼, (2) aligns to NIST AI RMF govern–map–measure–manage and the 2024–25 generative profile  ￼, (3) bakes in LLM/agent failure modes from OWASP LLM Top 10 2025 so we treat AI output as hostile  ￼, and (4) exposes the Canon as a policy oracle + self-healing repo loop. Talk of money is noise; we ignore it.
 
-Here’s the version of “incredible” that is still buildable.
-
-1. Turn the Canon into a policy oracle that all agents must ask
-
-You already have a machine-readable control map (control-traceability-matrix.json) and a catalogue of templates (catalog.json). That is exactly the structure an agent can query before it does anything.  ￼
-
-Doable leap: expose that as a service (MCP, REST, whatever) so every agent has to call:
-	1.	“What controls apply to: new-fastapi-service?”
-	2.	“Give me the canonical CI, SBOM, SLSA, docs for that.”
-	3.	“Give me the evidence clauses.”
-
-Then the agent scaffolds from templates/ and not from its own fuzzy memory.  ￼
-
-Why it’s incredible: this is how AAGATE and other NIST-AI-RMF-aligned systems are going—central governance plane, agents query it, plans get validated. You’d have the open, GitHub-first version of that.  ￼
-
-2. Make repos self-healing to the Canon
-
-Your docs include verification / sanity-check material (VERIFICATION_GUIDE.md, SANITY-CHECK-QUICKSTART-v2.md, quality standards) so the shape is there. An agent can run nightly:
-	•	read Canon → diff against repo → open PR with the missing Canon bits (SBOM step, red-team readme, SLOs), using the templates you already ship.  ￼
-	•	attach the control IDs from the matrix into the PR description so audit can follow the chain.  ￼
-
-That gives you a living golden path, not a one-time generator.
-
-3. Emit attestations for everything
-
-Every template already has a known origin (because it’s listed in catalog.json). Make the agent add an in-repo attestation file:
-
-source: agentic-canon
-canon_version: 1.1.0
-controls:
-  - SEC-API-001
-  - SBOM-BASE
-generated_at: 2025-11-02T…
-
-Match that to NIST AI RMF’s “explainability + accountability” section so you can hand it to a CISO and they recognise the structure.  ￼
-
-4. Publish a Canon-to-Rego / Canon-to-Semgrep exporter
-
-Right now the Canon tells humans and agents what to do; it doesn’t enforce. An exporter that takes entries from the control matrix and spits out Rego/Conftest or Semgrep rules closes the loop, the same way OpenSSF Scorecard wires findings into policy. That’s the missing piece almost every other “agent template” ecosystem skips.  ￼
-
-5. Stick it in the agent supply chain
-
-GitHub is already surfacing an MCP registry in the UI you saw on the repo page, and the repo is MIT. That means you can publish “Agentic Canon MCP” as a public, read-only authority that any LLM agent can plug into. Then you get network effects: once two or three stacks consume the same canon, the training stories and examples online line up with it.  ￼
+Below is the brief, in a form a code-gen model (your “Codex”) can run without guessing.
 
 ⸻
 
-Why this counts as “incredible”
-	•	It makes the policy the first-class artefact, not the code.
-	•	It gives you lineage from “LLM did a thing” → “it was allowed because control X said so”.
-	•	It’s aligned with what the serious governance people are building (AAGATE, NIST-AI-RMF-aligned control planes). You’re just doing it in GitHub markdown and JSON instead of a $500k product.  ￼
+1. Meta
 
-That’s not world-shattering—but it is the bones of a public “AI-safe SDLC”. Which is a pretty decent rebellion against entropy.
+brief_id: agentic-canon/policy-oracle-v1
+author: Jonathan (source conversation)
+optimised_for: LLM/codegen agents (GitHub, MCP, REST)
+status: draft-for-implementation
+influence_alert: none_detected  # user request is descriptive, not coercive
+primary_sources:
+  - agentic-canon-repo: https://github.com/IAmJonoBo/Agentic-Canon
+  - nist_ai_rmf_1_0: NIST.AI.100-1.pdf
+  - nist_ai_rmf_genai_profile_2024: NIST.AI.600-1.pdf
+  - owasp_llm_top_10_2025: https://owasp.org/www-project-top-10-for-large-language-model-applications/
+  - opa/conftest: https://github.com/open-policy-agent/conftest
 
-1. Treat all AI output as hostile
-
-Base rate: ~40–45% of AI-generated code has a vuln, even in 2025, and the flaw rate isn’t clearly going down.  ￼
-So: n00tropic never trusts model output; it ingests → normalises → proves. That’s exactly what NIST AI RMF wants: governed, measurable, explainable AI artefacts.  ￼
-
-2. MVP pipeline (doable now)
-	1.	Ingest. Generator produces code/config/docs → drop into Canon.
-	2.	Classify. Map to Canon template + control IDs using your control-traceability-matrix. (You already have the skeleton for this.)
-	3.	Enforce. Run fixed steps: format/lint, SAST, dep policy, IaC policy, SBOM+sigstore/in-toto provenance (SLSA-style). If any red → auto-PR with Canon template patch.  ￼
-	4.	Attest. Emit a signed note: “generated by n00tropic; canon=v1.x; controls=[…]; scans=pass”. That lines up with what GitHub, Konflux and in-toto are doing right now.  ￼
-	5.	Gate. Nothing merges unless attested + green.
-
-That alone gives you “frontier-grade by process”, not by model.
-
-3. Add a rail layer
-
-Stick NeMo Guardrails / Guardrails.ai before the Canon so prompts and tool calls are already policy-safe. This is standard and lowers jailbreak noise.  ￼
-
-4. Where it can become “incredible”
-	•	Policy oracle: expose Canon as a service; every agent must ask “what’s the compliant way to do X?” first. That’s RMF-aligned and makes your canon the coordination point.  ￼
-	•	Self-healing repos: nightly agent compares live repos to Canon → auto-PR missing controls. Very few teams do this; it’s novel but implementable with your current docs.  ￼
-	•	Frontier arbitration: run 2–3 models, diff outputs, and only send the best-scoring one through Canon; discard the rest. That directly tackles the uneven/biasy behaviour we’re already seeing across models.  ￼
-
-5. Why it fits “everything n00tropic touches is frontier-grade”
-6. 
-	1.	Make the canon the training corpus.
-NIST AI RMF gives you the four verbs to aim for — govern, map, measure, manage — so you can label data by what risk the action is addressing rather than “good/bad”. That’s a far better supervisory signal than free-form RLHF.  ￼
-	2.	Generate adversaries with chaos.
-You can inject faults and weirdness into the agent pipeline the same way chaos engineering is used for ML/MLOps — perturb inputs, knock out tools, drop context, mutate policies — and label how the system ought to recover. That literature already exists for ML chaos/fault injection and even first papers for LLM-chaos. You just aim it at policy-following instead of uptime.  ￼
-	3.	Train safety/classifier layers on the chaos corpus.
-Microsoft, OpenAI, Anthropic and the US AI Safety Institute are converging on exactly this “red-team → structured dataset → classifier/guardrail” loop. Your chaos stream simply becomes more red-team fuel.  ￼
-	4.	Bake in LLM-specific threat models.
-OWASP’s LLM Top 10 2025 gives you a ready-made set of failure modes (prompt injection, data poisoning, excessive agency, output handling). Auto-generate thousands of those, chaos-style, and mark which Canon controls apply. That’s a goldmine for supervised finetuning or reward-model training.  ￼
-	5.	Target metric: “policy exactness”, not IQ.
-The big labs are starting to rank models on safety/compliance, not just quality or tokens/sec. That gives you a market-legible KPI: % of adversarial/chaos cases handled according to Canon.  ￼
-
-What falls out is a model that might not win a general-purpose benchmark, but almost never ships an artefact that violates your Canon. Given how often red-teamers are still breaking frontier models in 2025, that’s a defensible niche.  ￼
-
-
-
-Because “frontier-grade” here is not “the model never slips”, it’s “the system never ships unproven artefacts”. That’s the same philosophy supply-chain folks arrived at with SLSA/in-toto: you can’t stop people from writing weird code, but you can refuse to trust it.  ￼
+Sources:  ￼
 
 ⸻
 
- TAM/attach point.
-	•	AI governance/risk is on track for ≈$5–6B by 2029–30 at ~35–45% CAGR.  ￼
-	•	DevSecOps is already $9–10B in 2025 and marching to $20–26B by 2030. That’s the real budget.  ￼
-	•	“Secure/guarded AI & LLM appsec” is now a recognised category and getting bought/absorbed (see CrowdStrike–Pangea at ~$260M). That’s your comp for an agent-security layer.  ￼
-Your stack sits exactly in the overlap of those three. That is commercially dense territory.
+2. Mission statement
 
-2. What your hardened model changes.
-Most enterprises adopting AI code assistants are hitting the “we can generate faster than we can review” wall. Your model is trained on the canon + chaos-fuzzed governance cases, so it can author and self-justify compliant artefacts — that directly removes the review bottleneck they are complaining about now.  ￼
+Build an agent-addressable policy oracle over Agentic-Canon so that every LLM/agent action (scaffold service, add CI, generate SBOM, add threat model) must first ask: “what does the Canon require here?”; and so that repositories can self-heal to the Canon via nightly agents that open PRs with missing steps/templates and attach control IDs. This shifts policy to first-class, delivers lineage, and matches NIST AI RMF practice for governed AI artefacts.  ￼
 
-3. Value story you can sell.
-“Every AI-generated PR arrives with SBOM, SAST, IaC policy, and an attestation that names the control pack.” That is stricter than what most DevSecOps vendors actually enforce today, so it’s a differentiated product, not just “better prompts”.
+⸻
 
-4. Rough commercial ranges (2025 money).
-	•	Point estimate for a focused B2B product (GitHub/GitLab/Jenkins integrations, 50–200 enterprise logos): $50–120M ARR in 4–5 years.
-	•	50% interval: $30–180M ARR.
-	•	90% interval: $15–400M ARR — the high end is “platform teams standardise on your canon as the AI-policy source of truth and you become the agent-security vendor they all integrate”.
-Those figures are consistent with where fast DevSecOps vendors land when they’ve got a must-run pipeline step in a $20B market.  ￼
+3. Definition of done (high level)
+	1.	Policy Oracle service exists (MCP + REST) that, given an intent ("new-fastapi-service", "add-sbom", "harden-llm"), returns:
+	•	required Canon controls (IDs from control-traceability-matrix.json)
+	•	canonical artefacts/templates (from catalog.json)
+	•	evidence/attestation clauses
+	•	emitted Rego/Conftest/Semgrep rules
+	•	references to NIST AI RMF functions (govern/map/measure/manage) and AI-specific controls
+Source: Canon structure at root of repo.  ￼
+	2.	SDK for agents ships with verbs: create_service, add_ci, add_sbom, add_threatmodel, attest_artefact, open_canon_pr.
+	3.	Pipelines emit attestations for every generated artefact, signed or at least content-addressed, naming Canon version + control pack.
+	4.	Exporters can turn Canon controls into OPA/Rego/Conftest and Semgrep rules.  ￼
+	5.	CI quality gates enforce: no green checks → no “done”; hostile-AI stance: SAST + IaC + dep policy + SBOM + provenance mandatory. This is consistent with 2025 LLM vuln base rates.  ￼
+	6.	Reference integrations for GitHub Actions, GitLab CI, Azure DevOps, and GitHub’s MCP/agents. (One well-documented exemplar = enough.)
+	7.	Feedback loop: CI scan results are ingested to auto-bump Canon rules that repeatedly catch LLM mistakes.
 
-5. What has to go right.
-	1.	Canon becomes the schema, not just docs.
-	2.	The chaos-hardened model actually outperforms general models on policy exactness.
-	3.	You anchor to CI/pipeline budgets, not experimental AI budgets.
+⸻
+
+4. Inputs and artefacts (what Codex can rely on)
+	•	control-traceability-matrix.json: machine-readable map of Canon controls. (Treat as authoritative source of control IDs.)  ￼
+	•	catalog.json: catalogue of templates, CI blocks, doc skeletons. (Treat as authoritative source of artefact locations.)  ￼
+	•	templates/ tree: supply CI, SBOM, SLSA, docs, ADR/C4, SLOs, runbooks.  ￼
+	•	NIST AI RMF 1.0 + 2024 GenAI profile for control provenance.  ￼
+	•	OWASP LLM Top 10 2025 for LLM-specific threat models.  ￼
+	•	OPA/Conftest + Semgrep rule formats.  ￼
+
+Assumption: SOC 2 and ISO/IEC 27001 mappings are referenced but not fully present → brief must create fields, not content. (Stateful gap.)
+
+⸻
+
+5. Data model for “every control gets fields”
+
+{
+  "control_id": "CANON-SBOM-BASE",
+  "title": "SBOM present for all AI-generated artefacts",
+  "source": [
+    { "framework": "NIST AI RMF", "ref": "MEASURE.2", "version": "1.0" },
+    { "framework": "OWASP LLM Top 10 2025", "ref": "LLM05", "version": "2025" },
+    { "framework": "ISO/IEC 27001", "ref": "A.12.5.1", "version": "2022" }
+  ],
+  "rationale": "AI-generated artefacts have higher base-rate supply chain and output-handling risk in 2025; SBOM + provenance enables selective trust.",
+  "version": "1.1.0",
+  "rego": "package canon.sbom\n\ndeny[msg] {\n  not input.sbom.exists\n  msg := \"SBOM missing for artefact\"\n}\n",
+  "conftest": "same as rego, path-bound to repo/.canon/policy",
+  "semgrep": {
+    "id": "canon.sbom.present",
+    "pattern": "SBOM",
+    "languages": ["generic"],
+    "message": "SBOM reference must be present in generated artefact."
+  },
+  "attestation_template": {
+    "source": "agentic-canon",
+    "canon_version": "1.1.0",
+    "controls": ["CANON-SBOM-BASE"],
+    "generated_at": "$ISO_8601",
+    "status": "pass|fail",
+    "evidence": ["sbom.json", "slsa-provenance.json"]
+  }
+}
+
+This is exactly what you described: advice → enforcement, PaC style, aligned with current OPA/Conftest practice.  ￼
+
+⸻
+
+6. Services to build
+
+6.1 Policy Oracle API
+
+Purpose: central governance plane (open, GitHub-first) that LLM agents must query before planning/executing. Mirrors AAGATE/NIST-aligned control planes.  ￼
+
+Endpoints (Codex to implement):
+	1.	POST /canon/controls/apply
+	•	Input: { "intent": "new-fastapi-service", "stack": "python", "ai_origin": true }
+	•	Output: list of controls, each with: control_id, rationale, source, version, enforcement (rego|conftest|semgrep), required_templates, evidence_clauses.
+	2.	GET /canon/templates/{id}
+	•	Arms the agent with the actual template from catalog.json.
+	3.	POST /canon/attest
+	•	Accepts artefact metadata and returns signed attestation blob.
+	4.	POST /canon/scan-results
+	•	Ingests CI/SAST/IaC/dependency findings and updates Canon rule weights.
+
+Non-goals: user auth, billing, UI.
+
+Quality gates for this service:
+	•	100% of listed endpoints have OpenAPI 3.1 spec in repo (/docs/api/policy-oracle.openapi.yaml).
+	•	Unit tests for schema validation.
+	•	CI runs OPA/Conftest against sample payloads.
+	•	“No green → no done” applies here too.
+
+⸻
+
+6.2 Agent SDK
+
+Targets: Python (for GitHub/GitLab bots), Node/TS (for MCP/VS Code agents).
+
+Exports (minimal):
+
+canon = CanonClient(base_url="https://canon.local")
+plan = canon.controls_for("new-fastapi-service")
+repo = Repo(".")
+repo.apply_templates(plan.required_templates)
+repo.write_attestation(canon.attest(plan, artefacts=repo.artefacts()))
+repo.open_pr_with_controls(plan.controls)
+
+SDK MUST: (a) prefer Canon templates over internal scaffolding, (b) add audit-friendly PR descriptions with control IDs, (c) tag AI-origin SBOM entries.
+
+⸻
+
+6.3 Exporters
+	1.	Canon → Rego/Conftest
+	•	Input: control-traceability-matrix.json
+	•	Output: policy/<control_id>.rego
+	•	Optionally bundle into bundle.tar.gz for OPA sidecars.
+	2.	Canon → Semgrep
+	•	Generate a ruleset grouping AI-specific missteps (prompt injection mitigations, insecure output handling, excessive agency) mapped to OWASP LLM Top 10 2025.  ￼
+
+Quality gate: exporter must produce policies that pass opa test / conftest test with sample inputs from repo.  ￼
+
+⸻
+
+6.4 CI reference integrations
+
+Produce 3 reference pipelines:
+	1.	GitHub Actions: checkout → format/lint → SAST → IaC (Conftest) → dep policy → SBOM (Syft or similar) → sigstore/in-toto-style provenance → call Canon /attest → fail on any red.
+	2.	GitLab CI: same sequence.
+	3.	Azure DevOps: same sequence.
+
+These pipelines must consume the generated Rego/Semgrep to close the loop, just like cloud-native PaC described by vendors such as Wiz/Jit (mirroring the user’s analogy). We can model after public OPA/Conftest CI examples.  ￼
+
+⸻
+
+7. Milestones (no dates)
+	1.	M1 – Canon schema hardening
+	•	Formalise control JSON schema (fields above).
+	•	Add NIST AI RMF and OWASP LLM Top 10 mappings to ≥80% of current controls.
+	•	Add versioning & provenance rules.
+	•	Gate: JSON schema tests pass; docs regenerated.
+	2.	M2 – Policy Oracle MVP
+	•	REST + MCP surface with 3 endpoints above.
+	•	Uses control-traceability-matrix.json + catalog.json.
+	•	Gate: Integration test: sample agent (new-fastapi-service) gets non-empty control list, ≥1 template, ≥1 evidence clause.
+	3.	M3 – Agent SDKs
+	•	Python + TS SDKs.
+	•	PR autowriter that injects control IDs in description.
+	•	Gate: Running the SDK against a repo without SBOM yields a PR adding SBOM + attestation.
+	4.	M4 – Exporters
+	•	Canon → Rego/Conftest
+	•	Canon → Semgrep
+	•	Gate: Generated policies run cleanly in CI exemplar.
+	5.	M5 – Self-healing repo agent
+	•	Nightly job: read Canon → diff repo → open PR with missing Canon bits (SBOM step, red-team readme, SLOs).  ￼
+	•	Gate: At least 3 missing-control scenarios covered; PRs show control lineage.
+	6.	M6 – Attestation everywhere
+	•	Artefact-level attestation template baked into templates/.
+	•	Provenance compatible with SLSA / in-toto style.  ￼
+	•	Gate: CI fails when attestation missing.
+	7.	M7 – Reference integrations
+	•	3 CI/CD recipes published.
+	•	GitHub MCP listing created (read-only).
+	•	Gate: Agents in GitHub can call Canon without extra code.
+
+⸻
+
+8. Quality gates (global)
+	•	QG1 – “No green → no done”: any of {format/lint, SAST, IaC policy, dep policy, SBOM+provenance} fails → pipeline fails → PR blocked. Mirrors 2025 enterprise ask for AI-assisted code.  ￼
+	•	QG2 – AI-origin SBOM tag: every artefact generated by an LLM/agent has ai_origin: true in SBOM and in attestation.
+	•	QG3 – Attested or rejected: merge only if there is an attestation referencing Canon version + control pack.
+	•	QG4 – Policy tests present: OPA/Conftest tests exist for every generated Rego rule.
+	•	QG5 – Traceability: PRs created by agents must mention control IDs from matrix and link to generated policies.
+	•	QG6 – Security-by-default: default templates always emit SAST + IaC + dep policy hooks; no “quickstart” that bypasses security.
+	•	QG7 – Alignment checks: prompts/tool calls for LLM agents pass through guardrails (NeMo Guardrails / Guardrails.ai) to reduce jailbreak noise before they hit Canon.  ￼
+
+⸻
+
+9. Example outputs for the model
+
+9.1 Example Rego from Canon control
+
+package canon.fastapi
+
+deny[msg] {
+  input.intent == "new-fastapi-service"
+  not input.ci.includes["sbom"]
+  msg := "FastAPI service must include SBOM step per CANON-SBOM-BASE"
+}
+
+9.2 Example Semgrep rule (LLM output handling)
+
+rules:
+  - id: canon.llm.insecure-output
+    languages: [python]
+    message: "LLM output must be sanitised or validated – see CANON-LLM-OUTPUT-001"
+    patterns:
+      - pattern: "response = llm.generate(...)"
+      - pattern-not: "sanitize(response)"
+    severity: ERROR
+    metadata:
+      canonical_control: CANON-LLM-OUTPUT-001
+      source: OWASP-LLM-2025-LLM02
+
+Maps to OWASP LLM “Insecure Output Handling”.  ￼
+
+⸻
+
+10. Non-functional
+	•	Docs: add /docs/canon-oracle.md and update BIBLE.md to name the service.  ￼
+	•	License: stay MIT.
+	•	Security posture: treat all AI output as hostile; ingest → normalise → prove → attest. Mirrors NIST demand for measuring and managing AI risk.  ￼
+
+⸻
+
+11. Ranked build strategy
+	1.	Minimal viable control plane (M1–M2): unlocks every other step.
+	2.	Exporters (M4): closes advice → enforcement gap; highest leverage.
+	3.	Self-healing agent (M5): makes Canon living, not static.
+	4.	MCP publishing (M7): gives you network effects once GitHub/other agents can mount it.
+
+⸻
+
+12. Provenance block (as you asked)
+
+Data. Agentic-Canon repo structure (controls + templates)  ￼; NIST AI RMF 1.0 + 2024 GenAI profile for governance verbs and auditability  ￼; OWASP LLM Top 10 2025 for LLM-specific risks  ￼; OPA/Conftest and Semgrep public patterns for PaC enforcement  ￼.
+
+Methods. Mapped Canon controls → added source/rationale/version/emission fields → wrapped in REST/MCP policy-oracle → added CI-first gating → added exporters → added attestation and self-healing loop.
+
+Key results. Single source of policy truth; agents forced to query it; all artefacts attested; CI blocks on policy; policies re-learn from scan feedback.
+
+Uncertainty. Repo’s current JSON content could change; SOC 2 / ISO 27001 mappings are only sketched, not canonical; signing story depends on what the target platform already supports.
+
+Safer alternative. Start with read-only policy oracle + exporters + GitHub Action that only warns (does not fail) for non-attested artefacts, then ratchet to “no green → no done”.
+
+⸻
+
+That’s the brief. It should be directly feedable to your code-gen agent with minimal hallucination space. Next natural extension is to add the “frontier arbitration” layer on top of the oracle, but that is optional for v1.

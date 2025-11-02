@@ -90,7 +90,45 @@ Stick NeMo Guardrails / Guardrails.ai before the Canon so prompts and tool calls
 	•	Frontier arbitration: run 2–3 models, diff outputs, and only send the best-scoring one through Canon; discard the rest. That directly tackles the uneven/biasy behaviour we’re already seeing across models.  ￼
 
 5. Why it fits “everything n00tropic touches is frontier-grade”
+6. 
+	1.	Make the canon the training corpus.
+NIST AI RMF gives you the four verbs to aim for — govern, map, measure, manage — so you can label data by what risk the action is addressing rather than “good/bad”. That’s a far better supervisory signal than free-form RLHF.  ￼
+	2.	Generate adversaries with chaos.
+You can inject faults and weirdness into the agent pipeline the same way chaos engineering is used for ML/MLOps — perturb inputs, knock out tools, drop context, mutate policies — and label how the system ought to recover. That literature already exists for ML chaos/fault injection and even first papers for LLM-chaos. You just aim it at policy-following instead of uptime.  ￼
+	3.	Train safety/classifier layers on the chaos corpus.
+Microsoft, OpenAI, Anthropic and the US AI Safety Institute are converging on exactly this “red-team → structured dataset → classifier/guardrail” loop. Your chaos stream simply becomes more red-team fuel.  ￼
+	4.	Bake in LLM-specific threat models.
+OWASP’s LLM Top 10 2025 gives you a ready-made set of failure modes (prompt injection, data poisoning, excessive agency, output handling). Auto-generate thousands of those, chaos-style, and mark which Canon controls apply. That’s a goldmine for supervised finetuning or reward-model training.  ￼
+	5.	Target metric: “policy exactness”, not IQ.
+The big labs are starting to rank models on safety/compliance, not just quality or tokens/sec. That gives you a market-legible KPI: % of adversarial/chaos cases handled according to Canon.  ￼
+
+What falls out is a model that might not win a general-purpose benchmark, but almost never ships an artefact that violates your Canon. Given how often red-teamers are still breaking frontier models in 2025, that’s a defensible niche.  ￼
+
+
 
 Because “frontier-grade” here is not “the model never slips”, it’s “the system never ships unproven artefacts”. That’s the same philosophy supply-chain folks arrived at with SLSA/in-toto: you can’t stop people from writing weird code, but you can refuse to trust it.  ￼
 
 ⸻
+
+ TAM/attach point.
+	•	AI governance/risk is on track for ≈$5–6B by 2029–30 at ~35–45% CAGR.  ￼
+	•	DevSecOps is already $9–10B in 2025 and marching to $20–26B by 2030. That’s the real budget.  ￼
+	•	“Secure/guarded AI & LLM appsec” is now a recognised category and getting bought/absorbed (see CrowdStrike–Pangea at ~$260M). That’s your comp for an agent-security layer.  ￼
+Your stack sits exactly in the overlap of those three. That is commercially dense territory.
+
+2. What your hardened model changes.
+Most enterprises adopting AI code assistants are hitting the “we can generate faster than we can review” wall. Your model is trained on the canon + chaos-fuzzed governance cases, so it can author and self-justify compliant artefacts — that directly removes the review bottleneck they are complaining about now.  ￼
+
+3. Value story you can sell.
+“Every AI-generated PR arrives with SBOM, SAST, IaC policy, and an attestation that names the control pack.” That is stricter than what most DevSecOps vendors actually enforce today, so it’s a differentiated product, not just “better prompts”.
+
+4. Rough commercial ranges (2025 money).
+	•	Point estimate for a focused B2B product (GitHub/GitLab/Jenkins integrations, 50–200 enterprise logos): $50–120M ARR in 4–5 years.
+	•	50% interval: $30–180M ARR.
+	•	90% interval: $15–400M ARR — the high end is “platform teams standardise on your canon as the AI-policy source of truth and you become the agent-security vendor they all integrate”.
+Those figures are consistent with where fast DevSecOps vendors land when they’ve got a must-run pipeline step in a $20B market.  ￼
+
+5. What has to go right.
+	1.	Canon becomes the schema, not just docs.
+	2.	The chaos-hardened model actually outperforms general models on policy exactness.
+	3.	You anchor to CI/pipeline budgets, not experimental AI budgets.

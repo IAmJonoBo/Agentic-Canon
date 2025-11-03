@@ -584,3 +584,14 @@ def tests(session: nox.Session) -> None:
     """Execute the pytest suite with xdist parallelism."""
     session.install("-r", "requirements.txt")
     session.run("pytest", "-n", "auto")
+
+
+@nox.session
+def typecheck(session: nox.Session) -> None:
+    """Run static type analysis with mypy."""
+    session.install("-r", "requirements.txt")
+    targets = [
+        "agentic_canon_cli",
+        ".dev/scripts",
+    ]
+    session.run("mypy", *targets)

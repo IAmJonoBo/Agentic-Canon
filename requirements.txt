@@ -12,3 +12,4 @@ pytest-cookies==0.7.0
 pip-audit==2.9.0
 pip-licenses==5.0.0
 PyYAML==6.0.3
+mypy==1.11.1

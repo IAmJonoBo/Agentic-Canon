@@ -54,7 +54,7 @@ semgrep --config templates/_shared/semgrep/rules.yml
 ## Rule Selection Philosophy
 
 - Focus on **high-signal security and correctness rules** to avoid alert fatigue.
-- Cover the primary languages shipped in Agentic Canon templates.
+- Cover the primary languages shipped in n00-frontiers templates.
 - Expose a single config that teams can extend with their local exceptions.
 
 You can extend `rules.yml` with organisation-specific policies as needed.

@@ -1,4 +1,4 @@
-"""Manifest helpers for Agentic Canon templates."""
+"""Manifest helpers for n00-frontiers templates."""
 
 from __future__ import annotations
 

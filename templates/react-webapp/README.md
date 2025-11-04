@@ -279,5 +279,5 @@ This template implements:
 
 ---
 
-**Part of Agentic Canon - Frontier Software Excellence**  
+**Part of n00-frontiers - Frontier Software Excellence**  
 **Version**: 1.0.0

@@ -117,7 +117,7 @@
       "sample_contexts": {
         "default": {
           "author_email": "devnull@example.com",
-          "author_name": "Agentic Canon",
+          "author_name": "n00-frontiers",
           "ci_provider": "github",
           "description": "Go service integration test",
           "enable_security_gates": "yes",

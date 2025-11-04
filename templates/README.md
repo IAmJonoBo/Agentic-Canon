@@ -53,7 +53,7 @@ cookiecutter templates/go-service
 # or
 cookiecutter templates/docs-only
 
-# Or use the Agentic Canon CLI
+# Or use the n00-frontiers CLI
 pip install -e .
 agentic-canon init
 ```

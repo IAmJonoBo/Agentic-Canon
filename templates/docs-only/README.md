@@ -8,7 +8,7 @@ Jupyter Book documentation site template for creating beautiful, publication-qua
 # Using Cookiecutter
 cookiecutter templates/docs-only
 
-# Or using Agentic Canon CLI
+# Or using n00-frontiers CLI
 agentic-canon init
 # Select "Documentation Only" when prompted
 ```

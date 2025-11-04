@@ -256,7 +256,7 @@ templates:
         project_slug: integration-go-service
         module_path: github.com/agentic-canon/integration-go-service
         description: Go service integration test
-        author_name: Agentic Canon
+        author_name: n00-frontiers
         author_email: devnull@example.com
         license: Apache-2.0
         go_version: "1.22"

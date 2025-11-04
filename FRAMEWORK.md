@@ -299,7 +299,7 @@ See [control-traceability-matrix.json](control-traceability-matrix.json) for com
 
 ### Conformance Levels
 
-Projects using Agentic Canon can claim different conformance levels:
+Projects using n00-frontiers can claim different conformance levels:
 
 **Level 1: Foundation** (Minimum viable)
 
@@ -370,7 +370,7 @@ If a project cannot meet a requirement:
 **Example**: Code coverage target
 
 - OWASP SAMM Level 2: Recommends "significant coverage" (no specific %)
-- Agentic Canon: Requires 80%+
+- n00-frontiers: Requires 80%+
 - **Resolution**: Use 80% (more specific, measurable, achieves intent)
 
 ### When to Deviate from Standards
@@ -568,7 +568,7 @@ Quality is assured through **multiple layers of automation**:
 
 ### Framework Versioning
 
-The Agentic Canon framework follows **semantic versioning**:
+The n00-frontiers framework follows **semantic versioning**:
 
 - **Major (X.0.0)**: Breaking changes to structure or requirements
   - Example: New required quality gate, changed directory structure
@@ -669,7 +669,7 @@ The Agentic Canon framework follows **semantic versioning**:
 - Add new examples
 - Improve CI/CD workflows
 - Write blog posts or tutorials
-- Give talks about Agentic Canon
+- Give talks about n00-frontiers
 
 **Large Contributions** (> 8 hours):
 
@@ -821,7 +821,7 @@ If conflict cannot be resolved at maintainer level:
 
 ## Conclusion
 
-The Agentic Canon framework provides a comprehensive, practical path to frontier software excellence. By combining:
+The n00-frontiers framework provides a comprehensive, practical path to frontier software excellence. By combining:
 
 - **Industry standards** (NIST, OWASP, ISO, WCAG)
 - **Quality requirements** (measurable, enforced, comprehensive)
@@ -839,7 +839,7 @@ We enable teams to build secure, high-quality, performant, accessible software *
 - Continuous improvement
 
 **Welcome to frontier software excellence.**  
-**Welcome to Agentic Canon.**
+**Welcome to n00-frontiers.**
 
 ---
 
@@ -849,7 +849,7 @@ We enable teams to build secure, high-quality, performant, accessible software *
 
 ---
 
-**Maintained by**: Agentic Canon Contributors  
+**Maintained by**: n00-frontiers Contributors  
 **Review Cycle**: Quarterly  
 **Next Review**: 2026-01-12  
 **Questions?** Open a GitHub Discussion  
@@ -857,4 +857,4 @@ We enable teams to build secure, high-quality, performant, accessible software *
 
 ---
 
-_This document is part of the Agentic Canon framework for frontier software excellence._
+_This document is part of the n00-frontiers framework for frontier software excellence._

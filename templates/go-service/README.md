@@ -8,7 +8,7 @@ Production-ready Go service template with best practices, comprehensive testing,
 # Using Cookiecutter
 cookiecutter templates/go-service
 
-# Or using Agentic Canon CLI
+# Or using n00-frontiers CLI
 agentic-canon init
 # Select "Go Service" when prompted
 ```
@@ -280,5 +280,5 @@ This template implements:
 
 ---
 
-**Part of Agentic Canon - Frontier Software Excellence**  
+**Part of n00-frontiers - Frontier Software Excellence**  
 **Version**: 1.0.0

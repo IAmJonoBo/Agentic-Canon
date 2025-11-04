@@ -420,6 +420,6 @@ To improve this template:
 
 ---
 
-**Part of Agentic Canon - Frontier Software Excellence**  
+**Part of n00-frontiers - Frontier Software Excellence**  
 **Last Updated**: 2025-10-12  
 **Version**: 1.0.0

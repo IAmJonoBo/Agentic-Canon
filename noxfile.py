@@ -13,6 +13,11 @@ from pathlib import Path
 from typing import Dict, Iterable, Iterator, Mapping, Sequence, cast
 
 import nox  # type: ignore[import]
+from templates._shared.manifest import (  # type: ignore[import]
+    get_toolchain_version,
+    load_manifest,
+    load_toolchain_manifest,
+)
 
 SANITY_SECTIONS = (
     "core",
@@ -60,10 +65,45 @@ def _run_sanity(session: nox.Session, *sections: str) -> None:
 
 
 def _load_manifest_templates() -> Dict[str, Mapping[str, object]]:
-    from templates._shared.manifest import load_manifest  # pylint: disable=import-outside-toplevel
-
     manifest = load_manifest()
     return manifest.get("templates", {})
+
+
+def _validate_toolchain_alignment(session: nox.Session) -> None:
+    manifest = load_toolchain_manifest()
+    if manifest is None:
+        session.log("Toolchain manifest not found; skipping toolchain alignment check.")
+        return
+
+    template_configs = _load_manifest_templates()
+    checks = {
+        "python-service": ("python", "python_version"),
+        "node-service": ("node", "node_version"),
+    }
+    errors: list[str] = []
+
+    for template_name, (toolchain, field) in checks.items():
+        expected_version = get_toolchain_version(toolchain)
+        if expected_version is None:
+            session.log(f"Toolchain '{toolchain}' missing from manifest; skipping {template_name}.")
+            continue
+
+        config = template_configs.get(template_name, {})
+        contexts = config.get("sample_contexts", {})
+        if not isinstance(contexts, Mapping):
+            continue
+        for context_name, context in contexts.items():
+            if not isinstance(context, Mapping) or field not in context:
+                continue
+            actual_version = str(context.get(field))
+            if actual_version != expected_version:
+                errors.append(
+                    f"{template_name}::{context_name} declares {field}={actual_version}, "
+                    f"expected {expected_version} from toolchain manifest."
+                )
+
+    if errors:
+        session.error("\n".join(errors))
 
 
 def _arg_parser() -> argparse.ArgumentParser:
@@ -540,6 +580,7 @@ def validate_templates_all(session: nox.Session) -> None:
     """Run manifest sync, render, lint, and format in sequence for templates."""
     with _session_timer(session, "validate_templates_all"):
         session.log("Starting unified template validation pipeline.")
+        _validate_toolchain_alignment(session)
         notify_args = list(session.posargs)
         session.notify("sync_manifest", [])
         session.notify("render_templates", notify_args)

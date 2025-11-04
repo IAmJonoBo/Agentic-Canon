@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["github>IAmJonoBo/n00-cortex//renovate-presets/workspace.json"],
   "regexManagers": [
     {
       "fileMatch": [".trunk/trunk.yaml"],

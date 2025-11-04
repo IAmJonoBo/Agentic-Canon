@@ -55,16 +55,29 @@
       }
     },
     "go-service": {
-      "bootstrap": [["go", "mod", "tidy"]],
+      "bootstrap": [
+        [
+          "go",
+          "mod",
+          "tidy"
+        ]
+      ],
       "cache": {
         "installers": {
           "go": {
-            "command": ["go", "mod", "download"],
+            "command": [
+              "go",
+              "mod",
+              "download"
+            ],
             "enabled": true,
             "env": {
               "GOMODCACHE": ".cache/go"
             },
-            "key_files": ["go.sum", "go.mod"],
+            "key_files": [
+              "go.sum",
+              "go.mod"
+            ],
             "path": ".cache/go"
           },
           "node": {
@@ -89,7 +102,9 @@
           "enable_security_gates": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/security.yml"]
+                "remove": [
+                  ".github/workflows/security.yml"
+                ]
               }
             },
             "default": "yes",
@@ -150,7 +165,10 @@
               "--legacy-peer-deps"
             ],
             "enabled": true,
-            "key_files": ["package-lock.json", "package.json"],
+            "key_files": [
+              "package-lock.json",
+              "package.json"
+            ],
             "path": "node_modules"
           },
           "pip": {
@@ -172,7 +190,9 @@
           "enable_security_gates": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/security.yml"]
+                "remove": [
+                  ".github/workflows/security.yml"
+                ]
               }
             },
             "default": "yes",
@@ -209,7 +229,7 @@
           "enable_sbom_signing": "yes",
           "enable_security_gates": "yes",
           "license": "Apache-2.0",
-          "node_version": "20",
+          "node_version": "22.20.0",
           "project_name": "Demo Node Service",
           "project_slug": "demo-node-service"
         }
@@ -250,7 +270,9 @@
           "auto_close_stale_issues": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/stale.yml"]
+                "remove": [
+                  ".github/workflows/stale.yml"
+                ]
               }
             },
             "default": "yes",
@@ -259,7 +281,9 @@
           "enable_issue_triage": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/issue-triage.yml"]
+                "remove": [
+                  ".github/workflows/issue-triage.yml"
+                ]
               }
             },
             "default": "yes",
@@ -268,7 +292,9 @@
           "enable_pr_followups": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/pr-review-followup.yml"]
+                "remove": [
+                  ".github/workflows/pr-review-followup.yml"
+                ]
               }
             },
             "default": "yes",
@@ -277,7 +303,9 @@
           "enable_tasklist_tracking": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/tasklist-scan.yml"]
+                "remove": [
+                  ".github/workflows/tasklist-scan.yml"
+                ]
               }
             },
             "default": "yes",
@@ -286,7 +314,9 @@
           "enable_todo_tracking": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/todos.yml"]
+                "remove": [
+                  ".github/workflows/todos.yml"
+                ]
               }
             },
             "default": "yes",
@@ -367,7 +397,9 @@
           "enable_contract_tests": {
             "cases": {
               "no": {
-                "remove": ["tests/contract"]
+                "remove": [
+                  "tests/contract"
+                ]
               }
             },
             "default": "yes",
@@ -376,7 +408,9 @@
           "enable_security_gates": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/security.yml"]
+                "remove": [
+                  ".github/workflows/security.yml"
+                ]
               }
             },
             "default": "yes",
@@ -440,7 +474,7 @@
           "project_description": "A demo Python service",
           "project_name": "Demo Service",
           "project_slug": "demo-service",
-          "python_version": "3.11"
+          "python_version": "3.11.8"
         },
         "minimal": {
           "author_email": "your.email@example.com",
@@ -455,7 +489,7 @@
           "project_description": "A Python service with best practices",
           "project_name": "Minimal Service",
           "project_slug": "minimal-service",
-          "python_version": "3.11"
+          "python_version": "3.11.8"
         }
       },
       "summary": "Production-ready Python service with FastAPI, pytest, and GitHub Actions.",
@@ -480,7 +514,10 @@
               "--legacy-peer-deps"
             ],
             "enabled": true,
-            "key_files": ["package-lock.json", "package.json"],
+            "key_files": [
+              "package-lock.json",
+              "package.json"
+            ],
             "path": "node_modules"
           },
           "pip": {
@@ -502,7 +539,9 @@
           "enable_accessibility_tests": {
             "cases": {
               "no": {
-                "remove": [".github/workflows/accessibility.yml"]
+                "remove": [
+                  ".github/workflows/accessibility.yml"
+                ]
               }
             },
             "default": "yes",
@@ -511,7 +550,10 @@
           "include_e2e_tests": {
             "cases": {
               "no": {
-                "remove": ["tests/e2e", "playwright.config.ts"]
+                "remove": [
+                  "tests/e2e",
+                  "playwright.config.ts"
+                ]
               }
             },
             "default": "yes",

@@ -1,10 +1,10 @@
-# GitHub Copilot Instructions for Agentic Canon
+# GitHub Copilot Instructions for n00-frontiers
 
 This repository implements **frontier software excellence** with comprehensive standards compliance and agent-friendly automation. When contributing to this repository, follow these guidelines to maintain consistency and quality.
 
 ## Project Context
 
-**Agentic Canon** is a machine-readable, agent-friendly framework for fast, correct software scaffolding and delivery. It provides:
+**n00-frontiers** is a machine-readable, agent-friendly framework for fast, correct software scaffolding and delivery. It provides:
 
 - 📓 Executable notebooks for bootstrapping, security, testing, observability, and documentation
 - 🎨 Cookiecutter templates for Python, Node.js, React, Go, and documentation projects
@@ -381,7 +381,7 @@ All contributions must pass these gates:
 ### Repository Layout
 
 ```
-Agentic-Canon/
+n00-frontiers/
 ├── .github/
 │   ├── workflows/          # CI/CD pipelines
 │   └── copilot-instructions.md  # This file
@@ -457,7 +457,7 @@ Install hooks: `pre-commit install`
 
 ## Quick Reference: Key Framework Documents
 
-When working on Agentic Canon, reference these documents frequently:
+When working on n00-frontiers, reference these documents frequently:
 
 - **[FRAMEWORK.md](../FRAMEWORK.md)** - Our philosophy, decision-making framework, and conformance requirements
 - **[QUALITY_STANDARDS.md](../QUALITY_STANDARDS.md)** - All quality gates, testing standards, security requirements

@@ -1,5 +1,5 @@
 {
-  "name": "Agentic Canon",
+  "name": "n00-frontiers",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "features": {
     "ghcr.io/devcontainers/features/python:1": {
@@ -16,7 +16,7 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "python.defaultInterpreterPath": "/workspaces/agentic-canon/.venv/bin/python",
+        "python.defaultInterpreterPath": "/workspaces/n00-frontiers/.venv/bin/python",
         "terminal.integrated.defaultProfile.linux": "bash"
       },
       "extensions": [

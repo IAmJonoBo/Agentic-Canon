@@ -30,7 +30,7 @@ jobs:
 
       - name: Configure cache directory
         run: |
-          echo "AGENTIC_CANON_CACHE_DIR=${RUNNER_TEMP:-${TMPDIR:-/tmp}}/agentic-canon-cache" >> "$GITHUB_ENV"
+          echo "N00_FRONTIERS_CACHE_DIR=${RUNNER_TEMP:-${TMPDIR:-/tmp}}/n00-frontiers-cache" >> "$GITHUB_ENV"
 
       - name: Run template end-to-end tests
         env:

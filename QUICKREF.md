@@ -1,4 +1,4 @@
-# Agentic Canon - Quick Reference
+# n00-frontiers - Quick Reference
 
 > **Last Updated:** 2025-10-12  
 > **For Detailed Progress:** See [TASKS.md](TASKS.md) (single source of truth)
@@ -79,7 +79,7 @@
 ### ✅ Additional Features
 
 - ✅ Azure Pipelines examples and documentation
-- ✅ Interactive CLI wizard (`agentic-canon init`)
+- ✅ Interactive CLI wizard (`n00-frontiers init`)
 - ✅ 5 Jupyter notebooks (executable guides)
 - ✅ Comprehensive sanity-check.sh script
 - ✅ 8 Architecture Decision Records (ADRs)
@@ -126,7 +126,7 @@ pytest tests/test_cookiecutters.py -v
 
 ```bash
 # Interactive wizard
-agentic-canon init
+n00-frontiers init
 
 # Direct Cookiecutter
 cookiecutter templates/python-service

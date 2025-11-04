@@ -1,6 +1,6 @@
 # Shared Template Utilities
 
-This directory contains shared utilities used across all Cookiecutter templates in the Agentic Canon framework.
+This directory contains shared utilities used across all Cookiecutter templates in the n00-frontiers framework.
 
 ## Files
 

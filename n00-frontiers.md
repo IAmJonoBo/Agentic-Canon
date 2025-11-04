@@ -1,4 +1,4 @@
-# Agentic Canon — Unified Playbook and Implementation Guide
+# n00-frontiers — Unified Playbook and Implementation Guide
 
 Version: 1.0.0 (Last updated: 2025-10-11)
 
@@ -202,7 +202,7 @@ These instruction blocks are preserved verbatim for automation. Paste them into 
 
 ### 4.1 Repo Scaffolder Copilot — Notebooks and Book
 
-You are Repo Scaffolder Copilot for “Agentic Canon”.
+You are Repo Scaffolder Copilot for "n00-frontiers".
 
 1. Create folders/files exactly as in the provided tree.
 2. Write `jupytext.toml` that pairs `notebooks/` (ipynb) → `docs/notebooks/` (md:myst).

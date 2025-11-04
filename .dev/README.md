@@ -1,6 +1,6 @@
 # Development Tools
 
-**Purpose:** Internal tools for maintaining and upgrading the Agentic Canon repository itself.
+**Purpose:** Internal tools for maintaining and upgrading the n00-frontiers repository itself.
 
 **⚠️ Important:** These tools are for **repository maintenance only**, not for end users.
 
@@ -157,7 +157,7 @@ When adding new development tools:
 
 ## Template Linting & Formatting
 
-Agentic Canon standardises on Trunk, orchestrated through dedicated Nox sessions. Configuration
+n00-frontiers standardises on Trunk, orchestrated through dedicated Nox sessions. Configuration
 lives in [`.trunk/trunk.yaml`](../.trunk/trunk.yaml) and mirrors the versions baked into each
 template.
 
@@ -216,8 +216,8 @@ or update tooling:
   pip install -r requirements.txt
   ```
 
-- Reuse template installer caches by exporting `AGENTIC_CANON_CACHE_DIR` (CI points this to
-  `$RUNNER_TEMP/agentic-canon-cache`).
+- Reuse template installer caches by exporting `N00_FRONTIERS_CACHE_DIR` (CI points this to
+  `$RUNNER_TEMP/n00-frontiers-cache`).
 
 - After pulling changes, re-run the sanity check:
 
@@ -229,7 +229,7 @@ or update tooling:
   unformatted files.
 
 - End-to-end template tests cache rendered projects and `node_modules` under
-  `~/.cache/agentic-canon` (override with `AGENTIC_CANON_CACHE_DIR`). Delete that directory if you
+  `~/.cache/n00-frontiers` (override with `N00_FRONTIERS_CACHE_DIR`). Delete that directory if you
   ever need a completely clean run.
 
 ### Nox Sessions

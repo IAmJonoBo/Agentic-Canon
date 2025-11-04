@@ -1,8 +1,8 @@
-# Agentic Canon Framework - Our Standards and Philosophy
+# n00-frontiers Framework - Our Standards and Philosophy
 
 **Version:** 1.0.0  
 **Last Updated:** 2025-10-12  
-**Purpose:** Unified framework defining the Agentic Canon approach to frontier software excellence  
+**Purpose:** Unified framework defining the n00-frontiers approach to frontier software excellence  
 **Audience:** All contributors, users, and stakeholders
 
 ---
@@ -25,7 +25,7 @@
 
 ## Introduction
 
-**Agentic Canon** is a comprehensive framework for achieving frontier-grade software excellence. It combines:
+**n00-frontiers** is a comprehensive framework for achieving frontier-grade software excellence. It combines:
 
 - **Standards**: Industry-leading practices (NIST SSDF, OWASP, SLSA, ISO, WCAG)
 - **Conventions**: Consistent patterns for all development activities
@@ -34,7 +34,7 @@
 - **Documentation**: Comprehensive, searchable, version-controlled guidance
 - **AI-Friendly**: Machine-readable formats enabling autonomous agents
 
-### What Makes Agentic Canon Different
+### What Makes n00-frontiers Different
 
 1. **Comprehensive**: Covers all aspects of software development lifecycle
 2. **Practical**: Immediately usable templates and working examples
@@ -64,7 +64,7 @@
 
 ## Our Philosophy
 
-### The Agentic Canon Way
+### The n00-frontiers Way
 
 **We believe that frontier software excellence requires:**
 
@@ -115,7 +115,7 @@
 
 ## Framework Architecture
 
-The Agentic Canon framework consists of **four interconnected layers**:
+The n00-frontiers framework consists of **four interconnected layers**:
 
 ### Layer 1: Standards Foundation
 
@@ -246,7 +246,7 @@ The implementation layer is organized with clear separation of concerns:
 
 ### Standards Hierarchy
 
-The Agentic Canon framework integrates multiple standards in a coherent hierarchy:
+The n00-frontiers framework integrates multiple standards in a coherent hierarchy:
 
 **Level 1: Regulatory/Industry Standards** (Must comply)
 
@@ -256,7 +256,7 @@ The Agentic Canon framework integrates multiple standards in a coherent hierarch
 - ISO/IEC 25010: Software quality model
 - WCAG 2.2 AA: Web accessibility
 
-**Level 2: Framework Standards** (Agentic Canon requirements)
+**Level 2: Framework Standards** (n00-frontiers requirements)
 
 - Quality gates (defined in QUALITY_STANDARDS.md)
 - Development conventions (defined in CONVENTIONS.md)

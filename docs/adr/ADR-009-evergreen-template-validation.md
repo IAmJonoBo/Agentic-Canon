@@ -27,7 +27,7 @@ Standardise validation around a manifest-driven, cached Nox pipeline:
    - `format_templates` runs `trunk fmt --all` and fails if dirty.
    - `upgrade_tools` reuses `.dev/trunk-with-progress.sh upgrade`.
 5. **CLI wrapper** – `.dev/validate-templates.sh` defaults to the unified `validate_templates_all` flow (sync → render → lint → format) and still exposes `--linters`, `--format`, `--upgrade`, `--template`, and `--force-rebuild` flags for targeted runs. Sanity checks call `--linters`.
-6. **CI workflows** – Matrixed jobs invoke the wrapper for lint/format; end-to-end tests reuse caches via `AGENTIC_CANON_CACHE_DIR`; nightly upgrades call `nox -s upgrade_tools`.
+6. **CI workflows** – Matrixed jobs invoke the wrapper for lint/format; end-to-end tests reuse caches via `N00_FRONTIERS_CACHE_DIR`; nightly upgrades call `nox -s upgrade_tools`.
 7. **Renovate** – Regex managers cover `.trunk/trunk.yaml` (cli, runtimes, lint tool versions) with a shared `type:tools` label and grouped upgrades.
 
 ## Consequences

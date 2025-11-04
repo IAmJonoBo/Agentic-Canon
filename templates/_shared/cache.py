@@ -17,23 +17,23 @@ except ImportError:  # pragma: no cover - Windows fallback
 
 
 def _default_root() -> Path:
-    return Path.home() / ".cache" / "agentic-canon"
+    return Path.home() / ".cache" / "n00-frontiers"
 
 
 CACHE_ROOT = Path(
-    os.environ.get("AGENTIC_CANON_CACHE_DIR", _default_root())
+    os.environ.get("N00_FRONTIERS_CACHE_DIR", _default_root())
 ).expanduser()
 TEMPLATE_CACHE_DIR = CACHE_ROOT / "templates"
 INSTALLER_CACHE_ROOT = CACHE_ROOT / "installers"
 
 NODE_CACHE_DIR = Path(
-    os.environ.get("AGENTIC_CANON_NODE_CACHE_DIR", INSTALLER_CACHE_ROOT / "node")
+    os.environ.get("N00_FRONTIERS_NODE_CACHE_DIR", INSTALLER_CACHE_ROOT / "node")
 ).expanduser()
 PIP_CACHE_DIR = Path(
-    os.environ.get("AGENTIC_CANON_PIP_CACHE_DIR", INSTALLER_CACHE_ROOT / "pip")
+    os.environ.get("N00_FRONTIERS_PIP_CACHE_DIR", INSTALLER_CACHE_ROOT / "pip")
 ).expanduser()
 GO_CACHE_DIR = Path(
-    os.environ.get("AGENTIC_CANON_GO_CACHE_DIR", INSTALLER_CACHE_ROOT / "go")
+    os.environ.get("N00_FRONTIERS_GO_CACHE_DIR", INSTALLER_CACHE_ROOT / "go")
 ).expanduser()
 
 for directory in (TEMPLATE_CACHE_DIR, NODE_CACHE_DIR, PIP_CACHE_DIR, GO_CACHE_DIR):

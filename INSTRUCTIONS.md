@@ -117,7 +117,7 @@ Repo2Docker uses binder/ or .binder/ for env build.
 
 only_build_toc_files: true
 repository:
-url: https://github.com/<org-or-user>/agentic-canon
+url: https://github.com/<org-or-user>/n00-frontiers
 path_to_book: docs
 execute:
 execute_notebooks: "off" # CI runs notebooks; book consumes MyST outputs
@@ -140,7 +140,7 @@ ToC layout and numbering follow Jupyter Book conventions. ￼
 
 docs/intro.md
 
-## Agentic Canon Bible
+## n00-frontiers Bible
 
 This book is the machine-readable, agent-friendly guide and templates for fast, correct scaffolding and delivery. See `notebooks/` for executable playbooks.
 
@@ -232,7 +232,7 @@ Pre-commit + Jupytext pairing keep .ipynb and .md in sync. ￼
 
 ## 7. Copilot instructions (paste this task list in Chat)
 
-You are Repo Scaffolder Copilot for “Agentic Canon”.
+You are Repo Scaffolder Copilot for "n00-frontiers".
 
 1. Create folders/files exactly as in the provided tree.
 1. Write jupytext.toml that pairs notebooks/ (ipynb) -> docs/notebooks/ (md:myst).
@@ -394,7 +394,7 @@ with: { python-version: '3.11' } - run: pip install cookiecutter pytest pytest-c
 ### 8.5 Keep downstream projects in sync (optional but gold)
 
 Recommend Cruft so generated projects can check or pull template updates:
-• In the template README: show cruft create gh:<org>/agentic-canon --directory templates/python-service.
+• In the template README: show cruft create gh:<org>/n00-frontiers --directory templates/python-service.
 • In generated projects: add a workflow running cruft check weekly. Cruft is designed to track and update Cookiecutter renderings. ￼
 
 ⸻
@@ -419,7 +419,7 @@ with: { python-version: '3.12' } - run: pip install -U pip wheel - run: pip inst
 
 • Local render, choosing a flavour:
 
-cookiecutter gh:<org-or-user>/agentic-canon --directory templates/python-service
+cookiecutter gh:<org-or-user>/n00-frontiers --directory templates/python-service
 
 --directory selects a sub-template from the repository. ￼
 
@@ -673,9 +673,9 @@ How to render (for devs or agents)
 
 ## Pick a template by directory
 
-cookiecutter gh:<org-or-user>/agentic-canon --directory templates/node-service
-cookiecutter gh:<org-or-user>/agentic-canon --directory templates/react-webapp
-cookiecutter gh:<org-or-user>/agentic-canon --directory templates/go-service
+cookiecutter gh:<org-or-user>/n00-frontiers --directory templates/node-service
+cookiecutter gh:<org-or-user>/n00-frontiers --directory templates/react-webapp
+cookiecutter gh:<org-or-user>/n00-frontiers --directory templates/go-service
 
 • --directory selects a sub-template in a multi-template repo (first-class feature). Test your cookiecutters with pytest-cookies. Keep projects in sync with Cruft (cruft check / cruft update). ￼
 

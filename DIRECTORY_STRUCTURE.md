@@ -1,4 +1,4 @@
-# Agentic Canon - Directory Structure
+# n00-frontiers - Directory Structure
 
 **Purpose:** Complete guide to repository organization and file locations
 
@@ -8,13 +8,13 @@
 
 ## 📁 Repository Overview
 
-This repository is organized for maximum clarity, ease of access, and maintainability. Each top-level directory serves a specific purpose in the Agentic Canon ecosystem.
+This repository is organized for maximum clarity, ease of access, and maintainability. Each top-level directory serves a specific purpose in the n00-frontiers ecosystem.
 
 ```text
-Agentic-Canon/
+n00-frontiers/
 ├── 📄 Root Documentation          # Core project documents
 ├── 📁 .dev/                       # Development tools (internal)
-├── 📁 agentic_canon_cli/          # Interactive CLI wizard (distribution)
+├── 📁 n00_frontiers_cli/          # Interactive CLI wizard (distribution)
 ├── 📁 binder/                     # Binder environment config
 ├── 📁 docs/                       # Jupyter Book documentation
 ├── 📁 examples/                   # Reference implementations
@@ -83,7 +83,7 @@ Core project documentation files located at repository root for easy discovery:
 └── sanity-check.sh               # Repository health checks
 ```
 
-**Purpose:** Internal tools for maintaining and upgrading the Agentic Canon repository itself.
+**Purpose:** Internal tools for maintaining and upgrading the n00-frontiers repository itself.
 
 **Key Tools:**
 
@@ -111,7 +111,7 @@ agentic_canon_cli/
 └── README.md                      # CLI documentation and usage
 ```
 
-**Purpose:** Provides `agentic-canon` command for interactive project scaffolding
+**Purpose:** Provides `n00-frontiers` command for interactive project scaffolding
 
 **Features:**
 
@@ -125,7 +125,7 @@ agentic_canon_cli/
 
 ```bash
 pip install -e .
-agentic-canon init
+n00-frontiers init
 ```
 
 ---
@@ -246,7 +246,7 @@ examples/
     └── 06-jupyter-book.md         # Jupyter Book (8-10 min)
 ```
 
-**Purpose:** Production-ready examples demonstrating Agentic Canon capabilities
+**Purpose:** Production-ready examples demonstrating n00-frontiers capabilities
 
 ### Examples Categories
 
@@ -567,7 +567,7 @@ Need documentation? → docs/
 **...understand architecture decisions**
 → `docs/adr/`
 
-**...learn how to use Agentic Canon**
+**...learn how to use n00-frontiers**
 → `examples/video-tutorials/` or `docs/notebooks/`
 
 **...contribute a template**
@@ -626,5 +626,5 @@ Need documentation? → docs/
 ---
 
 **Last Updated:** 2025-10-11  
-**Maintained By:** Agentic Canon Team  
+**Maintained By:** n00-frontiers Team  
 **Questions?** Open an issue or discussion on GitHub

@@ -1,7 +1,7 @@
 # Feature Flag Starter Kit (OpenFeature + flagd)
 
 This folder contains language-specific helpers you can copy into generated
-projects to enable feature flags without altering the upstream Agentic Canon
+projects to enable feature flags without altering the upstream n00-frontiers
 templates.
 
 ## Provided Libraries

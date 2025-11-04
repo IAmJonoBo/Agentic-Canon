@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-We take security seriously. If you discover a security vulnerability in Agentic Canon, please follow these steps:
+We take security seriously. If you discover a security vulnerability in n00-frontiers, please follow these steps:
 
 ### 1. DO NOT create a public issue
 
@@ -10,7 +10,7 @@ Instead, report the vulnerability privately to maintain security until a fix is 
 
 ### 2. Contact Information
 
-- **GitHub Security Advisories**: [Create a private security advisory](https://github.com/IAmJonoBo/Agentic-Canon/security/advisories/new) (preferred)
+- **GitHub Security Advisories**: [Create a private security advisory](https://github.com/IAmJonoBo/n00-frontiers/security/advisories/new) (preferred)
 - **Response Time**: Within 48 hours
 - **Follow-up**: Investigation within 5-10 days
 
@@ -241,7 +241,7 @@ Contributors who have responsibly disclosed security issues will be acknowledged
 
 - **Security Team**: Use GitHub Security Advisories
 - **GitHub**: @IAmJonoBo
-- **Security Advisories**: https://github.com/IAmJonoBo/Agentic-Canon/security/advisories
+- **Security Advisories**: https://github.com/IAmJonoBo/n00-frontiers/security/advisories
 
 ## Policy Updates
 
@@ -261,7 +261,7 @@ _This security policy is part of our commitment to frontier software excellence 
 
 ### For Template Users
 
-When using Agentic Canon templates to generate projects:
+When using n00-frontiers templates to generate projects:
 
 1. **Customize Security Settings**: Review and adjust security configurations for your specific use case
 2. **Update Dependencies**: Regularly update dependencies in generated projects
@@ -281,4 +281,4 @@ Since this framework supports AI-assisted development:
 
 ---
 
-Thank you for helping keep Agentic Canon and its users secure! 🔒
+Thank you for helping keep n00-frontiers and its users secure! 🔒

@@ -1,15 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/IAmJonoBo/Agentic-Canon/blob/main/catalog.json",
-  "title": "Agentic Canon Catalog",
+  "$id": "https://github.com/IAmJonoBo/n00-frontiers/blob/main/catalog.json",
+  "title": "n00-frontiers Catalog",
   "description": "Machine-readable catalog of templates, assets, and resources for frontier software excellence",
   "version": "1.0.0",
   "updated": "2025-10-12",
   "repository": {
-    "url": "https://github.com/IAmJonoBo/Agentic-Canon",
+    "url": "https://github.com/IAmJonoBo/n00-frontiers",
     "type": "git",
-    "clone_url": "https://github.com/IAmJonoBo/Agentic-Canon.git",
-    "ssh_url": "git@github.com:IAmJonoBo/Agentic-Canon.git"
+    "clone_url": "https://github.com/IAmJonoBo/n00-frontiers.git",
+    "ssh_url": "git@github.com:IAmJonoBo/n00-frontiers.git"
   },
   "templates": {
     "cookiecutter": [
@@ -40,8 +40,8 @@
         },
         "example": "examples/projects/fastapi-user-service",
         "usage": {
-          "cookiecutter": "gh:IAmJonoBo/Agentic-Canon --directory=templates/python-service",
-          "tiged": "npx tiged IAmJonoBo/Agentic-Canon/templates/python-service target/",
+          "cookiecutter": "gh:IAmJonoBo/n00-frontiers --directory=templates/python-service",
+          "tiged": "npx tiged IAmJonoBo/n00-frontiers/templates/python-service target/",
           "sparse_checkout": "git sparse-checkout set templates/python-service"
         },
         "documentation": [

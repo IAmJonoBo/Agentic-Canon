@@ -6,7 +6,7 @@ Solidify template validation so every run performs manifest sync, template rende
 
 ## Preparation
 
-- Use repo root `Agentic-Canon`
+- Use repo root `n00-frontiers`
 - Activate the virtualenv: `source .venv/bin/activate`
 - Ensure core deps installed: `pip install -r requirements.txt` and `pip install nox`
 - Most tasks rely on `noxfile.py`, `validate-templates.sh`, and `README.md`; check for user edits before touching them

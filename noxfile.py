@@ -1,4 +1,4 @@
-"""Automation sessions for Agentic Canon."""
+"""Automation sessions for n00-frontiers."""
 
 from __future__ import annotations
 

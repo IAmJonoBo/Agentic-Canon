@@ -30,7 +30,7 @@ jobs:
           upload-release-assets: false
 
       - name: Scan SBOM with Grype
-        uses: anchore/scan-action@v7.0.0
+        uses: anchore/scan-action@v7.1.0
         with:
           sbom: sbom.spdx.json
           fail-build: false

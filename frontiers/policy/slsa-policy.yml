@@ -1,14 +1,16 @@
 metadata:
   schema: frontiers-slsa-policy.v1
-  version: 1.0.0
+  version: 1.1.0
   last_updated: 2025-11-05
   timezone: Africa/Johannesburg
   sources:
     - name: "Supply-chain Levels for Software Artifacts (SLSA)"
-      version: "v1.0"
-      url: "https://slsa.dev/spec/v1.0/provenance"
+      version: "v1.1"
+      url: "https://slsa.dev/spec/v1.1/provenance"
     - name: "Sigstore cosign"
       url: "https://docs.sigstore.dev/cosign/"
+    - name: "SLSA 1.1 release announcement"
+      url: "https://slsa.dev/blog/2025/04/slsa-1.1-is-here"
 levels:
   required: "SLSA Level 3"
   target: "SLSA Level 4 (stretch)"
@@ -26,6 +28,9 @@ pipeline:
     sbom:
       format: "SPDX 3.0 JSON"
       generator: "anchore/sbom-action@v0.20.6"
+    verification_summary:
+      format: "slsa-verification-summary"
+      requirement: "Record policy decision for SLSA 1.1 governance alignment"
   enforcement:
     - check: "Verify provenance before deploy"
       command: "cosign verify-attestation --type slsa-provenance --certificate-oidc-issuer $OIDC_ISSUER image:tag"

@@ -1,83 +1,169 @@
 metadata:
   schema: frontiers-llm-top10-controls.v1
-  version: 1.0.0
+  version: 1.1.0
   last_updated: 2025-11-05
   timezone: Africa/Johannesburg
   sources:
-    - name: "OWASP Top 10 for LLM Applications"
-      version: "2025-07 (1.1)"
+    - name: "OWASP Top 10 for LLM Applications (2025 Edition)"
       url: "https://owasp.org/www-project-top-10-for-large-language-model-applications/"
     - name: "NIST AI RMF"
       version: "1.0"
       url: "https://nvlpubs.nist.gov/nistpubs/ai/nist.ai.100-1.pdf"
 risks:
   LLM01-prompt-injection:
-    description: "Adversarial prompts altering system or developer instructions."
+    description: "Adversarial prompts alter or override system/developer safeguards."
     mitigations:
       - name: "Instruction sandboxing"
         controls:
-          - "Immutable system prompts stored in secrets manager."
-          - "Context filters strip user-supplied directives."
+          - "Store immutable system prompts in a secrets manager with versioning."
+          - "Strip user-supplied directives via static + ML-based filters."
         verification:
           - type: "unit"
             command: "pytest tests/llm/test_prompt_filters.py"
           - type: "fuzz"
             command: "python tools/prompt-fuzzer.py --policy guardrails/default.yaml"
     detections:
-      - method: "Prompt tracing with metadata (OTel span attributes)."
-      - method: "Realtime anomaly detection on refusal-rate deltas >15%."
-  LLM02-insecure-output-handling:
-    description: "Model output rendered or executed without sanitisation."
+      - method: "Prompt tracing with OTel span attributes."
+      - method: "Anomaly detection on refusal-rate deltas > 15%."
+  LLM02-sensitive-information-disclosure:
+    description: "Generated responses leak secrets, PII, or regulated data."
     mitigations:
       - name: "Structured output contracts"
         controls:
-          - "JSON Schema validation for all structured responses."
-          - "HTML output sanitised via OWASP Java HTML Sanitizer."
+          - "Validate structured responses against JSON Schema allowlists."
+          - "Redact secrets and PII before rendering."
         verification:
           - type: "integration"
             command: "pytest tests/integration/test_output_contracts.py"
-      - name: "High-risk classifier"
+      - name: "Safety classifier"
         controls:
-          - "LLM output passed through content safety classifier."
+          - "Run content classification for PII, secrets, compliance keywords."
         verification:
           - type: "ci"
             command: "frontiers/quality-gate.yml#content-safety"
-  LLM05-data-leakage:
-    description: "Sensitive data exfiltrated through context or responses."
-    mitigations:
-      - name: "Context scrubbing"
-        controls:
-          - "Regex and entropy scanners on input (Gitleaks ruleset)."
-          - "Secret detection step in quality gate."
-        verification:
-          - type: "ci"
-            command: "frontiers/quality-gate.yml#secret-scan"
-      - name: "Differential privacy guard"
-        controls:
-          - "Probability of memorised sequence >0.01 triggers block."
-        verification:
-          - type: "nightly"
-            command: "make ai-privacy-audit"
-  LLM07-supply-chain:
-    description: "Compromised model weights or dependencies."
+  LLM03-supply-chain-vulnerabilities:
+    description: "Compromised model weights, tooling, or third-party APIs."
     mitigations:
       - name: "Model provenance attestation"
         controls:
-          - "Require hashed weight manifests with in-toto attestations."
-          - "Verify vendor signatures on model releases."
+          - "Generate in-toto provenance for fine-tunes and weight updates."
+          - "Verify vendor signatures and SBOMs on model releases."
         verification:
           - type: "per_release"
             command: "cosign verify-blob --key cosign.pub model.manifest"
-  LLM09-monitoring:
-    description: "Lack of runtime monitoring for hallucinations or abuse."
-    mitigations:
-      - name: "Post-deployment evaluation"
+      - name: "Dependency policy"
         controls:
-          - "LiveCodeBench delta tracked per weekly run."
-          - "AgentBench smoke tests executed post deploy."
+          - "Limit runtime to allowlisted containers and dependencies."
+        verification:
+          - type: "ci"
+            command: "frontiers/quality-gate.yml#dependency-security"
+  LLM04-data-model-poisoning:
+    description: "Malicious or low-quality data degrades model behaviour."
+    mitigations:
+      - name: "Dataset provenance tracking"
+        controls:
+          - "Maintain hashed dataset manifests with contributor approvals."
+          - "Log fine-tune lineage for reproducibility."
         verification:
           - type: "weekly"
-            command: "make eval-livecodebench && make eval-agentbench"
+            command: "python tools/dataset_audit.py --manifest data/manifest.yml"
+      - name: "Canary prompts"
+        controls:
+          - "Run targeted canaries post-training to detect poisoning."
+        verification:
+          - type: "ci"
+            command: "pytest tests/llm/test_poisoning_guards.py"
+  LLM05-improper-output-handling:
+    description: "Unsafe execution or rendering of generated code/markup."
+    mitigations:
+      - name: "Execution sandboxing"
+        controls:
+          - "Run generated code in isolated sandboxes with quotas."
+          - "Require human approval for privileged command execution."
+        verification:
+          - type: "ci"
+            command: "pytest tests/llm/test_execution_sandbox.py"
+      - name: "Content sanitisation"
+        controls:
+          - "Sanitise HTML/markdown via OWASP sanitiser."
+        verification:
+          - type: "integration"
+            command: "pytest tests/integration/test_output_sanitiser.py"
+  LLM06-excessive-agency:
+    description: "Agents act beyond intended scope without safeguards."
+    mitigations:
+      - name: "Capability allowlists"
+        controls:
+          - "Define per-tool allowlists; enforce multi-factor approval for high impact actions."
+        verification:
+          - type: "per_deploy"
+            command: "python tools/check_agent_capabilities.py --policy policies/agent-allowlist.yaml"
+      - name: "Rate and impact limiting"
+        controls:
+          - "Apply quotas and budget caps for agent operations."
+        verification:
+          - type: "monitor"
+            command: "grafana alert:agent-budget"
+  LLM07-system-prompt-leakage:
+    description: "System/developer prompts are exposed through outputs or APIs."
+    mitigations:
+      - name: "Response scrubbing"
+        controls:
+          - "Detect and redact system prompt fragments before response dispatch."
+        verification:
+          - type: "ci"
+            command: "pytest tests/llm/test_prompt_leakage.py"
+      - name: "Segregated storage"
+        controls:
+          - "Store system prompts in isolated vault contexts separate from retrieval indices."
+        verification:
+          - type: "architectural"
+            command: "ADR review checklist entry"
+  LLM08-vector-embedding-weaknesses:
+    description: "Embedding stores enable injection, leakage, or drift."
+    mitigations:
+      - name: "Vector store access control"
+        controls:
+          - "Apply row-level ACLs and encryption."
+        verification:
+          - type: "ci"
+            command: "pytest tests/llm/test_vector_acl.py"
+      - name: "Drift detection"
+        controls:
+          - "Monitor similarity metrics for anomalous embeddings."
+        verification:
+          - type: "monitor"
+            command: "grafana alert:embedding-drift"
+  LLM09-misinformation-disinformation:
+    description: "Model produces deceptive or harmful misinformation."
+    mitigations:
+      - name: "Fact-checking pipeline"
+        controls:
+          - "Run retrieval-based fact checking for high-risk topics."
+        verification:
+          - type: "ci"
+            command: "pytest tests/llm/test_fact_check_pipeline.py"
+      - name: "Human escalation"
+        controls:
+          - "Escalate misinformation flags to human reviewers."
+        verification:
+          - type: "process"
+            command: "runbooks/incident-response-runbook.md#misinformation"
+  LLM10-unbounded-resource-consumption:
+    description: "Agents consume unbounded compute, tokens, or spend."
+    mitigations:
+      - name: "Budget enforcement"
+        controls:
+          - "Set per-user/per-service quotas; enforce via platform billing caps."
+        verification:
+          - type: "monitor"
+            command: "grafana alert:llm-budget"
+      - name: "Circuit breakers"
+        controls:
+          - "Automatically throttle or halt anomalous usage."
+        verification:
+          - type: "ci"
+            command: "pytest tests/llm/test_circuit_breakers.py"
 exceptions:
   approval_flow:
     owner: "Chief Information Security Officer"

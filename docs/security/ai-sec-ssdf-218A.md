@@ -1,7 +1,7 @@
 ---
 title: "NIST SP 800-218A AI Profile"
-summary: "Extends SSDF controls to generative AI and foundation model workflows using the interim SP 800-218A profile and NIST AI RMF guidance."
-version: "1.0.0"
+summary: "Extends SSDF controls to generative AI and foundation model workflows using the final SP 800-218A profile and NIST AI RMF guidance."
+version: "1.1.0"
 last_verified: "2025-11-05"
 last_verified_tz: "Africa/Johannesburg"
 diataxis: "reference"
@@ -10,7 +10,7 @@ tags:
   - security
   - ssdf
 sources:
-  - "https://csrc.nist.gov/pubs/sp/800/218/a/ipd"
+  - "https://csrc.nist.gov/pubs/sp/800/218/a/final"
   - "https://www.nist.gov/itl/ai-risk-management-framework"
 decision_records:
   - id: "DR-2025-11-05-SSDF-AI"
@@ -19,8 +19,8 @@ decision_records:
     status: "accepted"
 provenance:
   data:
-    - name: "NIST SP 800-218A (Initial Public Draft)"
-      url: "https://csrc.nist.gov/pubs/sp/800/218/a/ipd"
+    - name: "NIST SP 800-218A (Final)"
+      url: "https://csrc.nist.gov/pubs/sp/800/218/a/final"
       type: "primary"
     - name: "NIST AI RMF 1.0"
       url: "https://www.nist.gov/itl/ai-risk-management-framework"
@@ -34,17 +34,17 @@ provenance:
   key_results:
     - "AI risk control table incorporating prompt, model, data, and operations safeguards."
     - "Verification workflow connecting benchmarks to AI risk ratings."
-  uncertainty: "SP 800-218A is an interim public draft; requirements may change before final release."
-  safer_alternative: "Treat draft controls as mandatory pending final publication to avoid under-hardening."
+  uncertainty: "NIST may publish clarifications or errata; monitor AI RMF profile updates to stay aligned."
+  safer_alternative: "Adopt stricter controls (e.g., agency-specific overlays) if regulatory context demands."
 ---
 
 # NIST SP 800-218A AI Profile
 
 ## Summary
 
-1. Extends SSDF to cover AI system lifecycle risks (data, model, deployment) using NIST SP 800-218A IPD.
+1. Extends SSDF to cover AI system lifecycle risks (data, model, deployment) using the July 2024 final release of NIST SP 800-218A.citeturn4search0
 2. Aligns AI RMF functions (Govern, Map, Measure, Manage) with OWASP LLM Top 10 guardrails and benchmark policy.
-3. Documents verification steps tying model evaluations and runtime monitoring to compliance.
+3. Documents verification steps tying model evaluations and runtime monitoring to compliance, in line with AI RMF governance expectations.citeturn4search0turn8search0
 
 ## Control Overlay
 

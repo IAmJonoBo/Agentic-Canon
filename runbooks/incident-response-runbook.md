@@ -35,6 +35,19 @@ This runbook provides procedures for responding to production incidents in syste
 - Health check failures
 - User reports
 
+**AI-Specific Guardrail Triggers** (OWASP LLM Top 10):
+
+- **LLM01 (Prompt Injection)**: OTel span attributes for prompt tracing, refusal-rate deltas > 15%
+- **LLM02 (Sensitive Data Disclosure)**: Content classification for PII, secrets, compliance keywords
+- **LLM03 (Supply Chain Vulnerabilities)**: Model provenance attestation failures, dependency policy violations
+- **LLM04 (Data/Model Poisoning)**: Dataset manifest hash mismatches, canary prompt failures
+- **LLM05 (Improper Output Handling)**: Execution sandbox violations, content sanitisation failures
+- **LLM06 (Excessive Agency)**: Capability allowlist violations, rate/impact limit breaches
+- **LLM07 (System Prompt Leakage)**: Response scrubbing failures, segregated storage violations
+- **LLM08 (Vector/Embedding Weaknesses)**: Vector store ACL violations, embedding drift detection
+- **LLM09 (Misinformation)**: Fact-checking pipeline failures, misinformation flags
+- **LLM10 (Unbounded Consumption)**: Budget enforcement violations, circuit breaker triggers
+
 **Manual Detection Sources**:
 
 - Customer support tickets

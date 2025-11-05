@@ -1,7 +1,7 @@
 ---
 title: "n00-frontiers Documentation System"
 summary: "Defines the scope, operating principles, and governance for the frontier-grade documentation that supports secure, high-quality, AI-enabled delivery."
-version: "1.0.0"
+version: "1.1.0"
 last_verified: "2025-11-05"
 last_verified_tz: "Africa/Johannesburg"
 diataxis: "explanation"
@@ -12,6 +12,8 @@ tags:
 sources:
   - "https://csrc.nist.gov/pubs/sp/800/218/final"
   - "https://owasp.org/www-project-application-security-verification-standard/"
+  - "https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+  - "https://slsa.dev/blog/2025/04/slsa-1.1-is-here"
 decision_records:
   - id: "DR-2025-11-05-Index"
     title: "Baseline governance for n00-frontiers Docs"
@@ -24,6 +26,9 @@ provenance:
       type: "primary"
     - name: "OWASP ASVS 4.0.3"
       url: "https://owasp.org/www-project-application-security-verification-standard/"
+      type: "primary"
+    - name: "SLSA 1.1 release announcement"
+      url: "https://slsa.dev/blog/2025/04/slsa-1.1-is-here"
       type: "primary"
     - name: "Agentic Canon framework repository analysis"
       url: "https://github.com/IAmJonoBo/n00-frontiers"
@@ -45,7 +50,7 @@ owner: "Documentation Engineering"
 
 1. Centralises secure SDLC, quality, supply-chain, and AI safety guidance into a single MkDocs site for humans and agents.
 2. Enforces machine-readable front matter validated by `frontiers.schema.json` to keep metadata consistent and auditable.
-3. Aligns documentation maintenance with NIST SSDF v1.1, OWASP ASVS 4.0.3, and SLSA v1.0 expectations for evidence-backed controls.
+3. Aligns documentation maintenance with NIST SSDF v1.1, OWASP ASVS 4.0.3, SLSA v1.1, and the 2025 OWASP LLM Top 10 updates for evidence-backed controls.citeturn2search0turn5view0
 
 ## Scope
 
@@ -87,7 +92,7 @@ The n00-frontiers documentation system covers the whole lifecycle of frontier so
 ## Provenance
 
 <div class="provenance-block">
-<strong>Data:</strong> <a href="https://csrc.nist.gov/pubs/sp/800/218/final">NIST SP 800-218 Rev.1 (v1.1)</a>; <a href="https://owasp.org/www-project-application-security-verification-standard/">OWASP ASVS 4.0.3</a>; <a href="https://github.com/IAmJonoBo/n00-frontiers">Repository inventory</a><br>
+<strong>Data:</strong> <a href="https://csrc.nist.gov/pubs/sp/800/218/final">NIST SP 800-218 Rev.1 (v1.1)</a>; <a href="https://owasp.org/www-project-application-security-verification-standard/">OWASP ASVS 4.0.3</a>; <a href="https://slsa.dev/blog/2025/04/slsa-1.1-is-here">SLSA 1.1 release</a>; <a href="https://github.com/IAmJonoBo/n00-frontiers">Repository inventory</a><br>
 <strong>Methods:</strong> Reviewed control-traceability-matrix.json, FRAMEWORK.md, and AGENT-docs-job.md directives to align nav and metadata schema.<br>
 <strong>Key results:</strong> MkDocs scaffolding with Material theme; YAML schema enforcing provenance; nav mapping published.<br>
 <strong>Uncertainty:</strong> Legacy Jupyter Book content pending archival decision; CI hook for schema validation under development.<br>

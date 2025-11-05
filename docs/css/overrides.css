@@ -1,0 +1,11 @@
+:root {
+  --md-primary-fg-color: #3949ab;
+  --md-accent-fg-color: #1e88e5;
+}
+
+.provenance-block {
+  border-left: 4px solid var(--md-primary-fg-color);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  background: rgba(57, 73, 171, 0.05);
+}

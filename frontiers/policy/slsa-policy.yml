@@ -1,0 +1,65 @@
+metadata:
+  schema: frontiers-slsa-policy.v1
+  version: 1.0.0
+  last_updated: 2025-11-05
+  timezone: Africa/Johannesburg
+  sources:
+    - name: "Supply-chain Levels for Software Artifacts (SLSA)"
+      version: "v1.0"
+      url: "https://slsa.dev/spec/v1.0/provenance"
+    - name: "Sigstore cosign"
+      url: "https://docs.sigstore.dev/cosign/"
+levels:
+  required: "SLSA Level 3"
+  target: "SLSA Level 4 (stretch)"
+pipeline:
+  build_system: "GitHub Actions hosted runners"
+  identity:
+    type: "OIDC"
+    issuer: "https://token.actions.githubusercontent.com"
+    audience: "sigstore"
+  attestations:
+    provenance:
+      format: "in-toto SLSA provenance v1"
+      predicate_type: "https://slsa.dev/provenance/v1"
+      signer: "cosign keyless (Fulcio/Ctlog)"
+    sbom:
+      format: "SPDX 3.0 JSON"
+      generator: "anchore/sbom-action@v0.20.6"
+  enforcement:
+    - check: "Verify provenance before deploy"
+      command: "cosign verify-attestation --type slsa-provenance --certificate-oidc-issuer $OIDC_ISSUER image:tag"
+    - check: "Verify SBOM digest matches artifact digest"
+      command: "spdx-sbom-tool verify --input sbom.spdx.json --artifact image:tag"
+workspace_controls:
+  - "Builds run in ephemeral runners with no shared state."
+  - "Dependencies pinned via lockfiles and Hashicorp Vault mirror."
+  - "No human interactive access to production signing keys."
+provenance_template:
+  predicate:
+    buildDefinition:
+      buildType: "https://github.com/Attestations/GitHubHostedActions@v1"
+      externalParameters:
+        inputs:
+          - "commit_sha"
+          - "workflow_path"
+      internalParameters:
+        - "runner"
+        - "sanitised_environment"
+    runDetails:
+      builder:
+        id: "https://github.com/IAmJonoBo/n00-frontiers/.github/workflows/quality-gate.yml@refs/heads/main"
+      metadata:
+        invocationId: "${{ github.run_id }}"
+verification:
+  gate: "frontiers/quality-gate.yml#provenance"
+  cadence: "per_release"
+  recordkeeping:
+    store: "artifacts/provenance/"
+    retention: "3 years"
+exceptions:
+  change_control:
+    description: "Temporary waiver allowed for experimental branches."
+    approval: "Platform Security lead + Release Manager"
+    maximum_duration_days: 7
+    tracking: "docs/workflows/triage-and-exceptions.md#supply-chain-waivers"

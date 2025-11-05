@@ -1,0 +1,74 @@
+metadata:
+  schema: frontiers-asvs-checklist.v1
+  version: 1.0.0
+  last_updated: 2025-11-05
+  timezone: Africa/Johannesburg
+  sources:
+    - name: "OWASP Application Security Verification Standard (ASVS)"
+      version: "4.0.3"
+      url: "https://owasp.org/www-project-application-security-verification-standard/"
+profiles:
+  base:
+    description: "Internal services and prototypes with limited scope."
+    target_level: "L2"
+    verification_cadence: "per_pull_request"
+    controls:
+      - id: "V1.1"
+        title: "Secure Software Development Lifecycle"
+        requirement: "Demonstrate SDLC and supply-chain controls (SSDF-aligned)."
+        evidence:
+          - "docs/security/nist-ssdf.md"
+          - "frontiers/quality-gate.yml"
+      - id: "V2.1"
+        title: "Authentication Architecture"
+        requirement: "Leverage central IdP, MFA, and zero-trust defaults."
+        evidence:
+          - "docs/security/owasp-asvs.md"
+          - "examples/projects/*/docs/authentication.md"
+      - id: "V5.1"
+        title: "Input Validation"
+        requirement: "Central validation libraries with positive allowlists."
+        evidence:
+          - "docs/quality/testing-strategy.md"
+          - "templates/*/src/**/validation*"
+      - id: "V11.1"
+        title: "Business Logic"
+        requirement: "Two-person review for logic changes with mutation tests."
+        evidence:
+          - "docs/quality/code-health-metrics.md"
+          - "frontiers/policy/benchmark-policy.yml"
+  internet_facing:
+    description: "Any system exposed to untrusted networks or customer data."
+    target_level: "L3"
+    verification_cadence: "per_release"
+    controls:
+      - id: "V1.2"
+        title: "Threat Assessment"
+        requirement: "Maintain threat models covering OWASP Top 10 + LLM Top 10."
+        evidence:
+          - "docs/security/llm-top10-guardrails.md"
+          - "runbooks/threat-modeling.md"
+      - id: "V3.2"
+        title: "Session Management"
+        requirement: "Rotate tokens < 15 min TTL; bind to device fingerprint."
+        evidence:
+          - "templates/security/session-hardening.md"
+      - id: "V7.1"
+        title: "Error Handling and Logging"
+        requirement: "Structured logging (OTel), redaction, immutable storage."
+        evidence:
+          - "docs/quality/code-health-metrics.md"
+          - "docs/workflows/quality-gate.md"
+      - id: "V14.4"
+        title: "Configuration Hardening"
+        requirement: "Secrets in managed vault, drift detection via policy-as-code."
+        evidence:
+          - "docs/security/nist-ssdf.md"
+          - ".github/workflows/repo-guardrails.yml"
+auditing:
+  tracking:
+    - item: "Gap analysis summary"
+      location: "docs/security/owasp-asvs.md#gap-analysis"
+    - item: "Exceptions register"
+      location: "docs/workflows/triage-and-exceptions.md#security-waivers"
+  review_cadence: "Quarterly security review chaired by product security."

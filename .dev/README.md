@@ -204,6 +204,7 @@ or update tooling:
 | `.dev/validate-templates.sh --format --force-rebuild`     | Re-render from scratch and verify formatting consistency  |
 | `nox -s lint_templates -- --feature include_storybook=no` | Ad-hoc lint run with manifest-driven feature filters      |
 | `.dev/sanity-check.sh --section templates`                | Structural checks + lint smoke through the sanity harness |
+| `nox -s typecheck`                                        | Run mypy across CLI tooling and automation scripts        |
 
 ### Reproducibility Tips
 

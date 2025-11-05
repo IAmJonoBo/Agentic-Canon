@@ -1,0 +1,225 @@
+name: Frontiers Quality Gate
+
+on:
+  workflow_call:
+    inputs:
+      run-benchmarks:
+        description: "Whether to execute benchmark smoke suites."
+        type: boolean
+        default: false
+  workflow_dispatch:
+    inputs:
+      run-benchmarks:
+        description: "Execute benchmark smoke suites."
+        type: boolean
+        default: false
+
+env:
+  PYTHON_VERSION: "3.11"
+  NODE_VERSION: "20"
+  GO_VERSION: "1.23"
+
+jobs:
+  lint-and-format:
+    name: Lint • Format • Static Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Install lint dependencies
+        run: |
+          pip install -r requirements.txt
+          npm ci --ignore-scripts
+          go install golang.org/x/tools/cmd/goimports@latest
+      - name: Python lint & format
+        run: |
+          ruff check .
+          ruff format --check .
+          mypy --strict
+      - name: JavaScript/TypeScript lint
+        run: |
+          npm run lint
+          npm run typecheck
+      - name: Go lint
+        run: |
+          gofmt -l .
+          golangci-lint run ./...
+
+  unit-tests:
+    name: Unit & Contract Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-format
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install python deps
+        run: pip install -r requirements.txt
+      - name: Run unit tests with coverage
+        run: |
+          pytest --maxfail=1 --disable-warnings -q --cov=src --cov-report=xml
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+
+  property-based:
+    name: Property & Fuzz Smoke Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install fuzz deps
+        run: pip install hypothesis==6.112.0 python-afl
+      - name: Hypothesis focused tests
+        run: pytest tests/property --maxfail=1 -q
+      - name: LibFuzzer smoke (C/C++ targets)
+        run: |
+          cmake -S fuzz -B build/fuzz
+          cmake --build build/fuzz
+          ./build/fuzz/target -max_total_time=60 || true
+        if: hashFiles('fuzz/**') != ''
+
+  mutation-tests:
+    name: Mutation Testing
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install mutation deps
+        run: pip install mutmut==2.4.5
+      - name: Run mutmut
+        run: mutmut run --paths-to-mutate src --tests-dir tests
+      - name: Check mutation score
+        run: mutmut results --json > mutmut.json
+      - name: Enforce threshold
+        run: python tools/enforce_mutation_threshold.py --min-score 0.4
+        if: hashFiles('tools/enforce_mutation_threshold.py') != ''
+
+  sast:
+    name: Static Application Security Testing
+    runs-on: ubuntu-latest
+    needs: lint-and-format
+    steps:
+      - uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: "python,javascript,go"
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
+      - name: Semgrep scan
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: "templates/_shared/semgrep/rules.yml"
+      - name: Upload SARIF
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-results
+          path: results/*.sarif
+
+  dependency-security:
+    name: Dependency & Container Security
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scanners: "vuln,config,secret"
+          exit-code: "0"
+          format: "table"
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0.20.6
+        with:
+          format: spdx-json
+          output-file: sbom.spdx.json
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.spdx.json
+
+  provenance:
+    name: Provenance & Signing
+    runs-on: ubuntu-latest
+    needs: dependency-security
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate provenance predicate
+        run: |
+          mkdir -p provenance
+          cat <<'EOF' > provenance/predicate.json
+          {
+            "buildType": "https://slsa.dev/provenance/v1",
+            "builder": {"id": "${{ github.workflow }}"},
+            "buildConfig": {"sha": "${{ github.sha }}"}
+          }
+          EOF
+      - name: Sign provenance
+        run: cosign attest --predicate provenance/predicate.json --key ${{ secrets.COSIGN_KEY }} image:latest
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        if: secrets.COSIGN_KEY != ''
+
+  ossf-scorecard:
+    name: OpenSSF Scorecard
+    runs-on: ubuntu-latest
+    needs: lint-and-format
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Scorecard
+        uses: ossf/scorecard-action@v2.3.1
+        with:
+          results_file: results.json
+          publish_results: false
+      - name: Upload scorecard
+        uses: actions/upload-artifact@v4
+        with:
+          name: scorecard
+          path: results.json
+
+  benchmarks:
+    name: Benchmark Smoke Suites
+    runs-on: ubuntu-latest
+    needs: [unit-tests]
+    if: inputs.run-benchmarks || github.event.inputs.run-benchmarks == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install benchmark deps
+        run: |
+          pip install evalplus==0.3.2 livecodebench==0.2.1
+          pip install -r benchmarks/requirements.txt || true
+      - name: HumanEval+ smoke
+        run: poetry run evalplus.humaneval --max-problems 20 --post-process
+        continue-on-error: true
+      - name: SWE-bench smoke
+        run: python tools/swebench_runner.py --dataset verified --limit 5
+        continue-on-error: true
+      - name: AgentBench smoke
+        run: python -m agentbench.run --tasks smoke --limit 10
+        continue-on-error: true

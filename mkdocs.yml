@@ -1,0 +1,100 @@
+site_name: "n00-frontiers Docs"
+site_description: "Frontier-grade SDLC, AI safety, and quality governance for humans and agents."
+site_url: "https://IAmJonoBo.github.io/n00-frontiers"
+docs_dir: "docs"
+repo_name: "IAmJonoBo/n00-frontiers"
+repo_url: "https://github.com/IAmJonoBo/n00-frontiers"
+use_directory_urls: true
+theme:
+  name: "material"
+  language: "en"
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - toc.follow
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+    - content.action.view
+    - tags
+  palette:
+    - scheme: default
+      primary: "indigo"
+      accent: "blue"
+    - scheme: slate
+      primary: "deep purple"
+      accent: "blue"
+      toggle:
+        icon: material/weather-night
+        name: "Switch to dark mode"
+  icon:
+    repo: fontawesome/brands/github
+extra:
+  version:
+    name: "v1.0.0"
+    provider: "mike"
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/IAmJonoBo/n00-frontiers
+  tags:
+    intro: "Overview"
+plugins:
+  - search
+  - tags
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - smarty
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+nav:
+  - Home: index.md
+  - Overview:
+      - "Frontiers Principles": overview/frontiers-principles.md
+      - "Evidence-Gated Protocol": overview/evidence-protocol.md
+      - "Taxonomy & Glossary": overview/taxonomy.md
+  - Quality:
+      - "ISO 25010 Review Rubric": quality/iso-25010-rubric.md
+      - "ISO 5055 Structural Quality": quality/iso-5055-structural-quality.md
+      - "Testing Strategy": quality/testing-strategy.md
+      - "Code Health Metrics": quality/code-health-metrics.md
+  - Security:
+      - "NIST SSDF Implementation": security/nist-ssdf.md
+      - "NIST SP 800-218A AI Profile": security/ai-sec-ssdf-218A.md
+      - "OWASP ASVS Adoption": security/owasp-asvs.md
+      - "OWASP SAMM Roadmap": security/owasp-samm.md
+      - "LLM Top 10 Guardrails": security/llm-top10-guardrails.md
+  - Supply Chain:
+      - "SLSA Provenance": supply-chain/slsa-provenance.md
+      - "Signing & Attestations": supply-chain/signing-and-attestations.md
+      - "SPDX SBOM Policy": supply-chain/sbom-spdx.md
+      - "OpenSSF Scorecard": supply-chain/ossf-scorecard.md
+  - Benchmarks:
+      - "HumanEval+ & MBPP+": benchmarks/humaneval-plus.md
+      - "SWE-bench Suite": benchmarks/swe-bench-suite.md
+      - "LiveCodeBench": benchmarks/livecodebench.md
+      - "AgentBench Smoke": benchmarks/agentbench-smoke.md
+  - Workflows:
+      - "Quality Gate": workflows/quality-gate.md
+      - "Pre-commit Experience": workflows/pre-commit.md
+      - "Triage & Exceptions": workflows/triage-and-exceptions.md
+  - Docs-as-Code:
+      - "Style Guide": docs/style-guide.md
+      - "Information Architecture": docs/information-architecture.md
+      - "AI Accessibility": docs/ai-accessibility.md
+extra_css:
+  - css/overrides.css

@@ -1,0 +1,77 @@
+metadata:
+  schema: frontiers-benchmark-policy.v1
+  version: 1.0.0
+  last_updated: 2025-11-05
+  timezone: Africa/Johannesburg
+benchmarks:
+  humaneval_plus:
+    suite: "EvalPlus HumanEval+ v0.3.2"
+    cadence: "per_pull_request (critical components) + nightly"
+    threshold:
+      metric: "pass@1"
+      minimum: 0.82
+    command: "poetry run evalplus.humaneval --max-problems 164 --post-process"
+    contamination_controls:
+      - "Pin evalplus==0.3.2"
+      - "Freeze prompt library hash in `benchmarks/requirements-lock.txt`"
+      - "Record seed and dataset commit hash in CI summary"
+    escalation:
+      soft_fail: "Notify reviewer; require risk acceptance recorded in docs/workflows/triage-and-exceptions.md#benchmarks"
+      hard_fail: "Block merge when pass@1 < 0.70 or regression >5 points."
+  mbpp_plus:
+    suite: "EvalPlus MBPP+ v0.3.2"
+    cadence: "weekly"
+    threshold:
+      metric: "pass@10"
+      minimum: 0.94
+    command: "poetry run evalplus.mbpp --max-problems 500 --samples 10"
+  swe_bench_verified:
+    suite: "SWE-bench Verified (2025-09 snapshot)"
+    cadence: "weekly full run; PR shards on impacted components"
+    threshold:
+      metric: "resolved"
+      minimum: 0.38
+    command: "python tools/swebench_runner.py --dataset verified --config configs/swebench.yml"
+    contamination_controls:
+      - "Use dataset commit 9f23c13 from https://github.com/SWE-bench/SWE-bench"
+      - "Cache patched repos snapshot to artifact store; invalidate monthly."
+  swe_bench_live:
+    suite: "SWE-bench Live (rolling window)"
+    cadence: "daily smoke (5 tasks) + weekly 30-task sample"
+    threshold:
+      metric: "resolved"
+      minimum: 0.20
+    command: "python tools/swebench_runner.py --dataset live --limit 30 --sampling stratified"
+    escalation:
+      hard_fail: "Triggered when two consecutive smoke runs < 0.10 resolved."
+  livecodebench:
+    suite: "LiveCodeBench (2025-10 snapshot)"
+    cadence: "weekly (full), daily (smoke 20 prompts)"
+    threshold:
+      metric: "exact_match"
+      minimum: 0.55
+    command: "python -m livecodebench.runner --config configs/livecodebench.yml"
+    contamination_controls:
+      - "Sync dataset via hashed tarball from official release."
+      - "Verify checksums before run."
+  agentbench_smoke:
+    suite: "AgentBench Smoke (v1.1)"
+    cadence: "per_release + nightly sample"
+    threshold:
+      metric: "pass_rate"
+      minimum: 0.70
+    command: "python -m agentbench.run --tasks smoke --config configs/agentbench-smoke.yml"
+    escalation:
+      soft_fail: "Require LLM safety review when pass_rate < 0.75."
+      hard_fail: "Block deploy when pass_rate < 0.65."
+reporting:
+  artifact_store: "artifacts/benchmarks/"
+  retention: "180 days"
+  dashboard: "docs/benchmarks/* linked Grafana panels"
+  notify:
+    - channel: "Slack #frontier-quality"
+    - channel: "Email qa-leads@n00-frontiers.dev"
+waivers:
+  owner: "Head of Quality Engineering"
+  approval_sla_days: 7
+  record_location: "docs/workflows/triage-and-exceptions.md#benchmark-waivers"

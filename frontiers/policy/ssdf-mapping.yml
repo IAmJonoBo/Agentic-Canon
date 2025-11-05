@@ -1,0 +1,94 @@
+metadata:
+  schema: frontiers-ssdf-mapping.v1
+  version: 1.0.0
+  last_updated: 2025-11-05
+  timezone: Africa/Johannesburg
+  sources:
+    - id: nist-ssdf
+      name: "NIST Secure Software Development Framework (SSDF)"
+      version: "SP 800-218 Rev.1 (v1.1)"
+      url: "https://csrc.nist.gov/pubs/sp/800/218/final"
+    - id: repo
+      name: "n00-frontiers repository"
+      url: "https://github.com/IAmJonoBo/n00-frontiers"
+controls:
+  PO.1.1:
+    title: "Define security requirements for software development."
+    outcome: "Security requirements are documented and communicated to contributors."
+    practices:
+      - description: "Document secure SDLC expectations in `docs/security/nist-ssdf.md` and cross-link to FRAMEWORK and QUALITY_STANDARDS."
+        repo_locations:
+          - "docs/security/nist-ssdf.md"
+          - "FRAMEWORK.md"
+        evidence:
+          - type: "markdown"
+            path: "docs/security/nist-ssdf.md"
+          - type: "adr"
+            path: "docs_legacy/adr/ADR-006-security-scanning-strategy.md"
+        verification:
+          cadence: "quarterly"
+          method: "Maintain decision records and update 'Last verified' metadata."
+  PO.3.2:
+    title: "Identify and track software components and suppliers."
+    outcome: "SBOM and provenance are generated for each build."
+    practices:
+      - description: "Use `/frontiers/quality-gate.yml` to invoke Syft SBOM and cosign attestations."
+        repo_locations:
+          - "frontiers/quality-gate.yml"
+          - ".github/workflows/sbom-scan.yml"
+        evidence:
+          - type: "workflow"
+            path: ".github/workflows/sbom-scan.yml"
+          - type: "policy"
+            path: "frontiers/policy/slsa-policy.yml"
+        verification:
+          cadence: "per_build"
+          method: "CI artifact inspection for SPDX and in-toto attestation bundles."
+  PS.2.1:
+    title: "Protect code repositories from unauthorised changes."
+    outcome: "Branch protection and signing guard against tampering."
+    practices:
+      - description: "Document signing policy and enforce cosign attestations."
+        repo_locations:
+          - "docs/supply-chain/signing-and-attestations.md"
+          - "frontiers/policy/slsa-policy.yml"
+        evidence:
+          - type: "attestation"
+            path: "artifacts/provenance/"
+          - type: "workflow"
+            path: "frontiers/quality-gate.yml"
+        verification:
+          cadence: "per_release"
+          method: "Attestation verification via `cosign verify --rekor-url`."
+  PW.4.1:
+    title: "Review and analyse code to detect vulnerabilities."
+    outcome: "Automated and manual reviews cover SAST, secrets, and code health."
+    practices:
+      - description: "Run CodeQL, Semgrep, and mutation tests via quality gate workflow."
+        repo_locations:
+          - "docs/quality/testing-strategy.md"
+          - "frontiers/quality-gate.yml"
+        evidence:
+          - type: "workflow"
+            path: "frontiers/quality-gate.yml"
+          - type: "report"
+            path: "quality-reports/"
+        verification:
+          cadence: "per_pull_request"
+          method: "CI status checks gating merge."
+  RV.1.1:
+    title: "Verify the integrity of software releases."
+    outcome: "Release bundles carry verifiable provenance and signatures."
+    practices:
+      - description: "Release checklist in `docs/workflows/quality-gate.md` mandates cosign and in-toto verification."
+        repo_locations:
+          - "docs/workflows/quality-gate.md"
+          - "frontiers/policy/slsa-policy.yml"
+        evidence:
+          - type: "checklist"
+            path: "docs/workflows/quality-gate.md"
+          - type: "attestation"
+            path: "artifacts/provenance/"
+        verification:
+          cadence: "per_release"
+          method: "Manual verification recorded in release notes."

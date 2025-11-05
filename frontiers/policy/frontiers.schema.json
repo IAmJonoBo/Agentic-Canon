@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://n00-frontiers.example.com/schemas/frontiers.schema.json",
+  "title": "n00-frontiers Documentation Front Matter",
+  "description": "Schema that validates metadata blocks for n00-frontiers Docs pages.",
+  "type": "object",
+  "required": [
+    "title",
+    "summary",
+    "version",
+    "last_verified",
+    "last_verified_tz",
+    "diataxis",
+    "tags",
+    "sources",
+    "decision_records",
+    "provenance"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "description": "Human-readable page title."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 32,
+      "description": "One to two sentence executive summary for humans and agents."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of this page content."
+    },
+    "last_verified": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "ISO-8601 calendar date when the content was last verified."
+    },
+    "last_verified_tz": {
+      "type": "string",
+      "const": "Africa/Johannesburg",
+      "description": "IANA timezone used for verification timestamps."
+    },
+    "diataxis": {
+      "type": "string",
+      "enum": ["tutorial", "how-to", "reference", "explanation"],
+      "description": "Diátaxis content type for the document."
+    },
+    "tags": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 2
+      },
+      "description": "Topical tags supporting search and navigation."
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "description": "Primary and secondary source URLs referenced by the page."
+    },
+    "decision_records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "title"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 3,
+            "description": "Identifier for the supporting decision record or ADR."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 5,
+            "description": "Short summary of the decision."
+          },
+          "link": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the full decision artifact."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["draft", "proposed", "accepted", "superseded"],
+            "description": "Lifecycle status of the decision record."
+          }
+        }
+      },
+      "description": "Decisions that underpin the guidance on this page."
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "data",
+        "methods",
+        "key_results",
+        "uncertainty",
+        "safer_alternative"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 3,
+                "description": "Name or description of the dataset or source."
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Resolvable link to the dataset or evidence."
+              },
+              "type": {
+                "type": "string",
+                "enum": ["primary", "secondary", "tertiary"],
+                "description": "Source classification used for triangulation."
+              }
+            }
+          },
+          "description": "Evidence inputs consulted for the page."
+        },
+        "methods": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 5
+          },
+          "description": "Methods or processes used to analyse the evidence."
+        },
+        "key_results": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 5
+          },
+          "description": "Critical findings distilled from the evidence."
+        },
+        "uncertainty": {
+          "type": "string",
+          "minLength": 5,
+          "description": "Known limitations, gaps, or confidence qualifiers."
+        },
+        "safer_alternative": {
+          "type": "string",
+          "minLength": 5,
+          "description": "Lower-risk or defence-in-depth alternative where applicable."
+        }
+      },
+      "description": "Structured provenance data for automated trust evaluation."
+    },
+    "related": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "description": "Optional related documentation links."
+    },
+    "owner": {
+      "type": "string",
+      "description": "Optional owning team or role for the document."
+    }
+  }
+}

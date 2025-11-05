@@ -1,0 +1,86 @@
+metadata:
+  schema: frontiers-llm-top10-controls.v1
+  version: 1.0.0
+  last_updated: 2025-11-05
+  timezone: Africa/Johannesburg
+  sources:
+    - name: "OWASP Top 10 for LLM Applications"
+      version: "2025-07 (1.1)"
+      url: "https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+    - name: "NIST AI RMF"
+      version: "1.0"
+      url: "https://nvlpubs.nist.gov/nistpubs/ai/nist.ai.100-1.pdf"
+risks:
+  LLM01-prompt-injection:
+    description: "Adversarial prompts altering system or developer instructions."
+    mitigations:
+      - name: "Instruction sandboxing"
+        controls:
+          - "Immutable system prompts stored in secrets manager."
+          - "Context filters strip user-supplied directives."
+        verification:
+          - type: "unit"
+            command: "pytest tests/llm/test_prompt_filters.py"
+          - type: "fuzz"
+            command: "python tools/prompt-fuzzer.py --policy guardrails/default.yaml"
+    detections:
+      - method: "Prompt tracing with metadata (OTel span attributes)."
+      - method: "Realtime anomaly detection on refusal-rate deltas >15%."
+  LLM02-insecure-output-handling:
+    description: "Model output rendered or executed without sanitisation."
+    mitigations:
+      - name: "Structured output contracts"
+        controls:
+          - "JSON Schema validation for all structured responses."
+          - "HTML output sanitised via OWASP Java HTML Sanitizer."
+        verification:
+          - type: "integration"
+            command: "pytest tests/integration/test_output_contracts.py"
+      - name: "High-risk classifier"
+        controls:
+          - "LLM output passed through content safety classifier."
+        verification:
+          - type: "ci"
+            command: "frontiers/quality-gate.yml#content-safety"
+  LLM05-data-leakage:
+    description: "Sensitive data exfiltrated through context or responses."
+    mitigations:
+      - name: "Context scrubbing"
+        controls:
+          - "Regex and entropy scanners on input (Gitleaks ruleset)."
+          - "Secret detection step in quality gate."
+        verification:
+          - type: "ci"
+            command: "frontiers/quality-gate.yml#secret-scan"
+      - name: "Differential privacy guard"
+        controls:
+          - "Probability of memorised sequence >0.01 triggers block."
+        verification:
+          - type: "nightly"
+            command: "make ai-privacy-audit"
+  LLM07-supply-chain:
+    description: "Compromised model weights or dependencies."
+    mitigations:
+      - name: "Model provenance attestation"
+        controls:
+          - "Require hashed weight manifests with in-toto attestations."
+          - "Verify vendor signatures on model releases."
+        verification:
+          - type: "per_release"
+            command: "cosign verify-blob --key cosign.pub model.manifest"
+  LLM09-monitoring:
+    description: "Lack of runtime monitoring for hallucinations or abuse."
+    mitigations:
+      - name: "Post-deployment evaluation"
+        controls:
+          - "LiveCodeBench delta tracked per weekly run."
+          - "AgentBench smoke tests executed post deploy."
+        verification:
+          - type: "weekly"
+            command: "make eval-livecodebench && make eval-agentbench"
+exceptions:
+  approval_flow:
+    owner: "Chief Information Security Officer"
+    sla_days: 30
+    escalation: "Security steering committee"
+  record_location: "docs/workflows/triage-and-exceptions.md#llm-waivers"

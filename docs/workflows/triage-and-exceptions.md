@@ -92,6 +92,10 @@ Store waivers under relevant heading below; link to issue for traceability.
 
 - Capture SBOM, SLSA, signing, or Scorecard deviations.
 
+### Quality Waivers {#quality-waivers}
+
+- Record lint/formatting overrides, static or dynamic analysis suppressions, and documentation validation skips. Reference `frontiers/policy/code-quality-tooling.yml` and specify compensating controls (manual review, expanded testing) plus expiry.
+
 ### Benchmark Waivers {#benchmark-waivers}
 
 - Track HumanEval+/MBPP+, SWE-bench, LiveCodeBench, AgentBench waivers with metrics.

@@ -54,6 +54,7 @@ provenance:
 4. **Agentic Safety** — Embed OWASP LLM Top 10 mitigations into development and runtime guardrails, measured through policy controls and benchmark regressions.
 5. **Usability** — Ensure documentation and tooling remain accessible to humans and machine agents through structured metadata, consistent APIs, and AI-friendly formats.
 6. **Continuous Improvement** — Track and publish KPIs (coverage, mutation score, benchmark pass@k, SBOM completeness) with trend analysis and action plans.
+7. **Canonical Authority** — Keep documentation and policy assets independent from implementation repos and require downstream consumers to declare alignment with the published version.
 
 ## Non-Goals
 
@@ -71,6 +72,7 @@ provenance:
 | Defence-in-depth        | Combine CodeQL, Semgrep, Trivy, and mutation testing     | Hard gate on blocking findings    |
 | Human + AI pairing      | AgentBench smoke tests gate AI copilots                  | Benchmarks policy thresholds      |
 | Transparency            | `frontiers/policy/*.yml` available for machine ingestion | Schema validation via JSON Schema |
+| Canonical-first         | Downstream generators track doc version tags             | Compliance manifests + waiver log |
 
 ## Contribution Expectations
 

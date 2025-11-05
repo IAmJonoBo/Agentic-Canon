@@ -20,6 +20,14 @@
 
 ---
 
+## Canonical Charter
+
+1. **Authoritative source** — This Bible, the MkDocs documentation set, and machine-readable policies are the single source of truth for n00tropic delivery standards. Templates, generators, and applications consume these artefacts and must not fork requirements without an approved waiver.
+2. **Separation of concern** — Documentation and policy assets live in this repository; execution engines (scaffolding CLI, sample services, training pipelines) reside in dedicated workspaces and version themselves against documented releases.
+3. **Compliance contracts** — Downstream teams publish compliance manifests referencing documentation version tags (`docs/v1.x.x`) and policy YAML hashes, with deviations routed through `docs/workflows/triage-and-exceptions.md`.
+
+---
+
 ## Core Principles
 
 ### 1. Security by Construction

@@ -56,6 +56,12 @@ owner: "Documentation Engineering"
 
 The n00-frontiers documentation system covers the whole lifecycle of frontier software delivery: product quality models, secure engineering, supply-chain integrity, benchmarking, contributor workflows, and docs-as-code practices. Each section follows the Diátaxis framework so contributors can locate tutorials, task guides, references, and explanations with minimal translation effort.
 
+## Canonical Authority & Separation of Concerns
+
+1. **Docs-first governance** — This library is the canonical specification for secure SDLC, AI safety, quality, and experience requirements. Implementations (templates, generators, internal platforms) consume these standards and must not diverge without a documented waiver.
+2. **Implementation sandboxes** — Application scaffolding, sample services, and automation tooling live outside the documentation tree (or in separate repositories) so the standards remain stack-agnostic and reusable across n00tropic business units.
+3. **Downstream contracts** — Every generator, template, or platform must declare which documentation release it targets (e.g., docs `v1.1.0`) and publish a compliance manifest referencing the relevant policy YAML. Deviations are tracked via `docs/workflows/triage-and-exceptions.md`.
+
 ## Operating Principles
 
 1. **Evidence-gated guidance** — Each page declares sources, methods, and uncertainties so that auditors and agents can trace recommendations back to authoritative standards.

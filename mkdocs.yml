@@ -34,7 +34,7 @@ theme:
     repo: fontawesome/brands/github
 extra:
   version:
-    name: "v1.0.0"
+    name: "v1.1.0"
     provider: "mike"
   social:
     - icon: fontawesome/brands/github
@@ -70,7 +70,10 @@ nav:
   - Quality:
       - "ISO 25010 Review Rubric": quality/iso-25010-rubric.md
       - "ISO 5055 Structural Quality": quality/iso-5055-structural-quality.md
+      - "Static Analysis & Code Review": quality/static-analysis.md
+      - "Dynamic & Runtime Analysis": quality/dynamic-analysis.md
       - "Testing Strategy": quality/testing-strategy.md
+      - "Formatting & Style Harmonisation": quality/formatting-style.md
       - "Code Health Metrics": quality/code-health-metrics.md
   - Security:
       - "NIST SSDF Implementation": security/nist-ssdf.md
@@ -92,6 +95,10 @@ nav:
       - "Quality Gate": workflows/quality-gate.md
       - "Pre-commit Experience": workflows/pre-commit.md
       - "Triage & Exceptions": workflows/triage-and-exceptions.md
+  - Experience:
+      - "Developer Experience Framework": experience/developer-experience.md
+      - "Operator Experience & Reliability": experience/operator-experience.md
+      - "Product & User Experience Excellence": experience/user-experience.md
   - Docs-as-Code:
       - "Style Guide": docs/style-guide.md
       - "Information Architecture": docs/information-architecture.md

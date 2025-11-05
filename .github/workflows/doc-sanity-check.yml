@@ -206,6 +206,22 @@ jobs:
           echo "ERRORS=$ERRORS" >> $GITHUB_ENV
           echo "WARNINGS=$WARNINGS" >> $GITHUB_ENV
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: MkDocs build (strict)
+        run: mkdocs build --strict
+
+      - name: Validate front matter schema
+        run: python tools/validate_frontmatter.py
+
       - name: Summary
         run: |
           echo ""
@@ -258,76 +274,3 @@ jobs:
             });
 
             console.log(`Created issue #${issue.data.number}`);
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: MkDocs Build and Validation
-        run: |
-          echo "📖 Running MkDocs build --strict and front-matter validation..."
-
-          # Build MkDocs with strict mode
-          if mkdocs build --strict; then
-            echo "  ✓ MkDocs build --strict passed"
-          else
-            echo "  ❌ MkDocs build --strict failed"
-            ERRORS=$((ERRORS + 1))
-          fi
-
-          # Validate front-matter in documentation files
-          echo ""
-          echo "🔍 Validating front-matter in documentation files..."
-
-          # Find all markdown files in docs/ directory
-          find docs/ -name "*.md" -type f | while read -r file; do
-            # Check if file has front-matter (starts with ---)
-            if head -1 "$file" | grep -q "^---$"; then
-              # Extract front-matter
-              front_matter=$(sed -n '/^---$/,/^---$/p' "$file" | head -n -1 | tail -n +2)
-              
-              # Basic validation: check for required fields
-              if echo "$front_matter" | grep -q "^title:"; then
-                echo "  ✓ $file has title in front-matter"
-              else
-                echo "  ⚠️  $file missing title in front-matter"
-                WARNINGS=$((WARNINGS + 1))
-              fi
-              
-              # Check for description
-              if echo "$front_matter" | grep -q "^description:"; then
-                echo "  ✓ $file has description in front-matter"
-              else
-                echo "  ⚠️  $file missing description in front-matter"
-                WARNINGS=$((WARNINGS + 1))
-              fi
-              
-              # Validate YAML syntax
-              if echo "$front_matter" | python3 -c "
-              import sys
-              import yaml
-              try:
-                  yaml.safe_load(sys.stdin)
-                  print('YAML_VALID')
-              except yaml.YAMLError as e:
-                  print(f'YAML_ERROR: {e}')
-              " 2>/dev/null | grep -q "YAML_VALID"; then
-                echo "  ✓ $file has valid YAML front-matter"
-              else
-                echo "  ❌ $file has invalid YAML front-matter"
-                ERRORS=$((ERRORS + 1))
-              fi
-            else
-              echo "  ⚠️  $file has no front-matter"
-              WARNINGS=$((WARNINGS + 1))
-            fi
-          done
-
-          echo "ERRORS=$ERRORS" >> $GITHUB_ENV
-          echo "WARNINGS=$WARNINGS" >> $GITHUB_ENV

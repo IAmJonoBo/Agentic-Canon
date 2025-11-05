@@ -1,0 +1,49 @@
+metadata:
+  schema: frontiers-code-quality-tooling.v1
+  version: 1.0.0
+  last_updated: 2025-11-05
+  timezone: Africa/Johannesburg
+  sources:
+    - name: "NIST SSDF SP 800-218 Rev.1"
+      url: "https://csrc.nist.gov/pubs/sp/800/218/final"
+    - name: "Synopsys static analysis best practices (2025)"
+      url: "https://www.synopsys.com/blogs/software-security/whats-next-static-analysis/"
+    - name: "Snyk DAST guide"
+      url: "https://snyk.io/blog/dynamic-application-security-testing-guide/"
+tooling:
+  python:
+    lint: ["ruff"]
+    format: ["black"]
+    type_check: ["mypy --strict"]
+    sast:
+      ["semgrep --config templates/_shared/semgrep/rules.yml", "bandit -r src"]
+  javascript:
+    lint: ["eslint --max-warnings=0"]
+    format: ["prettier --check '**/*.{js,jsx,ts,tsx}'"]
+    type_check: ["tsc --noEmit --strict"]
+    sast: ["semgrep --config templates/_shared/semgrep/rules.yml"]
+  go:
+    lint: ["golangci-lint run ./..."]
+    format: ["gofmt -l .", "goimports -w ."]
+    sast: ["gosec ./..."]
+  docs:
+    lint: ["markdownlint **/*.md"]
+    schema: ["python tools/validate_frontmatter.py"]
+  infrastructure:
+    lint: ["tflint", "terraform fmt -check"]
+    policy: ["checkov -d infra/"]
+runtime_checks:
+  dast:
+    tools: ["owasp-zap", "snyk dast", "schemathesis"]
+    cadence: "nightly and prior to production deploys"
+  fuzz:
+    tools: ["libFuzzer", "Jazzer", "go-fuzz"]
+    cadence: "per PR smoke + nightly extended run"
+  benchmark:
+    suites: ["HumanEval+", "MBPP+", "SWE-bench", "LiveCodeBench", "AgentBench"]
+    policy_ref: "frontiers/policy/benchmark-policy.yml"
+exceptions:
+  process:
+    owner: "Quality Engineering"
+    approval_sla_days: 14
+    record_location: "docs/workflows/triage-and-exceptions.md#quality-waivers"

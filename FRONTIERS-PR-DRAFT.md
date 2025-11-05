@@ -6,19 +6,23 @@
 - Publish 20+ refreshed pages covering principles, quality, security, supply-chain, benchmarks, and contributor workflows with machine-validated front matter.
 - Update AI-safety coverage to the 2025 OWASP LLM Top 10 and map NIST SP 800-218A (final) to existing controls, backed by refreshed policy YAMLs.
 - Align supply-chain content and policies with SLSA v1.1, including verification-summary guidance and migration notes toward SLSA 1.2.
+- Expand quality excellence coverage (static analysis, dynamic/runtime testing, formatting harmonisation) with enforcement policy (`frontiers/policy/code-quality-tooling.yml`).
+- Launch experience stack (Developer, Operator, Product/User) to pair code excellence with world-class customer outcomes.
 
 ## Decisions
 
 1. Adopt JSON Schema–validated front matter (`frontiers/policy/frontiers.schema.json`) with provenance requirements.
 2. Treat SLSA Level 3 (v1.1), ASVS L2/L3, and OWASP LLM Top 10 (2025) controls as mandatory and codify via policy YAML.
 3. Keep legacy Jupyter Book content archived in `docs_legacy/` while new MkDocs site becomes primary.
+4. Treat documentation + policy assets as canonical; relocate application scaffolding/generators into separate workspace post-doc freeze.
 
 ## Outstanding TODOs
 
 - [ ] Wire schema validation and link checking into CI (e.g., `mkdocs build --strict` + custom script).
 - [ ] Integrate mike-based docs versioning and publish pipeline to GitHub Pages.
-- [ ] Update incident runbooks with AI-specific playbooks referenced in security docs.
+- [ ] Update incident runbooks with AI-specific playbooks referenced in security docs (link ops-ex experience doc).
 - [ ] Automate waiver reminder comments before expiry.
+- [ ] Finalise application repo separation plan and publish compliance manifest template for downstream consumers.
 
 ## Maintainer Checklist
 

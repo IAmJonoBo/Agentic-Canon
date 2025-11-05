@@ -890,12 +890,12 @@ Templates and examples are checked for structure and best practices, but may be 
   - [ ] Implement wheelhouse generation
   - [ ] Add offline install documentation
   - [ ] Test offline installation workflow
-- [ ] Node.js offline support
+- [ ] #214 Node.js offline support
   - [ ] Implement Yarn Zero-Installs
   - [ ] Document .yarn/cache commit strategy
   - [ ] Test Yarn PnP workflow
   - [ ] Add to relevant templates
-- [ ] Renovate integration
+- [ ] #215 Renovate integration
   - [ ] Enable lockfile maintenance (weekly)
   - [ ] Configure pip-compile/uv managers
   - [ ] Configure npm/yarn managers
@@ -904,13 +904,13 @@ Templates and examples are checked for structure and best practices, but may be 
 
 ### Automation & Release Management
 
-- [ ] Release packer workflow
+- [ ] #216 Release packer workflow
   - [ ] Create release-assets.yml workflow
   - [ ] Implement template zipping
   - [ ] Add wheelhouse generation
   - [ ] Configure artifact uploads
   - [ ] Configure GitHub Release publishing
-- [ ] CI/CD caching improvements
+- [ ] #217 CI/CD caching improvements
   - [ ] Add pip cache support
   - [ ] Add yarn cache support
   - [ ] Document cache key strategies
@@ -918,34 +918,34 @@ Templates and examples are checked for structure and best practices, but may be 
 
 ### Storybook Deployment
 
-- [ ] Private Storybook deployment
+- [ ] #218 Private Storybook deployment
   - [ ] Document private Pages setup (Enterprise Cloud)
   - [ ] Configure access-controlled Pages
   - [ ] Test with private repo settings
-- [ ] Public Storybook deployment
+- [ ] #219 Public Storybook deployment
   - [ ] Document public Pages workflow
   - [ ] Add visibility toggle documentation
   - [ ] No workflow changes needed
-- [ ] Artifact-only deployment option
+- [ ] #220 Artifact-only deployment option
   - [ ] Document build artifact approach
   - [ ] Add workflow for artifact uploads
   - [ ] Test artifact downloads
 
 ### Agent Setup Wizards
 
-- [ ] Python environment notebook
+- [ ] #221 Python environment notebook
   - [ ] Create notebooks/setup/python_env.ipynb
   - [ ] Add connectivity detection
   - [ ] Implement online/offline install logic
   - [ ] Add machine-readable run log
   - [ ] Parameterize with Papermill
-- [ ] Node environment notebook
+- [ ] #222 Node environment notebook
   - [ ] Create notebooks/setup/node_env.ipynb
   - [ ] Add Yarn Zero-Installs validation
   - [ ] Implement online fallback
   - [ ] Add machine-readable run log
   - [ ] Parameterize with Papermill
-- [ ] CI integration for setup notebooks
+- [ ] #223 CI integration for setup notebooks
   - [ ] Add Papermill execution to CI
   - [ ] Keep outputs current and reproducible
   - [ ] Test parameterized execution

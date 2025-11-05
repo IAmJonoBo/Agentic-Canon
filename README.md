@@ -10,6 +10,8 @@
 > **📍 Progress Tracker:** See [TASKS.md](TASKS.md) for detailed status (single source of truth)  
 > **✅ Verified:** 2025-10-12 via comprehensive sanity check (121 passed, 2 warnings, 0 failed)
 
+> 🔧 **Toolchain alignment:** Template runtimes are pinned via `n00-cortex/data/toolchain-manifest.json`. Update that manifest first, then rerun `.dev/validate-templates.sh --all` to pick up new versions.
+
 ## What is Agentic Canon?
 
 Agentic Canon is a **comprehensive framework for frontier software excellence** that combines industry best practices, standards compliance, and automation to enable fast, secure, and reliable software delivery. It provides everything needed to build production-ready projects with security, quality, and observability baked in from day one.
@@ -226,6 +228,11 @@ cat catalog.json | jq '.compliance.standards'
 - Framework documentation and ADRs
 - CLI commands and distribution methods
 - 7 compliance standards
+
+## Dependency Governance
+
+- Renovate extends the shared preset published in `n00-cortex/renovate-presets/workspace.json`; repo-specific rules live in [renovate.json](renovate.json).
+- `nox -s validate_templates_all` fails fast if template runtimes drift from `n00-cortex/data/toolchain-manifest.json`.
 
 See [docs/CATALOG.md](docs/CATALOG.md) for usage examples, integration patterns, and API reference.
 

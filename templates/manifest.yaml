@@ -14,7 +14,7 @@ templates:
         author_name: Test Author
         author_email: test@example.com
         license: Apache-2.0
-        python_version: "3.11"
+        python_version: "3.11.8"
         include_jupyter_book: "yes"
         enable_security_gates: "yes"
         enable_sbom_signing: "yes"
@@ -28,7 +28,7 @@ templates:
         author_name: Your Name
         author_email: your.email@example.com
         license: MIT
-        python_version: "3.11"
+        python_version: "3.11.8"
         include_jupyter_book: "no"
         enable_security_gates: "no"
         enable_sbom_signing: "no"
@@ -107,7 +107,7 @@ templates:
         author_name: Test Author
         author_email: test@example.com
         license: Apache-2.0
-        node_version: "20"
+        node_version: "22.20.0"
         enable_security_gates: "yes"
         enable_sbom_signing: "yes"
         ci_provider: github

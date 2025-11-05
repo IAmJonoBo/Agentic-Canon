@@ -74,7 +74,7 @@
           "Type checking with tsc"
         ],
         "requirements": {
-          "node": ">=18.0.0",
+          "node": ">=22.0.0",
           "cookiecutter": ">=2.0.0"
         },
         "example": "examples/projects/express-user-api",
@@ -121,7 +121,7 @@
           "Pre-commit hooks"
         ],
         "requirements": {
-          "node": ">=18.0.0",
+          "node": ">=22.0.0",
           "cookiecutter": ">=2.0.0"
         },
         "example": "examples/projects/react-dashboard",
@@ -160,7 +160,7 @@
           "Pre-commit hooks"
         ],
         "requirements": {
-          "go": ">=1.21",
+          "go": ">=1.25.0",
           "cookiecutter": ">=2.0.0"
         },
         "example": "examples/projects/grpc-service",

@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
 
       - name: Generate SBOM with Syft
-        uses: anchore/sbom-action@v0.20.6
+        uses: anchore/sbom-action@v0.20.9
         with:
           path: ${{ env.TARGET }}
           format: spdx-json
@@ -30,7 +30,7 @@ jobs:
           upload-release-assets: false
 
       - name: Scan SBOM with Grype
-        uses: anchore/scan-action@v7.0.0
+        uses: anchore/scan-action@v7.1.0
         with:
           sbom: sbom.spdx.json
           fail-build: false

@@ -78,3 +78,4 @@ All functions include comprehensive error messages with examples to guide users.
 3. **Consistency**: Same validation rules across all templates
 4. **Security**: Prevent injection attacks and invalid characters
 5. **Standards**: Follow industry best practices (SPDX, RFC, semver)
+6. **Toolchains**: Keep runtime pins in sync with `n00-cortex/data/toolchain-manifest.json` to avoid drift.

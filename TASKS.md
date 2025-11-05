@@ -971,49 +971,49 @@ Templates and examples are checked for structure and best practices, but may be 
 
 #### MCP Resources (Read-Only)
 
-- [ ] Implement ac://catalog resource
+- [ ] #224 Implement ac://catalog resource
   - [ ] Serve /catalog.json
   - [ ] Return templates, releases, assets
   - [ ] Test with MCP clients
-- [ ] Implement ac://bible/\* resources
+- [ ] #225 Implement ac://bible/\* resources
   - [ ] Serve machine-readable docs (MD/JSON/YAML)
   - [ ] Map all Bible sections
   - [ ] Add quality gates documentation
-- [ ] Implement ac://examples/\* resources
+- [ ] #226 Implement ac://examples/\* resources
   - [ ] Serve code samples
   - [ ] Add policy snippets
   - [ ] Test resource embedding in prompts
 
 #### MCP Prompts (Parameterized Wizards)
 
-- [ ] scaffold_service prompt
+- [ ] #227 scaffold_service prompt
   - [ ] Define typed arguments
   - [ ] Bind resources into prompt body
   - [ ] Test with different languages
-- [ ] add_quality_gates prompt
+- [ ] #228 add_quality_gates prompt
   - [ ] Define gate selection parameters
   - [ ] Add workflow templates
   - [ ] Test gate application
-- [ ] enable_storybook prompt
+- [ ] #229 enable_storybook prompt
   - [ ] Add Storybook configuration
   - [ ] Include deployment options
   - [ ] Test with React templates
-- [ ] enable_golangci prompt
+- [ ] #230 enable_golangci prompt
   - [ ] Add golangci-lint configuration
   - [ ] Include CI integration
   - [ ] Test with Go templates
-- [ ] setup_offline_cache prompt
+- [ ] #231 setup_offline_cache prompt
   - [ ] Add wheelhouse setup
   - [ ] Add Yarn Zero-Installs setup
   - [ ] Test offline scenarios
 
 #### MCP Tools (Idempotent Operations)
 
-- [ ] list_templates() tool
+- [ ] #232 list_templates() tool
   - [ ] Read from catalog
   - [ ] Return structured template list
   - [ ] Add JSON-schema validation
-- [ ] render_template() tool
+- [ ] #233 render_template() tool
   - [ ] Run Cookiecutter with params
   - [ ] Support zip or PR delivery
   - [ ] Return artifact URI or PR URL

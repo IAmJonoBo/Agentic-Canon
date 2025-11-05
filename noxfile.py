@@ -25,25 +25,33 @@ SANITY_SECTIONS = (
     "tests",
 )
 
-RENDER_ROOT = Path("build/template-renders")
-RENDER_INDEX = RENDER_ROOT / "index.json"
 REPO_ROOT = Path(__file__).parent.resolve()
+APPLICATIONS_ROOT = REPO_ROOT / "applications" / "scaffolder"
+RENDER_ROOT = APPLICATIONS_ROOT / "build" / "template-renders"
+RENDER_INDEX = RENDER_ROOT / "index.json"
 TRUNK_SCRIPT = REPO_ROOT / ".dev" / "trunk-with-progress.sh"
 TRUNK_BIN = Path.home() / ".cache" / "trunk" / "bin" / "trunk"
 SYNC_MANIFEST_SCRIPT = REPO_ROOT / ".dev" / "scripts" / "sync-manifest.py"
 
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
-TEMPLATES_DIR = REPO_ROOT / "templates"
+TEMPLATES_DIR = APPLICATIONS_ROOT / "templates"
+APPLICATIONS_PATH = APPLICATIONS_ROOT
 if str(TEMPLATES_DIR) not in sys.path:
     sys.path.insert(0, str(TEMPLATES_DIR))
+if str(APPLICATIONS_PATH) not in sys.path:
+    sys.path.insert(0, str(APPLICATIONS_PATH))
 
 if "PYTHONPATH" not in os.environ:
-    os.environ["PYTHONPATH"] = f"{REPO_ROOT}{os.pathsep}{TEMPLATES_DIR}"
+    os.environ["PYTHONPATH"] = (
+        f"{REPO_ROOT}{os.pathsep}{APPLICATIONS_PATH}{os.pathsep}{TEMPLATES_DIR}"
+    )
 else:
     existing_paths = os.environ["PYTHONPATH"].split(os.pathsep)
     if str(REPO_ROOT) not in existing_paths:
         existing_paths.insert(0, str(REPO_ROOT))
+    if str(APPLICATIONS_PATH) not in existing_paths:
+        existing_paths.insert(0, str(APPLICATIONS_PATH))
     if str(TEMPLATES_DIR) not in existing_paths:
         existing_paths.insert(0, str(TEMPLATES_DIR))
     os.environ["PYTHONPATH"] = os.pathsep.join(existing_paths)

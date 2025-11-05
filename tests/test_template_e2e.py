@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import sys
 import shutil
 import subprocess
 from pathlib import Path
@@ -10,7 +11,13 @@ from typing import Callable
 
 import pytest
 
-from templates._shared import cache as cache_utils
+REPO_ROOT = Path(__file__).resolve().parents[1]
+APPLICATIONS_ROOT = REPO_ROOT / "applications" / "scaffolder"
+TEMPLATES_ROOT = APPLICATIONS_ROOT / "templates"
+
+sys.path.insert(0, str(APPLICATIONS_ROOT))
+
+from templates._shared import cache as cache_utils  # type: ignore
 
 cookiecutter_main = pytest.importorskip(
     "cookiecutter.main",
@@ -57,7 +64,7 @@ def _cookiecutter_bake(
     tmp_path: Path,
     extra_context: dict[str, str],
 ) -> Path:
-    template_dir = Path(__file__).resolve().parents[1] / "templates" / template_name
+    template_dir = TEMPLATES_ROOT / template_name
     slug = extra_context["project_slug"]
     project_path = tmp_path / slug
 

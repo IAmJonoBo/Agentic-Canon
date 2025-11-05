@@ -42,7 +42,7 @@ provenance:
 
 ## Summary
 
-1. Consistent formatting reduces review friction and accelerates onboarding, while reinforcing automated tooling discipline.citeturn15search0
+1. Consistent formatting reduces review friction and accelerates onboarding, while reinforcing automated tooling discipline.
 2. Every repository must adopt pre-configured formatters and style guides; deviations require formal approval.
 3. Documentation (README, ADRs, API docs) observes the same clarity and structure standards to streamline human and agent consumption.
 

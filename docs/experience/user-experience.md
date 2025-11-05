@@ -43,8 +43,8 @@ provenance:
 
 ## Summary
 
-1. UX excellence is measured across discovery, design, delivery, and learning cycles with maturity tracked using the NN/g model.citeturn2search1
-2. Emerging UX trends (AI co-creation, multimodal interfaces, hyper-personalisation) inform product strategy and require ethical design guardrails.citeturn2search0turn2search5
+1. UX excellence is measured across discovery, design, delivery, and learning cycles with maturity tracked using the NN/g model.
+2. Emerging UX trends (AI co-creation, multimodal interfaces, hyper-personalisation) inform product strategy and require ethical design guardrails.
 3. Accessibility and inclusivity remain non-negotiable, with WCAG 2.2 AA minimum and stretch targets for AAA compliance.
 
 ## UX Governance Pillars

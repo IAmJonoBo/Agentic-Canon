@@ -42,11 +42,11 @@ provenance:
 
 ## Summary
 
-1. Requires SLSA Level 3 provenance for all build artefacts, including container images, packages, model weights, and benchmark datasets.citeturn7view0
-2. Uses cosign with OIDC identity to generate in-toto provenance attestations stored under `artifacts/provenance/`, aligning with SLSA 1.1’s tightened builder identity and metadata requirements.citeturn6view0
-3. Documents verification steps to run before deployment, ensuring artefact integrity and providing a migration path toward forthcoming SLSA 1.2 policy profiles.citeturn3search0
+1. Requires SLSA Level 3 provenance for all build artefacts, including container images, packages, model weights, and benchmark datasets.
+2. Uses cosign with OIDC identity to generate in-toto provenance attestations stored under `artifacts/provenance/`, aligning with SLSA 1.1’s tightened builder identity and metadata requirements.
+3. Documents verification steps to run before deployment, ensuring artefact integrity and providing a migration path toward forthcoming SLSA 1.2 policy profiles.
 
-SLSA 1.1 emphasises explicit builder identity, richer metadata, and optional verification summaries; these changes are reflected in the policy and pipeline guidance here.citeturn6view0
+SLSA 1.1 emphasises explicit builder identity, richer metadata, and optional verification summaries; these changes are reflected in the policy and pipeline guidance here.
 
 ## Level 3 Checklist
 
@@ -64,7 +64,7 @@ SLSA 1.1 emphasises explicit builder identity, richer metadata, and optional ver
 2. Build jobs produce artefacts (container image, wheel, etc.).
 3. SBOM generated with Syft; stored as `sbom.spdx.json`.
 4. Cosign signs both artefact and provenance predicate (OIDC identity).
-5. Artefacts uploaded to registry along with provenance and optional SLSA verification-summary attestations.citeturn6view0
+5. Artefacts uploaded to registry along with provenance and optional SLSA verification-summary attestations.
 
 ## Verification Commands
 
@@ -91,8 +91,8 @@ spdx-sbom-tool verify --input sbom.spdx.json --artifact $IMAGE_REF
 
 ## Migration Notes
 
-- Track the SLSA 1.2 release candidate effort and be prepared to adopt policy profiles that formalise organisational requirements.citeturn3search0
-- Review downstream tooling compatibility (e.g., deployment platforms, artifact repositories) for the new verification-summary predicate published with SLSA 1.1.citeturn6view0
+- Track the SLSA 1.2 release candidate effort and be prepared to adopt policy profiles that formalise organisational requirements.
+- Review downstream tooling compatibility (e.g., deployment platforms, artifact repositories) for the new verification-summary predicate published with SLSA 1.1.
 
 ## Provenance
 

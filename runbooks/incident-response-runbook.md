@@ -23,6 +23,13 @@ This runbook provides procedures for responding to production incidents in syste
 6. **Recovery** - Restore normal operations
 7. **Post-Incident** - Review and learn
 
+## Reference Playbooks
+
+- **Operator Experience & Reliability** (`docs/experience/operator-experience.md`) – SLO management, observability standards, and chaos testing cadence referenced throughout this runbook.
+- **LLM Top 10 Guardrails** (`docs/security/llm-top10-guardrails.md`) – Required mitigations and detection triggers for AI/agent incidents.
+- **Dynamic & Runtime Analysis** (`docs/quality/dynamic-analysis.md`) – Benchmarks, DAST, and fuzzing hooks that support incident detection and regression prevention.
+- **Triage & Exceptions** (`docs/workflows/triage-and-exceptions.md`) – Waiver, escalation, and expiry tracking for temporary mitigations that arise during incident response.
+
 ## Phase 1: Detection
 
 ### Monitoring and Alerting
@@ -47,6 +54,8 @@ This runbook provides procedures for responding to production incidents in syste
 - **LLM08 (Vector/Embedding Weaknesses)**: Vector store ACL violations, embedding drift detection
 - **LLM09 (Misinformation)**: Fact-checking pipeline failures, misinformation flags
 - **LLM10 (Unbounded Consumption)**: Budget enforcement violations, circuit breaker triggers
+- **OpsEx Signals**: Error budget depletion, toil spikes, or unresolved auto-remediation events (see Operator Experience framework)
+- **Dynamic Testing Guards**: Fuzzing crashes, DAST regressions, or benchmark deltas exceeding thresholds (see Dynamic & Runtime Analysis policy)
 
 **Manual Detection Sources**:
 

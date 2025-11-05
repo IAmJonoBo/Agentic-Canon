@@ -72,6 +72,7 @@ provenance:
 ```
 
 Store waivers under relevant heading below; link to issue for traceability.
+All active waivers must be represented by a YAML file in `frontiers/waivers/` so automation can monitor expirations.
 
 ## SLA Table
 
@@ -106,7 +107,8 @@ Store waivers under relevant heading below; link to issue for traceability.
 
 ## Automation Backlog
 
-- Reminder bot to comment on issues 48 hours before waiver expiry.
+- `.github/workflows/waiver-reminder.yml` runs daily to surface waivers within seven days of expiry and re-opens the reminder issue if required.
+- Compliance manifests (`frontiers/compliance/manifest-template.yml`) reference waiver IDs to keep downstream consumers aligned.
 - Dashboard summarising open waivers, SLA status, and affected controls.
 - Link-check step ensuring waiver anchors remain present in this document.
 

@@ -42,9 +42,9 @@ provenance:
 
 ## Summary
 
-1. Extends SSDF to cover AI system lifecycle risks (data, model, deployment) using the July 2024 final release of NIST SP 800-218A.citeturn4search0
+1. Extends SSDF to cover AI system lifecycle risks (data, model, deployment) using the July 2024 final release of NIST SP 800-218A.
 2. Aligns AI RMF functions (Govern, Map, Measure, Manage) with OWASP LLM Top 10 guardrails and benchmark policy.
-3. Documents verification steps tying model evaluations and runtime monitoring to compliance, in line with AI RMF governance expectations.citeturn4search0turn8search0
+3. Documents verification steps tying model evaluations and runtime monitoring to compliance, in line with AI RMF governance expectations.
 
 ## Control Overlay
 

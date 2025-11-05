@@ -95,6 +95,7 @@ nav:
       - "Quality Gate": workflows/quality-gate.md
       - "Pre-commit Experience": workflows/pre-commit.md
       - "Triage & Exceptions": workflows/triage-and-exceptions.md
+      - "Compliance Manifest": workflows/compliance-manifest.md
   - Experience:
       - "Developer Experience Framework": experience/developer-experience.md
       - "Operator Experience & Reliability": experience/operator-experience.md

@@ -50,7 +50,7 @@ owner: "Documentation Engineering"
 
 1. Centralises secure SDLC, quality, supply-chain, and AI safety guidance into a single MkDocs site for humans and agents.
 2. Enforces machine-readable front matter validated by `frontiers.schema.json` to keep metadata consistent and auditable.
-3. Aligns documentation maintenance with NIST SSDF v1.1, OWASP ASVS 4.0.3, SLSA v1.1, and the 2025 OWASP LLM Top 10 updates for evidence-backed controls.citeturn2search0turn5view0
+3. Aligns documentation maintenance with NIST SSDF v1.1, OWASP ASVS 4.0.3, SLSA v1.1, and the 2025 OWASP LLM Top 10 updates for evidence-backed controls.
 
 ## Scope
 
@@ -83,13 +83,14 @@ The n00-frontiers documentation system covers the whole lifecycle of frontier so
 
 ## Integration Map
 
-| Capability             | Source Markdown                    | Machine Policy                            | Automation hook                         |
-| ---------------------- | ---------------------------------- | ----------------------------------------- | --------------------------------------- |
-| Secure SDLC            | `security/nist-ssdf.md`            | `frontiers/policy/ssdf-mapping.yml`       | `frontiers/quality-gate.yml#sast`       |
-| Supply-chain integrity | `supply-chain/slsa-provenance.md`  | `frontiers/policy/slsa-policy.yml`        | `frontiers/quality-gate.yml#provenance` |
-| Product quality        | `quality/iso-25010-rubric.md`      | n/a                                       | `frontiers/quality-gate.yml#unit-tests` |
-| Agent safety           | `security/llm-top10-guardrails.md` | `frontiers/policy/llm-top10-controls.yml` | Benchmarks policy + smoke suites        |
-| Benchmark governance   | `benchmarks/*.md`                  | `frontiers/policy/benchmark-policy.yml`   | Benchmark jobs (optional toggle)        |
+| Capability             | Source Markdown                    | Machine Policy                               | Automation hook                         |
+| ---------------------- | ---------------------------------- | -------------------------------------------- | --------------------------------------- |
+| Secure SDLC            | `security/nist-ssdf.md`            | `frontiers/policy/ssdf-mapping.yml`          | `frontiers/quality-gate.yml#sast`       |
+| Supply-chain integrity | `supply-chain/slsa-provenance.md`  | `frontiers/policy/slsa-policy.yml`           | `frontiers/quality-gate.yml#provenance` |
+| Product quality        | `quality/iso-25010-rubric.md`      | n/a                                          | `frontiers/quality-gate.yml#unit-tests` |
+| Agent safety           | `security/llm-top10-guardrails.md` | `frontiers/policy/llm-top10-controls.yml`    | Benchmarks policy + smoke suites        |
+| Benchmark governance   | `benchmarks/*.md`                  | `frontiers/policy/benchmark-policy.yml`      | Benchmark jobs (optional toggle)        |
+| Compliance manifest    | `workflows/compliance-manifest.md` | `frontiers/compliance/manifest-template.yml` | Waiver reminder + downstream validation |
 
 ## Decision Records
 

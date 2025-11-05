@@ -43,9 +43,9 @@ provenance:
 
 ## Summary
 
-1. Implements the 2025 OWASP LLM Top 10 controls across prompt handling, disclosure prevention, supply-chain, and runtime monitoring.citeturn5view0
+1. Implements the 2025 OWASP LLM Top 10 controls across prompt handling, disclosure prevention, supply-chain, and runtime monitoring.
 2. Uses `/frontiers/policy/llm-top10-controls.yml` for machine-readable guardrail tests and escalation rules.
-3. Integrates guardrail verification with benchmark suites and runtime observability to detect regressions early.citeturn1search8
+3. Integrates guardrail verification with benchmark suites and runtime observability to detect regressions early.
 
 ## Risk Matrix
 
@@ -64,16 +64,16 @@ provenance:
 
 ## Runtime Safeguards
 
-1. **Content Filtering** — Apply layered classifiers and policy filters before response delivery to limit sensitive disclosures.citeturn1search8
+1. **Content Filtering** — Apply layered classifiers and policy filters before response delivery to limit sensitive disclosures.
 2. **Scope Limitation** — Enforce capability allowlists, sandbox execution, and secret-free runtime environments for agents.
-3. **Human-in-the-loop** — Require approval steps for privileged actions such as deployments, production data access, or financial transactions.citeturn1search8
-4. **Kill Switches** — Maintain documented kill switches and credential revocation runbooks for rapid containment.citeturn1search8
+3. **Human-in-the-loop** — Require approval steps for privileged actions such as deployments, production data access, or financial transactions.
+4. **Kill Switches** — Maintain documented kill switches and credential revocation runbooks for rapid containment.
 
 ## Testing & Monitoring
 
 - Benchmarks: Run AgentBench smoke, LiveCodeBench delta, and targeted evaluation tasks referenced in `frontiers/policy/benchmark-policy.yml`.
-- Logging: Enrich prompts/responses with metadata (user, session, classification tags) and forward to central SIEM for correlation.citeturn1search8
-- Alerts: Trigger on content safety scores, refusal anomalies, embedding drift, and budget overages; escalate when thresholds breach configured SLAs.citeturn1search8
+- Logging: Enrich prompts/responses with metadata (user, session, classification tags) and forward to central SIEM for correlation.
+- Alerts: Trigger on content safety scores, refusal anomalies, embedding drift, and budget overages; escalate when thresholds breach configured SLAs.
 
 ## Incident Response
 

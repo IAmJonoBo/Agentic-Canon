@@ -2,7 +2,7 @@
 
 **Purpose:** Complete guide to repository organization and file locations
 
-**Last Updated:** 2025-10-11
+**Last Updated:** 2025-11-05
 
 ---
 
@@ -14,14 +14,18 @@ This repository is organized for maximum clarity, ease of access, and maintainab
 Agentic-Canon/
 ├── 📄 Root Documentation          # Core project documents
 ├── 📁 .dev/                       # Development tools (internal)
-├── 📁 agentic_canon_cli/          # Interactive CLI wizard (distribution)
-├── 📁 binder/                     # Binder environment config
-├── 📁 docs/                       # Jupyter Book documentation
-├── 📁 examples/                   # Reference implementations
-├── 📁 notebooks/                  # Executable Jupyter notebooks
+├── 📁 applications/               # Product scaffolder & automation assets
+│   └── 📁 scaffolder/             # CLI, templates, examples, notebooks, build artifacts
+├── 📁 agentic_canon_cli/          # Compatibility wrapper → applications/scaffolder/agentic_canon_cli
+├── 📁 docs/                       # MkDocs documentation system
+├── 📁 frontiers/                  # Machine-readable policies & automation hooks
 ├── 📁 runbooks/                   # Operational procedures
-├── 📁 templates/                  # Cookiecutter templates (boilerplates)
-└── 📁 tests/                      # Test suite
+├── 📁 tests/                      # Test suite
+├── ➰ binder → applications/scaffolder/binder          # Legacy path (symlink)
+├── ➰ build → applications/scaffolder/build            # Template render cache (symlink)
+├── ➰ examples → applications/scaffolder/examples      # Reference implementations (symlink)
+├── ➰ notebooks → applications/scaffolder/notebooks    # Executable notebooks (symlink)
+└── ➰ templates → applications/scaffolder/templates    # Cookiecutter templates (symlink)
 ```
 
 ---

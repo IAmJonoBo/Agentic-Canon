@@ -43,8 +43,8 @@ provenance:
 
 ## Summary
 
-1. Operator experience (OpsEx) focuses on resilience, fast recovery, and automation depth so teams can uphold aggressive SLOs.citeturn1search0turn1search3
-2. World-class observability, incident response, and AI-assisted tooling reduce toil and accelerate learning loops.citeturn1search0turn1search1
+1. Operator experience (OpsEx) focuses on resilience, fast recovery, and automation depth so teams can uphold aggressive SLOs.
+2. World-class observability, incident response, and AI-assisted tooling reduce toil and accelerate learning loops.
 3. OpsEx health is measured via SLO attainment, incident metrics, toil %, and operator sentiment.
 
 ## OpsEx Pillars
@@ -62,13 +62,13 @@ provenance:
 2. **Incident Response** — Follow `runbooks/incident-response-runbook.md`, leveraging AI copilots for diagnosis but maintaining human approval for mitigations.
 3. **Observability** — Standardise telemetry schema, propagate trace IDs end-to-end, and attach runbook links to alerts.
 4. **Change Management** — Use progressive delivery (feature flags, canaries, blue/green) and require automated post-deploy verification.
-5. **Chaos & Resilience** — Schedule monthly chaos exercises that align with Atlassian/Catchpoint findings on high-performing teams.citeturn1search3
+5. **Chaos & Resilience** — Schedule monthly chaos exercises that align with Atlassian/Catchpoint findings on high-performing teams.
 
 ## Metrics & Targets
 
 - SLO attainment ≥ 99% for mission-critical services; error budget policy defines freeze thresholds.
 - MTTR ≤ 30 minutes for priority 1 incidents; trend monitored via incident report automation.
-- Toil ≤ 30% of operator time; automation backlog addresses repetitive work.citeturn1search1
+- Toil ≤ 30% of operator time; automation backlog addresses repetitive work.
 - Incident review closure within 10 business days; action item status tracked in platform portal.
 
 ## Tooling & Integration

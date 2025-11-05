@@ -8,20 +8,22 @@
 - Align supply-chain content and policies with SLSA v1.1, including verification-summary guidance and migration notes toward SLSA 1.2.
 - Expand quality excellence coverage (static analysis, dynamic/runtime testing, formatting harmonisation) with enforcement policy (`frontiers/policy/code-quality-tooling.yml`).
 - Launch experience stack (Developer, Operator, Product/User) to pair code excellence with world-class customer outcomes.
+- Add compliance manifest tooling and waiver reminder automation (`frontiers/compliance/manifest-template.yml`, `tools/check_waivers.py`, `.github/workflows/waiver-reminder.yml`).
 
 ## Decisions
 
 1. Adopt JSON Schema–validated front matter (`frontiers/policy/frontiers.schema.json`) with provenance requirements.
 2. Treat SLSA Level 3 (v1.1), ASVS L2/L3, and OWASP LLM Top 10 (2025) controls as mandatory and codify via policy YAML.
 3. Keep legacy Jupyter Book content archived in `docs_legacy/` while new MkDocs site becomes primary.
-4. Treat documentation + policy assets as canonical; relocate application scaffolding/generators into separate workspace post-doc freeze.
+4. Relocate scaffolder assets to `applications/scaffolder/` (with compatibility symlinks) so the application can be extracted cleanly after doc freeze.
+5. Treat documentation + policy assets as canonical; downstream consumers must publish compliance manifests and track waivers centrally.
 
 ## Outstanding TODOs
 
 - [ ] Wire schema validation and link checking into CI (e.g., `mkdocs build --strict` + custom script).
 - [ ] Integrate mike-based docs versioning and publish pipeline to GitHub Pages.
 - [ ] Update incident runbooks with AI-specific playbooks referenced in security docs (link ops-ex experience doc).
-- [ ] Automate waiver reminder comments before expiry.
+- [ ] Monitor waiver reminder workflow for accuracy and tune warning threshold if necessary.
 - [ ] Finalise application repo separation plan and publish compliance manifest template for downstream consumers.
 
 ## Maintainer Checklist

@@ -39,7 +39,7 @@ provenance:
 ## Summary
 
 1. `/frontiers/quality-gate.yml` provides a reusable GitHub Actions workflow that enforces linting, testing, security, and supply-chain gates.
-2. Jobs map directly to non-negotiable controls set out in `QUALITY_STANDARDS.md` and SSDF requirements.
+2. Jobs map directly to non-negotiable controls set out in `QUALITY_STANDARDS.md`, the code-quality tooling policy (`frontiers/policy/code-quality-tooling.yml`), and SSDF requirements.
 3. Benchmarks run optionally through an input toggle to avoid blocking docs-only changes.
 
 ## Invocation

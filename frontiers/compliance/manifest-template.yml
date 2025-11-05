@@ -1,0 +1,40 @@
+metadata:
+  schema: frontiers-compliance-manifest.v1
+  version: 1.0.0
+  last_updated: 2025-11-05
+  timezone: Africa/Johannesburg
+manifest:
+  docs_version: "v1.1.0"
+  policies:
+    - id: "ssdf"
+      source: "frontiers/policy/ssdf-mapping.yml"
+      hash: "<replace-with-sha256>"
+    - id: "slsa"
+      source: "frontiers/policy/slsa-policy.yml"
+      hash: "<replace-with-sha256>"
+    - id: "asvs"
+      source: "frontiers/policy/asvs-checklist.yml"
+      hash: "<replace-with-sha256>"
+    - id: "llm-top10"
+      source: "frontiers/policy/llm-top10-controls.yml"
+      hash: "<replace-with-sha256>"
+    - id: "code-quality"
+      source: "frontiers/policy/code-quality-tooling.yml"
+      hash: "<replace-with-sha256>"
+  tooling_versions:
+    python: "3.11"
+    node: "20"
+    go: "1.23"
+    trunk: "1.21.0"
+  quality_gates:
+    workflow: "frontiers/quality-gate.yml"
+    dashboard_url: "https://grafana.example.com/d/frontier-quality"
+  waivers:
+    - id: "WVR-2025-001"
+      control: "SSDF-PO.3.2"
+      expires: "2025-11-12"
+      link: "frontiers/waivers/WVR-2025-001.yml"
+  contacts:
+    owner: "platform-engineering@example.com"
+    security: "product-security@example.com"
+    compliance: "compliance@example.com"

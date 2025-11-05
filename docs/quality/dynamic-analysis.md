@@ -42,7 +42,7 @@ provenance:
 
 ## Summary
 
-1. Dynamic testing complements SAST by exercising deployed services, APIs, and agents under realistic conditions.citeturn12search0
+1. Dynamic testing complements SAST by exercising deployed services, APIs, and agents under realistic conditions.
 2. Fuzzing, chaos, and observability pipelines provide continuous assurance that regression budgets stay within defined thresholds.
 3. Runtime guardrails enforce safe defaults (feature flags, circuit breakers, policy engines) and trigger automated containment.
 

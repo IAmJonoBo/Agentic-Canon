@@ -1,0 +1,93 @@
+name: Waiver Reminder
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # daily at 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyYAML
+
+      - name: Check waivers
+        id: check
+        run: |
+          EXIT_CODE=0
+          python tools/check_waivers.py --warning-days 7 --fail-expired || EXIT_CODE=$?
+          echo "exit_code=${EXIT_CODE}" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: Update issue with upcoming or expired waivers
+        if: steps.check.outputs.upcoming != '[]' || steps.check.outputs.expired != '[]'
+        uses: actions/github-script@v8
+        env:
+          UPCOMING: ${{ steps.check.outputs.upcoming }}
+          EXPIRED: ${{ steps.check.outputs.expired }}
+        with:
+          script: |
+            const upcoming = JSON.parse(process.env.UPCOMING || '[]');
+            const expired = JSON.parse(process.env.EXPIRED || '[]');
+            const lines = [];
+            if (expired.length) {
+              lines.push('## ❌ Expired waivers');
+              for (const waiver of expired) {
+                lines.push(`- **${waiver.id}** (${waiver.control}) expired on ${waiver.expires} — ${waiver.__path}`);
+              }
+            }
+            if (upcoming.length) {
+              lines.push('## ⏰ Waivers expiring soon');
+              for (const waiver of upcoming) {
+                lines.push(`- **${waiver.id}** (${waiver.control}) expires on ${waiver.expires} (in ${waiver.days_until_expiry} days) — ${waiver.__path}`);
+              }
+            }
+            const body = `${lines.join('\n')}`;
+            const title = 'Waiver reminder';
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 50,
+            });
+            const match = existing.data.find(issue => issue.title === title);
+            if (match) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: match.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+              });
+            }
+
+      - name: Add summary
+        run: |
+          echo "### Waiver reminder" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Upcoming: ${{ steps.check.outputs.upcoming }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Expired: ${{ steps.check.outputs.expired }}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail on errors
+        if: steps.check.outputs.exit_code != '0'
+        run: exit ${{ steps.check.outputs.exit_code }}

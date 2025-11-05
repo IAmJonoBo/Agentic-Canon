@@ -42,7 +42,7 @@ provenance:
 
 ## Summary
 
-1. Static analysis underpins SSDF PW.4 expectations and remains mandatory for every merge, with enforcement tuned per language.citeturn14search0
+1. Static analysis underpins SSDF PW.4 expectations and remains mandatory for every merge, with enforcement tuned per language.
 2. Unified linting and formatting policies reduce cognitive load and enforce baseline quality before code review.
 3. Automated review bots complement human reviewers by triaging findings, tracking metrics, and escalating regressions.
 

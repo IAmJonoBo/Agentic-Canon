@@ -13,7 +13,8 @@ except ImportError:  # pragma: no cover
     yaml = None  # type: ignore
 
 
-MANIFEST_DIR = Path(__file__).resolve().parents[1] / "templates"
+REPO_ROOT = Path(__file__).resolve().parents[1]
+MANIFEST_DIR = REPO_ROOT / "applications" / "scaffolder" / "templates"
 YAML_PATH = MANIFEST_DIR / "manifest.yaml"
 JSON_PATH = MANIFEST_DIR / "manifest.json"
 

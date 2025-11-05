@@ -43,8 +43,8 @@ provenance:
 
 ## Summary
 
-1. Developer experience (DevEx) is treated as a first-class quality attribute, with platform teams owning golden paths and teams accountable for feedback loops.citeturn0search1
-2. High-performing teams standardise on well-integrated CI/CD, security scanning, and self-service tooling to sustain top-tier DORA outcomes.citeturn0search0turn0search3
+1. Developer experience (DevEx) is treated as a first-class quality attribute, with platform teams owning golden paths and teams accountable for feedback loops.
+2. High-performing teams standardise on well-integrated CI/CD, security scanning, and self-service tooling to sustain top-tier DORA outcomes.
 3. DevEx health is measured continuously (SPACE + DORA + sentiment) and tied to business outcomes such as deployment throughput, retention, and satisfaction.
 
 ## DevEx Pillars
@@ -76,7 +76,7 @@ provenance:
 
 - **SPACE scorecards** quarterly (Satisfaction, Performance, Activity, Communication, Efficiency).
 - **DORA metrics** streamed to dashboards; outliers trigger improvement reviews.
-- **Survey cadence** bi-annually referencing Atlassian/Wakefield benchmarks for alignment.citeturn0search1
+- **Survey cadence** bi-annually referencing Atlassian/Wakefield benchmarks for alignment.
 - **Platform KPIs**: golden-path adoption %, self-service success rate, time-to-environment.
 
 ## Continuous Improvement Loop

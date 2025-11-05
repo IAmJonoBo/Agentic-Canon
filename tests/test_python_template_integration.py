@@ -18,6 +18,9 @@ from pathlib import Path
 
 import pytest
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+TEMPLATES_ROOT = REPO_ROOT / "applications" / "scaffolder" / "templates"
+
 cookiecutter_main = pytest.importorskip(
     "cookiecutter.main",
     reason="cookiecutter is required for the Python template integration test",
@@ -47,7 +50,7 @@ def _run(cmd: list[str], cwd: Path | None = None) -> None:
 @pytest.mark.slow
 def test_python_template_real_world_flow(tmp_path: Path) -> None:
     """Bake the template, install deps, and run pytest (Task #52)."""
-    template_dir = Path(__file__).resolve().parents[1] / "templates" / "python-service"
+    template_dir = TEMPLATES_ROOT / "python-service"
     output_dir = tmp_path
 
     cookiecutter(

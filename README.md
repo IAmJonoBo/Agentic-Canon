@@ -84,6 +84,8 @@ jupyter notebook notebooks/
 4. **Execute**: [runbooks/agent-runbook.json](runbooks/agent-runbook.json) for step-by-step automation
 5. **Use**: Templates from [templates/](templates/) directory with machine-readable configurations
 
+> ℹ️ Implementation assets (CLI, templates, notebooks, examples) now reside under `applications/scaffolder/`. The root `templates/`, `examples/`, `notebooks/`, `binder/`, and `build/` paths remain as compatibility symlinks for downstream tooling.
+
 ### For Platform Teams
 
 1. **Assess**: Current state against [control-traceability-matrix.json](control-traceability-matrix.json)

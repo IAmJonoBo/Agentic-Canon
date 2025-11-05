@@ -176,7 +176,7 @@ The Agentic Canon framework consists of **four interconnected layers**:
 
 **Ready-to-Use Templates and Automation**
 
-The implementation layer is organized with clear separation of concerns:
+The implementation layer is organised with clear separation of concerns:
 
 **Development Tools (`.dev/`)**
 
@@ -187,10 +187,9 @@ The implementation layer is organized with clear separation of concerns:
 
 **Distribution Assets**
 
-- `agentic_canon_cli/` - CLI wizard for project generation
-- `templates/` - Cookiecutter templates and supporting files
-- `notebooks/` - Executable guides and automation
-- `docs/` - Documentation and reference materials
+- `applications/scaffolder/` – Canonical home for the scaffolder application (CLI, templates, notebooks, examples). Root-level symlinks (`templates/`, `notebooks/`, `examples/`, `binder/`, `build/`) are retained for backwards compatibility.
+- `agentic_canon_cli/` – Compatibility wrapper re-exporting the relocated CLI package.
+- `docs/` – Documentation and reference materials.
 
 **Templates include:**
 

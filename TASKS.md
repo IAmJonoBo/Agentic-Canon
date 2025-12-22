@@ -691,22 +691,22 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
 - [ ] #113 Trace, metrics, logs aggregation
 - [ ] #114 Dashboards (Grafana)
 - [ ] #116 Alerting rules (Prometheus)
-- [ ] #118 Incident management integration
+- [x] #118 Incident management integration
 
 ## Deployment & Operations
 
 ### GitOps Configuration
 
-- [ ] #120 ArgoCD/Flux setup examples
-- [ ] #122 Environment definitions (dev/stage/prod)
-- [ ] #124 Progressive delivery (canary, blue-green)
-- [ ] #126 Automated rollback policies
-- [ ] #128 Policy enforcement (OPA, Kyverno)
+- [x] #120 ArgoCD/Flux setup examples
+- [x] #122 Environment definitions (dev/stage/prod)
+- [x] #124 Progressive delivery (canary, blue-green)
+- [x] #126 Automated rollback policies
+- [x] #128 Policy enforcement (OPA, Kyverno)
 
 ### Infrastructure
 
-- [ ] #129 Kubernetes manifests
-- [ ] #130 Helm charts
+- [x] #129 Kubernetes manifests
+- [x] #130 Helm charts
 - [ ] #131 Terraform/OpenTofu modules
 - [ ] #132 Container images
 - [ ] #133 Service mesh configuration

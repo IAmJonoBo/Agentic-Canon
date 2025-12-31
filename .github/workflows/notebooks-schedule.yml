@@ -16,5 +16,5 @@ jobs:
           mkdir -p artifacts
           papermill notebooks/01_bootstrap.ipynb artifacts/01_bootstrap.out.ipynb -p run_mode ci
           papermill notebooks/02_security_supply_chain.ipynb artifacts/02_security_supply_chain.out.ipynb -p run_mode ci
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with: { name: notebook-outputs, path: artifacts }

@@ -478,11 +478,11 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
 - [ ] #75 OWASP SAMM assessment
 - [ ] #76 OWASP ASVS controls (L2/L3 for web/API)
 - [ ] #80 SLSA level tracking
-- [ ] #87 OpenSSF Scorecard metrics
-- [ ] #88 ISO/IEC 25010 quality characteristics
-- [ ] #89 ISO/IEC 5055 structural quality
-- [ ] #90 WCAG 2.2 AA accessibility
-- [ ] #91 Control Traceability Matrix
+- [x] #87 OpenSSF Scorecard metrics
+- [x] #88 ISO/IEC 25010 quality characteristics
+- [x] #89 ISO/IEC 5055 structural quality
+- [x] #90 WCAG 2.2 AA accessibility
+- [x] #91 Control Traceability Matrix
 
 ## Quality Assurance
 
@@ -573,11 +573,11 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
 
 ### Testing Infrastructure
 
-- [ ] #92 Unit tests for all templates
-- [ ] #94 Integration tests for workflow orchestration
-- [ ] #95 E2E tests for generated projects
-- [ ] #98 Contract tests between services
-- [ ] #99 Mutation testing configuration
+- [x] #92 Unit tests for all templates
+- [x] #94 Integration tests for workflow orchestration
+- [x] #95 E2E tests for generated projects
+- [x] #98 Contract tests between services
+- [x] #99 Mutation testing configuration
 - [x] #101 Performance testing framework
 - [x] Accessibility testing (axe-core, pa11y) - comprehensive workflow created
 - [x] Security testing (SAST, DAST, secret scanning) - comprehensive workflows created

@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
 
       - name: Generate SBOM with Syft
-        uses: anchore/sbom-action@v0.20.6
+        uses: anchore/sbom-action@v0.20.9
         with:
           path: ${{ env.TARGET }}
           format: spdx-json

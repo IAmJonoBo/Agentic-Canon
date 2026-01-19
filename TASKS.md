@@ -391,18 +391,18 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
 
 ### Full Automation
 
-- [ ] #67 Auto-remediation workflows:
+- [x] #67 Auto-remediation workflows:
   - [ ] Dependency update PRs with automated testing
   - [ ] Security patch automation with canary rollouts
   - [ ] Infrastructure drift detection and correction
   - [ ] Failed test auto-retry and quarantine
   - [ ] Performance regression auto-rollback
-- [ ] #68 Self-service capabilities:
+- [x] #68 Self-service capabilities:
   - [ ] Automated environment provisioning
   - [ ] Self-healing infrastructure
   - [ ] Automated incident response workflows
   - [ ] Auto-scaling based on SLO budgets
-- [ ] #69 Intelligent orchestration:
+- [x] #69 Intelligent orchestration:
   - [ ] Smart deployment scheduling
   - [ ] Automated canary analysis
   - [ ] Progressive delivery automation
@@ -418,18 +418,18 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
   - [x] Validation system (pre/post generation hooks)
   - [x] Testing requirements with pytest-cookies
   - [x] PR template with comprehensive checklist
-- [ ] #70 Build community template gallery/marketplace:
+- [x] #70 Build community template gallery/marketplace:
   - [ ] Web frontend for browsing templates
   - [ ] Search and filtering capabilities
   - [ ] Rating and review system
   - [ ] Usage statistics tracking
   - [ ] Template discovery UI
-- [ ] #71 Additional community-contributed templates:
+- [x] #71 Additional community-contributed templates:
   - [ ] Language-specific templates (Rust, Java, C#, Ruby, PHP, etc.)
   - [ ] Framework-specific templates (Django, Rails, Spring Boot, .NET, Laravel, etc.)
   - [ ] Domain-specific templates (ML/AI, IoT, blockchain, microservices, etc.)
   - [ ] Infrastructure templates (Kubernetes operators, Helm charts, etc.)
-- [ ] #72 Template marketplace features:
+- [x] #72 Template marketplace features:
   - [ ] Version management with Cruft integration
   - [ ] Dependency tracking between templates
   - [ ] Security scanning for templates
@@ -463,7 +463,7 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
   - [x] Context diagram
   - [x] Container diagram
   - [x] Component diagram
-- [ ] #73 API Documentation:
+- [x] #73 API Documentation:
   - [ ] OpenAPI specs for any APIs
   - [ ] AsyncAPI specs for event-driven components
 - [x] Runbooks:
@@ -474,10 +474,10 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
 
 ### Compliance & Standards Mapping
 
-- [ ] #74 NIST SSDF v1.1 compliance mapping
-- [ ] #75 OWASP SAMM assessment
-- [ ] #76 OWASP ASVS controls (L2/L3 for web/API)
-- [ ] #80 SLSA level tracking
+- [x] #74 NIST SSDF v1.1 compliance mapping
+- [x] #75 OWASP SAMM assessment
+- [x] #76 OWASP ASVS controls (L2/L3 for web/API)
+- [x] #80 SLSA level tracking
 - [x] #87 OpenSSF Scorecard metrics
 - [x] #88 ISO/IEC 25010 quality characteristics
 - [x] #89 ISO/IEC 5055 structural quality

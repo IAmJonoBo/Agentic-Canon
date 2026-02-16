@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/bufbuild/buf v1.58.0
-	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.0

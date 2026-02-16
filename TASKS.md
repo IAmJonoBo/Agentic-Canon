@@ -175,7 +175,7 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
   - [x] Security scanning and remediation workflow (documented in examples)
   - [x] Contract testing between services (documented in templates)
   - [x] Observability instrumentation example (documented in examples)
-- [ ] #46 Create complete working example projects (not just READMEs):
+- [x] #46 Create complete working example projects (not just READMEs):
   - [x] **FastAPI User Service** - Complete working Python microservice ✅
     - Full CRUD operations for user management
     - FastAPI with Pydantic models
@@ -211,8 +211,8 @@ Last Verified: 2025-10-13 (Enhanced validation: ✅ 182 checks passed, 44 tests 
   - [x] "Implementing security gates" (04-security-gates.md) ✅
   - [x] "Adding observability to your service" (05-observability-setup.md) ✅
   - [x] "Using Jupyter Book for documentation" (06-jupyter-book.md) ✅
-- [ ] #47 Record video tutorials (all scripts are ready - ~65 minutes total content)
-- [ ] #48 Create YouTube channel for video hosting
+- [x] #47 Record video tutorials (all scripts are ready - ~65 minutes total content)
+- [x] #48 Create YouTube channel for video hosting
 - [x] #49 Upload recorded tutorials to YouTube/video platform
 - [x] #50 Add video links to documentation
 
